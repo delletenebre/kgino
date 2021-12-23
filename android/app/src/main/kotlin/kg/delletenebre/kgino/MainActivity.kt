@@ -1,4 +1,4 @@
-package com.example.kgino
+package kg.delletenebre.kgino
 
 import io.flutter.embedding.android.FlutterActivity
 
