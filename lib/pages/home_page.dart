@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
+import 'package:kgino/ui/pages/tskg_slider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -9,11 +10,7 @@ class HomePage extends StatelessWidget {
     TskgApi.getNews();
 
     return Scaffold(
-      body: Container(
-        color: Colors.red,
-        width: 100,
-        height: 100,
-      ),
+      body: TskgSlider(),
     );
   }
 }

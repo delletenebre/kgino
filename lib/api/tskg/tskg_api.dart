@@ -5,20 +5,25 @@ import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_news_item.dart';
 
 class TskgApi {
+  static const scheme = 'https';
   static const host = 'www.ts.kg';
 
+  static Uri getUri(String path) {
+    return Uri(
+      scheme: scheme,
+      host: host,
+      path: path,
+    );
+  }
+
   /// получение списка новостей
-  static Future<List<TskgNewsItem>> getNews() async {
+  static Future<List<TskgItem>> getNews() async {
     
     /// список элементов
-    final items = <TskgNewsItem>[];
+    final items = <TskgItem>[];
     
     /// формируем uri запроса
-    final url = Uri(
-      scheme: 'https',
-      host: host,
-      path: '/news',
-    );
+    final url = getUri('/news');
 
     /// запрашиваем данные
     final response = await http.get(url);
@@ -30,11 +35,11 @@ class TskgApi {
       final document = parse(response.body);
       
       /// получаем элементы списка новых поступлений
-      final elements = document.getElementsByClassName('row app-news-block');
+      final elements = document.getElementsByClassName('app-news-block');
 
       for (final element in elements) {
 
-        /// парсим дату
+        /// парсим дату добавления
         /// <div class="app-news-date"><strong>22.12.2021</strong></div>
         final dateText = element
           .getElementsByClassName('app-news-date').first.text;
@@ -52,33 +57,45 @@ class TskgApi {
         /// </div>
         final listItems = element.getElementsByClassName('app-news-list-item');
         for (final listItem in listItems) {
-          debugPrint('date: $DateFormat.ABBR_WEEKDAY');
+          debugPrint('date: $DateFormat');
 
-          final tagA = listItem.getElementsByClassName('app-news-link').first;
-          final tagSmall = listItem.getElementsByTagName('small');
+          final tagsA = listItem.getElementsByClassName('app-news-link');
+          if (tagsA.isNotEmpty) {
+            /// ^ если в новостях найден элемент <a></a>
+            
+            final tagA = tagsA.first;
 
-          /// ссылка на сериал/подборку/серию
-          final link = tagA.attributes['href'];
-          debugPrint('link: $link');
-          
-          /// название сериала или подборки
-          final title = tagA.text;
-          debugPrint('title: $title');
+            final tagSmall = listItem.getElementsByTagName('small');
 
-          /// дополнительная информация (например, сезон и номер серии)
-          String subtitle = '';
-          if (tagSmall.isNotEmpty) {
-            subtitle = tagSmall.first.text;
+            /// ссылка на сериал/подборку/серию
+            final link = tagA.attributes['href'];
+            debugPrint('link: $link');
+            
+            /// название сериала или подборки
+            final title = tagA.text;
+            debugPrint('title: $title');
+
+            /// дополнительная информация (например, сезон и номер серии)
+            String subtitle = '';
+            if (tagSmall.isNotEmpty) {
+              subtitle = tagSmall.first.text;
+            }
+            debugPrint('subtitle: $subtitle');
+
+            /// жанры
+            final genres = tagA.attributes['title'] ?? '';
+            debugPrint('genres: $genres');
+
+            items.add(
+              TskgItem(
+                date: date,
+                title: title,
+                subtitle: subtitle,
+              )
+            );
+
+            debugPrint('---- ---- ----');
           }
-          debugPrint('subtitle: $subtitle');
-
-          items.add(
-            TskgNewsItem(
-              date: date,
-              title: title,
-              subtitle: subtitle,
-            )
-          );
 
         }
 
