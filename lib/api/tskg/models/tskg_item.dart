@@ -1,12 +1,13 @@
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kgino/api/tskg/tskg.dart';
 
 part 'tskg_item.g.dart';
 
 @JsonSerializable()
 class TskgItem {
   final DateTime date;
-  final String badge;
+  final List<TskgBagdeType> badges;
   final String title;
   final String subtitle;
   final String genres;
@@ -15,7 +16,7 @@ class TskgItem {
   
   TskgItem({
     required this.date,
-    this.badge = '',
+    this.badges = const [],
     this.title = '',
     this.subtitle = '',
     this.genres = '',

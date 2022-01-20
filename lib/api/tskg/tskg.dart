@@ -29,4 +29,7 @@ enum TskgBagdeType {
   /// важно
   important,
 
+  /// новогоднее
+  newyear,
+
 }

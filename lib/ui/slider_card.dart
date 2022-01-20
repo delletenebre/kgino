@@ -28,6 +28,8 @@ class _SliderCardState extends State<SliderCard> {
 
     return Stack(
       children: [
+
+        /// основной контент (постер)
         AnimatedContainer(
           duration: animationDuration,
           width: AppTheme.sliderCardSize,
@@ -103,44 +105,60 @@ class _SliderCardState extends State<SliderCard> {
           ),
         ),
 
+        /// верхняя строка (значки (badges))
+        Positioned(
+          top: 8.0,
+          left: 8.0,
+          right: 8.0,
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(2.0),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(32.0)
+                ),
+                child: Text('Новогоднее',
+                  style: TextStyle(
+                    fontSize: 6.0,
+                  )
+                )
+              )
+            ],
+          ),
+        ),
+
+        /// нижняя подпись (название, номер серии)
         Positioned(
           bottom: 8.0,
           left: 8.0,
           right: 8.0,
           child: Text(widget.description,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
               fontSize: 10.0,
               shadows: [
                 Shadow(
-                  offset: Offset(0.0, 1.0),
-                  blurRadius: 1.0,
-                  color: Colors.black,
+                  color: theme.bottomAppBarColor,
                 ),
                 Shadow(
-                  offset: Offset(0.0, 0.0),
                   blurRadius: 2.0,
-                  color: Colors.black,
+                  color: theme.bottomAppBarColor,
                 ),
                 Shadow(
-                  offset: Offset(0.0, 0.0),
                   blurRadius: 4.0,
-                  color: Colors.black,
+                  color: theme.bottomAppBarColor,
                 ),
                 Shadow(
-                  offset: Offset(0.0, 0.0),
                   blurRadius: 6.0,
-                  color: Colors.black,
+                  color: theme.bottomAppBarColor,
                 ),
                 Shadow(
-                  offset: Offset(0.0, 0.0),
                   blurRadius: 8.0,
-                  color: Colors.black,
+                  color: theme.bottomAppBarColor,
                 ),
                 Shadow(
-                  offset: Offset(0.0, 0.0),
                   blurRadius: 10.0,
-                  color: Colors.black,
+                  color: theme.bottomAppBarColor,
                 ),
               ],
             ),

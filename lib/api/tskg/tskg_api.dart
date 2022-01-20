@@ -3,6 +3,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
+import 'package:kgino/api/tskg/tskg.dart';
 
 class TskgApi {
   static const scheme = 'https';
@@ -86,6 +87,34 @@ class TskgApi {
             final genres = tagA.attributes['title'] ?? '';
             //debugPrint('genres: $genres');
 
+            /// значки (badges)
+            final badges = tagA.getElementsByClassName('label').map((badge) {
+              /// если значок подписан
+              switch (badge.text) {
+                case 'Топ':
+                  return TskgBagdeType.top;
+                
+                case 'Новое':
+                  return TskgBagdeType.newest;
+
+                case 'Финал':
+                  return TskgBagdeType.finale;
+
+                case 'Подборка':
+                  return TskgBagdeType.compilation;
+
+                case 'Важно':
+                  return TskgBagdeType.important;
+
+                case 'Новогоднее':
+                  return TskgBagdeType.newyear;
+              }
+
+              /// если значок в виде иконки
+              /// TODO fix
+              return TskgBagdeType.updated;
+            });
+
             items.add(
               TskgItem(
                 date: date,
@@ -93,6 +122,7 @@ class TskgApi {
                 subtitle: subtitle,
                 link: link,
                 genres: genres,
+                badges: badges.toList(),
               )
             );
 
