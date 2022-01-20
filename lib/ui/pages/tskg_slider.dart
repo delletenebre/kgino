@@ -1,37 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:kgino/ui/slider_card.dart';
+import 'package:kgino/resources/app_theme.dart';
 
 class TskgSlider extends StatelessWidget {
-  const TskgSlider({ Key? key }) : super(key: key);
+  final String title;
+  final List<Widget> items;
+
+  const TskgSlider({
+    Key? key,
+    this.title = '',
+    this.items = const [],
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 180,
+    final theme = Theme.of(context);
+    
+    /// слайдер
+    Widget child = SizedBox(
+      height: AppTheme.sliderCardSize,
       child: ListView(
-        padding: const EdgeInsets.all(16.0),
-        // This next line does the trick.
         scrollDirection: Axis.horizontal,
-        children: [
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-          SliderCard(),
-        ],
-      )
+        children: items,
+        clipBehavior: Clip.none,
+      ),
     );
+  
+    if (title.isNotEmpty) {
+      /// ^ если был передан заголовок
+      
+      child = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+            style: theme.textTheme.headline6,
+          ),
+          child,
+        ],
+      );
+    }
+
+
+    return child;
   }
 }

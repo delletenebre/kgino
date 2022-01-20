@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:kgino/api/tskg/models/tskg_news_item.dart';
+import 'package:kgino/api/tskg/models/tskg_item.dart';
 
 class TskgApi {
   static const scheme = 'https';
@@ -57,7 +57,7 @@ class TskgApi {
         /// </div>
         final listItems = element.getElementsByClassName('app-news-list-item');
         for (final listItem in listItems) {
-          debugPrint('date: $DateFormat');
+          //debugPrint('date: $DateFormat');
 
           final tagsA = listItem.getElementsByClassName('app-news-link');
           if (tagsA.isNotEmpty) {
@@ -68,33 +68,35 @@ class TskgApi {
             final tagSmall = listItem.getElementsByTagName('small');
 
             /// ссылка на сериал/подборку/серию
-            final link = tagA.attributes['href'];
-            debugPrint('link: $link');
+            final link = tagA.attributes['href'] ?? '';
+            //debugPrint('link: $link');
             
             /// название сериала или подборки
             final title = tagA.text;
-            debugPrint('title: $title');
+            //debugPrint('title: $title');
 
             /// дополнительная информация (например, сезон и номер серии)
             String subtitle = '';
             if (tagSmall.isNotEmpty) {
               subtitle = tagSmall.first.text;
             }
-            debugPrint('subtitle: $subtitle');
+            //debugPrint('subtitle: $subtitle');
 
             /// жанры
             final genres = tagA.attributes['title'] ?? '';
-            debugPrint('genres: $genres');
+            //debugPrint('genres: $genres');
 
             items.add(
               TskgItem(
                 date: date,
                 title: title,
                 subtitle: subtitle,
+                link: link,
+                genres: genres,
               )
             );
 
-            debugPrint('---- ---- ----');
+            //debugPrint('---- ---- ----');
           }
 
         }

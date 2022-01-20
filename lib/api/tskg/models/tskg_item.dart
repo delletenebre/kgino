@@ -1,3 +1,9 @@
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'tskg_item.g.dart';
+
+@JsonSerializable()
 class TskgItem {
   final DateTime date;
   final String badge;
@@ -5,7 +11,7 @@ class TskgItem {
   final String subtitle;
   final String genres;
   final String link;
-  late final String tvshowId;
+  String tvshowId;
   
   TskgItem({
     required this.date,
@@ -14,6 +20,7 @@ class TskgItem {
     this.subtitle = '',
     this.genres = '',
     this.link = '',
+    this.tvshowId = '',
   }) {
     /// разделяем url по '/'
     final path = link.split('/');
@@ -36,4 +43,9 @@ class TskgItem {
 
   /// cсылка на постер сериала
   String get tvshowUrl => 'https://www.ts.kg/show/$tvshowId.png';
+
+  factory TskgItem.fromJson(Map<String, dynamic> json) =>
+    _$TskgItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TskgItemToJson(this);
 }
