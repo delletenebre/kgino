@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 
 class Tskg {
@@ -5,6 +6,7 @@ class Tskg {
     final url = TskgApi.getUri('/posters/$tvshowId.png');
     return url.toString();
   }
+
 }
 
 enum TskgBagdeType {
@@ -32,4 +34,6 @@ enum TskgBagdeType {
   /// новогоднее
   newyear,
 
+  /// неизвестно
+  unknown,
 }

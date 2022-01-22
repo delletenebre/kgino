@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +62,7 @@ class HomePage extends StatelessWidget {
                       return SliderCard(
                         posterUrl: tskgItem.poster,
                         description: tskgItem.subtitle,
+                        badges: tskgItem.badges,
                       );
                     });
 
@@ -71,6 +70,7 @@ class HomePage extends StatelessWidget {
                       TskgSlider(
                         title: dateFormatter.format(date),
                         items: items.toList(),
+                        
                       )
                     );
                   }

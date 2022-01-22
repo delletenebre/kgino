@@ -1,15 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kgino/api/tskg/tskg.dart';
 import 'package:kgino/resources/app_theme.dart';
+import 'package:kgino/ui/slider_card_badge.dart';
 
 class SliderCard extends StatefulWidget {
   final String posterUrl;
   final String description;
+  final List<TskgBagdeType> badges;
 
   const SliderCard({
     Key? key,
     this.posterUrl = '',
     this.description = '',
+    this.badges = const [],
   }) : super(key: key);
 
   @override
@@ -24,6 +28,14 @@ class _SliderCardState extends State<SliderCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final _badges = widget.badges.map((badge) {
+      return SliderCardBadge(
+        icon: badge.icon(),
+        color: badge.color(),
+        size: _hasFocus ? 12.0 : 8.0,
+      );
+    }).toList();
     
 
     return Stack(
@@ -70,8 +82,7 @@ class _SliderCardState extends State<SliderCard> {
 
               },
 
-              child: FittedBox(
-                fit: BoxFit.none,
+              child: Center(
                 child: AnimatedContainer(
                   duration: animationDuration,
 
@@ -84,49 +95,49 @@ class _SliderCardState extends State<SliderCard> {
                     //borderRadius: BorderRadius.circular(16.0),
                     
                   ),
-                  clipBehavior: Clip.none,
                   
-                  child: Center(
-                    child: CachedNetworkImage(
-                        imageUrl: widget.posterUrl,
-                        progressIndicatorBuilder: (context, url, downloadProgress) {
-                          return CircularProgressIndicator(
-                            value: downloadProgress.progress
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return const Icon(Icons.error);
-                        },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+
+                      children: [
+
+                        CachedNetworkImage(
+                          imageUrl: widget.posterUrl,
+                          progressIndicatorBuilder: (context, url, downloadProgress) {
+                            return CircularProgressIndicator(
+                              value: downloadProgress.progress
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return const Icon(Icons.error);
+                          },
+                        ),
+                      
+                        Positioned(
+                          top: -12.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Wrap(
+                            spacing: 4.0,
+                            children: _badges,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
             ),
           ),
         ),
 
         /// верхняя строка (значки (badges))
-        Positioned(
-          top: 8.0,
-          left: 8.0,
-          right: 8.0,
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(32.0)
-                ),
-                child: Text('Новогоднее',
-                  style: TextStyle(
-                    fontSize: 6.0,
-                  )
-                )
-              )
-            ],
-          ),
-        ),
+        // Positioned(
+        //   top: 8.0,
+        //   left: 8.0,
+        //   right: 8.0,
+        //   child: widget.topLine,
+        // ),
+        
 
         /// нижняя подпись (название, номер серии)
         Positioned(

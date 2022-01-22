@@ -38,4 +38,5 @@ const _$TskgBagdeTypeEnumMap = {
   TskgBagdeType.compilation: 'compilation',
   TskgBagdeType.important: 'important',
   TskgBagdeType.newyear: 'newyear',
+  TskgBagdeType.unknown: 'unknown',
 };

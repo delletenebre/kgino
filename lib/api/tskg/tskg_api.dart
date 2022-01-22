@@ -88,31 +88,50 @@ class TskgApi {
             //debugPrint('genres: $genres');
 
             /// значки (badges)
-            final badges = tagA.getElementsByClassName('label').map((badge) {
-              /// если значок подписан
-              switch (badge.text) {
-                case 'Топ':
-                  return TskgBagdeType.top;
+            final badges = listItem.getElementsByClassName('label').map((badge) {
+              
+              if (badge.text.isEmpty) {
+                /// ^ если значок в виде иконки
+
+                final text = badge.firstChild?.attributes['title'] ?? '';
+
+                switch (text) {
+                  case 'Временно':
+                    return TskgBagdeType.temporarily;
+
+                  case 'Обновлено':
+                    return TskgBagdeType.updated;
+                }
+              
+              } else {
+                /// ^ если значок подписан
                 
-                case 'Новое':
-                  return TskgBagdeType.newest;
+                switch (badge.text) {
+                  case 'Топ':
+                    return TskgBagdeType.top;
+                  
+                  case 'Новое':
+                    return TskgBagdeType.newest;
 
-                case 'Финал':
-                  return TskgBagdeType.finale;
+                  case 'Финал':
+                    return TskgBagdeType.finale;
 
-                case 'Подборка':
-                  return TskgBagdeType.compilation;
+                  case 'Подборка':
+                    return TskgBagdeType.compilation;
 
-                case 'Важно':
-                  return TskgBagdeType.important;
+                  case 'Важно':
+                    return TskgBagdeType.important;
 
-                case 'Новогоднее':
-                  return TskgBagdeType.newyear;
+                  case 'Новогоднее':
+                    return TskgBagdeType.newyear;
+                }
               }
+              
 
               /// если значок в виде иконки
               /// TODO fix
-              return TskgBagdeType.updated;
+              return TskgBagdeType.unknown;
+
             });
 
             items.add(

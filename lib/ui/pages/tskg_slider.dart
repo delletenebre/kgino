@@ -14,14 +14,26 @@ class TskgSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scrollController = ScrollController();
     
     /// слайдер
     Widget child = SizedBox(
       height: AppTheme.sliderCardSize,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: items,
-        clipBehavior: Clip.none,
+      child: RawScrollbar(
+        thumbColor: Colors.redAccent,
+        isAlwaysShown: true,
+        controller: scrollController,
+        thickness: 1.0,
+        radius: const Radius.circular(2.0),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: ListView(
+            controller: scrollController,
+            scrollDirection: Axis.horizontal,
+            children: items,
+            clipBehavior: Clip.none,
+          ),
+        ),
       ),
     );
   
