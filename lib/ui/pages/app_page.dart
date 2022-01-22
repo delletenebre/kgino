@@ -11,10 +11,18 @@ class AppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          child,
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+
+            /// невидимый элемент для возврата фокуса в начало страницы
+            const Focus(
+              child: SizedBox(),
+            ),
+
+            child,
+          ],
+        ),
       ),
     );
   }
