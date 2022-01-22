@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 
 class Tskg {
-  static String getPoster(String tvshowId) {
+  static String getPosterUrl(String tvshowId) {
     final url = TskgApi.getUri('/posters/$tvshowId.png');
     return url.toString();
   }

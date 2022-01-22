@@ -11,7 +11,11 @@ class AppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
+      body: Column(
+        children: [
+          child,
+        ],
+      ),
     );
   }
 }

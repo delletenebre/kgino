@@ -2,11 +2,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
+import 'package:kgino/api/tskg/tskg.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
+import 'package:kgino/resources/app_theme.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/slider_card.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:uuid/uuid.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -20,6 +23,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Text('Последние поступления',
               style: theme.textTheme.headline5,
             ),
@@ -28,6 +32,7 @@ class HomePage extends StatelessWidget {
               future: TskgApi.getNews(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  
                   /// список слайдеров с элементами последних поступлений,
                   /// сгруппированные по дате добавления
                   final children = <Widget>[];
@@ -49,6 +54,8 @@ class HomePage extends StatelessWidget {
                     ? itemsGroupedByDate.length
                     : numberOfDays;
 
+                  var itemsIndex = 0;
+
                   for (int i = 0; i < maxIndex; i++) {
                     /// дата добавления сериала
                     final dateString = itemsGroupedByDate.keys.elementAt(i);
@@ -63,16 +70,20 @@ class HomePage extends StatelessWidget {
                       /// конвертируем [Map] обратно в [TskgItem]
                       final tskgItem = TskgItem.fromJson(itemJson);
 
+                      final heroTag = tskgItem.tvshowId + itemsIndex.toString();
+                      itemsIndex++;
+
                       /// формируем карточку сериала
                       return SliderCard(
-                        posterUrl: tskgItem.poster,
+                        heroTag: heroTag,
+                        posterUrl: Tskg.getPosterUrl(tskgItem.tvshowId),
                         description: tskgItem.subtitle,
                         badges: tskgItem.badges,
                         onTap: () {
                           /// при нажатии на сериал
                           
                           /// переходим на страницу информации о сериале
-                          Routemaster.of(context).push('/tskg/tvshow/${tskgItem.tvshowId}');
+                          Routemaster.of(context).push('/tskg/tvshow/$heroTag/${tskgItem.tvshowId}');
                         },
                       );
 
@@ -94,6 +105,7 @@ class HomePage extends StatelessWidget {
                   );
                 }
 
+                /// пока идёт запрос данных - показываем индикатор загрузки
                 return const SizedBox(
                   height: 160.0 / 5 * 4,
                   child: Center(

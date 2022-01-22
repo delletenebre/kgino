@@ -39,12 +39,6 @@ class TskgItem {
     }
   }
 
-  /// cсылка на постер сериала
-  String get poster => 'https://www.ts.kg/posters/$tvshowId.png';
-
-  /// cсылка на постер сериала
-  String get tvshowUrl => 'https://www.ts.kg/show/$tvshowId.png';
-
   factory TskgItem.fromJson(Map<String, dynamic> json) =>
     _$TskgItemFromJson(json);
 

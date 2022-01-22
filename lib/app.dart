@@ -11,10 +11,12 @@ class App extends StatelessWidget {
     return MaterialApp.router(
       theme: AppTheme.dark,
 
-      routerDelegate: RoutemasterDelegate(
-        routesBuilder: (context) => AppRoute.routes
-      ),
       routeInformationParser: const RoutemasterParser(),
+      routerDelegate: RoutemasterDelegate(
+        routesBuilder: (context) {
+          return AppRoute.routes;
+        }
+      ),
     );
   }
 }

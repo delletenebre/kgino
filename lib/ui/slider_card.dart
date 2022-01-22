@@ -5,6 +5,7 @@ import 'package:kgino/resources/app_theme.dart';
 import 'package:kgino/ui/slider_card_badge.dart';
 
 class SliderCard extends StatefulWidget {
+  final String heroTag;
   final String posterUrl;
   final String description;
   final List<TskgBagdeType> badges;
@@ -12,6 +13,7 @@ class SliderCard extends StatefulWidget {
 
   const SliderCard({
     Key? key,
+    required this.heroTag,
     this.posterUrl = '',
     this.description = '',
     this.badges = const [],
@@ -102,16 +104,19 @@ class _SliderCardState extends State<SliderCard> {
 
                       children: [
 
-                        CachedNetworkImage(
-                          imageUrl: widget.posterUrl,
-                          progressIndicatorBuilder: (context, url, downloadProgress) {
-                            return CircularProgressIndicator(
-                              value: downloadProgress.progress
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return const Icon(Icons.error);
-                          },
+                        Hero(
+                          tag: widget.heroTag,
+                          child: CachedNetworkImage(
+                            imageUrl: widget.posterUrl,
+                            progressIndicatorBuilder: (context, url, downloadProgress) {
+                              return CircularProgressIndicator(
+                                value: downloadProgress.progress
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const Icon(Icons.error);
+                            },
+                          ),
                         ),
                       
                         Positioned(
