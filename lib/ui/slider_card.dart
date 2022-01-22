@@ -8,12 +8,14 @@ class SliderCard extends StatefulWidget {
   final String posterUrl;
   final String description;
   final List<TskgBagdeType> badges;
+  final Function()? onTap;
 
   const SliderCard({
     Key? key,
     this.posterUrl = '',
     this.description = '',
     this.badges = const [],
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -71,16 +73,15 @@ class _SliderCardState extends State<SliderCard> {
               focusColor: Colors.transparent,
               borderRadius: BorderRadius.circular(16.0),
 
+              /// действие при смене состояния фокуса
               onFocusChange: (hasFocus) {
-                debugPrint('hasFocus: $hasFocus');
                 setState(() {
                   _hasFocus = hasFocus;
                 });
-
               },
-              onTap: () {
 
-              },
+              /// обработчик нажатия на карточку слайдера
+              onTap: widget.onTap,
 
               child: Center(
                 child: AnimatedContainer(

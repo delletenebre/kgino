@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
+import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/slider_card.dart';
+import 'package:routemaster/routemaster.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -13,8 +15,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: SingleChildScrollView(
+    return AppPage(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,33 +50,45 @@ class HomePage extends StatelessWidget {
                     : numberOfDays;
 
                   for (int i = 0; i < maxIndex; i++) {
+                    /// дата добавления сериала
                     final dateString = itemsGroupedByDate.keys.elementAt(i);
                     final date = DateTime.parse(dateString);
 
                     final dateFormatter = DateFormat('dd MMM');
 
+                    /// список сериалов за определённый день
                     final elements = itemsGroupedByDate.values.elementAt(i);
                     final items = elements.map((itemJson) {
+
                       /// конвертируем [Map] обратно в [TskgItem]
-                      
                       final tskgItem = TskgItem.fromJson(itemJson);
 
+                      /// формируем карточку сериала
                       return SliderCard(
                         posterUrl: tskgItem.poster,
                         description: tskgItem.subtitle,
                         badges: tskgItem.badges,
+                        onTap: () {
+                          /// при нажатии на сериал
+                          
+                          /// переходим на страницу информации о сериале
+                          Routemaster.of(context).push('/tskg/tvshow/${tskgItem.tvshowId}');
+                        },
                       );
+
                     });
 
+                    /// добавляем слайдер с последними поступлениями за
+                    /// определённый день
                     children.add(
                       TskgSlider(
                         title: dateFormatter.format(date),
                         items: items.toList(),
-                        
                       )
                     );
                   }
                   
+                  /// добавляем слайдеры с последними поступлениями
                   return Column(
                     children: children,
                   );
