@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -165,5 +166,93 @@ class TskgApi {
     }
 
     return items;
+  }
+
+
+  /// получение информации о сериале
+  static Future<void> getShow(String showId) async {
+    /// формируем uri запроса
+    final url = Uri.parse(Tskg.getShowUrl(showId));
+
+    debugPrint('url: $url');
+
+    try {
+      /// запрашиваем данные
+      final response = await http.get(url).timeout(timeout);
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+
+        /// парсим html
+        final document = parse(response.body);
+
+        final title = document.getElementById('h-show-title')?.text ?? '';
+        debugPrint('tvShow title: $title');
+
+        final originalTitle = getTextByClassName(document, 'app-show-header-title-original');
+        debugPrint('tvShow originalTitle: $originalTitle');
+
+        final years = getTextByClassName(document, 'app-show-header-years');
+        debugPrint('tvShow years: $years');
+
+        final tags = document.getElementsByClassName('app-show-tags')
+          .first
+          .getElementsByTagName('a');
+        final genres = tags.where((element) {
+          /// получаем атрибут href
+          final href = element.attributes['href'] ?? '';
+
+           /// находим только те элементы, которые указывают жанр сериала
+          return href.startsWith('/category') || href.startsWith('/genre');
+        }).map((element) => element.text).toList();
+        debugPrint('tvShow genres: $genres');
+
+        final countries = tags.where((element) {
+          /// получаем атрибут href
+          final href = element.attributes['href'] ?? '';
+
+          /// находим только те элементы, которые указывают на страну
+          return href.startsWith('/show?country');
+        }).map((element) {
+          /// получаем название страны
+          final countryName = element.attributes['title'];
+
+          /// получаем атрибут стиля элемента (изображение как background-image)
+          String countryImageUrl = element.attributes['style'] ?? '';
+          if (countryImageUrl.startsWith('background-image: url(')) {
+            /// ^ если ссылка на изображение страны не пустая
+            
+            /// вырезаем [background-image: url(https://www.ts.kg/img/flags/svg/4x3/ru.svg)]
+            countryImageUrl = countryImageUrl
+              .substring(22, countryImageUrl.length - 1);
+          }
+
+          return {
+            countryName: countryImageUrl
+          };
+        }).toList();
+        debugPrint('tvShow countries: $countries');
+
+        final description = getTextByClassName(document, 'app-show-description');
+        debugPrint('tvShow description: $description');
+      }
+
+
+
+    } catch (exception) {
+      /// ^ если прозошла сетевая ошибка
+      
+      
+      debugPrint('http error: $url');
+    }
+  }
+
+  static String getTextByClassName(Document document, String className) {
+    final elements = document.getElementsByClassName(className);
+    if (elements.isNotEmpty) {
+      return elements.first.text.trim();
+    }
+
+    return '';
   }
 }
