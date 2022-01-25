@@ -12,7 +12,7 @@ class TskgItem {
   final String subtitle;
   final String genres;
   final String link;
-  String tvshowId;
+  String showId;
   
   TskgItem({
     required this.date,
@@ -21,7 +21,7 @@ class TskgItem {
     this.subtitle = '',
     this.genres = '',
     this.link = '',
-    this.tvshowId = '',
+    this.showId = '',
   }) {
     /// разделяем url по '/'
     final path = link.split('/');
@@ -30,12 +30,12 @@ class TskgItem {
       /// ^ если url похож на ссылку сериала
       
       /// идентификатор сериала должен быть третьим элементом в массиве
-      tvshowId = path.elementAt(2);
+      showId = path.elementAt(2);
 
     } else {
       /// ^ если url странный
       
-      tvshowId = '';
+      showId = '';
     }
   }
 

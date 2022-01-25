@@ -187,13 +187,13 @@ class TskgApi {
         final document = parse(response.body);
 
         final title = document.getElementById('h-show-title')?.text ?? '';
-        debugPrint('tvShow title: $title');
+        debugPrint('show title: $title');
 
         final originalTitle = getTextByClassName(document, 'app-show-header-title-original');
-        debugPrint('tvShow originalTitle: $originalTitle');
+        debugPrint('show originalTitle: $originalTitle');
 
         final years = getTextByClassName(document, 'app-show-header-years');
-        debugPrint('tvShow years: $years');
+        debugPrint('show years: $years');
 
         final tags = document.getElementsByClassName('app-show-tags')
           .first
@@ -205,7 +205,7 @@ class TskgApi {
            /// находим только те элементы, которые указывают жанр сериала
           return href.startsWith('/category') || href.startsWith('/genre');
         }).map((element) => element.text).toList();
-        debugPrint('tvShow genres: $genres');
+        debugPrint('show genres: $genres');
 
         final countries = tags.where((element) {
           /// получаем атрибут href
@@ -231,10 +231,10 @@ class TskgApi {
             countryName: countryImageUrl
           };
         }).toList();
-        debugPrint('tvShow countries: $countries');
+        debugPrint('show countries: $countries');
 
         final description = getTextByClassName(document, 'app-show-description');
-        debugPrint('tvShow description: $description');
+        debugPrint('show description: $description');
       }
 
 

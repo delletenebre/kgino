@@ -53,7 +53,8 @@ class HomePage extends StatelessWidget {
                   ? itemsGroupedByDate.length
                   : numberOfDays;
 
-                var itemsIndex = 0;
+                /// счётчик для анимации [Hero]
+                // var itemsIndex = 0;
 
                 for (int i = 0; i < maxIndex; i++) {
                   /// дата добавления сериала
@@ -69,20 +70,20 @@ class HomePage extends StatelessWidget {
                     /// конвертируем [Map] обратно в [TskgItem]
                     final tskgItem = TskgItem.fromJson(itemJson);
 
-                    final heroTag = tskgItem.tvshowId + itemsIndex.toString();
-                    itemsIndex++;
+                    /// идентификатор для анимации [Hero]
+                    // final heroTag = tskgItem.tvshowId + itemsIndex.toString();
+                    // itemsIndex++;
 
                     /// формируем карточку сериала
                     return SliderCard(
-                      heroTag: heroTag,
-                      posterUrl: Tskg.getPosterUrl(tskgItem.tvshowId),
+                      posterUrl: Tskg.getPosterUrl(tskgItem.showId),
                       description: tskgItem.subtitle,
                       badges: tskgItem.badges,
                       onTap: () {
                         /// при нажатии на сериал
                         
                         /// переходим на страницу информации о сериале
-                        Routemaster.of(context).push('/tskg/tvshow/$heroTag/${tskgItem.tvshowId}');
+                        Routemaster.of(context).push('/tskg/show/${tskgItem.showId}');
                       },
                     );
 

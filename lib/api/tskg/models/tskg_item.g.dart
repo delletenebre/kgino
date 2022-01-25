@@ -16,7 +16,7 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       subtitle: json['subtitle'] as String? ?? '',
       genres: json['genres'] as String? ?? '',
       link: json['link'] as String? ?? '',
-      tvshowId: json['tvshowId'] as String? ?? '',
+      showId: json['showId'] as String? ?? '',
     );
 
 Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
@@ -26,7 +26,7 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'subtitle': instance.subtitle,
       'genres': instance.genres,
       'link': instance.link,
-      'tvshowId': instance.tvshowId,
+      'showId': instance.showId,
     };
 
 const _$TskgBagdeTypeEnumMap = {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/pages/home_page.dart';
 import 'package:kgino/pages/test_page.dart';
-import 'package:kgino/pages/tv_show_page.dart';
+import 'package:kgino/pages/show_page.dart';
 import 'package:kgino/pages/unknown_route_page.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -24,11 +24,11 @@ class AppRoute {
       ),
 
       /// страница сериала
-      '/tskg/tvshow/:heroTag/:id': (route) => MaterialPage(
-        child: TvShowPage(
+      '/tskg/show/:id': (route) => MaterialPage(
+        child: ShowPage(
           id: route.pathParameters['id'] ?? '',
-          heroTag: route.pathParameters['heroTag'] ?? '',
         ),
+        
       ),
 
       '/test/:id': (route) => MaterialPage(

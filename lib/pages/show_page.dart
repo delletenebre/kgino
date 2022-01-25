@@ -5,21 +5,19 @@ import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class TvShowPage extends StatefulWidget {
+class ShowPage extends StatefulWidget {
   final String id;
-  final String heroTag;
 
-  const TvShowPage({
+  const ShowPage({
     Key? key,
     this.id = '',
-    this.heroTag = '',
   }) : super(key: key);
 
   @override
-  State<TvShowPage> createState() => _TvShowPageState();
+  State<ShowPage> createState() => _ShowPageState();
 }
 
-class _TvShowPageState extends State<TvShowPage> {
+class _ShowPageState extends State<ShowPage> {
 
   List<Color> _imageColors = [Colors.black, Colors.black, Colors.black];
   late String posterUrl;
@@ -32,25 +30,12 @@ class _TvShowPageState extends State<TvShowPage> {
     /// формируем ссылку на постер сериала
     posterUrl = Tskg.getPosterUrl(widget.id);
 
+    
+    setBackgroundColors();
+
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
       
-      /// вычисляем основные цвета изображения
-      final pallete = await PaletteGenerator.fromImageProvider(
-        CachedNetworkImageProvider(posterUrl),
-        maximumColorCount: 4,
-      );
-
-      if (pallete.colors.isNotEmpty) {
-        _imageColors = pallete.colors.toList();
-
-        while (_imageColors.length < 3) {
-          _imageColors.add(_imageColors[0]);
-        }
-      }
-
-      setState(() {
-        
-      });
+      
 
       /// запрашиваем данные о сериале
       final request = TskgApi.getShow(widget.id);
@@ -67,6 +52,12 @@ class _TvShowPageState extends State<TvShowPage> {
     final width = 480.0;
 
     return Scaffold(
+      // appBar: AppBar(
+      //   leading: BackButton(),
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   shadowColor: Colors.transparent,
+      // ),
       body: Stack(
         children: [
           Positioned(
@@ -96,8 +87,21 @@ class _TvShowPageState extends State<TvShowPage> {
                   );
                 },
                 blendMode: BlendMode.dstOut,
-                child: Hero(
-                  tag: widget.heroTag,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 1000),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: const [0, 0.5, 0.75, 1],
+                      colors: [
+                        _imageColors[0].withOpacity(0.5),
+                        _imageColors[1].withOpacity(0.5),
+                        _imageColors[2].withOpacity(0.5),
+                        theme.scaffoldBackgroundColor,
+                      ],
+                    )
+                  ),
                   child: CachedNetworkImage(
                     width: width,
                     fit: BoxFit.cover,
@@ -122,7 +126,8 @@ class _TvShowPageState extends State<TvShowPage> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 1000),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -137,14 +142,7 @@ class _TvShowPageState extends State<TvShowPage> {
                 )
               ),
               child: Center(
-                child: Text(
-                  'Hello Gradient!',
-                  style: TextStyle(
-                    fontSize: 48.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+                child: BackButton(),
               ),
             ),
           ),
@@ -152,5 +150,25 @@ class _TvShowPageState extends State<TvShowPage> {
         ],
       ),
     );
+  }
+
+  Future<void> setBackgroundColors() async {
+    /// вычисляем основные цвета изображения
+    final pallete = await PaletteGenerator.fromImageProvider(
+      CachedNetworkImageProvider(posterUrl),
+      maximumColorCount: 4,
+    );
+
+    if (pallete.colors.isNotEmpty) {
+      _imageColors = pallete.colors.toList();
+
+      while (_imageColors.length < 3) {
+        _imageColors.add(_imageColors[0]);
+      }
+    }
+
+    setState(() {
+      
+    });
   }
 }
