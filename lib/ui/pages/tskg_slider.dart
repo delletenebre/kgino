@@ -20,18 +20,22 @@ class TskgSlider extends StatelessWidget {
     Widget child = SizedBox(
       height: AppTheme.sliderCardSize,
       child: RawScrollbar(
-        thumbColor: Colors.redAccent,
-        isAlwaysShown: true,
+        thumbColor: theme.colorScheme.primary.withOpacity(0.5),
         controller: scrollController,
         thickness: 1.0,
         radius: const Radius.circular(2.0),
+        isAlwaysShown: true,
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
           child: ListView(
             controller: scrollController,
             scrollDirection: Axis.horizontal,
-            children: items,
+
+            /// убираем срезание вне элемента для эффекта свечения элемента,
+            /// который находится в фокусе
             clipBehavior: Clip.none,
+            
+            children: items,
           ),
         ),
       ),

@@ -4,12 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/tskg.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
-import 'package:kgino/resources/app_theme.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/slider_card.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:uuid/uuid.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
