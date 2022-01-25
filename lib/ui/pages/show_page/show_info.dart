@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
+import 'package:kgino/ui/pages/show_page/show_seasons.dart';
 
 class ShowInfo extends StatelessWidget {
   final String showId;
@@ -15,7 +16,7 @@ class ShowInfo extends StatelessWidget {
     final theme = Theme.of(context);
     const delimiterHeight = 12.0;
 
-    Widget dynWidget = const Center(
+    Widget content = const Center(
       child: CircularProgressIndicator(),
     );
 
@@ -67,7 +68,7 @@ class ShowInfo extends StatelessWidget {
               );
             }
           
-            dynWidget = Container(
+            content = Container(
               alignment: Alignment.topLeft,
               child: SingleChildScrollView(
                 child: Column(
@@ -143,6 +144,10 @@ class ShowInfo extends StatelessWidget {
                       ),
                     ),
 
+                    const SizedBox(height: delimiterHeight),
+
+                    ShowSeasons(show.seasons),
+
                   ],
                 ),
               ),
@@ -151,7 +156,7 @@ class ShowInfo extends StatelessWidget {
           } else {
             /// ^ если есть какая-то ошибка в данных по сериалу
             
-            dynWidget = Column(
+            content = Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 /// невидимый элемент для возврата фокуса в начало страницы
@@ -170,7 +175,7 @@ class ShowInfo extends StatelessWidget {
         /// пока данные не получены, показываем индикатор загрузки
         return AnimatedSwitcher(
           duration: const Duration(seconds: 1),
-          child: dynWidget,
+          child: content,
         );
       }
     );
