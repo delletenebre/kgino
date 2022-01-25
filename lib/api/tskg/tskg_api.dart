@@ -4,6 +4,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
+import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg.dart';
 
 class TskgApi {
@@ -170,7 +171,7 @@ class TskgApi {
 
 
   /// получение информации о сериале
-  static Future<void> getShow(String showId) async {
+  static Future<TskgShow> getShow(String showId) async {
     /// формируем uri запроса
     final url = Uri.parse(Tskg.getShowUrl(showId));
 
@@ -215,7 +216,7 @@ class TskgApi {
           return href.startsWith('/show?country');
         }).map((element) {
           /// получаем название страны
-          final countryName = element.attributes['title'];
+          final countryName = element.attributes['title'] ?? '';
 
           /// получаем атрибут стиля элемента (изображение как background-image)
           String countryImageUrl = element.attributes['style'] ?? '';
@@ -227,17 +228,26 @@ class TskgApi {
               .substring(22, countryImageUrl.length - 1);
           }
 
-          return {
-            countryName: countryImageUrl
-          };
+          return Country(
+            name: countryName,
+            imageUrl: countryImageUrl,
+          );
         }).toList();
         debugPrint('show countries: $countries');
 
         final description = getTextByClassName(document, 'app-show-description');
         debugPrint('show description: $description');
+
+        return TskgShow(
+          id: showId,
+          title: title,
+          originalTitle: originalTitle,
+          description: description,
+          years: years,
+          genres: genres,
+          countries: countries,
+        );
       }
-
-
 
     } catch (exception) {
       /// ^ если прозошла сетевая ошибка
@@ -245,6 +255,8 @@ class TskgApi {
       
       debugPrint('http error: $url');
     }
+
+    return TskgShow();
   }
 
   static String getTextByClassName(Document document, String className) {

@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/ui/pages/app_page.dart';
+import 'package:kgino/ui/pages/show_page/show_info.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class ShowPage extends StatefulWidget {
@@ -21,6 +23,7 @@ class _ShowPageState extends State<ShowPage> {
 
   List<Color> _imageColors = [Colors.black, Colors.black, Colors.black];
   late String posterUrl;
+  TskgShow? _show;
 
 
   @override
@@ -30,19 +33,7 @@ class _ShowPageState extends State<ShowPage> {
     /// формируем ссылку на постер сериала
     posterUrl = Tskg.getPosterUrl(widget.id);
 
-    
     setBackgroundColors();
-
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      
-      
-
-      /// запрашиваем данные о сериале
-      final request = TskgApi.getShow(widget.id);
-    });
-
-    
-    
   }
 
   @override
@@ -52,12 +43,11 @@ class _ShowPageState extends State<ShowPage> {
     final width = 480.0;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: BackButton(),
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   shadowColor: Colors.transparent,
-      // ),
+      appBar: AppBar(
+        leading: BackButton(),
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Positioned(
@@ -141,8 +131,9 @@ class _ShowPageState extends State<ShowPage> {
                   ],
                 )
               ),
-              child: Center(
-                child: BackButton(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ShowInfo(widget.id),
               ),
             ),
           ),
@@ -167,8 +158,8 @@ class _ShowPageState extends State<ShowPage> {
       }
     }
 
-    setState(() {
-      
-    });
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
