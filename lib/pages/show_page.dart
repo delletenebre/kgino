@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg.dart';
-import 'package:kgino/api/tskg/tskg_api.dart';
-import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/show_page/show_info.dart';
 import 'package:palette_generator/palette_generator.dart';
 
@@ -39,12 +37,14 @@ class _ShowPageState extends State<ShowPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
 
-    final width = 480.0;
+    /// определяем ширину постера на фоне
+    final width = (size.width < 480.0) ? size.width + (size.width * 0.1) : 480.0;
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: const BackButton(),
         elevation: 0,
       ),
       extendBodyBehindAppBar: true,
@@ -53,58 +53,44 @@ class _ShowPageState extends State<ShowPage> {
           Positioned(
             top: -(width * 0.18),
             right: -(width * 0.05),
+
+            /// "смягчаем" левую границу постера
             child: ShaderMask(
+              blendMode: BlendMode.dstOut,
               shaderCallback: (rect) {
                 return LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.center,
                   stops: const [0.05, 1],
-                  colors: [_imageColors[0], Colors.transparent],
-                ).createShader(
-                  Rect.fromLTRB(0, 0, rect.width, rect.height)
-                );
+                  colors: [theme.scaffoldBackgroundColor, Colors.transparent],
+                ).createShader(rect);
               },
-              blendMode: BlendMode.dstOut,
+
+              /// "смягчаем" нижнюю границу постера
               child: ShaderMask(
+                blendMode: BlendMode.dstOut,
                 shaderCallback: (rect) {
                   return LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.center,
                     stops: const [0.05, 1],
-                    colors: [_imageColors[0], Colors.transparent],
-                  ).createShader(
-                    Rect.fromLTRB(0, 0, rect.width, rect.height)
-                  );
+                    colors: [theme.scaffoldBackgroundColor, Colors.transparent],
+                  ).createShader(rect);
                 },
-                blendMode: BlendMode.dstOut,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 1000),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: const [0, 0.5, 0.75, 1],
-                      colors: [
-                        _imageColors[0].withOpacity(0.5),
-                        _imageColors[1].withOpacity(0.5),
-                        _imageColors[2].withOpacity(0.5),
-                        theme.scaffoldBackgroundColor,
-                      ],
-                    )
-                  ),
-                  child: CachedNetworkImage(
-                    width: width,
-                    fit: BoxFit.cover,
-                    imageUrl: posterUrl,
-                    progressIndicatorBuilder: (context, url, downloadProgress) {
-                      return CircularProgressIndicator(
-                        value: downloadProgress.progress
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return const Icon(Icons.error);
-                    },
-                  ),
+                
+
+                child: CachedNetworkImage(
+                  width: width,
+                  fit: BoxFit.cover,
+                  imageUrl: posterUrl,
+                  progressIndicatorBuilder: (context, url, downloadProgress) {
+                    return CircularProgressIndicator(
+                      value: downloadProgress.progress
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return const Icon(Icons.error);
+                  },
                 ),
               ),
             ),
@@ -121,8 +107,8 @@ class _ShowPageState extends State<ShowPage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [0, 0.5, 0.75, 1],
+                  end: Alignment.bottomCenter,
+                  stops: const [0, 0.1, 0.3, 1],
                   colors: [
                     _imageColors[0].withOpacity(0.5),
                     _imageColors[1].withOpacity(0.5),

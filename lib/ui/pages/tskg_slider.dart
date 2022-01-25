@@ -47,10 +47,16 @@ class TskgSlider extends StatelessWidget {
       child = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          
+          /// название списка
           Text(title,
-            style: theme.textTheme.headline6,
+            style: const TextStyle(
+              fontSize: 18.0,
+            ),
           ),
+
           child,
+          
         ],
       );
     }

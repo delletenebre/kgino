@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
         children: [
 
           Text('Последние поступления',
-            style: theme.textTheme.headline5,
+            style: theme.textTheme.headline4,
           ),
 
           FutureBuilder<List<TskgItem>>(
