@@ -3,9 +3,12 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
+import 'package:kgino/api/tskg/models/tskg_season.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg.dart';
+import 'package:kgino/utils/utils.dart';
 
 class TskgApi {
   /// время ожидания ответа от сервера
@@ -187,15 +190,16 @@ class TskgApi {
         /// парсим html
         final document = parse(response.body);
 
+        /// парсим название сериала
         final title = document.getElementById('h-show-title')?.text ?? '';
-        debugPrint('show title: $title');
 
+        /// парсим название на языке оригинала
         final originalTitle = getTextByClassName(document, 'app-show-header-title-original');
-        debugPrint('show originalTitle: $originalTitle');
 
+        /// парсим года выпуска сериала
         final years = getTextByClassName(document, 'app-show-header-years');
-        debugPrint('show years: $years');
 
+        /// парсим страны, жанры
         final tags = document.getElementsByClassName('app-show-tags')
           .first
           .getElementsByTagName('a');
@@ -206,8 +210,9 @@ class TskgApi {
            /// находим только те элементы, которые указывают жанр сериала
           return href.startsWith('/category') || href.startsWith('/genre');
         }).map((element) => element.text).toList();
-        debugPrint('show genres: $genres');
+        // debugPrint('show genres: $genres');
 
+        /// формируем список стран
         final countries = tags.where((element) {
           /// получаем атрибут href
           final href = element.attributes['href'] ?? '';
@@ -233,10 +238,60 @@ class TskgApi {
             imageUrl: countryImageUrl,
           );
         }).toList();
-        debugPrint('show countries: $countries');
 
+        /// парсим описание сериала
         final description = getTextByClassName(document, 'app-show-description');
-        debugPrint('show description: $description');
+
+        /// парсим список сезонов
+        final seasonElements = document.getElementsByClassName('app-show-seasons-section-full');
+        
+        /// формируем сезоны сериала
+        final seasons = seasonElements.map((season) {
+          /// парсим заголовок названия сезона
+          final seasonTitleTable = season.getElementsByClassName('app-show-season-title-table').first;
+          
+          /// получаем название сезона
+          final seasonTitle = seasonTitleTable.getElementsByTagName('a').first.text;
+
+          /// парсим список эпизодов сезона
+          final seasonEpisodesTable = season.getElementsByClassName('app-show-season-collapse').first;
+          final seasonEpisodeRows = seasonEpisodesTable.getElementsByTagName('tr');
+          
+          /// формируем эпизоды сезона
+          final episodes = seasonEpisodeRows.map((episodeRow) {
+            /// парсим качество записи SD|HD
+            final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
+            
+            /// парсим название эпизода
+            final episodeTitleElement = episodeRow.getElementsByClassName('text-primary').first;
+            final episodeTitle = episodeTitleElement.text;
+            
+            /// парсим продолжительность эпизода
+            final episodeDurationString = episodeTitleElement.nextElementSibling?.text.trim() ?? '';
+            Duration episodeDuration = Duration.zero;
+            if (episodeDurationString.isNotEmpty) {
+              /// ^ если указана продолжительность эпизода
+              
+              episodeDuration = Utils.parseDuration(episodeDurationString.substring(2));
+            }
+            
+            /// парсим описание эпизода (перевод, обычно)
+            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text;
+
+            return TskgEpisode(
+              id: '',
+              title: episodeTitle,
+              description: episodeDescription,
+              quality: episodeQuality,
+              duration: episodeDuration,
+            );
+          }).toList();
+
+          return TskgSeason(
+            title: seasonTitle,
+            episodes: episodes,
+          );
+        }).toList();
 
         return TskgShow(
           id: showId,
@@ -246,6 +301,7 @@ class TskgApi {
           years: years,
           genres: genres,
           countries: countries,
+          seasons: seasons,
         );
       }
 

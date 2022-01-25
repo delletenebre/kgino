@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 
@@ -12,6 +13,7 @@ class ShowInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    const delimiterHeight = 12.0;
 
     Widget dynWidget = const Center(
       child: CircularProgressIndicator(),
@@ -30,6 +32,40 @@ class ShowInfo extends StatelessWidget {
 
           if (show != null && show.id.isNotEmpty) {
             /// ^ если данные по сериалу получены успешно
+            
+            /// изображение страны производителя
+            final countryImages = show.countries.map<Widget>((country) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: SvgPicture.network(country.imageUrl,
+                  height: 18.0,
+                  placeholderBuilder: (context) => Text(country.name),
+                ),
+              );
+            }).toList();
+
+
+            /// название сериала на языке оригинала
+            Widget originalTitle = const SizedBox();
+            if (show.originalTitle.isNotEmpty) {
+              /// ^ если есть название сериала на языке оригинала
+              
+              originalTitle = Padding(
+                padding: const EdgeInsets.only(bottom: delimiterHeight),
+                child: Text(show.originalTitle,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: theme.textTheme.caption?.color,
+                    shadows: [
+                      Shadow(
+                        color: theme.scaffoldBackgroundColor,
+                        blurRadius: 4.0,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
           
             dynWidget = Container(
               alignment: Alignment.topLeft,
@@ -47,22 +83,65 @@ class ShowInfo extends StatelessWidget {
                     ),
 
                     /// название сериала
-                    Text(show.title,
-                      style: const TextStyle(
-                        fontSize: 32.0,
-                      )
-                    ),
-
-                    /// название сериала на языке оригинала
-                    Text(show.originalTitle,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: theme.textTheme.bodyText2?.color?.withOpacity(0.62),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: delimiterHeight),
+                      child: Text(show.title,
+                        style: TextStyle(
+                          fontSize: 32.0,
+                          shadows: [
+                            Shadow(
+                              color: theme.scaffoldBackgroundColor,
+                              blurRadius: 2.0,
+                            ),
+                            Shadow(
+                              color: theme.scaffoldBackgroundColor,
+                              blurRadius: 4.0,
+                            ),
+                            Shadow(
+                              color: theme.scaffoldBackgroundColor,
+                              blurRadius: 6.0,
+                            ),
+                            Shadow(
+                              color: theme.scaffoldBackgroundColor,
+                              blurRadius: 8.0,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
+                    /// название сериала на языке оригинала
+                    originalTitle,
+
                     /// флаг страны и года показа
-                    
+                    Row(
+                      children: countryImages..add(
+                        Text(show.years,
+                          style: TextStyle(
+                            color: theme.textTheme.caption?.color,
+                            shadows: [
+                              Shadow(
+                                color: theme.scaffoldBackgroundColor,
+                                blurRadius: 4.0,
+                              ),
+                            ],
+                          ),)
+                      ),
+                    ),
+
+                    const SizedBox(height: delimiterHeight),
+
+                    Text(show.description,
+                      style: TextStyle(
+                        color: theme.textTheme.caption?.color,
+                        shadows: [
+                          Shadow(
+                            color: theme.scaffoldBackgroundColor,
+                            blurRadius: 4.0,
+                          ),
+                        ],
+                      ),
+                    ),
 
                   ],
                 ),

@@ -14,13 +14,6 @@ class AppTheme {
       backgroundColor: Colors.transparent,
     ),
 
-    textTheme: const TextTheme().copyWith(
-      headline4: TextStyle(
-        fontSize: 28.0,
-      ),
-      
-    ),
-
     pageTransitionsTheme: PageTransitionsTheme(
       builders: {
         TargetPlatform.iOS: ZoomSlideUpTransitionsBuilder(),

@@ -1,5 +1,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kgino/api/tskg/models/tskg_season.dart';
 
 part 'tskg_show.g.dart';
 
@@ -12,8 +13,7 @@ class TskgShow {
   final List<String> genres;
   final List<Country> countries;
   final String description;
-  
-  
+  final List<TskgSeason> seasons;
   
   TskgShow({
     this.id = '',
@@ -23,6 +23,7 @@ class TskgShow {
     this.genres = const [],
     this.countries = const [],
     this.description = '',
+    this.seasons = const [],
     
   });
 

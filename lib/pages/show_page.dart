@@ -108,12 +108,11 @@ class _ShowPageState extends State<ShowPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomCenter,
-                  stops: const [0, 0.1, 0.3, 1],
+                  stops: const [0, 0.5, 1],
                   colors: [
-                    _imageColors[0].withOpacity(0.5),
+                    _imageColors[0].withOpacity(0.2),
                     _imageColors[1].withOpacity(0.5),
                     _imageColors[2].withOpacity(0.5),
-                    theme.scaffoldBackgroundColor,
                   ],
                 )
               ),

@@ -20,6 +20,10 @@ TskgShow _$TskgShowFromJson(Map<String, dynamic> json) => TskgShow(
               .toList() ??
           const [],
       description: json['description'] as String? ?? '',
+      seasons: (json['seasons'] as List<dynamic>?)
+              ?.map((e) => TskgSeason.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$TskgShowToJson(TskgShow instance) => <String, dynamic>{
@@ -30,6 +34,7 @@ Map<String, dynamic> _$TskgShowToJson(TskgShow instance) => <String, dynamic>{
       'genres': instance.genres,
       'countries': instance.countries,
       'description': instance.description,
+      'seasons': instance.seasons,
     };
 
 Country _$CountryFromJson(Map<String, dynamic> json) => Country(
