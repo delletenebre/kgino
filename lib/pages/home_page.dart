@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
-import 'package:kgino/api/tskg/tskg.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
@@ -74,7 +73,7 @@ class HomePage extends StatelessWidget {
 
                     /// формируем карточку сериала
                     return SliderCard(
-                      posterUrl: Tskg.getPosterUrl(tskgItem.showId),
+                      posterUrl: TskgApi.getPosterUrl(tskgItem.showId),
                       description: tskgItem.subtitle,
                       badges: tskgItem.badges,
                       onTap: () {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kgino/api/tskg/tskg.dart';
+import 'package:kgino/api/tskg/tskg_api.dart';
 
 class SliderCardBadge extends StatelessWidget {
   final IconData icon;

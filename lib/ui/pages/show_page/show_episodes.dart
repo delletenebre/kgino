@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
+import 'package:kgino/utils/utils.dart';
 
 class ShowEpisodes extends StatelessWidget {
   final List<TskgEpisode> episodes;
@@ -27,16 +28,30 @@ class ShowEpisodes extends StatelessWidget {
             Material(
               color: Colors.transparent,
               child: ListTile(
+                /// качесиво записи
                 leading: SizedBox(
                   width: 40.0,
                   child: Center(
                     child: Text(episode.quality),
                   ),
                 ),
+
+                /// название эпизода
                 title: Text(episode.title),
+
+                /// описание эпизода (например, перевод)
                 subtitle: episode.description.isEmpty
                   ? null
                   : Text(episode.description),
+
+                /// продолжительность эпизода
+                trailing: SizedBox(
+                  width: 120.0,
+                  child: Center(
+                    child: Text(Utils.formatDuration(episode.duration)),
+                  ),
+                ),
+
                 onTap: () {
 
                 },

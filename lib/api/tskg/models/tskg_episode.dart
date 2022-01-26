@@ -17,7 +17,6 @@ class TskgEpisode {
     this.description = '',
     this.quality = '',
     this.duration = Duration.zero,
-    
   });
 
   factory TskgEpisode.fromJson(Map<String, dynamic> json) =>

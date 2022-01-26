@@ -7,7 +7,6 @@ import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/models/tskg_season.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
-import 'package:kgino/api/tskg/tskg.dart';
 import 'package:kgino/utils/utils.dart';
 
 class TskgApi {
@@ -17,12 +16,31 @@ class TskgApi {
   static const scheme = 'https';
   static const host = 'www.ts.kg';
 
+  /// формируем полную ссылку по относительному пути
   static Uri getUri(String path) {
     return Uri(
       scheme: scheme,
       host: host,
       path: path,
     );
+  }
+
+  /// формируем полную ссылку на постер сериала по id
+  static String getPosterUrl(String showId) {
+    final url = getUri('/posters/$showId.png');
+    return url.toString();
+  }
+
+  /// формируем полную ссылку на сериал по id
+  static String getShowUrl(String showId) {
+    final url = getUri('/show/$showId');
+    return url.toString();
+  }
+
+  /// формируем полную ссылку на эпизод сериал по относительной ссылке
+  static String getEpisodeUrl(String relativeUrl) {
+    final url = getUri(relativeUrl);
+    return url.toString();
   }
 
   /// получение списка новостей
@@ -176,7 +194,7 @@ class TskgApi {
   /// получение информации о сериале
   static Future<TskgShow> getShow(String showId) async {
     /// формируем uri запроса
-    final url = Uri.parse(Tskg.getShowUrl(showId));
+    final url = Uri.parse(getShowUrl(showId));
 
     debugPrint('url: $url');
 
@@ -262,9 +280,10 @@ class TskgApi {
             /// парсим качество записи SD|HD
             final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
             
-            /// парсим название эпизода
+            /// парсим название и url эпизода
             final episodeTitleElement = episodeRow.getElementsByClassName('text-primary').first;
             final episodeTitle = episodeTitleElement.text;
+            final episodeUrl = episodeTitleElement.attributes['href'] ?? '';
             
             /// парсим продолжительность эпизода
             final episodeDurationString = episodeTitleElement.nextElementSibling?.text.trim() ?? '';
@@ -279,7 +298,7 @@ class TskgApi {
             final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text;
 
             return TskgEpisode(
-              id: '',
+              id: episodeUrl,
               title: episodeTitle,
               description: episodeDescription,
               quality: episodeQuality,
@@ -323,4 +342,33 @@ class TskgApi {
 
     return '';
   }
+}
+
+enum TskgBagdeType {
+  /// новое
+  newest,
+
+  /// топ
+  top,
+
+  /// обновлено
+  updated,
+
+  /// временно
+  temporarily,
+
+  /// финал
+  finale,
+
+  /// подборка
+  compilation,
+
+  /// важно
+  important,
+
+  /// новогоднее
+  newyear,
+
+  /// неизвестно
+  unknown,
 }

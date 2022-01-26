@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:kgino/api/tskg/tskg.dart';
+import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/resources/app_theme.dart';
 import 'package:kgino/ui/slider_card_badge.dart';
 
