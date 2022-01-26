@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/pages/home_page.dart';
-import 'package:kgino/pages/test_page.dart';
+import 'package:kgino/pages/player_page.dart';
 import 'package:kgino/pages/show_page.dart';
 import 'package:kgino/pages/unknown_route_page.dart';
 import 'package:routemaster/routemaster.dart';
@@ -31,9 +31,9 @@ class AppRoute {
         
       ),
 
-      '/test/:id': (route) => MaterialPage(
-        child: TestPage(
-          id: route.pathParameters['id'] ?? '',
+      '/player': (route) => const MaterialPage(
+        child: PlayerPage(
+          //id: route.pathParameters['id'] ?? '',
         ),
       ),
     },
