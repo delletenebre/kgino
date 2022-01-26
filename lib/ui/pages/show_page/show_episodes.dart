@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
-import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/utils/utils.dart';
 
 class ShowEpisodes extends StatelessWidget {
   final List<TskgEpisode> episodes;
+  final Function(TskgEpisode) onTap;
 
-  const ShowEpisodes(this.episodes, { Key? key }) : super(key: key);
+  const ShowEpisodes({
+    Key? key,
+    this.episodes = const [],
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +59,7 @@ class ShowEpisodes extends StatelessWidget {
                 ),
 
                 onTap: () {
-                  Get.toNamed('/player');
+                  onTap.call(episode);
                 },
               ),
             )

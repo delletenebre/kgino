@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/api/tskg/models/tskg_season.dart';
 import 'package:kgino/ui/pages/show_page/show_episodes.dart';
 
 class ShowSeasons extends StatelessWidget {
   final List<TskgSeason> seasons;
+  final Function(TskgEpisode) onEpisodeTap;
 
-  const ShowSeasons(this.seasons, { Key? key }) : super(key: key);
+  const ShowSeasons({
+    Key? key,
+    this.seasons = const [],
+    required this.onEpisodeTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,15 @@ class ShowSeasons extends StatelessWidget {
         )
       );
       _seasons.add(const SizedBox(height: 12.0));
-      _seasons.add(ShowEpisodes(season.episodes));
+      _seasons.add(
+        ShowEpisodes(
+          episodes: season.episodes,
+          onTap: (episode) {
+            /// при нажатии на эпизод
+            onEpisodeTap.call(episode);
+          }
+        )
+      );
       _seasons.add(const SizedBox(height: 44.0));
     }
 

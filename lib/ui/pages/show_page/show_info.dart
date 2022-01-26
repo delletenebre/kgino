@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
+import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/show_page/show_seasons.dart';
 
 class ShowInfo extends StatelessWidget {
@@ -146,7 +147,12 @@ class ShowInfo extends StatelessWidget {
 
                     const SizedBox(height: delimiterHeight * 3),
 
-                    ShowSeasons(show.seasons),
+                    ShowSeasons(
+                      seasons: show.seasons,
+                      onEpisodeTap: (episode) {
+                        Get.toNamed('/tskg/$showId/play/${episode.id}');
+                      }
+                    ),
 
                   ],
                 ),

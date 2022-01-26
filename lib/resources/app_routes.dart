@@ -30,10 +30,10 @@ class AppRoutes {
 
     /// страница сериала (сезоны и эпизоды)
     GetPage(
-      name: '/tskg/show/:id',
+      name: '/tskg/show/:showId',
       page: () {
         /// id запрашиваемого сериала
-        final showId = Get.parameters['id'] ?? '';
+        final showId = Get.parameters['showId'] ?? '';
 
         return ShowPage(
           id: showId
@@ -43,13 +43,17 @@ class AppRoutes {
 
     /// страница плеера
     GetPage(
-      name: '/player',
+      name: '/tskg/show/:showId/play/:episodeId',
       page: () {
         /// id запрашиваемого сериала
-        //final showId = Get.parameters['id'] ?? '';
+        final showId = Get.parameters['showId'] ?? '';
+        
+        /// id эпизода, который следует запустить первым
+        final episodeId = Get.parameters['episodeId'] ?? '';
 
-        return const PlayerPage(
-          //id: showId
+        return PlayerPage(
+          showId: showId,
+          initialId: episodeId,
         );
       },
     ),
