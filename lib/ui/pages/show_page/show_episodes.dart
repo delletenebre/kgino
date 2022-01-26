@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/utils/utils.dart';
+import 'package:routemaster/routemaster.dart';
 
 class ShowEpisodes extends StatelessWidget {
   final List<TskgEpisode> episodes;
@@ -46,14 +47,15 @@ class ShowEpisodes extends StatelessWidget {
 
                 /// продолжительность эпизода
                 trailing: SizedBox(
-                  width: 120.0,
-                  child: Center(
+                  width: 100.0,
+                  child: Align(
+                    alignment: Alignment.centerRight,
                     child: Text(Utils.formatDuration(episode.duration)),
                   ),
                 ),
 
                 onTap: () {
-
+                  Routemaster.of(context).push('/player');
                 },
               ),
             )
