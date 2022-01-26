@@ -30,14 +30,11 @@ class AppLocale {
     }
   }
 
-  // static String get systemLocale {
-  //   return Intl.systemLocale.substring(0, 2);
-  // }
+  // static String get currentLocale => Get.find<LocaleController>().locale.val;
 
-  // static final Map<String, String> locales = <String, String>{
-  //   'en': 'English',
-  //   'ru': 'Русский',
-  // };
+  // static DateFormat get dateFormatter => DateFormat.yMMMMd(currentLocale);
+  // static DateFormat get dateTimeFullFormatter => dateFormatter.add_Hms();
+  // static DateFormat get dateTimeFormatter => dateFormatter.add_Hm();
 
   static final dateFormatter = DateFormat.yMMMd();
 }

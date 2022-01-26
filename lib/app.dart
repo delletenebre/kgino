@@ -1,32 +1,43 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:kgino/resources/app_route.dart';
-import 'package:kgino/resources/app_theme.dart';
-import 'package:routemaster/routemaster.dart';
+
+import 'controllers/controllers.dart';
+import 'resources/resources.dart';
+
 
 class App extends StatelessWidget {
   const App({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: AppTheme.dark,
+    return GetMaterialApp(
+      title: 'KGino',
+      
+      locale: Locale(AppLocale.defaultLocale),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+
+      // navigatorObservers: [
+      //   FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+      // ],
 
       /// исправляем поведение прокручивания списков для desktop-платформ
       scrollBehavior: ScrollConfiguration.of(context).copyWith(
         /// позволяем проматывать списки всеми доступными способами
         dragDevices: PointerDeviceKind.values.toSet(),
-        
         /// скрываем системные скроллбары
         scrollbars: false,
       ),
+      
+      defaultTransition: Transition.native,
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
 
-      routeInformationParser: const RoutemasterParser(),
-      routerDelegate: RoutemasterDelegate(
-        routesBuilder: (context) {
-          return AppRoute.routes;
-        }
-      ),
+      initialRoute: AppRoutes.routes.first.name,
+      unknownRoute: AppRoutes.unknownRoute,
+      getPages: AppRoutes.routes,
     );
   }
 }

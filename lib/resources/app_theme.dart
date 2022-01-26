@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kgino/resources/zoom_transition.dart';
 
 class AppTheme {
 
@@ -13,13 +12,6 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
     ),
-
-    pageTransitionsTheme: PageTransitionsTheme(
-      builders: {
-        TargetPlatform.iOS: ZoomSlideUpTransitionsBuilder(),
-        TargetPlatform.macOS: ZoomSlideUpTransitionsBuilder(),
-      }
-    )
   );
 
 

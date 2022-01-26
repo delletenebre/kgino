@@ -24,12 +24,13 @@ dependencies:
   cached_network_image: ^3.2.0
   collection: ^1.15.0
   flutter_svg: ^1.0.3
+  get: ^4.6.1
+  get_storage: ^2.0.3
   html: ^0.15.0
   http: ^0.13.4
   intl: ^0.17.0
   json_annotation: ^4.4.0
   palette_generator: ^0.3.2
-  routemaster: ^0.9.5
   video_player: ^2.2.10
 
 dev_dependencies:

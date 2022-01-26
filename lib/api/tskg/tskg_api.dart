@@ -295,7 +295,7 @@ class TskgApi {
             }
             
             /// парсим описание эпизода (перевод, обычно)
-            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text;
+            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim();
 
             return TskgEpisode(
               id: episodeUrl,

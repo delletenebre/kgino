@@ -273,6 +273,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.6.1"
+  get_storage:
+    dependency: "direct main"
+    description:
+      name: get_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   glob:
     dependency: transitive
     description:
@@ -532,13 +546,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
-  routemaster:
-    dependency: "direct main"
-    description:
-      name: routemaster
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.5"
   rxdart:
     dependency: transitive
     description:

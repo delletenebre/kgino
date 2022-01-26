@@ -11,7 +11,11 @@ class _PlayerPageState extends State<PlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      
+      color: Colors.blue,
+      child: ElevatedButton(
+        onPressed: () {},
+        child: Text('adasdas'),
+      ),
     );
   }
 }

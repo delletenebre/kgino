@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
+import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/utils/utils.dart';
-import 'package:routemaster/routemaster.dart';
 
 class ShowEpisodes extends StatelessWidget {
   final List<TskgEpisode> episodes;
@@ -21,7 +21,7 @@ class ShowEpisodes extends StatelessWidget {
           children: [
             LinearProgressIndicator(
               minHeight: episode.description.isEmpty ? 56.0 : 72.0,
-              value: 0.8,
+              value: 0.0, // TODO fix
               color: theme.colorScheme.primary.withOpacity(0.2),
               backgroundColor: Colors.transparent,
             ),
@@ -55,7 +55,7 @@ class ShowEpisodes extends StatelessWidget {
                 ),
 
                 onTap: () {
-                  Routemaster.of(context).push('/player');
+                  Get.toNamed('/player');
                 },
               ),
             )
