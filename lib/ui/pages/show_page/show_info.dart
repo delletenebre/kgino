@@ -150,7 +150,7 @@ class ShowInfo extends StatelessWidget {
                     ShowSeasons(
                       seasons: show.seasons,
                       onEpisodeTap: (episode) {
-                        Get.toNamed('/tskg/$showId/play/${episode.id}');
+                        Get.toNamed('/tskg/show/$showId/play/${episode.id}');
                       }
                     ),
 

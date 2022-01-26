@@ -42,12 +42,20 @@ class ShowEpisodes extends StatelessWidget {
                 ),
 
                 /// название эпизода
-                title: Text(episode.title),
+                title: Text(episode.title,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                ),
 
                 /// описание эпизода (например, перевод)
                 subtitle: episode.description.isEmpty
                   ? null
-                  : Text(episode.description),
+                  : Text(episode.description,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    ),
 
                 /// продолжительность эпизода
                 trailing: SizedBox(

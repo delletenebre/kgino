@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
+import 'package:kgino/ui/pages/player_page/player_control_overlay.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayerPage extends StatefulWidget {
@@ -17,20 +18,29 @@ class PlayerPage extends StatefulWidget {
   _PlayerPageState createState() => _PlayerPageState();
 }
 
-class _PlayerPageState extends State<PlayerPage>
-  with SingleTickerProviderStateMixin {
+class _PlayerPageState extends State<PlayerPage> {
   
-  late VideoPlayerController _playerController;
-  late AnimationController _playPauseAnimationController;
+  VideoPlayerController? _playerController;
 
   String initialId = '';
 
   /// список идентификаторов эпизодов плейлиста
   final playlistIds = <String>[];
 
+  /// индикатор загрузки данных
+  bool _loading = true;
+
+  void updateLoadingState(bool state) {
+    setState(() {
+      _loading = state;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
+    debugPrint('======================= widget.showId.isEmpty');
 
     if (widget.showId.isEmpty) {
       /// ^ если не указан id сериала
@@ -42,6 +52,7 @@ class _PlayerPageState extends State<PlayerPage>
     } else {
       /// ^ если id сериала был передан
       
+      updateLoadingState(true);
       /// получаем данные сериала (сезоны и эпизоды)
       TskgApi.getShow(widget.showId).then((show) {
         /// очищаем спискок идентификаторов эпизодов
@@ -58,6 +69,8 @@ class _PlayerPageState extends State<PlayerPage>
             playlistIds.add(episode.id);
           }
         }
+
+        debugPrint('playlistIds: $playlistIds');
 
         if (playlistIds.isEmpty) {
           /// ^ если список эпизодов пуст
@@ -81,31 +94,27 @@ class _PlayerPageState extends State<PlayerPage>
             initialId = playlistIds.first;
           }
         }
+
+        updateLoadingState(false);
       });
     }
 
-    _playPauseAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 300),
-    );
-
     _playerController = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
-    _playerController.initialize().then((_) {
+    _playerController?.initialize().then((_) {
       // Ensure the first frame is shown after the video is initialized, even
       // before the play button has been pressed.
       setState(() {});
     });
 
-    _playerController.addListener(() {
+    // _playerController.addListener(() {
       
-    });
+    // });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _playPauseAnimationController.dispose();
-    _playerController.dispose();
+    _playerController?.dispose();
   }
   
   @override
@@ -114,12 +123,13 @@ class _PlayerPageState extends State<PlayerPage>
 
     return Scaffold(
       body: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
           Center(
-            child: _playerController.value.isInitialized
+            child: _playerController?.value.isInitialized ?? false
                 ? AspectRatio(
-                    aspectRatio: _playerController.value.aspectRatio,
-                    child: VideoPlayer(_playerController),
+                    aspectRatio: _playerController!.value.aspectRatio,
+                    child: VideoPlayer(_playerController!),
                   )
                 : Container(),
           ),
@@ -129,61 +139,25 @@ class _PlayerPageState extends State<PlayerPage>
             right: 0,
             bottom: 0,
             left: 0,
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          changeIcon();
+            child: PlayerControlOverlay(
 
-                          setState(() {
-                            _playerController.value.isPlaying
-                                ? _playerController.pause()
-                                : _playerController.play();
-                          });
-                        },
-                        child: AnimatedIcon(
-                          size: 100,
-                          color: Colors.green,
-                          icon: AnimatedIcons.pause_play,
-                          progress: _playPauseAnimationController,
-                        ),
-                      ),
-                      // FloatingActionButton(
-                      //   onPressed: () {
-                      //     setState(() {
-                      //       _playerController.value.isPlaying
-                      //           ? _playerController.pause()
-                      //           : _playerController.play();
-                      //     });
-                      //   },
-                      //   child: AnimatedIcon(
-                      //     icon: AnimatedIcons.pause_play
-                      //     _playerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                      //   ),
-                      // ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            )
+          ),
+
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            child: _loading
+              ? Container(
+                  width: 96.0,
+                  height: 96.0,
+                  child: const CircularProgressIndicator()
+                )
+              : const SizedBox(),
           ),
         ]
       ),
     );
   }
 
-  bool isAnimating = false;
-  void changeIcon() {
-    //rebuilds UI with changing icon.
-    setState(() {
-      isAnimating = !isAnimating;
-      isAnimating
-          ? _playPauseAnimationController.forward()
-          : _playPauseAnimationController.reverse();
-    });
-  }
+  
 }

@@ -295,10 +295,10 @@ class TskgApi {
             }
             
             /// парсим описание эпизода (перевод, обычно)
-            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim();
+            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim().replaceAll('⠀', '');
 
             return TskgEpisode(
-              id: episodeUrl,
+              id: Uri.encodeComponent(episodeUrl),
               title: episodeTitle,
               description: episodeDescription,
               quality: episodeQuality,

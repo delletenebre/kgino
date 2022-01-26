@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/api/tskg/models/tskg_season.dart';
 import 'package:kgino/ui/pages/show_page/show_episodes.dart';
