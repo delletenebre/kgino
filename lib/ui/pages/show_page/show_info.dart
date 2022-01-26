@@ -144,7 +144,7 @@ class ShowInfo extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: delimiterHeight),
+                    const SizedBox(height: delimiterHeight * 3),
 
                     ShowSeasons(show.seasons),
 

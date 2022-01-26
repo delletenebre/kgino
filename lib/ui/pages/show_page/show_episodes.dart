@@ -8,10 +8,42 @@ class ShowEpisodes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final theme = Theme.of(context);
+
+    return ListView(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      primary: false,
       children: episodes.map((episode) {
-        return Text(episode.title);
+        return Stack(
+          children: [
+            LinearProgressIndicator(
+              minHeight: episode.description.isEmpty ? 56.0 : 72.0,
+              value: 0.8,
+              color: theme.colorScheme.primary.withOpacity(0.2),
+              backgroundColor: Colors.transparent,
+            ),
+
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                leading: SizedBox(
+                  width: 40.0,
+                  child: Center(
+                    child: Text(episode.quality),
+                  ),
+                ),
+                title: Text(episode.title),
+                subtitle: episode.description.isEmpty
+                  ? null
+                  : Text(episode.description),
+                onTap: () {
+
+                },
+              ),
+            )
+          ],
+        );
       }).toList(),
     );
   }

@@ -9,23 +9,24 @@ class ShowSeasons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _seasons = seasons.map((season) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(season.title),
-          
-          ShowEpisodes(season.episodes),
-        ],
+    final _seasons = <Widget>[];
+    for (final season in seasons) {
+      _seasons.add(
+        Text(season.title,
+          style: const TextStyle(
+            fontSize: 20.0,
+          )
+        )
       );
-    }).toList();
+      _seasons.add(const SizedBox(height: 12.0));
+      _seasons.add(ShowEpisodes(season.episodes));
+      _seasons.add(const SizedBox(height: 44.0));
+    }
 
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(width: double.maxFinite,), ..._seasons,
-      ],
+      children: _seasons,
     );
   }
 }
