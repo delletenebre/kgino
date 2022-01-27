@@ -16,7 +16,9 @@ class TskgEpisodeDetails {
   final bool subtitles;
   final String title;
   final TskgEpisodeVideo video;
-  final String voice;
+
+  /// может быть bool/String
+  final dynamic voice;
   
   TskgEpisodeDetails({
     this.download = '',
@@ -30,7 +32,7 @@ class TskgEpisodeDetails {
     this.subtitles = false,
     this.title = '',
     required this.video,
-    this.voice = '',
+    this.voice,
   });
 
   factory TskgEpisodeDetails.fromJson(Map<String, dynamic> json) =>

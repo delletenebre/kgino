@@ -20,7 +20,7 @@ TskgEpisodeDetails _$TskgEpisodeDetailsFromJson(Map<String, dynamic> json) =>
       subtitles: json['subtitles'] as bool? ?? false,
       title: json['title'] as String? ?? '',
       video: TskgEpisodeVideo.fromJson(json['video'] as Map<String, dynamic>),
-      voice: json['voice'] as String? ?? '',
+      voice: json['voice'],
     );
 
 Map<String, dynamic> _$TskgEpisodeDetailsToJson(TskgEpisodeDetails instance) =>
