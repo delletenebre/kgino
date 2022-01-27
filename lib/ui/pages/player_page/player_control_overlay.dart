@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:kgino/ui/pages/player_page/video_progress_bar.dart';
+import 'package:kgino/ui/pages/player_page/player_progress_bar.dart';
+import 'package:video_player/video_player.dart';
 
 class PlayerControlOverlay extends StatefulWidget {
   final Duration? totalVideoDuration;
@@ -14,12 +14,15 @@ class PlayerControlOverlay extends StatefulWidget {
   /// обработчик при перемотке видео
   final Function(Duration) onSeek;
 
+  final VideoPlayerController? playerController;
+
   const PlayerControlOverlay({
     Key? key,
     this.totalVideoDuration,
     required this.onSkipNext,
     required this.onSkipPrevious,
     required this.onSeek,
+    this.playerController,
   }) : super(key: key);
 
   @override
@@ -30,7 +33,6 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
   with SingleTickerProviderStateMixin {
 
   late AnimationController _playPauseAnimationController;
-  final focusNode = FocusNode();
 
   @override
   void initState() {
@@ -119,26 +121,11 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
             right: 16.0,
             child: Column(
                 children: [
-                  RawKeyboardListener(
-                    focusNode: focusNode,
-                    onKey: (event) {
-                      debugPrint('event: $event');
-                      if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-                        debugPrint('arrowLeft');
-                      } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-                        debugPrint('arrowRight');
-                      }
+                  PlayerProgressBar(
+                    playerController: widget.playerController,
+                    onSeek: (duration) {
+                      widget.onSeek.call(duration);
                     },
-                    child: ProgressBar(
-                      progress: Duration(milliseconds: 1000),
-                      total: widget.totalVideoDuration ?? Duration.zero,
-                      onSeek: (duration) {
-                        debugPrint('User selected a new time: $duration');
-
-                        /// вызываем пользовательский обработчик перемотки видео
-                        widget.onSeek.call(duration);
-                      },
-                    ),
                   ),
 
                   const SizedBox(height: 12.0),
