@@ -55,7 +55,7 @@ Map<String, dynamic> _$TskgEpisodeOverlayToJson(TskgEpisodeOverlay instance) =>
 
 TskgEpisodeVideo _$TskgEpisodeVideoFromJson(Map<String, dynamic> json) =>
     TskgEpisodeVideo(
-      json['hd'] as bool,
+      json['HD'] as bool,
       TskgEpisodeVideoFiles.fromJson(json['files'] as Map<String, dynamic>),
       json['mimetype'] as String,
       json['videotype'] as String,
@@ -63,7 +63,7 @@ TskgEpisodeVideo _$TskgEpisodeVideoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$TskgEpisodeVideoToJson(TskgEpisodeVideo instance) =>
     <String, dynamic>{
-      'hd': instance.hd,
+      'HD': instance.hd,
       'files': instance.files,
       'mimetype': instance.mimetype,
       'videotype': instance.videotype,
@@ -72,23 +72,23 @@ Map<String, dynamic> _$TskgEpisodeVideoToJson(TskgEpisodeVideo instance) =>
 TskgEpisodeVideoFiles _$TskgEpisodeVideoFilesFromJson(
         Map<String, dynamic> json) =>
     TskgEpisodeVideoFiles(
-      json['hd'],
-      json['sd'],
+      TskgEpisodeVideoFile.fromJson(json['HD'] as Map<String, dynamic>),
+      TskgEpisodeVideoFile.fromJson(json['SD'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TskgEpisodeVideoFilesToJson(
         TskgEpisodeVideoFiles instance) =>
     <String, dynamic>{
-      'hd': instance.hd,
-      'sd': instance.sd,
+      'HD': instance.hd,
+      'SD': instance.sd,
     };
 
 TskgEpisodeVideoFile _$TskgEpisodeVideoFileFromJson(
         Map<String, dynamic> json) =>
     TskgEpisodeVideoFile(
-      json['id'] as int,
-      json['server'] as String,
-      json['url'] as String,
+      json['id'] as int? ?? 0,
+      json['server'] as String? ?? '',
+      json['url'] as String? ?? '',
     );
 
 Map<String, dynamic> _$TskgEpisodeVideoFileToJson(

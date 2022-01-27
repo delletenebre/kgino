@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
+import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/models/tskg_season.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
@@ -17,11 +20,12 @@ class TskgApi {
   static const host = 'www.ts.kg';
 
   /// формируем полную ссылку по относительному пути
-  static Uri getUri(String path) {
+  static Uri getUri(String path, { Map<String, String>? queryParameters }) {
     return Uri(
       scheme: scheme,
       host: host,
       path: path,
+      queryParameters: queryParameters
     );
   }
 
@@ -196,8 +200,6 @@ class TskgApi {
     /// формируем uri запроса
     final url = Uri.parse(getShowUrl(showId));
 
-    debugPrint('url: $url');
-
     try {
       /// запрашиваем данные
       final response = await http.get(url).timeout(timeout);
@@ -335,6 +337,48 @@ class TskgApi {
 
     return TskgShow();
   }
+
+
+  /// получение информации о эпизоде
+  static Future<TskgEpisodeDetails?> getEpisodeDetails(int episodeId) async {
+    /// формируем uri запроса
+    final url = getUri('/show/episode/episode.json',
+      queryParameters: {
+        'episode': '$episodeId',
+      }
+    );
+
+    final headers = {
+      'x-requested-with': 'XMLHttpRequest',
+    };
+
+    debugPrint('getEpisodeDetails http url: $episodeId');
+    debugPrint('getEpisodeDetails http url: $url');
+
+    //try {
+
+
+      /// запрашиваем данные
+      final response = await http.get(url, headers: headers).timeout(timeout);
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+
+        /// возвращаем информацио об эпизоде
+        return TskgEpisodeDetails.fromJson(json.decode(response.body));
+
+      }
+    // } catch (exception) {
+    //   /// ^ если прозошла сетевая ошибка
+      
+      
+    //   debugPrint('http error: $url');
+    //   debugPrint('exception: $exception');
+    // }
+
+    return null;
+  }
+
 
   static String getTextByClassName(Document document, String className) {
     final elements = document.getElementsByClassName(className);

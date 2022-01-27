@@ -3,7 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:kgino/ui/pages/player_page/video_progress_bar.dart';
 
 class PlayerControlOverlay extends StatefulWidget {
-  const PlayerControlOverlay({ Key? key }) : super(key: key);
+  final Duration? totalVideoDuration;
+
+  /// обработчик запроса предыдущего видео
+  final Function() onSkipPrevious;
+
+  /// обработчик запроса следующего видео
+  final Function() onSkipNext;
+
+  /// обработчик при перемотке видео
+  final Function(Duration) onSeek;
+
+  const PlayerControlOverlay({
+    Key? key,
+    this.totalVideoDuration,
+    required this.onSkipNext,
+    required this.onSkipPrevious,
+    required this.onSeek,
+  }) : super(key: key);
 
   @override
   _PlayerControlOverlayState createState() => _PlayerControlOverlayState();
@@ -114,10 +131,12 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
                     },
                     child: ProgressBar(
                       progress: Duration(milliseconds: 1000),
-                      buffered: Duration(milliseconds: 2000),
-                      total: Duration(milliseconds: 5000),
+                      total: widget.totalVideoDuration ?? Duration.zero,
                       onSeek: (duration) {
-                        print('User selected a new time: $duration');
+                        debugPrint('User selected a new time: $duration');
+
+                        /// вызываем пользовательский обработчик перемотки видео
+                        widget.onSeek.call(duration);
                       },
                     ),
                   ),
@@ -132,7 +151,9 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
 
                       OutlinedButton(
                         onPressed: () {
-
+                          /// вызываем пользовательский обработчик запроса
+                          /// предыдущего видео
+                          widget.onSkipPrevious.call();
                         },
                         child: const Icon(Icons.skip_previous,
                           semanticLabel: 'Предыдущее видео',
@@ -144,7 +165,9 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
 
                       OutlinedButton(
                         onPressed: () {
-
+                          /// вызываем пользовательский обработчик запроса
+                          /// следующего видео
+                          widget.onSkipNext.call();
                         },
                         child: const Icon(Icons.skip_next,
                           semanticLabel: 'Следующее видео',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_control_overlay.dart';
@@ -22,7 +23,8 @@ class _PlayerPageState extends State<PlayerPage> {
   
   VideoPlayerController? _playerController;
 
-  int initialId = 0;
+  /// информация о проигрываемом видео
+  TskgEpisodeDetails? _currentPlayingEpisode;
 
   /// список идентификаторов эпизодов плейлиста
   final playlistIds = <int>[];
@@ -40,8 +42,6 @@ class _PlayerPageState extends State<PlayerPage> {
   void initState() {
     super.initState();
 
-    debugPrint('======================= widget.showId.isEmpty');
-
     if (widget.showId.isEmpty) {
       /// ^ если не указан id сериала
       
@@ -58,7 +58,6 @@ class _PlayerPageState extends State<PlayerPage> {
         /// очищаем спискок идентификаторов эпизодов
         playlistIds.clear();
 
-          
         for (final season in show.seasons) {
           /// ^ перебираем сезоны
           
@@ -82,33 +81,23 @@ class _PlayerPageState extends State<PlayerPage> {
         } else {
           /// ^ если есть элементы в списоке эпизодов
           
+          /// по умолчанию первое видео - по списку эпизодов
+          int initialEposodeId = playlistIds.first;
+          
           if (widget.initialId > 0 && playlistIds.contains(widget.initialId)) {
-            /// ^ если передали id желаемого эпизода и он есть в списке всех эпизодов
+            /// ^ если передали id желаемого эпизода и он есть в списке
+            /// всех эпизодов
             
-            initialId = widget.initialId;
-          } else {
-            /// ^ если не передали id желаемого эпизода или он не найден в
-            /// общем списке
-
-            /// запускаем первый по списку эпизодов
-            initialId = playlistIds.first;
+            initialEposodeId = widget.initialId;
           }
+
+          /// загружаем видео-файл запрошенного эпизода
+          loadEpisode(initialEposodeId);
         }
 
-        updateLoadingState(false);
       });
     }
 
-    _playerController = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
-    _playerController?.initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized, even
-      // before the play button has been pressed.
-      setState(() {});
-    });
-
-    // _playerController.addListener(() {
-      
-    // });
   }
 
   @override
@@ -140,6 +129,20 @@ class _PlayerPageState extends State<PlayerPage> {
             bottom: 0,
             left: 0,
             child: PlayerControlOverlay(
+              totalVideoDuration: _playerController?.value.duration,
+              
+              /// при запросе следующего видео
+              onSkipPrevious: onSkipPrevious,
+
+              /// при запросе предыдущего видео
+              onSkipNext: onSkipNext,
+
+              /// при перемотке видео
+              onSeek: (duration) {
+                /// перематываем видео
+                _playerController?.seekTo(duration);
+              },
+
 
             )
           ),
@@ -159,5 +162,92 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  
+  /// загрузка видео-файла эпизода по id
+  Future<void> loadEpisode(int episodeId) async {
+    /// завершаем работу плеера
+    await _playerController?.dispose();
+    _playerController = null;
+    
+    /// обновляем состояние UI
+    updateLoadingState(true);
+
+    /// получаем данные эпизода
+    final episode = await TskgApi.getEpisodeDetails(episodeId);
+    
+    debugPrint('episode: $episode');
+
+    if (episode != null) {
+      /// ^ если данние по эпизоду получены
+      
+      /// качество видео по умолчанию - SD
+      String videoUrl = episode.video.files.sd.url;
+      
+      if (episode.video.files.hd.url.isNotEmpty) {
+        /// ^ если есть видео в HD качестве
+        
+        /// задаём качество видео HD
+        videoUrl = episode.video.files.hd.url;
+      }
+
+      if (videoUrl.isNotEmpty) {
+        /// ^ если ссылка на видео-файл задана
+      
+        /// загружаем видео
+        _playerController = VideoPlayerController.network(videoUrl);
+
+        /// инициализируем плеер
+        await _playerController?.initialize();
+
+        /// обновляем информацию о проигрываемом видео
+        _currentPlayingEpisode = episode;
+
+        /// обновляем состояние UI
+        updateLoadingState(false);
+        
+
+        // _playerController.addListener(() {
+        // });
+      }
+    }
+  }
+
+
+  /// обработчик при запросе следующего видео
+  Future<void> onSkipPrevious() async {
+    
+  }
+
+
+  /// обработчик при запросе следующего видео
+  Future<void> onSkipNext() async {
+    if (_playerController != null) {
+      /// ^ если в плеере загружено видео
+    
+      final currentVideo = _playerController!.value;
+
+      /// получаем текущую позицию просмотра
+      //final position = currentVideo.position;
+
+      /// получаем общую продолжительность текущего видео
+      // final totalDuration = currentVideo.duration;
+
+      /// вычисляем сколько было просмотрено в процентах
+      // final positionInPercent = position.inSeconds * 100 / totalDuration.inSeconds;
+
+      debugPrint('currentVideo.position: ${currentVideo.position}');
+
+      if (currentVideo.position.inSeconds > 30) {
+        /// ^ если было просмотрено больше 30 секунд видео
+
+        /// перематываем текущее видео в начало
+        _playerController?.seekTo(Duration.zero);
+
+        /// останавливаем логику
+        return;
+      }
+    }
+
+
+    
+  }
 }

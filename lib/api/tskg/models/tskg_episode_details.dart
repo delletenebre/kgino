@@ -61,6 +61,7 @@ class TskgEpisodeOverlay {
 
 @JsonSerializable()
 class TskgEpisodeVideo {
+  @JsonKey(name: 'HD')
   final bool hd;
   final TskgEpisodeVideoFiles files;
   final String mimetype;
@@ -82,8 +83,10 @@ class TskgEpisodeVideo {
 
 @JsonSerializable()
 class TskgEpisodeVideoFiles {
-  final TskgEpisodeVideoFile? hd;
-  final TskgEpisodeVideoFile? sd;
+  @JsonKey(name: 'HD')
+  final TskgEpisodeVideoFile hd;
+  @JsonKey(name: 'SD')
+  final TskgEpisodeVideoFile sd;
 
   TskgEpisodeVideoFiles(this.hd, this.sd);
 
@@ -96,8 +99,13 @@ class TskgEpisodeVideoFiles {
 
 @JsonSerializable()
 class TskgEpisodeVideoFile {
+  @JsonKey(defaultValue: 0)
   final int id;
+
+  @JsonKey(defaultValue: '')
   final String server;
+
+  @JsonKey(defaultValue: '')
   final String url;
 
   TskgEpisodeVideoFile(this.id, this.server, this.url);
