@@ -280,10 +280,12 @@ class TskgApi {
             /// парсим качество записи SD|HD
             final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
             
-            /// парсим название и url эпизода
+            /// парсим название и id эпизода
             final episodeTitleElement = episodeRow.getElementsByClassName('text-primary').first;
             final episodeTitle = episodeTitleElement.text;
-            final episodeUrl = episodeTitleElement.attributes['href'] ?? '';
+            // final episodeUrl = episodeTitleElement.attributes['href'] ?? '';
+            final episodeIdAttribute = episodeTitleElement.attributes['id'] ?? '-';
+            final episodeId = int.tryParse(episodeIdAttribute.split('-').last) ?? 0;
             
             /// парсим продолжительность эпизода
             final episodeDurationString = episodeTitleElement.nextElementSibling?.text.trim() ?? '';
@@ -298,7 +300,7 @@ class TskgApi {
             final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim().replaceAll('⠀', '');
 
             return TskgEpisode(
-              id: Uri.encodeComponent(episodeUrl),
+              id: episodeId,
               title: episodeTitle,
               description: episodeDescription,
               quality: episodeQuality,

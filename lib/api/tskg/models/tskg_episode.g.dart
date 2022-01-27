@@ -7,7 +7,7 @@ part of 'tskg_episode.dart';
 // **************************************************************************
 
 TskgEpisode _$TskgEpisodeFromJson(Map<String, dynamic> json) => TskgEpisode(
-      id: json['id'] as String? ?? '',
+      id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       quality: json['quality'] as String? ?? '',

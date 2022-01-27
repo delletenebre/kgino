@@ -6,12 +6,12 @@ import 'package:video_player/video_player.dart';
 
 class PlayerPage extends StatefulWidget {
   final String showId;
-  final String initialId;
+  final int initialId;
 
   const PlayerPage({
     Key? key,
     required this.showId,
-    this.initialId = '',
+    this.initialId = 0,
   }) : super(key: key);
 
   @override
@@ -22,10 +22,10 @@ class _PlayerPageState extends State<PlayerPage> {
   
   VideoPlayerController? _playerController;
 
-  String initialId = '';
+  int initialId = 0;
 
   /// список идентификаторов эпизодов плейлиста
-  final playlistIds = <String>[];
+  final playlistIds = <int>[];
 
   /// индикатор загрузки данных
   bool _loading = true;
@@ -82,7 +82,7 @@ class _PlayerPageState extends State<PlayerPage> {
         } else {
           /// ^ если есть элементы в списоке эпизодов
           
-          if (widget.initialId.isNotEmpty && playlistIds.contains(widget.initialId)) {
+          if (widget.initialId > 0 && playlistIds.contains(widget.initialId)) {
             /// ^ если передали id желаемого эпизода и он есть в списке всех эпизодов
             
             initialId = widget.initialId;

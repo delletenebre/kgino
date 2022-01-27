@@ -53,7 +53,7 @@ class AppRoutes {
 
         return PlayerPage(
           showId: showId,
-          initialId: episodeId,
+          initialId: int.tryParse(episodeId) ?? 0,
         );
       },
     ),
