@@ -3,7 +3,6 @@ import 'package:kgino/ui/pages/player_page/player_progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayerControlOverlay extends StatefulWidget {
-  final Duration? totalVideoDuration;
 
   /// обработчик запроса предыдущего видео
   final Function() onSkipPrevious;
@@ -18,7 +17,6 @@ class PlayerControlOverlay extends StatefulWidget {
 
   const PlayerControlOverlay({
     Key? key,
-    this.totalVideoDuration,
     required this.onSkipNext,
     required this.onSkipPrevious,
     required this.onSeek,
@@ -163,7 +161,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
                       ),
 
                     ],
-                  )
+                  ),
 
                   
                 ],
@@ -182,8 +180,14 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
     setState(() {
       isAnimating = !isAnimating;
       isAnimating
-          ? _playPauseAnimationController.forward()
-          : _playPauseAnimationController.reverse();
+        ? _playPauseAnimationController.forward()
+        : _playPauseAnimationController.reverse();
+      
+      if (isAnimating) {
+        widget.playerController?.play();
+      } else {
+        widget.playerController?.pause();
+      }
     });
   }
 }

@@ -132,8 +132,6 @@ class _PlayerPageState extends State<PlayerPage> {
             child: PlayerControlOverlay(
 
               playerController: _playerController,
-
-              totalVideoDuration: _playerController?.value.duration,
               
               /// при запросе следующего видео
               onSkipPrevious: onSkipPrevious,
@@ -147,8 +145,7 @@ class _PlayerPageState extends State<PlayerPage> {
                 _playerController?.seekTo(duration);
               },
 
-
-            )
+            ),
           ),
 
           AnimatedSwitcher(
@@ -205,6 +202,9 @@ class _PlayerPageState extends State<PlayerPage> {
         /// обновляем информацию о проигрываемом видео
         _currentPlayingEpisode = episode;
 
+        /// запускаем видео
+        _playerController?.play();
+
         /// обновляем состояние UI
         updateLoadingState(false);
 
@@ -217,12 +217,13 @@ class _PlayerPageState extends State<PlayerPage> {
 
   /// обработчик при запросе следующего видео
   Future<void> onSkipPrevious() async {
-    
-  }
+    if (playlistIds.isEmpty) {
+      /// ^ если список эпизодов ещё не загружен
+      
+      /// останавливаем логику
+      return;
+    }
 
-
-  /// обработчик при запросе следующего видео
-  Future<void> onSkipNext() async {
     if (_playerController != null) {
       /// ^ если в плеере загружено видео
     
@@ -250,7 +251,49 @@ class _PlayerPageState extends State<PlayerPage> {
       }
     }
 
+    if (_currentPlayingEpisode != null) {
+      /// ^ если видео из плейлиста уже проигрывается
+      
+      int indexInPlaylist = playlistIds.indexOf(_currentPlayingEpisode!.id);
 
-    
+      if (indexInPlaylist > 0) {
+        /// ^ если в плейлисте есть предыдущее видео
+        
+        /// загружаем предыдущий эпизод
+        loadEpisode(playlistIds[indexInPlaylist - 1]);
+
+      } else {
+        /// ^ если в плейлисте это видео первое
+
+        /// перематываем текущее видео в начало
+        _playerController?.seekTo(Duration.zero);
+
+      }
+    }
+  }
+
+
+  /// обработчик при запросе следующего видео
+  Future<void> onSkipNext() async {
+    if (playlistIds.isEmpty) {
+      /// ^ если список эпизодов ещё не загружен
+      
+      /// останавливаем логику
+      return;
+    }
+
+    if (_currentPlayingEpisode != null) {
+      /// ^ если видео из плейлиста уже проигрывается
+      
+      int indexInPlaylist = playlistIds.indexOf(_currentPlayingEpisode!.id);
+
+      if (playlistIds.length >= indexInPlaylist + 1) {
+        /// ^ если в плейлисте есть следующее видео
+        
+        /// загружаем следующий эпизод
+        loadEpisode(playlistIds[indexInPlaylist + 1]);
+        
+      }
+    }
   }
 }
