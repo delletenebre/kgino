@@ -218,9 +218,9 @@ class _PlayerPageState extends State<PlayerPage> {
   /// обработчик при запросе следующего видео
   Future<void> onSkipPrevious() async {
     if (playlistIds.isEmpty) {
-      /// ^ если список эпизодов ещё не загружен
+      /// ^ если список эпизодов ещё не загружен...
       
-      /// останавливаем логику
+      /// ...останавливаем логику
       return;
     }
 
@@ -238,8 +238,6 @@ class _PlayerPageState extends State<PlayerPage> {
       /// вычисляем сколько было просмотрено в процентах
       // final positionInPercent = position.inSeconds * 100 / totalDuration.inSeconds;
 
-      debugPrint('currentVideo.position: ${currentVideo.position}');
-
       if (currentVideo.position.inSeconds > 30) {
         /// ^ если было просмотрено больше 30 секунд видео
 
@@ -254,18 +252,19 @@ class _PlayerPageState extends State<PlayerPage> {
     if (_currentPlayingEpisode != null) {
       /// ^ если видео из плейлиста уже проигрывается
       
+      /// получаем индекс текущего видео в плейлисте
       int indexInPlaylist = playlistIds.indexOf(_currentPlayingEpisode!.id);
 
       if (indexInPlaylist > 0) {
-        /// ^ если в плейлисте есть предыдущее видео
+        /// ^ если в плейлисте есть предыдущее видео...
         
-        /// загружаем предыдущий эпизод
+        /// ...загружаем предыдущий эпизод
         loadEpisode(playlistIds[indexInPlaylist - 1]);
 
       } else {
-        /// ^ если в плейлисте это видео первое
+        /// ^ если в плейлисте это видео первое...
 
-        /// перематываем текущее видео в начало
+        /// ...перематываем текущее видео в начало
         _playerController?.seekTo(Duration.zero);
 
       }
@@ -276,21 +275,22 @@ class _PlayerPageState extends State<PlayerPage> {
   /// обработчик при запросе следующего видео
   Future<void> onSkipNext() async {
     if (playlistIds.isEmpty) {
-      /// ^ если список эпизодов ещё не загружен
+      /// ^ если список эпизодов ещё не загружен...
       
-      /// останавливаем логику
+      /// ...останавливаем логику
       return;
     }
 
     if (_currentPlayingEpisode != null) {
       /// ^ если видео из плейлиста уже проигрывается
       
+      /// получаем индекс текущего видео в плейлисте
       int indexInPlaylist = playlistIds.indexOf(_currentPlayingEpisode!.id);
 
       if (playlistIds.length >= indexInPlaylist + 1) {
-        /// ^ если в плейлисте есть следующее видео
+        /// ^ если в плейлисте есть следующее видео...
         
-        /// загружаем следующий эпизод
+        /// ...загружаем следующий эпизод
         loadEpisode(playlistIds[indexInPlaylist + 1]);
         
       }
