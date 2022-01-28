@@ -10,6 +10,7 @@ enum PlayerPageState {
   idle,
   loading,
   error,
+  networkError,
 }
 
 class PlayerPage extends StatefulWidget {
@@ -44,79 +45,39 @@ class _PlayerPageState extends State<PlayerPage> {
   bool get isLoading => _pageState == PlayerPageState.loading;
 
   void updatePageState(PlayerPageState state) {
-    setState(() {
-      _pageState = state;
-    });
+    if (mounted) {
+      /// ^ если виджет всё ещё активен
+
+      /// обновляем его состояние
+      setState(() {
+        _pageState = state;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.showId.isEmpty) {
-      /// ^ если не указан id сериала
-      
-      /// возвращаемся назад
-      // TODO возможно лучше показать ошибку
-      Get.back();
-    
-    } else {
-      /// ^ если id сериала был передан
-      
-      /// обновляем UI
-      updatePageState(PlayerPageState.loading);
-
-      /// получаем данные сериала (сезоны и эпизоды)
-      TskgApi.getShow(widget.showId).then((show) {
-        /// очищаем спискок идентификаторов эпизодов
-        playlistIds.clear();
-
-        for (final season in show.seasons) {
-          /// ^ перебираем сезоны
-          
-          for (final episode in season.episodes) {
-            /// ^ перебираем эпизоды
-            
-            /// добавляем id эпизода в список
-            playlistIds.add(episode.id);
-          }
-        }
-
-        debugPrint('playlistIds: $playlistIds');
-
-        if (playlistIds.isEmpty) {
-          /// ^ если список эпизодов пуст
-        
-          /// возвращаемся назад
-          // TODO возможно лучше показать ошибку
-          Get.back();
-        
-        } else {
-          /// ^ если есть элементы в списоке эпизодов
-          
-          /// по умолчанию первое видео - по списку эпизодов
-          int initialEposodeId = playlistIds.first;
-          
-          if (widget.initialId > 0 && playlistIds.contains(widget.initialId)) {
-            /// ^ если передали id желаемого эпизода и он есть в списке
-            /// всех эпизодов
-            
-            initialEposodeId = widget.initialId;
-          }
-
-          /// загружаем видео-файл запрошенного эпизода
-          loadEpisode(initialEposodeId);
-        }
-
-      });
-    }
+    initializeVideo();
 
   }
 
   @override
   void dispose() {
     super.dispose();
-    _playerController?.dispose();
+
+    if (_playerController != null) {
+      /// ^ если плеер существует
+      
+      /// сохраняем просмотренно время эпизода
+      saveEpisodeProgress(
+        _currentPlayingEpisode?.id ?? 0,
+        _playerController!.value.position
+      );
+      
+      _playerController?.dispose();
+    }
   }
   
   @override
@@ -189,6 +150,14 @@ class _PlayerPageState extends State<PlayerPage> {
 
       case PlayerPageState.error:
         content = PlayerError(
+          message: 'При загрузке видео произошла ошибка',
+          onRetry: onRetry
+        );
+        break;
+
+      case PlayerPageState.networkError:
+        content = PlayerError(
+          message: 'Нет соединения с сетью',
           onRetry: onRetry
         );
         break;
@@ -212,8 +181,6 @@ class _PlayerPageState extends State<PlayerPage> {
     /// получаем данные эпизода
     final episode = await TskgApi.getEpisodeDetails(episodeId);
     
-    debugPrint('episode: $episode');
-
     if (episode != null) {
       /// ^ если данние по эпизоду получены
       
@@ -258,6 +225,13 @@ class _PlayerPageState extends State<PlayerPage> {
         // _playerController.addListener(() {
         // });
       }
+
+    } else {
+      /// ^ если не смогли загрузить эпизод
+      
+      /// показываем ошибку
+      updatePageState(PlayerPageState.networkError);
+
     }
   }
 
@@ -352,7 +326,80 @@ class _PlayerPageState extends State<PlayerPage> {
       
       /// пытаемся запусть видео ещё раз
       loadEpisode(_currentPlayingEpisode!.id);
+    } else {
+      /// ^ если проблема в формировании плейлиста/эпизода
+
+      /// инициализируем виджет
+      initializeVideo();
     }
 
+  }
+
+
+  /// инициализация видео
+  Future<void> initializeVideo() async {
+    if (widget.showId.isEmpty) {
+      /// ^ если не указан id сериала
+      
+      /// возвращаемся назад
+      // TODO возможно лучше показать ошибку
+      Get.back();
+    
+    } else {
+      /// ^ если id сериала был передан
+      
+      /// обновляем UI
+      updatePageState(PlayerPageState.loading);
+
+      /// получаем данные сериала (сезоны и эпизоды)
+      final show = await TskgApi.getShow(widget.showId);
+      
+      /// очищаем спискок идентификаторов эпизодов
+      playlistIds.clear();
+
+      for (final season in show.seasons) {
+        /// ^ перебираем сезоны
+        
+        for (final episode in season.episodes) {
+          /// ^ перебираем эпизоды
+          
+          /// добавляем id эпизода в список
+          playlistIds.add(episode.id);
+        }
+      }
+
+      if (playlistIds.isEmpty) {
+        /// ^ если список эпизодов пуст
+      
+        /// возвращаемся назад
+        // TODO возможно лучше показать ошибку
+        Get.back();
+      
+      } else {
+        /// ^ если есть элементы в списоке эпизодов
+        
+        /// по умолчанию первое видео - по списку эпизодов
+        int initialEposodeId = playlistIds.first;
+        
+        if (widget.initialId > 0 && playlistIds.contains(widget.initialId)) {
+          /// ^ если передали id желаемого эпизода и он есть в списке
+          /// всех эпизодов
+          
+          initialEposodeId = widget.initialId;
+        }
+
+        /// загружаем видео-файл запрошенного эпизода
+        loadEpisode(initialEposodeId);
+      }
+
+    }
+  }
+
+
+
+  Future<void> saveEpisodeProgress(int episodeId, Duration position) async {
+    if (episodeId > 0) {
+      
+    }
   }
 }

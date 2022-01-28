@@ -1,6 +1,7 @@
 export 'package:get/get.dart';
 
-// export 'account_controller.dart';
+export 'favorite_show_controller.dart';
+export 'viewed_episode_controller.dart';
 // export 'cache_controller.dart';
 // export 'connectivity_controller.dart';
 // export 'favorites_controller.dart';

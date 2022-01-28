@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class PlayerError extends StatelessWidget {
+  final String message;
   final Function()? onRetry;
 
   const PlayerError({
     Key? key,
+    required this.message,
     this.onRetry,
   }) : super(key: key);
 
@@ -17,8 +19,8 @@ class PlayerError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('При загрузке видео произошла ошибка',
-            style: TextStyle(
+          Text(message,
+            style: const TextStyle(
               fontSize: 32.0,
               fontWeight: FontWeight.bold,
             ),
