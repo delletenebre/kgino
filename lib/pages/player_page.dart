@@ -3,7 +3,14 @@ import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_control_overlay.dart';
+import 'package:kgino/ui/pages/player_page/player_error.dart';
 import 'package:video_player/video_player.dart';
+
+enum PlayerPageState {
+  idle,
+  loading,
+  error,
+}
 
 class PlayerPage extends StatefulWidget {
   final String showId;
@@ -21,6 +28,10 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerPageState extends State<PlayerPage> {
   
+  /// состояние страницы
+  PlayerPageState _pageState = PlayerPageState.idle;
+  
+  /// контроллер видео-плеера
   VideoPlayerController? _playerController;
 
   /// информация о проигрываемом видео
@@ -30,11 +41,11 @@ class _PlayerPageState extends State<PlayerPage> {
   final playlistIds = <int>[];
 
   /// индикатор загрузки данных
-  bool _loading = true;
+  bool get isLoading => _pageState == PlayerPageState.loading;
 
-  void updateLoadingState(bool state) {
+  void updatePageState(PlayerPageState state) {
     setState(() {
-      _loading = state;
+      _pageState = state;
     });
   }
 
@@ -52,7 +63,9 @@ class _PlayerPageState extends State<PlayerPage> {
     } else {
       /// ^ если id сериала был передан
       
-      updateLoadingState(true);
+      /// обновляем UI
+      updatePageState(PlayerPageState.loading);
+
       /// получаем данные сериала (сезоны и эпизоды)
       TskgApi.getShow(widget.showId).then((show) {
         /// очищаем спискок идентификаторов эпизодов
@@ -110,56 +123,80 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Center(
-            child: _playerController?.value.isInitialized ?? false
-                ? AspectRatio(
-                    aspectRatio: _playerController!.value.aspectRatio,
-                    child: VideoPlayer(_playerController!),
-                  )
-                : Container(),
-          ),
+    late final Widget content;
 
-          /// элементы управления плеером
-          Positioned(
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            child: PlayerControlOverlay(
-
-              playerController: _playerController,
-              
-              /// при запросе следующего видео
-              onSkipPrevious: onSkipPrevious,
-
-              /// при запросе предыдущего видео
-              onSkipNext: onSkipNext,
-
-              /// при перемотке видео
-              onSeek: (duration) {
-                /// перематываем видео
-                _playerController?.seekTo(duration);
-              },
-
+    switch (_pageState) {
+      
+      case PlayerPageState.idle:
+        content = Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Center(
+              child: _playerController?.value.isInitialized ?? false
+                  ? AspectRatio(
+                      aspectRatio: _playerController!.value.aspectRatio,
+                      child: VideoPlayer(_playerController!),
+                    )
+                  : Container(),
             ),
-          ),
 
-          AnimatedSwitcher(
+            /// элементы управления плеером
+            Positioned(
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              child: PlayerControlOverlay(
+
+                playerController: _playerController,
+                
+                /// при запросе следующего видео
+                onSkipPrevious: onSkipPrevious,
+
+                /// при запросе предыдущего видео
+                onSkipNext: onSkipNext,
+
+                /// при перемотке видео
+                onSeek: (duration) {
+                  /// перематываем видео
+                  _playerController?.seekTo(duration);
+                },
+
+              ),
+            ),
+
+            
+          ]
+        );
+        break;
+
+      /// если видео загружается
+      case PlayerPageState.loading:
+        content = Center(
+          child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
-            child: _loading
-              ? Container(
+            child: isLoading
+              ? SizedBox(
+                  key: UniqueKey(),
                   width: 96.0,
                   height: 96.0,
                   child: const CircularProgressIndicator()
                 )
               : const SizedBox(),
           ),
-        ]
-      ),
+        );
+        break;
+
+      case PlayerPageState.error:
+        content = PlayerError(
+          onRetry: onRetry
+        );
+        break;
+    }
+
+
+    return Scaffold(
+      body: content,
     );
   }
 
@@ -170,7 +207,7 @@ class _PlayerPageState extends State<PlayerPage> {
     _playerController = null;
     
     /// обновляем состояние UI
-    updateLoadingState(true);
+    updatePageState(PlayerPageState.loading);
 
     /// получаем данные эпизода
     final episode = await TskgApi.getEpisodeDetails(episodeId);
@@ -196,17 +233,27 @@ class _PlayerPageState extends State<PlayerPage> {
         /// загружаем видео
         _playerController = VideoPlayerController.network(videoUrl);
 
-        /// инициализируем плеер
-        await _playerController?.initialize();
-
         /// обновляем информацию о проигрываемом видео
         _currentPlayingEpisode = episode;
 
-        /// запускаем видео
-        _playerController?.play();
+        try {
+          /// инициализируем плеер
+          await _playerController?.initialize();
 
-        /// обновляем состояние UI
-        updateLoadingState(false);
+          /// запускаем видео
+          _playerController?.play();
+
+          /// обновляем состояние UI
+          updatePageState(PlayerPageState.idle);
+
+        } catch (exception) {
+          /// ^ если при загрузке видео произошла ошибка
+
+          /// обновляем состояние UI
+          updatePageState(PlayerPageState.error);
+
+        }
+        
 
         // _playerController.addListener(() {
         // });
@@ -295,5 +342,17 @@ class _PlayerPageState extends State<PlayerPage> {
         
       }
     }
+  }
+
+
+  /// обработчик при перезагрузке текущего эпизода
+  Future<void> onRetry() async {
+    if (_currentPlayingEpisode != null) {
+      /// ^ если текущий эпизод загружен
+      
+      /// пытаемся запусть видео ещё раз
+      loadEpisode(_currentPlayingEpisode!.id);
+    }
+
   }
 }

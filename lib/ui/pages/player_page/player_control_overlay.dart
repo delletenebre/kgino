@@ -58,6 +58,24 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
         children: [
           Row(
             children: [
+              // Positioned(
+              //   top: 16.0,
+              //   left: 16.0,
+              //   right: 16.0,
+              //   child: AnimatedOpacity(
+              //     // If the widget is visible, animate to 0.0 (invisible).
+              //     // If the widget is hidden, animate to 1.0 (fully visible).
+              //     opacity: 1.0,
+              //     duration: const Duration(milliseconds: 500),
+              //     // The green box must be a child of the AnimatedOpacity widget.
+              //     child: Container(
+              //       width: 200.0,
+              //       height: 200.0,
+              //       color: Colors.green,
+              //     ),
+              //   ),
+              // )
+              
               Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
