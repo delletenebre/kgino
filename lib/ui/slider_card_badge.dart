@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 
 class SliderCardBadge extends StatelessWidget {
-  final IconData icon;
+  final Widget child;
   final Color? color;
   final double size;
 
 
   const SliderCardBadge({
     Key? key,
-    required this.icon,
+    required this.child,
     this.color,
     this.size = 14.0,
   }) : super(key: key);
@@ -21,55 +21,78 @@ class SliderCardBadge extends StatelessWidget {
     Color backgroundColor = color ?? theme.cardColor;
 
     return Container(
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(32.0)
       ),
       child: AnimatedSize(
         duration: const Duration(milliseconds: 250),
-        child: Icon(icon,
-          size: size,
-        ),
+        child: child,
       ) ,
     );
   }
 }
 
 extension SliderCardBadgeExtensions on TskgBagdeType {
-  IconData icon() {
+  Widget content({required double size}) {
     switch (this) {
       
       case TskgBagdeType.newest:
-        return Icons.new_releases;
+        return Text('новое',
+          style: TextStyle(
+            fontSize: size,
+          ),
+        );
 
       case TskgBagdeType.top:
-        return Icons.star;
+        return Text('топ',
+          style: TextStyle(
+            fontSize: size,
+          ),
+        );
 
       case TskgBagdeType.updated:
-        return Icons.cached;
+        return Icon(Icons.cached,
+          size: size,
+        );
 
       case TskgBagdeType.temporarily:
-        return Icons.access_time;
+        return Icon(Icons.access_time,
+          size: size,
+        );
 
       case TskgBagdeType.finale:
-        return Icons.check_circle_outline;
+        return Text('финал',
+          style: TextStyle(
+            fontSize: size,
+          ),
+        );
 
       case TskgBagdeType.compilation:
-        // TODO: Handle this case.
-        break;
+        return Text('подборка',
+          style: TextStyle(
+            fontSize: size,
+          ),
+        );
+
       case TskgBagdeType.important:
-        // TODO: Handle this case.
-        break;
+        return Text('важно',
+          style: TextStyle(
+            fontSize: size,
+          ),
+        );
+
       case TskgBagdeType.newyear:
-        return Icons.ac_unit;
+        return Icon(Icons.ac_unit,
+          size: size,
+        );
 
       case TskgBagdeType.unknown:
-        // TODO: Handle this case.
         break;
     }
 
-    return Icons.ac_unit;
+    return const Text('');
   }
 
   Color color() {

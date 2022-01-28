@@ -164,9 +164,9 @@ class ShowInfo extends StatelessWidget {
             
             content = Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 /// невидимый элемент для возврата фокуса в начало страницы
-                const Focus(
+                Focus(
                   child: SizedBox(width: double.maxFinite),
                 ),
 

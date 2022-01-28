@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
                 );
 
                 /// за какое количество дней нужно отобразить элементы
-                final numberOfDays = 3;
+                const numberOfDays = 2;
 
                 final maxIndex = (itemsGroupedByDate.length < numberOfDays)
                   ? itemsGroupedByDate.length

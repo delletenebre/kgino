@@ -33,7 +33,9 @@ class _SliderCardState extends State<SliderCard> {
 
     final _badges = widget.badges.map((badge) {
       return SliderCardBadge(
-        icon: badge.icon(),
+        child: badge.content(
+          size: _hasFocus ? 12.0 : 10.0,
+        ),
         color: badge.color(),
         size: _hasFocus ? 12.0 : 8.0,
       );
@@ -91,11 +93,11 @@ class _SliderCardState extends State<SliderCard> {
                     ? AppTheme.sliderCardSize - 16.0
                     : AppTheme.sliderCardSize * 0.7 - 16.0,
 
-                  decoration: BoxDecoration(
-                    //color: Colors.red,
-                    //borderRadius: BorderRadius.circular(16.0),
+                  // decoration: BoxDecoration(
+                  //   //color: Colors.red,
+                  //   //borderRadius: BorderRadius.circular(16.0),
                     
-                  ),
+                  // ),
                   
                   child: Stack(
                     clipBehavior: Clip.none,

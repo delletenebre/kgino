@@ -11,7 +11,10 @@ class TskgEpisodeDetails {
   final String fullname;
   final int id;
   final String link;
+
+  @JsonKey(fromJson: convertOverlayToJson)
   final TskgEpisodeOverlay overlay;
+
   final String name;
   final bool subtitles;
   final String title;
@@ -39,6 +42,14 @@ class TskgEpisodeDetails {
     _$TskgEpisodeDetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$TskgEpisodeDetailsToJson(this);
+
+  static TskgEpisodeOverlay convertOverlayToJson(value) {
+    if (value is bool) {
+      return TskgEpisodeOverlay(0, '', '');
+    }
+    
+    return TskgEpisodeOverlay.fromJson(value as Map<String, dynamic>);
+  }
 }
 
 
@@ -63,8 +74,10 @@ class TskgEpisodeOverlay {
 
 @JsonSerializable()
 class TskgEpisodeVideo {
+
   @JsonKey(name: 'HD')
   final bool hd;
+
   final TskgEpisodeVideoFiles files;
   final String mimetype;
   final String videotype;
@@ -85,8 +98,10 @@ class TskgEpisodeVideo {
 
 @JsonSerializable()
 class TskgEpisodeVideoFiles {
+
   @JsonKey(name: 'HD')
   final TskgEpisodeVideoFile hd;
+
   @JsonKey(name: 'SD')
   final TskgEpisodeVideoFile sd;
 
@@ -101,6 +116,7 @@ class TskgEpisodeVideoFiles {
 
 @JsonSerializable()
 class TskgEpisodeVideoFile {
+
   @JsonKey(defaultValue: 0)
   final int id;
 

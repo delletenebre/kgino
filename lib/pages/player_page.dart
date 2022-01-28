@@ -82,7 +82,7 @@ class _PlayerPageState extends State<PlayerPage> {
   
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     late final Widget content;
 
@@ -308,7 +308,7 @@ class _PlayerPageState extends State<PlayerPage> {
       /// получаем индекс текущего видео в плейлисте
       int indexInPlaylist = playlistIds.indexOf(_currentPlayingEpisode!.id);
 
-      if (playlistIds.length >= indexInPlaylist + 1) {
+      if (playlistIds.length > indexInPlaylist + 1) {
         /// ^ если в плейлисте есть следующее видео...
         
         /// ...загружаем следующий эпизод
@@ -396,10 +396,10 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
 
-
+  /// сохраняем информацию о времени просмотра эпизода
   Future<void> saveEpisodeProgress(int episodeId, Duration position) async {
     if (episodeId > 0) {
-      
+
     }
   }
 }

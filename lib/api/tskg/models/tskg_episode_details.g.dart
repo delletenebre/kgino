@@ -14,8 +14,7 @@ TskgEpisodeDetails _$TskgEpisodeDetailsFromJson(Map<String, dynamic> json) =>
       fullname: json['fullname'] as String? ?? '',
       id: json['id'] as int? ?? 0,
       link: json['link'] as String? ?? '',
-      overlay:
-          TskgEpisodeOverlay.fromJson(json['overlay'] as Map<String, dynamic>),
+      overlay: TskgEpisodeDetails.convertOverlayToJson(json['overlay']),
       name: json['name'] as String? ?? '',
       subtitles: json['subtitles'] as bool? ?? false,
       title: json['title'] as String? ?? '',
