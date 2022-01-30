@@ -11,8 +11,7 @@ TskgEpisode _$TskgEpisodeFromJson(Map<String, dynamic> json) => TskgEpisode(
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       quality: json['quality'] as String? ?? '',
-      duration:
-          Duration(microseconds: json['duration'] as int) ?? Duration.zero,
+      duration: Duration(microseconds: json['duration'] as int),
     );
 
 Map<String, dynamic> _$TskgEpisodeToJson(TskgEpisode instance) =>
