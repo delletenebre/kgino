@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kgino/ui/buttons/circle_button.dart';
+import 'package:kgino/ui/pages/player_page/player_play_pause_button.dart';
 import 'package:kgino/ui/pages/player_page/player_progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
@@ -14,10 +16,15 @@ class PlayerControlOverlay extends StatefulWidget {
   /// обработчик при перемотке видео
   final Function(Duration) onSeek;
 
+  /// обработчик при нажатии на обрабатываемую плеером клавишу
+  final Function(LogicalKeyboardKey) onShowOverlay;
+
   final VideoPlayerController? playerController;
 
   /// название эпизода
   final Widget title;
+
+  final bool isVisible;
 
   const PlayerControlOverlay({
     Key? key,
@@ -26,6 +33,8 @@ class PlayerControlOverlay extends StatefulWidget {
     required this.onSeek,
     this.playerController,
     required this.title,
+    this.isVisible = false,
+    required this.onShowOverlay,
   }) : super(key: key);
 
   @override
@@ -35,183 +44,194 @@ class PlayerControlOverlay extends StatefulWidget {
 class _PlayerControlOverlayState extends State<PlayerControlOverlay>
   with SingleTickerProviderStateMixin {
 
-  late AnimationController _playPauseAnimationController;
 
   @override
   void initState() {
     super.initState();
 
-    _playPauseAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
+    
   }
 
   @override
   void dispose() {
     super.dispose();
-    _playPauseAnimationController.dispose();
+    
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      color: Colors.black.withOpacity(0.5),
-      child: Stack(
-        children: [
-          /// название эпизода
-          Positioned(
-            top: 48.0,
-            left: 16.0,
-            right: 16.0,
-            child: AnimatedOpacity(
-              // If the widget is visible, animate to 0.0 (invisible).
-              // If the widget is hidden, animate to 1.0 (fully visible).
-              opacity: 1.0,
-              duration: const Duration(milliseconds: 500),
-              child: widget.title,
-            ),
-          ),
+    Widget? content;
 
-          /// управление пауза/запустить/перемотать вперёд/перемотать назад
-          Row(
-            children: [
-              
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-
-                  onDoubleTap: () {
-                    debugPrint('onDoubleTap replay');
-                  },
-                  
-                  child: const SizedBox(
-                    height: double.maxFinite,
-                    child: Icon(Icons.replay_10),
-                  ),
-                ),
+    if (widget.isVisible) {
+      content = Container(
+        color: Colors.black.withOpacity(0.5),
+        child: Stack(
+          children: [
+            /// название эпизода
+            Positioned(
+              top: 48.0,
+              left: 16.0,
+              right: 16.0,
+              child: AnimatedOpacity(
+                // If the widget is visible, animate to 0.0 (invisible).
+                // If the widget is hidden, animate to 1.0 (fully visible).
+                opacity: 1.0,
+                duration: const Duration(milliseconds: 500),
+                child: widget.title,
               ),
+            ),
 
-              Center(
-                child: Material(
-                  color: Colors.transparent,
+            /// управление пауза/запустить/перемотать вперёд/перемотать назад
+            Row(
+              children: [
+                
+                /// перемотать назад на 30 секунд
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
 
-                  borderRadius: BorderRadius.circular(96.0),
-                  elevation: 1,
-                  shadowColor: theme.colorScheme.primary,
-                  
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(96.0),
-                    onTap: () {
-                      changeIcon();
+                    onDoubleTap: () {
+                      debugPrint('onDoubleTap replay');
                     },
-                    child: AnimatedIcon(
-                      size: 100,
-                      color: theme.colorScheme.primary,
-                      icon: AnimatedIcons.pause_play,
-                      progress: _playPauseAnimationController,
+                    
+                    child: const SizedBox(
+                      height: double.maxFinite,
+                      child: Icon(Icons.replay_10),
                     ),
                   ),
                 ),
-              ),
 
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  
-                  onDoubleTap: () {
-                    debugPrint('onDoubleTap forward');
-                  },
-                  
-                  child: const SizedBox(
-                    height: double.maxFinite,
-                    child: Icon(Icons.forward_10),
+                /// остановить/продолжить воспроизведение
+                Center(
+                  child: PlayerPlayPauseButton(
+                      key: UniqueKey(),
+                      isPlaying: widget.playerController?.value.isPlaying ?? false,
+                      onPressed: () {
+                        if (widget.playerController?.value.isPlaying ?? false) {
+                          widget.playerController?.pause();
+                        } else {
+                          widget.playerController?.play();
+                        }
+
+                        setState(() {
+                        });
+                      },
+                    )
+                ),
+
+                /// перемотать вперёд на 30 секунд
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    
+                    onDoubleTap: () {
+                      debugPrint('onDoubleTap forward');
+                    },
+                    
+                    child: const SizedBox(
+                      height: double.maxFinite,
+                      child: Icon(Icons.forward_10),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-
-          /// progress bar, кнопки предыдущего/следующего видео
-          Positioned(
-            bottom: 48.0,
-            left: 16.0,
-            right: 16.0,
-            child: Column(
-                children: [
-                  PlayerProgressBar(
-                    playerController: widget.playerController,
-                    onSeek: (duration) {
-                      widget.onSeek.call(duration);
-                    },
-                  ),
-
-                  const SizedBox(height: 12.0),
-
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: SizedBox(),
-                      ),
-
-                      /// кнопка предыдущего видео
-                      CircleButton(
-                        onPressed: () {
-                          /// вызываем пользовательский обработчик запроса
-                          /// предыдущего видео
-                          widget.onSkipPrevious.call();
-                        },
-                        child: const Icon(Icons.skip_previous,
-                          semanticLabel: 'Предыдущее видео',
-                        ),
-                        
-                      ),
-
-                      const SizedBox(width: 12.0),
-
-                      /// кнопка следующего видео
-                      CircleButton(
-                        onPressed: () {
-                          /// вызываем пользовательский обработчик запроса
-                          /// следующего видео
-                          widget.onSkipNext.call();
-                        },
-                        child: const Icon(Icons.skip_next,
-                          semanticLabel: 'Следующее видео',
-                        ),
-                        
-                      ),
-
-                    ],
-                  ),
-
-                  
-                ],
+              ],
             ),
-          ),
-          
-        ],
-      ),
+
+            /// progress bar, кнопки предыдущего/следующего видео
+            Positioned(
+              bottom: 48.0,
+              left: 16.0,
+              right: 16.0,
+              child: Column(
+                  children: [
+                    PlayerProgressBar(
+                      playerController: widget.playerController,
+                      onSeek: (duration) {
+                        widget.onSeek.call(duration);
+                      },
+                    ),
+
+                    const SizedBox(height: 12.0),
+
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: SizedBox(),
+                        ),
+
+                        /// кнопка предыдущего видео
+                        CircleButton(
+                          onPressed: () {
+                            /// вызываем пользовательский обработчик запроса
+                            /// предыдущего видео
+                            widget.onSkipPrevious.call();
+                          },
+                          child: const Icon(Icons.skip_previous,
+                            semanticLabel: 'Предыдущее видео',
+                          ),
+                          
+                        ),
+
+                        const SizedBox(width: 12.0),
+
+                        /// кнопка следующего видео
+                        CircleButton(
+                          onPressed: () {
+                            /// вызываем пользовательский обработчик запроса
+                            /// следующего видео
+                            widget.onSkipNext.call();
+                          },
+                          child: const Icon(Icons.skip_next,
+                            semanticLabel: 'Следующее видео',
+                          ),
+                          
+                        ),
+
+                      ],
+                    ),
+
+                    
+                  ],
+              ),
+            ),
+            
+          ],
+        ),
+      );
+    }
+
+
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      
+      onKey: (event) {
+
+        /// список клавиш, на которые следует реагировать
+        final availableKeys = [
+          LogicalKeyboardKey.arrowLeft,
+          LogicalKeyboardKey.arrowRight,
+          LogicalKeyboardKey.arrowUp,
+          LogicalKeyboardKey.arrowDown,
+          LogicalKeyboardKey.enter,
+          LogicalKeyboardKey.numpadEnter,
+        ];
+        
+        if (availableKeys.contains(event.logicalKey)) {
+          widget.onShowOverlay(event.logicalKey);
+        }
+      },
+      child: GestureDetector(
+        excludeFromSemantics: true,
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          widget.onShowOverlay(LogicalKeyboardKey.enter);
+        },
+        child: content
+      )
     );
   }
-
-  bool isAnimating = false;
-  void changeIcon() {
-    debugPrint('changeIcon');
-    //rebuilds UI with changing icon.
-    setState(() {
-      isAnimating = !isAnimating;
-      isAnimating
-        ? _playPauseAnimationController.forward()
-        : _playPauseAnimationController.reverse();
-      
-      if (isAnimating) {
-        widget.playerController?.play();
-      } else {
-        widget.playerController?.pause();
-      }
-    });
-  }
+  
 }

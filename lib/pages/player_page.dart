@@ -1,3 +1,5 @@
+import 'package:async/async.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
@@ -45,6 +47,9 @@ class _PlayerPageState extends State<PlayerPage> {
   /// индикатор загрузки данных
   bool get isLoading => _pageState == PlayerPageState.loading;
 
+  bool isControlOverlayVisible = false;
+  late final RestartableTimer showControlsOverlayTimer;
+
   void updatePageState(PlayerPageState state) {
     if (mounted) {
       /// ^ если виджет всё ещё активен
@@ -60,6 +65,19 @@ class _PlayerPageState extends State<PlayerPage> {
   void initState() {
     super.initState();
 
+    /// инициализируем таймер скрытия панели управления плеером
+    showControlsOverlayTimer = RestartableTimer(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          isControlOverlayVisible = false;
+        });
+      }
+    });
+    
+    /// останавливаем таймер скрытия панели управления плеером
+    showControlsOverlayTimer.cancel();
+
+    /// инициализируем плеер и первое видео
     initializeVideo();
 
   }
@@ -67,6 +85,10 @@ class _PlayerPageState extends State<PlayerPage> {
   @override
   void dispose() {
     super.dispose();
+
+    /// прерываем таймер показа панели управления плеером
+    showControlsOverlayTimer.cancel();
+
 
     if (_playerController != null) {
       /// ^ если плеер существует
@@ -101,7 +123,7 @@ class _PlayerPageState extends State<PlayerPage> {
                       aspectRatio: _playerController!.value.aspectRatio,
                       child: VideoPlayer(_playerController!),
                     )
-                  : Container(),
+                  : const SizedBox(),
             ),
 
             /// элементы управления плеером
@@ -111,6 +133,7 @@ class _PlayerPageState extends State<PlayerPage> {
               bottom: 0,
               left: 0,
               child: PlayerControlOverlay(
+                isVisible: isControlOverlayVisible,
 
                 playerController: _playerController,
 
@@ -145,6 +168,19 @@ class _PlayerPageState extends State<PlayerPage> {
                   /// перематываем видео
                   _playerController?.seekTo(duration);
                 },
+
+                /// при нажатии на клавишу, когда панель управления плеером
+                /// скрыта
+                onShowOverlay: (logicalKey) {
+                  showControlOverlay();
+
+                  if (logicalKey == LogicalKeyboardKey.enter || logicalKey == LogicalKeyboardKey.numpadEnter) {
+                    /// ^ если был нажат enter
+                    
+
+                    ///onPlayPause();
+                  }
+                }
 
               ),
             ),
@@ -359,7 +395,7 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
 
-  /// инициализация видео
+  /// инициализация плеера и первого видео
   Future<void> initializeVideo() async {
     if (widget.showId.isEmpty) {
       /// ^ если не указан id сериала
@@ -424,5 +460,18 @@ class _PlayerPageState extends State<PlayerPage> {
     if (episodeId > 0) {
 
     }
+  }
+
+  /// показываем панель управления плеером
+  showControlOverlay() {
+    if (isControlOverlayVisible == false) {
+      /// показываем панель управления плеером
+      setState(() {
+        isControlOverlayVisible = true;
+      });
+    }
+
+    /// перезапускаем таймер скрытия панели управления плеером
+    showControlsOverlayTimer.reset();
   }
 }
