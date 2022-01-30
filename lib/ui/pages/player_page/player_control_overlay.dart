@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kgino/ui/buttons/circle_button.dart';
 import 'package:kgino/ui/pages/player_page/player_progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
@@ -15,12 +16,16 @@ class PlayerControlOverlay extends StatefulWidget {
 
   final VideoPlayerController? playerController;
 
+  /// название эпизода
+  final Widget title;
+
   const PlayerControlOverlay({
     Key? key,
     required this.onSkipNext,
     required this.onSkipPrevious,
     required this.onSeek,
     this.playerController,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -56,25 +61,23 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
       color: Colors.black.withOpacity(0.5),
       child: Stack(
         children: [
+          /// название эпизода
+          Positioned(
+            top: 48.0,
+            left: 16.0,
+            right: 16.0,
+            child: AnimatedOpacity(
+              // If the widget is visible, animate to 0.0 (invisible).
+              // If the widget is hidden, animate to 1.0 (fully visible).
+              opacity: 1.0,
+              duration: const Duration(milliseconds: 500),
+              child: widget.title,
+            ),
+          ),
+
+          /// управление пауза/запустить/перемотать вперёд/перемотать назад
           Row(
             children: [
-              // Positioned(
-              //   top: 16.0,
-              //   left: 16.0,
-              //   right: 16.0,
-              //   child: AnimatedOpacity(
-              //     // If the widget is visible, animate to 0.0 (invisible).
-              //     // If the widget is hidden, animate to 1.0 (fully visible).
-              //     opacity: 1.0,
-              //     duration: const Duration(milliseconds: 500),
-              //     // The green box must be a child of the AnimatedOpacity widget.
-              //     child: Container(
-              //       width: 200.0,
-              //       height: 200.0,
-              //       color: Colors.green,
-              //     ),
-              //   ),
-              // )
               
               Expanded(
                 child: GestureDetector(
@@ -131,6 +134,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
             ],
           ),
 
+          /// progress bar, кнопки предыдущего/следующего видео
           Positioned(
             bottom: 48.0,
             left: 16.0,
@@ -152,7 +156,8 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
                         child: SizedBox(),
                       ),
 
-                      OutlinedButton(
+                      /// кнопка предыдущего видео
+                      CircleButton(
                         onPressed: () {
                           /// вызываем пользовательский обработчик запроса
                           /// предыдущего видео
@@ -166,7 +171,8 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay>
 
                       const SizedBox(width: 12.0),
 
-                      OutlinedButton(
+                      /// кнопка следующего видео
+                      CircleButton(
                         onPressed: () {
                           /// вызываем пользовательский обработчик запроса
                           /// следующего видео

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
@@ -84,6 +85,8 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
 
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+
     late final Widget content;
 
     switch (_pageState) {
@@ -110,6 +113,26 @@ class _PlayerPageState extends State<PlayerPage> {
               child: PlayerControlOverlay(
 
                 playerController: _playerController,
+
+                title: Column(
+                  children: [
+                    Text(_currentPlayingEpisode?.fullname ?? '',
+                      style: const TextStyle(
+                        fontSize: 24.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    const SizedBox(height: 16.0),
+
+                    Text(_currentPlayingEpisode?.name ?? '',
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
                 
                 /// при запросе следующего видео
                 onSkipPrevious: onSkipPrevious,
