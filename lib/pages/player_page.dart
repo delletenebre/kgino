@@ -172,13 +172,13 @@ class _PlayerPageState extends State<PlayerPage> {
                 /// при нажатии на клавишу, когда панель управления плеером
                 /// скрыта
                 onShowOverlay: (logicalKey) {
+                  
+                  /// показываем панель управления плеером
                   showControlOverlay();
 
                   if (logicalKey == LogicalKeyboardKey.enter || logicalKey == LogicalKeyboardKey.numpadEnter) {
                     /// ^ если был нажат enter
                     
-
-                    ///onPlayPause();
                   }
                 }
 
@@ -216,7 +216,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
       case PlayerPageState.networkError:
         content = PlayerError(
-          message: 'Нет соединения с сетью',
+          message: 'Отсутствует соединение с сетью',
           onRetry: onRetry
         );
         break;
@@ -464,7 +464,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
   /// показываем панель управления плеером
   showControlOverlay() {
-    if (isControlOverlayVisible == false) {
+    if (!isControlOverlayVisible) {
       /// показываем панель управления плеером
       setState(() {
         isControlOverlayVisible = true;

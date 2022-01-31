@@ -244,6 +244,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                 focusNode: playButtonFocusNode,
                 isPlaying: widget.playerController?.value.isPlaying ?? false,
                 onPressed: () {
+                  debugPrint('play pause clicked =================');
                   if (widget.playerController?.value.isPlaying ?? false) {
                     widget.playerController?.pause();
                   } else {
@@ -318,9 +319,39 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
             /// скрыта
             PlayerInvisibleTouchButtons(
               enabled: !widget.isVisible,
+              
+              /// при касании к экрану
               onTap: () {
                 widget.onShowOverlay(LogicalKeyboardKey.enter);
               },
+              
+              /// при запросе перемотки назад
+              onReplay: () async {
+                if (widget.playerController != null) {
+                  
+                  /// получаем текущую позицию просмотра
+                  final position = await widget.playerController!.position;
+                  final positionInSeconds = position?.inSeconds ?? 0;
+
+                  /// перематываем назад
+                  widget.onSeek(Duration(seconds: positionInSeconds - 30));
+                  
+                }
+              },
+
+              /// при запросе перемотки вперёд
+              onForward: () async {
+                if (widget.playerController != null) {
+                  
+                  /// получаем текущую позицию просмотра
+                  final position = await widget.playerController!.position;
+                  final positionInSeconds = position?.inSeconds ?? 0;
+
+                  /// перематываем вперёд
+                  widget.onSeek(Duration(seconds: positionInSeconds + 30));
+                  
+                }
+              }
             ),
 
           ],
