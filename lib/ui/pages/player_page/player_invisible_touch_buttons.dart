@@ -38,6 +38,12 @@ class PlayerInvisibleTouchButtons extends StatelessWidget {
               onReplay?.call();
             },
 
+            child: const Center(
+              child: Icon(Icons.replay_30,
+                size: 48.0,
+              ),
+            ),
+
           ),
         ),
 
@@ -66,6 +72,12 @@ class PlayerInvisibleTouchButtons extends StatelessWidget {
             onDoubleTap: () {
               onForward?.call();
             },
+
+            child: const Center(
+              child: Icon(Icons.forward_30,
+                size: 48.0,
+              ),
+            ),
 
           ),
         ),

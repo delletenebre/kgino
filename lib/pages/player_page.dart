@@ -167,6 +167,21 @@ class _PlayerPageState extends State<PlayerPage> {
                 onSeek: (duration) {
                   /// перематываем видео
                   _playerController?.seekTo(duration);
+
+                  /// обновляем время показа панели управления плеером
+                  updateContolOverlayVisibilityTimer();
+                },
+
+                /// при запросе остановки/продолжения проигрывания видео
+                onPlayPause: () {
+                  if (_playerController?.value.isPlaying ?? false) {
+                    _playerController?.pause();
+                  } else {
+                    _playerController?.play();
+                  }
+
+                  /// обновляем время показа панели управления плеером
+                  updateContolOverlayVisibilityTimer();
                 },
 
                 /// при нажатии на клавишу, когда панель управления плеером
@@ -327,6 +342,7 @@ class _PlayerPageState extends State<PlayerPage> {
         /// останавливаем логику
         return;
       }
+      
     }
 
     if (_currentPlayingEpisode != null) {
@@ -349,6 +365,9 @@ class _PlayerPageState extends State<PlayerPage> {
 
       }
     }
+
+    /// обновляем время показа панели управления плеером
+    updateContolOverlayVisibilityTimer();
   }
 
 
@@ -375,6 +394,9 @@ class _PlayerPageState extends State<PlayerPage> {
         
       }
     }
+
+    /// обновляем время показа панели управления плеером
+    updateContolOverlayVisibilityTimer();
   }
 
 
@@ -471,7 +493,14 @@ class _PlayerPageState extends State<PlayerPage> {
       });
     }
 
-    /// перезапускаем таймер скрытия панели управления плеером
-    showControlsOverlayTimer.reset();
+    updateContolOverlayVisibilityTimer();
+  }
+
+  /// обновление таймера скрытия панели управления плеером
+  void updateContolOverlayVisibilityTimer() {
+    if (isControlOverlayVisible) {
+      /// перезапускаем таймер скрытия панели управления плеером
+      showControlsOverlayTimer.reset();
+    }
   }
 }
