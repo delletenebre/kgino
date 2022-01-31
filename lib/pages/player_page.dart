@@ -117,6 +117,8 @@ class _PlayerPageState extends State<PlayerPage> {
         content = Stack(
           alignment: Alignment.center,
           children: <Widget>[
+
+            /// виджет плеера
             Center(
               child: _playerController?.value.isInitialized ?? false
                   ? AspectRatio(
@@ -126,14 +128,17 @@ class _PlayerPageState extends State<PlayerPage> {
                   : const SizedBox(),
             ),
 
+            /// панель управления плеером
             SafeArea(
               child: PlayerControlOverlay(
                 isVisible: isControlOverlayVisible,
 
                 playerController: _playerController,
 
+                /// виджет названия проигрываемого видео
                 title: Column(
                   children: [
+                    /// название сериала
                     Text(_currentPlayingEpisode?.fullname ?? '',
                       style: const TextStyle(
                         fontSize: 24.0,
@@ -143,6 +148,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
                     const SizedBox(height: 16.0),
 
+                    /// название эпизода
                     Text(_currentPlayingEpisode?.name ?? '',
                       style: const TextStyle(
                         fontSize: 16.0,
@@ -194,16 +200,6 @@ class _PlayerPageState extends State<PlayerPage> {
 
               ),
             ),
-
-            /// элементы управления плеером
-            // Positioned(
-            //   top: 0,
-            //   right: 0,
-            //   bottom: 0,
-            //   left: 0,
-              
-            // ),
-
             
           ]
         );
@@ -279,7 +275,7 @@ class _PlayerPageState extends State<PlayerPage> {
         /// загружаем видео
         _playerController = VideoPlayerController.network(videoUrl);
 
-        /// обновляем информацию о проигрываемом видео
+        /// сохраняем информацию о проигрываемом эпизоде
         _currentPlayingEpisode = episode;
 
         try {
@@ -299,10 +295,7 @@ class _PlayerPageState extends State<PlayerPage> {
           updatePageState(PlayerPageState.error);
 
         }
-        
 
-        // _playerController.addListener(() {
-        // });
       }
 
     } else {
@@ -317,6 +310,10 @@ class _PlayerPageState extends State<PlayerPage> {
 
   /// обработчик при запросе следующего видео
   Future<void> onSkipPrevious() async {
+    
+    /// обновляем время показа панели управления плеером
+    updateContolOverlayVisibilityTimer();
+
     if (playlistIds.isEmpty) {
       /// ^ если список эпизодов ещё не загружен...
       
@@ -370,14 +367,16 @@ class _PlayerPageState extends State<PlayerPage> {
 
       }
     }
-
-    /// обновляем время показа панели управления плеером
-    updateContolOverlayVisibilityTimer();
+    
   }
 
 
   /// обработчик при запросе следующего видео
   Future<void> onSkipNext() async {
+    
+    /// обновляем время показа панели управления плеером
+    updateContolOverlayVisibilityTimer();
+
     if (playlistIds.isEmpty) {
       /// ^ если список эпизодов ещё не загружен...
       
@@ -399,9 +398,7 @@ class _PlayerPageState extends State<PlayerPage> {
         
       }
     }
-
-    /// обновляем время показа панели управления плеером
-    updateContolOverlayVisibilityTimer();
+    
   }
 
 
