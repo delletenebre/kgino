@@ -8,6 +8,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 # flutter pub outdated
+# flutter pub upgrade --major-versions
 # flutter pub run build_runner build --delete-conflicting-outputs
 
 

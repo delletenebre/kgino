@@ -126,12 +126,7 @@ class _PlayerPageState extends State<PlayerPage> {
                   : const SizedBox(),
             ),
 
-            /// элементы управления плеером
-            Positioned(
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
+            SafeArea(
               child: PlayerControlOverlay(
                 isVisible: isControlOverlayVisible,
 
@@ -200,6 +195,15 @@ class _PlayerPageState extends State<PlayerPage> {
               ),
             ),
 
+            /// элементы управления плеером
+            // Positioned(
+            //   top: 0,
+            //   right: 0,
+            //   bottom: 0,
+            //   left: 0,
+              
+            // ),
+
             
           ]
         );
@@ -239,6 +243,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
 
     return Scaffold(
+      backgroundColor: Colors.black,
       body: content,
     );
   }

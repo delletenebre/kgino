@@ -96,7 +96,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
             /// название сериала и эпизода
             AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
-              top: widget.isVisible ? 48.0 : 0.0,
+              top: widget.isVisible ? 16.0 : 0.0,
               left: 16.0,
               right: 16.0,
               child: widget.title,
@@ -121,7 +121,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
 
             AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
-              bottom: widget.isVisible ? 48.0 : 0.0,
+              bottom: widget.isVisible ? 16.0 : 0.0,
               left: 16.0,
               right: 16.0,
               child: Column(
@@ -149,12 +149,13 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                           widget.onSkipPrevious.call();
                         },
                         child: const Icon(Icons.skip_previous,
+                          size: 24.0,
                           semanticLabel: 'Предыдущее видео',
                         ),
                         
                       ),
 
-                      const SizedBox(width: 12.0),
+                      const SizedBox(width: 16.0),
 
                       /// кнопка следующего видео
                       RoundedButton(
@@ -164,6 +165,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                           widget.onSkipNext.call();
                         },
                         child: const Icon(Icons.skip_next,
+                          size: 24.0,
                           semanticLabel: 'Следующее видео',
                         ),
                         

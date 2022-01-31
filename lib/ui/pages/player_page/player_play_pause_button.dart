@@ -19,7 +19,7 @@ class PlayerPlayPauseButton extends StatelessWidget {
 
     Widget child = const Icon(Icons.play_arrow,
       key: ValueKey(1),
-      size: 48.0,
+      size: 64.0,
     );
 
     if (!isPlaying) {
