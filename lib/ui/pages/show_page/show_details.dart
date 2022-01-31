@@ -7,6 +7,8 @@ import 'package:kgino/ui/pages/player_page/player_error.dart';
 import 'package:kgino/ui/pages/show_page/show_seasons.dart';
 
 class ShowDetails extends StatelessWidget {
+
+  /// идентификатор сериала
   final String showId;
   
   const ShowDetails(this.showId, {
@@ -76,7 +78,7 @@ class ShowDetails extends StatelessWidget {
                   
                   children: [
 
-                    /// невидимый элемент для возврата фокуса в начало страницы
+                    /// невидимый элемент для фокуса в начало страницы
                     const Focus(
                       child: SizedBox(
                         width: double.maxFinite,
@@ -84,69 +86,122 @@ class ShowDetails extends StatelessWidget {
                       ),
                     ),
 
-                    /// название сериала
                     Padding(
-                      padding: const EdgeInsets.only(bottom: delimiterHeight),
-                      child: Text(show.title,
-                        style: TextStyle(
-                          fontSize: 32.0,
-                          shadows: [
-                            Shadow(
-                              color: theme.scaffoldBackgroundColor,
-                              blurRadius: 2.0,
-                            ),
-                            Shadow(
-                              color: theme.scaffoldBackgroundColor,
-                              blurRadius: 4.0,
-                            ),
-                            Shadow(
-                              color: theme.scaffoldBackgroundColor,
-                              blurRadius: 6.0,
-                            ),
-                            Shadow(
-                              color: theme.scaffoldBackgroundColor,
-                              blurRadius: 8.0,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                    /// название сериала на языке оригинала
-                    originalTitle,
-
-                    /// флаг страны и года показа
-                    Row(
-                      children: countryImages..add(
-                        Text(show.years,
-                          style: TextStyle(
-                            color: theme.textTheme.caption?.color,
-                            shadows: [
-                              Shadow(
-                                color: theme.scaffoldBackgroundColor,
-                                blurRadius: 4.0,
+                          /// название сериала
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: delimiterHeight
+                            ),
+                            child: Text(show.title,
+                              style: TextStyle(
+                                fontSize: 32.0,
+                                shadows: [
+                                  Shadow(
+                                    color: theme.scaffoldBackgroundColor,
+                                    blurRadius: 2.0,
+                                  ),
+                                  Shadow(
+                                    color: theme.scaffoldBackgroundColor,
+                                    blurRadius: 4.0,
+                                  ),
+                                  Shadow(
+                                    color: theme.scaffoldBackgroundColor,
+                                    blurRadius: 6.0,
+                                  ),
+                                  Shadow(
+                                    color: theme.scaffoldBackgroundColor,
+                                    blurRadius: 8.0,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),)
-                      ),
-                    ),
+                            ),
+                          ),
 
-                    const SizedBox(height: delimiterHeight),
+                          /// название сериала на языке оригинала
+                          originalTitle,
 
-                    /// описание сериала
-                    Text(show.description,
-                      style: TextStyle(
-                        color: theme.textTheme.caption?.color,
-                        shadows: [
-                          Shadow(
-                            color: theme.scaffoldBackgroundColor,
-                            blurRadius: 4.0,
+                          /// флаг страны и года показа
+                          Row(
+                            children: countryImages..add(
+                              Text(show.years,
+                                style: TextStyle(
+                                  color: theme.textTheme.caption?.color,
+                                  shadows: [
+                                    Shadow(
+                                      color: theme.scaffoldBackgroundColor,
+                                      blurRadius: 4.0,
+                                    ),
+                                  ],
+                                ),)
+                            ),
+                          ),
+
+                          const SizedBox(height: delimiterHeight),
+
+                          /// описание сериала
+                          Text(show.description,
+                            style: TextStyle(
+                              color: theme.textTheme.caption?.color,
+                              shadows: [
+                                Shadow(
+                                  color: theme.scaffoldBackgroundColor,
+                                  blurRadius: 4.0,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: delimiterHeight * 2),
+
+                          OutlinedButton.icon(
+                            onPressed: () {
+
+                            },
+                            icon: Icon(Icons.play_arrow),
+                            label: Text('Смотреть'),
+                          ),
+
+                          OutlinedButton.icon(
+                            onPressed: () {
+
+                            },
+                            icon: Icon(Icons.play_arrow),
+                            label: Text('Продолжить просмотр'),
+                          ),
+
+                          OutlinedButton.icon(
+                            onPressed: () {
+
+                            },
+                            icon: Icon(Icons.favorite),
+                            label: Text('Добавить в избранное'),
+                          ),
+
+                          OutlinedButton.icon(
+                            onPressed: () {
+
+                            },
+                            icon: Icon(Icons.favorite_border),
+                            label: Text('Убрать из избранного'),
+                          ),
+
+                          OutlinedButton.icon(
+                            onPressed: () {
+
+                            },
+                            icon: Icon(Icons.shuffle),
+                            label: Text('Просмотр в случайном порядке'),
                           ),
                         ],
                       ),
                     ),
-
-                    const SizedBox(height: delimiterHeight * 3),
+                    
+                    const SizedBox(height: delimiterHeight * 2),
 
                     /// эпизоды сериала, сгруппированные по сезонам
                     ShowSeasons(
@@ -154,6 +209,13 @@ class ShowDetails extends StatelessWidget {
                       onEpisodeTap: (episode) {
                         Get.toNamed('/tskg/show/$showId/play/${episode.id}');
                       }
+                    ),
+
+                    /// невидимый элемент для фокуса в конце страницы
+                    const Focus(
+                      child: SizedBox(
+                        width: double.maxFinite,
+                      ),
                     ),
 
                   ],

@@ -18,10 +18,13 @@ class ShowSeasons extends StatelessWidget {
     final _seasons = <Widget>[];
     for (final season in seasons) {
       _seasons.add(
-        Text(season.title,
-          style: const TextStyle(
-            fontSize: 20.0,
-          )
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(season.title,
+            style: const TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
         )
       );
       _seasons.add(const SizedBox(height: 12.0));

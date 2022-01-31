@@ -40,10 +40,10 @@ class _ShowPageState extends State<ShowPage> {
     final width = (size.width < 480.0) ? size.width + (size.width * 0.1) : 480.0;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: const BackButton(),
-        elevation: 0,
-      ),
+      // appBar: AppBar(
+      //   leading: const BackButton(),
+      //   elevation: 0,
+      // ),
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -100,7 +100,7 @@ class _ShowPageState extends State<ShowPage> {
             right: 0,
             bottom: 0,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 1000),
+              duration: const Duration(seconds: 1),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -113,10 +113,10 @@ class _ShowPageState extends State<ShowPage> {
                   ],
                 )
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ShowDetails(widget.id),
-              ),
+
+              /// информация о сериале
+              child: ShowDetails(widget.id),
+              
             ),
           ),
           
