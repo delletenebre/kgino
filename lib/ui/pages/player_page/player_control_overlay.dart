@@ -71,6 +71,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
     if (widget.isVisible) {
       /// ^ если панель управления отображается
       
+      /// запрашиваем фокус на кнопку остановки/продолжения проигрывания
       playButtonFocusNode.requestFocus();
     }
 
@@ -220,36 +221,6 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
       ),
     );
 
-
-    // return RawKeyboardListener(
-    //   autofocus: true,
-    //   focusNode: FocusNode(),
-      
-    //   onKey: (event) {
-
-    //     /// список клавиш, на которые следует реагировать
-    //     final availableKeys = [
-    //       LogicalKeyboardKey.arrowLeft,
-    //       LogicalKeyboardKey.arrowRight,
-    //       LogicalKeyboardKey.arrowUp,
-    //       LogicalKeyboardKey.arrowDown,
-    //       LogicalKeyboardKey.enter,
-    //       LogicalKeyboardKey.numpadEnter,
-    //     ];
-        
-    //     if (availableKeys.contains(event.logicalKey)) {
-    //       widget.onShowOverlay(event.logicalKey);
-    //     }
-    //   },
-    //   child: GestureDetector(
-    //     excludeFromSemantics: true,
-    //     behavior: HitTestBehavior.translucent,
-    //     onTap: () {
-    //       widget.onShowOverlay(LogicalKeyboardKey.enter);
-    //     },
-    //     child: content
-    //   )
-    // );
   }
   
 }
