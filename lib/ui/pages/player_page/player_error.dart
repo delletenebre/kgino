@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kgino/ui/buttons/rounded_button.dart';
 
 class PlayerError extends StatelessWidget {
   final String message;
@@ -29,12 +31,20 @@ class PlayerError extends StatelessWidget {
 
           const SizedBox(height: 32.0),
 
-          OutlinedButton(
-            autofocus: true,
+          RoundedButton(
             onPressed: () {
               onRetry?.call();
             },
             child: const Text('Попробовать ещё раз'),
+          ),
+
+          const SizedBox(height: 32.0),
+
+          RoundedButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Назад'),
           ),
 
         ],

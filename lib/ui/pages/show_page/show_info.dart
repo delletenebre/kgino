@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
+import 'package:kgino/ui/pages/player_page/player_error.dart';
 import 'package:kgino/ui/pages/show_page/show_seasons.dart';
 
 class ShowInfo extends StatelessWidget {
@@ -164,15 +165,18 @@ class ShowInfo extends StatelessWidget {
             
             content = Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 /// невидимый элемент для возврата фокуса в начало страницы
-                Focus(
+                const Focus(
                   child: SizedBox(width: double.maxFinite),
                 ),
 
-                Text('Ошибка загрузки данных',
+                PlayerError(
+                  message: 'При загрузке данных произошла ошибка',
+                  onRetry: () {
 
-                )
+                  }
+                ),
               ],
             );
           }

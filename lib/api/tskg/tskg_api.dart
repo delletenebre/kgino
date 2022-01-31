@@ -14,7 +14,7 @@ import 'package:kgino/utils/utils.dart';
 
 class TskgApi {
   /// время ожидания ответа от сервера
-  static const timeout = Duration(seconds: 5);
+  static const timeout = Duration(seconds: 15);
 
   static const scheme = 'https';
   static const host = 'www.ts.kg';
@@ -355,8 +355,7 @@ class TskgApi {
     debugPrint('getEpisodeDetails http url: $episodeId');
     debugPrint('getEpisodeDetails http url: $url');
 
-    //try {
-
+    try {
 
       /// запрашиваем данные
       final response = await http.get(url, headers: headers).timeout(timeout);
@@ -368,13 +367,13 @@ class TskgApi {
         return TskgEpisodeDetails.fromJson(json.decode(response.body));
 
       }
-    // } catch (exception) {
-    //   /// ^ если прозошла сетевая ошибка
+    } catch (exception) {
+      /// ^ если прозошла сетевая ошибка
       
       
-    //   debugPrint('http error: $url');
-    //   debugPrint('exception: $exception');
-    // }
+      debugPrint('http error: $url');
+      debugPrint('exception: $exception');
+    }
 
     return null;
   }

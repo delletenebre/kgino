@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kgino/ui/buttons/circle_button.dart';
+import 'package:kgino/ui/buttons/rounded_button.dart';
 
 class PlayerPlayPauseButton extends StatefulWidget {
   final Function() onPressed;
@@ -37,70 +37,43 @@ class _PlayerPlayPauseButtonState extends State<PlayerPlayPauseButton> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    Widget child = const Icon(Icons.play_arrow);
+    Widget child = const Icon(Icons.play_arrow, key: ValueKey(1));
 
     if (!widget.isPlaying) {
-      child = const Icon(Icons.pause);
+      child = const Icon(Icons.pause, key: ValueKey(2));
     }
 
-    return Material(
-      color: Colors.transparent,
-
-      borderRadius: BorderRadius.circular(96.0),
-      
-      child: Ink(
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          border: Border.all(
-            //color: _hasFocus ? theme.colorScheme.primary : Colors.transparent,
-            width: 2.0,
-            style: BorderStyle.solid
-          ),
-          borderRadius: BorderRadius.circular(48.0),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(96.0),
-          onTap: widget.onPressed,
-          child: AnimatedOpacity(
-            duration: animationDuration,
-            opacity: opacity,
-            child: AnimatedContainer(
-              width: size,
-              height: size,
-              
-              duration: animationDuration,
-              child: FittedBox(
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-    // CircleButton(
-    //   onPressed: widget.onPressed,
-    //   child: AnimatedOpacity(
-    //     duration: animationDuration,
-    //     opacity: opacity,
-    //     child: AnimatedContainer(
-    //       width: size,
-    //       height: size,
+    return RoundedButton(
+      onPressed: widget.onPressed,
+      child: AnimatedSwitcher(
+        duration: animationDuration,
+        reverseDuration: Duration.zero,
+        
+        transitionBuilder: (child, animation) {
+          return ScaleTransition(
+            scale: Tween<double>(
+              begin: 2.5,
+              end: 1,
+            ).animate(animation),
+            child: child,
+          );
+        },
+        child: child,
+      )
+      // child: AnimatedOpacity(
+      //   duration: animationDuration,
+      //   opacity: opacity,
+      //   child: AnimatedContainer(
+      //     width: size,
+      //     height: size,
           
-    //       duration: animationDuration,
-    //       child: FittedBox(
-    //         child: child,
-    //       ),
-    //     ),
-    //   ),
-      
-    //   // AnimatedSize(
-    //   //   duration: animationDuration,
-    //   //   child: AnimatedOpacity(
-    //   //     duration: animationDuration,
-    //   //     opacity: opacity,
-    //   //     child: child
-    //   //   ),
-    //   // ),
-    // );
+      //     duration: animationDuration,
+      //     child: FittedBox(
+            
+      //       child: child,
+      //     ),
+      //   ),
+      // ),
+    );
   }
 }
