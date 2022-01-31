@@ -17,12 +17,13 @@ class PlayerControlOverlay extends StatefulWidget {
   /// обработчик при перемотке видео
   final Function(Duration) onSeek;
 
+  /// обработчик при play/pause
   final Function() onPlayPause;
 
   /// обработчик при нажатии на обрабатываемую плеером клавишу
   final Function(LogicalKeyboardKey) onShowOverlay;
   
-
+  /// контроллер видеоплеера
   final VideoPlayerController? playerController;
 
   /// название эпизода

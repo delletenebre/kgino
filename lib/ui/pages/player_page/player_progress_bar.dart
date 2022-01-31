@@ -7,6 +7,7 @@ class PlayerProgressBar extends StatefulWidget {
   /// обработчик при перемотке видео
   final Function(Duration)? onSeek;
 
+  /// контроллер видеоплеера
   final VideoPlayerController? playerController;
   
   const PlayerProgressBar({
@@ -32,7 +33,6 @@ class _PlayerProgressBarState extends State<PlayerProgressBar> {
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
 
     if (widget.playerController == null) {
       /// ^ если видео не инициализировано
@@ -53,13 +53,13 @@ class _PlayerProgressBarState extends State<PlayerProgressBar> {
           final position = widget.playerController!.value.position;
           
           if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-            
+            /// ^ если нажата кнопка "влево"
             
             /// вызываем пользовательский обработчик перемотки видео
             widget.onSeek?.call(Duration(seconds: position.inSeconds - 10));
 
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-            
+            /// ^ если нажата кнопка "вправо"
             
             /// вызываем пользовательский обработчик перемотки видео
             widget.onSeek?.call(Duration(seconds: position.inSeconds + 10));
@@ -73,6 +73,7 @@ class _PlayerProgressBarState extends State<PlayerProgressBar> {
             return ProgressBar(
               progress: video.position,
               total: video.duration,
+              
               onSeek: (duration) {
                 /// вызываем пользовательский обработчик перемотки видео
                 widget.onSeek?.call(duration);

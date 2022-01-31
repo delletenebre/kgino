@@ -19,6 +19,7 @@ class ShowDetails extends StatelessWidget {
     const delimiterHeight = 12.0;
 
     return FutureBuilder<TskgShow>(
+      
       /// запрашиваем данные о сериале
       future: TskgApi.getShow(showId),
 
@@ -74,7 +75,7 @@ class ShowDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   
                   children: [
-                    
+
                     /// невидимый элемент для возврата фокуса в начало страницы
                     const Focus(
                       child: SizedBox(
