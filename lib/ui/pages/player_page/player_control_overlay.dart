@@ -143,11 +143,13 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
 
                       /// кнопка предыдущего видео
                       RoundedButton(
+
                         onPressed: () {
                           /// вызываем пользовательский обработчик запроса
                           /// предыдущего видео
                           widget.onSkipPrevious.call();
                         },
+
                         child: const Icon(Icons.skip_previous,
                           size: 24.0,
                           semanticLabel: 'Предыдущее видео',
@@ -159,11 +161,13 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
 
                       /// кнопка следующего видео
                       RoundedButton(
+
                         onPressed: () {
                           /// вызываем пользовательский обработчик запроса
                           /// следующего видео
                           widget.onSkipNext.call();
                         },
+
                         child: const Icon(Icons.skip_next,
                           size: 24.0,
                           semanticLabel: 'Следующее видео',
@@ -173,7 +177,6 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
 
                     ],
                   ),
-
                   
                 ],
               ),

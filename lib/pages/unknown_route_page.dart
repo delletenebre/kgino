@@ -6,7 +6,7 @@ class UnknownRoutePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppPage(
+    return const AppPage(
       child: Text('404 not found'),
     );
   }

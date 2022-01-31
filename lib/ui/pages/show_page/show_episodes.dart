@@ -25,7 +25,7 @@ class ShowEpisodes extends StatelessWidget {
           children: [
             LinearProgressIndicator(
               minHeight: episode.description.isEmpty ? 56.0 : 72.0,
-              value: 0.0, // TODO fix
+              value: 0.0, // TODO fix add episode progress
               color: theme.colorScheme.primary.withOpacity(0.2),
               backgroundColor: Colors.transparent,
             ),

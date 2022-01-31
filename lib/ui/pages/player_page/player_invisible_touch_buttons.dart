@@ -25,27 +25,27 @@ class PlayerInvisibleTouchButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
 
-        Flexible(
-          child: GestureDetector(
-            behavior: enabled ? HitTestBehavior.opaque : HitTestBehavior.translucent,
-            excludeFromSemantics: true,
+        // const Flexible(
+        //   child: GestureDetector(
+        //     behavior: enabled ? HitTestBehavior.opaque : HitTestBehavior.translucent,
+        //     excludeFromSemantics: true,
 
-            onTap: () {
-              onTap?.call();
-            },
+        //     onTap: () {
+        //       onTap?.call();
+        //     },
 
-            onDoubleTap: () {
-              onReplay?.call();
-            },
+        //     onDoubleTap: () {
+        //       onReplay?.call();
+        //     },
 
-            child: const Center(
-              child: Icon(Icons.replay_30,
-                size: 48.0,
-              ),
-            ),
+        //     child: const Center(
+        //       child: Icon(Icons.replay_30,
+        //         size: 48.0,
+        //       ),
+        //     ),
 
-          ),
-        ),
+        //   ),
+        // ),
 
 
         Flexible(
@@ -60,27 +60,27 @@ class PlayerInvisibleTouchButtons extends StatelessWidget {
         ),
 
 
-        Flexible(
-          child: GestureDetector(
-            behavior: enabled ? HitTestBehavior.opaque : HitTestBehavior.translucent,
-            excludeFromSemantics: true,
+        // Flexible(
+        //   child: GestureDetector(
+        //     behavior: enabled ? HitTestBehavior.opaque : HitTestBehavior.translucent,
+        //     excludeFromSemantics: true,
 
-            onTap: () {
-              onTap?.call();
-            },
+        //     onTap: () {
+        //       onTap?.call();
+        //     },
 
-            onDoubleTap: () {
-              onForward?.call();
-            },
+        //     onDoubleTap: () {
+        //       onForward?.call();
+        //     },
 
-            child: const Center(
-              child: Icon(Icons.forward_30,
-                size: 48.0,
-              ),
-            ),
+        //     child: const Center(
+        //       child: Icon(Icons.forward_30,
+        //         size: 48.0,
+        //       ),
+        //     ),
 
-          ),
-        ),
+        //   ),
+        // ),
 
       ],
     );

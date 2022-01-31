@@ -158,7 +158,6 @@ class TskgApi {
                   }
                 }
                 
-
                 /// если значок в виде иконки
                 /// TODO fix
                 return TskgBagdeType.unknown;

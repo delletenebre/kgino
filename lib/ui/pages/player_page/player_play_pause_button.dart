@@ -15,18 +15,30 @@ class PlayerPlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
-    Widget child = const Icon(Icons.play_arrow,
-      key: ValueKey(1),
-      size: 64.0,
-    );
+    /// размер иконки
+    const iconSize = 64.0;
 
-    if (!isPlaying) {
+    late Widget child;
+
+    if (isPlaying) {
+      /// ^ если видео проигрывается
+
       child = const Icon(Icons.pause,
-        key: ValueKey(2),
-        size: 48.0,
+        /// для правильной работы анимации, необходим параметр key
+        key: ValueKey(1),
+        size: iconSize,
       );
+      
+    } else {
+      /// ^ если видео на паузе
+      
+      child = const Icon(Icons.play_arrow,
+        /// для правильной работы анимации, необходим параметр key
+        key: ValueKey(2),
+        size: iconSize,
+      );
+
     }
 
     return RoundedButton(
@@ -45,6 +57,7 @@ class PlayerPlayPauseButton extends StatelessWidget {
             child: child,
           );
         },
+        
         child: child,
       ),
     );
