@@ -87,8 +87,9 @@ class _PlayerProgressBarState extends State<PlayerProgressBar> {
               timeLabelLocation: TimeLabelLocation.sides,
 
               timeLabelTextStyle: const TextStyle(
-                fontSize: 22.0
+                fontSize: 16.0
               ),
+              timeLabelPadding: 10.0,
 
             );
           },
