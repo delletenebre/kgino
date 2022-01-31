@@ -1,52 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/ui/buttons/rounded_button.dart';
 
-class PlayerPlayPauseButton extends StatefulWidget {
+class PlayerPlayPauseButton extends StatelessWidget {
   final Function() onPressed;
   final bool isPlaying;
+  final FocusNode? focusNode;
 
   const PlayerPlayPauseButton({
     Key? key,
     required this.onPressed,
     this.isPlaying = false,
+    this.focusNode,
   }) : super(key: key);
-
-  @override
-  State<PlayerPlayPauseButton> createState() => _PlayerPlayPauseButtonState();
-}
-
-class _PlayerPlayPauseButtonState extends State<PlayerPlayPauseButton> {
-  double opacity = 0;
-  double size = 96.0;
-
-  static const animationDuration = Duration(milliseconds: 300);
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance?.addPostFrameCallback((time) {
-      setState(() {
-        opacity = 1.0;
-        size = 64.0;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    Widget child = const Icon(Icons.play_arrow, key: ValueKey(1));
+    Widget child = const Icon(Icons.play_arrow,
+      key: ValueKey(1),
+      size: 48.0,
+    );
 
-    if (!widget.isPlaying) {
-      child = const Icon(Icons.pause, key: ValueKey(2));
+    if (!isPlaying) {
+      child = const Icon(Icons.pause,
+        key: ValueKey(2),
+        size: 48.0,
+      );
     }
 
     return RoundedButton(
-      onPressed: widget.onPressed,
+      focusNode: focusNode,
+      onPressed: onPressed,
       child: AnimatedSwitcher(
-        duration: animationDuration,
+        duration: const Duration(milliseconds: 300),
         reverseDuration: Duration.zero,
         
         transitionBuilder: (child, animation) {
@@ -59,21 +46,7 @@ class _PlayerPlayPauseButtonState extends State<PlayerPlayPauseButton> {
           );
         },
         child: child,
-      )
-      // child: AnimatedOpacity(
-      //   duration: animationDuration,
-      //   opacity: opacity,
-      //   child: AnimatedContainer(
-      //     width: size,
-      //     height: size,
-          
-      //     duration: animationDuration,
-      //     child: FittedBox(
-            
-      //       child: child,
-      //     ),
-      //   ),
-      // ),
+      ),
     );
   }
 }

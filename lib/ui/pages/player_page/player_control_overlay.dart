@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kgino/ui/buttons/rounded_button.dart';
+import 'package:kgino/ui/pages/player_page/player_invisible_touch_buttons.dart';
 import 'package:kgino/ui/pages/player_page/player_play_pause_button.dart';
 import 'package:kgino/ui/pages/player_page/player_progress_bar.dart';
 import 'package:video_player/video_player.dart';
@@ -44,6 +45,7 @@ class PlayerControlOverlay extends StatefulWidget {
 class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
 
   final overlayFocusNode = FocusScopeNode();
+  final playButtonFocusNode = FocusNode();
 
 
   @override
@@ -56,16 +58,19 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
   void dispose() {
     super.dispose();
     overlayFocusNode.dispose();
+    playButtonFocusNode.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    Widget? content;
 
-    if (!widget.isVisible) {
-      overlayFocusNode.requestFocus();
+    if (widget.isVisible) {
+      playButtonFocusNode.requestFocus();
+    } else {
+      /// ^ если панель управления скрыта
+      
     }
 
     if (widget.isVisible) {
@@ -207,6 +212,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
     }
 
     return FocusScope(
+      autofocus: true,
       node: overlayFocusNode,
       onKeyEvent: (focusNode, event) {
         widget.onShowOverlay(event.logicalKey);
@@ -235,6 +241,7 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
             /// остановить/продолжить воспроизведение
             Center(
               child: PlayerPlayPauseButton(
+                focusNode: playButtonFocusNode,
                 isPlaying: widget.playerController?.value.isPlaying ?? false,
                 onPressed: () {
                   if (widget.playerController?.value.isPlaying ?? false) {
@@ -243,10 +250,9 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                     widget.playerController?.play();
                   }
 
-                  setState(() {
-                  });
+                  setState(() {});
                 },
-              )
+              ),
             ),
 
 
@@ -306,6 +312,15 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                   
                 ],
               ),
+            ),
+
+            /// виджет управления плеером жестами, когда панель управления
+            /// скрыта
+            PlayerInvisibleTouchButtons(
+              enabled: !widget.isVisible,
+              onTap: () {
+                widget.onShowOverlay(LogicalKeyboardKey.enter);
+              },
             ),
 
           ],

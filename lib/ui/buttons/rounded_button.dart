@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class RoundedButton extends StatefulWidget {
   final Widget child;
   final Function()? onPressed;
+  final FocusNode? focusNode;
 
   const RoundedButton({
     Key? key,
     required this.child,
     required this.onPressed,
+    this.focusNode,
   }) : super(key: key);
 
   @override
@@ -35,6 +37,8 @@ class _RoundedButtonState extends State<RoundedButton> {
       
       child: InkWell(
         borderRadius: borderRadius,
+
+        focusNode: widget.focusNode,
 
         onFocusChange: (hasFocus) {
           setState(() {
