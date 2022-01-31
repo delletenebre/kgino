@@ -7,7 +7,7 @@ publish_to: 'none'
 
 version: 1.0.0+1
 
-
+# flutter pub outdated
 # flutter pub run build_runner build --delete-conflicting-outputs
 
 
@@ -21,7 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # audio_video_progress_bar: ^0.10.0
+  audio_video_progress_bar: ^0.10.0
   cached_network_image: ^3.2.0
   collection: ^1.15.0
   flutter_svg: ^1.0.3
