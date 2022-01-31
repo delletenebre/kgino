@@ -6,10 +6,10 @@ import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_error.dart';
 import 'package:kgino/ui/pages/show_page/show_seasons.dart';
 
-class ShowInfo extends StatelessWidget {
+class ShowDetails extends StatelessWidget {
   final String showId;
   
-  const ShowInfo(this.showId, {
+  const ShowDetails(this.showId, {
     Key? key,
   }) : super(key: key);
 
@@ -18,19 +18,16 @@ class ShowInfo extends StatelessWidget {
     final theme = Theme.of(context);
     const delimiterHeight = 12.0;
 
-    Widget content = const Center(
-      child: CircularProgressIndicator(),
-    );
-
     return FutureBuilder<TskgShow>(
       /// запрашиваем данные о сериале
       future: TskgApi.getShow(showId),
 
-
       builder: (context, snapshot) {
-        
+        late Widget content;
 
         if (snapshot.hasData) {
+          /// ^ если загрузка данных завершена
+
           final show = snapshot.data;
 
           if (show != null && show.id.isNotEmpty) {
@@ -77,6 +74,7 @@ class ShowInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   
                   children: [
+                    
                     /// невидимый элемент для возврата фокуса в начало страницы
                     const Focus(
                       child: SizedBox(
@@ -134,6 +132,7 @@ class ShowInfo extends StatelessWidget {
 
                     const SizedBox(height: delimiterHeight),
 
+                    /// описание сериала
                     Text(show.description,
                       style: TextStyle(
                         color: theme.textTheme.caption?.color,
@@ -148,6 +147,7 @@ class ShowInfo extends StatelessWidget {
 
                     const SizedBox(height: delimiterHeight * 3),
 
+                    /// эпизоды сериала, сгруппированные по сезонам
                     ShowSeasons(
                       seasons: show.seasons,
                       onEpisodeTap: (episode) {
@@ -166,11 +166,6 @@ class ShowInfo extends StatelessWidget {
             content = Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                /// невидимый элемент для возврата фокуса в начало страницы
-                const Focus(
-                  child: SizedBox(width: double.maxFinite),
-                ),
-
                 PlayerError(
                   message: 'При загрузке данных произошла ошибка',
                   onRetry: () {
@@ -180,9 +175,18 @@ class ShowInfo extends StatelessWidget {
               ],
             );
           }
+
+        } else {
+          /// ^ если загрузка данных не завершена
+
+          /// показываем индикатор загрузки
+          content = const Center(
+            child: CircularProgressIndicator(),
+          );
+
         }
 
-        /// пока данные не получены, показываем индикатор загрузки
+
         return AnimatedSwitcher(
           duration: const Duration(seconds: 1),
           child: content,

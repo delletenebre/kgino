@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
-import 'package:kgino/ui/pages/show_page/show_info.dart';
+import 'package:kgino/ui/pages/show_page/show_details.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class ShowPage extends StatefulWidget {
@@ -115,7 +115,7 @@ class _ShowPageState extends State<ShowPage> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ShowInfo(widget.id),
+                child: ShowDetails(widget.id),
               ),
             ),
           ),
