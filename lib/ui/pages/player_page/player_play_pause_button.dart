@@ -1,3 +1,4 @@
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:kgino/ui/buttons/rounded_button.dart';
 
@@ -15,6 +16,7 @@ class PlayerPlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
     /// размер иконки
     const iconSize = 64.0;
@@ -24,19 +26,31 @@ class PlayerPlayPauseButton extends StatelessWidget {
     if (isPlaying) {
       /// ^ если видео проигрывается
 
-      child = const Icon(Icons.pause,
+      child = DecoratedIcon(Icons.pause,
         /// для правильной работы анимации, необходим параметр key
-        key: ValueKey(1),
+        key: const ValueKey(1),
         size: iconSize,
+        shadows: [
+          BoxShadow(
+            blurRadius: 12.0,
+            color: theme.scaffoldBackgroundColor,
+          ),
+        ],
       );
       
     } else {
       /// ^ если видео на паузе
       
-      child = const Icon(Icons.play_arrow,
+      child = DecoratedIcon(Icons.play_arrow,
         /// для правильной работы анимации, необходим параметр key
-        key: ValueKey(2),
+        key: const ValueKey(2),
         size: iconSize,
+        shadows: [
+          BoxShadow(
+            blurRadius: 12.0,
+            color: theme.scaffoldBackgroundColor,
+          ),
+        ],
       );
 
     }

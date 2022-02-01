@@ -1,6 +1,6 @@
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kgino/ui/buttons/rounded_button.dart';
 
 class PlayerError extends StatelessWidget {
   final String message;
@@ -14,6 +14,7 @@ class PlayerError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
     return Center(
       child: Column(
@@ -30,20 +31,38 @@ class PlayerError extends StatelessWidget {
 
           const SizedBox(height: 32.0),
 
-          RoundedButton(
+          OutlinedButton.icon(
             onPressed: () {
               onRetry?.call();
             },
-            child: const Text('Попробовать ещё раз'),
+            icon: DecoratedIcon(Icons.refresh,
+              color: theme.colorScheme.primary,
+              shadows: [
+                BoxShadow(
+                  blurRadius: 12.0,
+                  color: theme.scaffoldBackgroundColor,
+                ),
+              ],
+            ),
+            label: const Text('Попробовать ещё раз'),
           ),
 
-          const SizedBox(height: 32.0),
+          const SizedBox(height: 16.0),
 
-          RoundedButton(
+          OutlinedButton.icon(
             onPressed: () {
               Get.back();
             },
-            child: const Text('Назад'),
+            icon: DecoratedIcon(Icons.arrow_back,
+              color: theme.colorScheme.primary,
+              shadows: [
+                BoxShadow(
+                  blurRadius: 12.0,
+                  color: theme.scaffoldBackgroundColor,
+                ),
+              ],
+            ),
+            label: const Text('Назад'),
           ),
 
         ],

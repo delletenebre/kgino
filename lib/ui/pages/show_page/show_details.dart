@@ -1,3 +1,4 @@
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
@@ -164,15 +165,19 @@ class ShowDetails extends StatelessWidget {
                             onPressed: () {
 
                             },
-                            icon: Icon(Icons.play_arrow),
-                            label: Text('Смотреть'),
+                            icon: Icon(Icons.play_arrow,
+                              color: theme.colorScheme.primary,
+                            ),
+                            label: const Text('Смотреть'),
                           ),
 
                           OutlinedButton.icon(
                             onPressed: () {
 
                             },
-                            icon: const Icon(Icons.play_arrow),
+                            icon: Icon(Icons.play_arrow,
+                              color: theme.colorScheme.primary,
+                            ),
                             label: const Text('Продолжить просмотр'),
                           ),
 
@@ -185,7 +190,9 @@ class ShowDetails extends StatelessWidget {
                                 onPressed: () {
                                   favoritesController.removeShowFromFavorites(showId);
                                 },
-                                icon: const Icon(Icons.favorite_border),
+                                icon: Icon(Icons.favorite_border,
+                                  color: theme.colorScheme.primary,
+                                ),
                                 label: const Text('Убрать из избранного'),
                               );
                             
@@ -196,7 +203,15 @@ class ShowDetails extends StatelessWidget {
                                 onPressed: () {
                                   favoritesController.addShowToFavorites(show);
                                 },
-                                icon: const Icon(Icons.favorite),
+                                icon: DecoratedIcon(Icons.favorite,
+                                  color: theme.colorScheme.primary,
+                                  shadows: [
+                                    BoxShadow(
+                                      blurRadius: 12.0,
+                                      color: theme.scaffoldBackgroundColor,
+                                    ),
+                                  ],
+                                ),
                                 label: const Text('Добавить в избранное'),
                               );
                             
@@ -207,7 +222,9 @@ class ShowDetails extends StatelessWidget {
                             onPressed: () {
 
                             },
-                            icon: const Icon(Icons.shuffle),
+                            icon: Icon(Icons.shuffle,
+                              color: theme.colorScheme.primary,
+                            ),
                             label: const Text('Просмотр в случайном порядке'),
                           ),
                         ],

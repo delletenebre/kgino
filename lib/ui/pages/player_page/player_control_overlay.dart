@@ -1,3 +1,4 @@
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kgino/ui/buttons/rounded_button.dart';
@@ -151,9 +152,15 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                           widget.onSkipPrevious.call();
                         },
 
-                        child: const Icon(Icons.skip_previous,
+                        child: const DecoratedIcon(Icons.skip_previous,
                           size: 24.0,
                           semanticLabel: 'Предыдущее видео',
+                          shadows: [
+                            BoxShadow(
+                              blurRadius: 12.0,
+                              color: Colors.black,
+                            ),
+                          ],
                         ),
                         
                       ),
@@ -169,9 +176,15 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
                           widget.onSkipNext.call();
                         },
 
-                        child: const Icon(Icons.skip_next,
+                        child: const DecoratedIcon(Icons.skip_next,
                           size: 24.0,
                           semanticLabel: 'Следующее видео',
+                          shadows: [
+                            BoxShadow(
+                              blurRadius: 12.0,
+                              color: Colors.black,
+                            ),
+                          ],
                         ),
                         
                       ),
