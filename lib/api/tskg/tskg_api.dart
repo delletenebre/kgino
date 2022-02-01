@@ -75,8 +75,7 @@ class TskgApi {
           /// <div class="app-news-date"><strong>22.12.2021</strong></div>
           final dateText = element
             .getElementsByClassName('app-news-date').first.text;
-          final date = DateFormat('dd.mm.yyyy').parse(dateText);
-
+          final date = DateFormat('dd.MM.yyyy').parse(dateText);
 
           /// парсим элементы новых поступлений
           /// <div class="app-news-list-item">

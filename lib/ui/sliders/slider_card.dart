@@ -97,35 +97,35 @@ class _SliderCardState extends State<SliderCard> {
                     : AppTheme.sliderCardSize * 0.7 - 16.0,
                   
                   child: Stack(
+                    alignment: Alignment.center,
                     clipBehavior: Clip.none,
+                    children: [
 
-                      children: [
-
-                        CachedNetworkImage(
-                          imageUrl: widget.posterUrl,
-                          progressIndicatorBuilder: (context, url, downloadProgress) {
-                            return CircularProgressIndicator(
-                              value: downloadProgress.progress
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return const Icon(Icons.error);
-                          },
+                      CachedNetworkImage(
+                        imageUrl: widget.posterUrl,
+                        progressIndicatorBuilder: (context, url, downloadProgress) {
+                          return CircularProgressIndicator(
+                            value: downloadProgress.progress
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          return const Icon(Icons.error);
+                        },
+                      ),
+                    
+                      Positioned(
+                        top: -12.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: Wrap(
+                          spacing: 4.0,
+                          children: _badges,
                         ),
-                      
-                        Positioned(
-                          top: -12.0,
-                          left: 0.0,
-                          right: 0.0,
-                          child: Wrap(
-                            spacing: 4.0,
-                            children: _badges,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ),
           ),
         ),
@@ -139,15 +139,16 @@ class _SliderCardState extends State<SliderCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SliderText(
-                text: widget.title,
-                fontSize: 10.0,
-              ),
 
               SliderText(
                 text: widget.description,
                 fontSize: 8.0,
-              )
+              ),
+
+              SliderText(
+                text: widget.title,
+                fontSize: 10.0,
+              ),
 
             ],
           )

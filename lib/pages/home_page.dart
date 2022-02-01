@@ -18,6 +18,7 @@ class HomePage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return AppPage(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,7 +39,9 @@ class HomePage extends StatelessWidget {
 
                 /// для группировки по атрибуту [TskgItem.date] элементы
                 /// необходимо сконвертировать в [Map]
-                final tskgItemsJson = snapshot.data?.map((item) => item.toJson()) ?? {};
+                final tskgItemsJson = snapshot.data?.map((item) {
+                  return item.toJson();
+                }) ?? {};
 
                 /// элементы сгруппированные по дате добавления
                 final itemsGroupedByDate = groupBy(
