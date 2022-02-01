@@ -10,7 +10,6 @@ class FavoriteSlider extends GetView<FavoritesController> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     if (controller.favorites.isEmpty) {
       /// ^ если список избранного пуст
