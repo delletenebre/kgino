@@ -5,8 +5,10 @@ import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/app_page.dart';
+import 'package:kgino/ui/pages/home_page/favorites_slider.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/sliders/slider_card.dart';
+import 'package:kgino/ui/sliders/slider_title.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -20,9 +22,10 @@ class HomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          Text('Последние поступления',
-            style: theme.textTheme.headline4,
-          ),
+          /// список избранного
+          const FavoriteSlider(),
+
+          const SliderTitle('Последние поступления'),
 
           FutureBuilder<List<TskgItem>>(
             future: TskgApi.getNews(),

@@ -20,6 +20,8 @@ class ShowDetails extends StatelessWidget {
     final theme = Theme.of(context);
     const delimiterHeight = 12.0;
 
+    final favoritesController = Get.find<FavoritesController>();
+
     return FutureBuilder<TskgShow>(
       
       /// запрашиваем данные о сериале
@@ -170,32 +172,43 @@ class ShowDetails extends StatelessWidget {
                             onPressed: () {
 
                             },
-                            icon: Icon(Icons.play_arrow),
-                            label: Text('Продолжить просмотр'),
+                            icon: const Icon(Icons.play_arrow),
+                            label: const Text('Продолжить просмотр'),
                           ),
 
+                          /// кнопка добавить/удалить из избранного
+                          Obx(() {
+                            if (favoritesController.isShowInFavorite(showId)) {
+                              /// ^ если сериал уже в списке избранного
+
+                              return OutlinedButton.icon(
+                                onPressed: () {
+                                  favoritesController.removeShowFromFavorites(showId);
+                                },
+                                icon: const Icon(Icons.favorite_border),
+                                label: const Text('Убрать из избранного'),
+                              );
+                            
+                            } else {
+                               /// ^ если сериала нет в списке избранного
+
+                              return OutlinedButton.icon(
+                                onPressed: () {
+                                  favoritesController.addShowToFavorites(show);
+                                },
+                                icon: const Icon(Icons.favorite),
+                                label: const Text('Добавить в избранное'),
+                              );
+                            
+                            }
+                          }),
+                          
                           OutlinedButton.icon(
                             onPressed: () {
 
                             },
-                            icon: Icon(Icons.favorite),
-                            label: Text('Добавить в избранное'),
-                          ),
-
-                          OutlinedButton.icon(
-                            onPressed: () {
-
-                            },
-                            icon: Icon(Icons.favorite_border),
-                            label: Text('Убрать из избранного'),
-                          ),
-
-                          OutlinedButton.icon(
-                            onPressed: () {
-
-                            },
-                            icon: Icon(Icons.shuffle),
-                            label: Text('Просмотр в случайном порядке'),
+                            icon: const Icon(Icons.shuffle),
+                            label: const Text('Просмотр в случайном порядке'),
                           ),
                         ],
                       ),

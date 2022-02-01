@@ -55,13 +55,17 @@ class TskgSlider extends StatelessWidget {
             ),
           ),
 
+          const SizedBox(height: 4.0),
+
           child,
           
         ],
       );
     }
 
-
-    return child;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32.0),
+      child: child,
+    );
   }
 }

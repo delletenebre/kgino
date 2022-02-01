@@ -31,6 +31,12 @@ class TskgShow {
     _$TskgShowFromJson(json);
 
   Map<String, dynamic> toJson() => _$TskgShowToJson(this);
+
+  /// количество эпизодов в сезоне (для расчёта наличия новых серий)
+  int get episodesCount => seasons.fold(0, (previous, current) {
+    return previous + current.episodes.length;
+  });
+
 }
 
 @JsonSerializable()
