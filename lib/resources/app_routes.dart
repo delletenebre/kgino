@@ -43,6 +43,20 @@ class AppRoutes {
 
     /// страница плеера
     GetPage(
+      name: '/tskg/show/:showId/play',
+      page: () {
+        /// id запрашиваемого сериала
+        final showId = Get.parameters['showId'] ?? '';
+
+        return PlayerPage(
+          showId: showId,
+          initialId: 0,
+        );
+      },
+    ),
+
+    /// страница плеера
+    GetPage(
       name: '/tskg/show/:showId/play/:episodeId',
       page: () {
         /// id запрашиваемого сериала
@@ -57,6 +71,29 @@ class AppRoutes {
         );
       },
     ),
+
+    /// страница плеера
+    GetPage(
+      name: '/tskg/show/:showId/play/:episodeId/:startTime',
+      page: () {
+        /// id запрашиваемого сериала
+        final showId = Get.parameters['showId'] ?? '';
+        
+        /// id эпизода, который следует запустить первым
+        final episodeId = Get.parameters['episodeId'] ?? '';
+
+        /// время в секундах, с которого необходимо начать просмотр
+        final startTime = Get.parameters['startTime'] ?? '';
+
+        return PlayerPage(
+          showId: showId,
+          initialId: int.tryParse(episodeId) ?? 0,
+          startTime: int.tryParse(startTime) ?? 0,
+        );
+      },
+    ),
+
+    
 
   ];
 

@@ -6,6 +6,7 @@ import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_error.dart';
 import 'package:kgino/ui/pages/show_page/show_seasons.dart';
+import 'package:kgino/ui/pages/show_page/view_show_button.dart';
 
 class ShowDetails extends StatelessWidget {
 
@@ -166,36 +167,9 @@ class ShowDetails extends StatelessWidget {
                           const SizedBox(height: delimiterHeight * 2),
 
                           /// кнопка смотреть/продолжить просмотр
-                          Obx(() {
-                            if (viewedController.items.containsKey(showId)) {
-                              /// ^ если есть просмотренные эпизоды
-                              
-                              return OutlinedButton.icon(
-                                onPressed: () {
-                                  //Get.toNamed('/tskg/show/$showId/play/${episode.id}');
-                                },
-                                icon: Icon(Icons.play_arrow,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                label: const Text('Продолжить просмотр'),
-                              );
-
-                            } else {
-                              /// ^ если сериал ещё не смотрели
-                            
-                              return OutlinedButton.icon(
-                                onPressed: () {
-
-                                },
-                                icon: Icon(Icons.play_arrow,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                label: const Text('Смотреть'),
-                              );
-
-                            }
-                            
-                          }),
+                          ViewShowButton(
+                            showId: showId,
+                          ),
 
                           /// кнопка добавить/удалить из избранного
                           Obx(() {

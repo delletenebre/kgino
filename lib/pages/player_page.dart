@@ -19,11 +19,13 @@ enum PlayerPageState {
 class PlayerPage extends StatefulWidget {
   final String showId;
   final int initialId;
+  final int startTime;
 
   const PlayerPage({
     Key? key,
     required this.showId,
     this.initialId = 0,
+    this.startTime = 0,
   }) : super(key: key);
 
   @override
@@ -256,7 +258,7 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   /// загрузка видео-файла эпизода по id
-  Future<void> loadEpisode(int episodeId) async {
+  Future<void> loadEpisode({required int episodeId, int startTime = 0}) async {
     /// завершаем работу плеера
     await _playerController?.dispose();
     _playerController = null;
@@ -294,7 +296,10 @@ class _PlayerPageState extends State<PlayerPage> {
           await _playerController?.initialize();
 
           /// запускаем видео
-          _playerController?.play();
+          await _playerController?.play();
+
+          /// перематываем в нужную позицию
+          await _playerController?.seekTo(Duration(seconds: startTime));
 
           /// обновляем информацию о просмотре
           _playerController?.addListener(changeVideoPositionListener);
@@ -371,7 +376,9 @@ class _PlayerPageState extends State<PlayerPage> {
         /// ^ если в плейлисте есть предыдущее видео...
         
         /// ...загружаем предыдущий эпизод
-        loadEpisode(playlistIds[indexInPlaylist - 1]);
+        loadEpisode(
+          episodeId: playlistIds[indexInPlaylist - 1],
+        );
 
       } else {
         /// ^ если в плейлисте это видео первое...
@@ -408,7 +415,9 @@ class _PlayerPageState extends State<PlayerPage> {
         /// ^ если в плейлисте есть следующее видео...
         
         /// ...загружаем следующий эпизод
-        loadEpisode(playlistIds[indexInPlaylist + 1]);
+        loadEpisode(
+          episodeId: playlistIds[indexInPlaylist + 1],
+        );
         
       }
     }
@@ -422,7 +431,9 @@ class _PlayerPageState extends State<PlayerPage> {
       /// ^ если текущий эпизод загружен
       
       /// пытаемся запусть видео ещё раз
-      loadEpisode(_currentPlayingEpisode!.id);
+      loadEpisode(
+        episodeId: _currentPlayingEpisode!.id,
+      );
     } else {
       /// ^ если проблема в формировании плейлиста/эпизода
 
@@ -475,18 +486,27 @@ class _PlayerPageState extends State<PlayerPage> {
       } else {
         /// ^ если есть элементы в списоке эпизодов
         
-        /// по умолчанию первое видео - по списку эпизодов
-        int initialEposodeId = playlistIds.first;
+        /// id эпизода, который необходимо запустить
+        late int initialEposodeId;
         
         if (widget.initialId > 0 && playlistIds.contains(widget.initialId)) {
           /// ^ если передали id желаемого эпизода и он есть в списке
           /// всех эпизодов
           
           initialEposodeId = widget.initialId;
+        
+        } else {
+          /// ^ если не указали эпизода или его нет в списке всех эпизодов
+
+          /// устанавливаем первое видео по списку эпизодов
+          initialEposodeId = playlistIds.first;
         }
 
         /// загружаем видео-файл запрошенного эпизода
-        loadEpisode(initialEposodeId);
+        await loadEpisode(
+          episodeId: initialEposodeId,
+          startTime: widget.startTime,
+        );
       }
 
     }
