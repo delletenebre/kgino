@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/resources/app_theme.dart';
-import 'package:kgino/ui/slider_card_badge.dart';
+import 'package:kgino/ui/sliders/slider_card_badge.dart';
+import 'package:kgino/ui/sliders/slider_text.dart';
 
 class SliderCard extends StatefulWidget {
   final String posterUrl;
+  final String title;
   final String description;
   final List<TskgBagdeType> badges;
   final Function()? onTap;
@@ -13,6 +15,7 @@ class SliderCard extends StatefulWidget {
   const SliderCard({
     Key? key,
     this.posterUrl = '',
+    this.title = '',
     this.description = '',
     this.badges = const [],
     this.onTap,
@@ -92,12 +95,6 @@ class _SliderCardState extends State<SliderCard> {
                   width: _hasFocus
                     ? AppTheme.sliderCardSize - 16.0
                     : AppTheme.sliderCardSize * 0.7 - 16.0,
-
-                  // decoration: BoxDecoration(
-                  //   //color: Colors.red,
-                  //   //borderRadius: BorderRadius.circular(16.0),
-                    
-                  // ),
                   
                   child: Stack(
                     clipBehavior: Clip.none,
@@ -133,50 +130,27 @@ class _SliderCardState extends State<SliderCard> {
           ),
         ),
 
-        /// верхняя строка (значки (badges))
-        // Positioned(
-        //   top: 8.0,
-        //   left: 8.0,
-        //   right: 8.0,
-        //   child: widget.topLine,
-        // ),
-        
 
         /// нижняя подпись (название, номер серии)
         Positioned(
           bottom: 8.0,
           left: 8.0,
           right: 8.0,
-          child: Text(widget.description,
-            style: TextStyle(
-              fontSize: 10.0,
-              shadows: [
-                Shadow(
-                  color: theme.bottomAppBarColor,
-                ),
-                Shadow(
-                  blurRadius: 2.0,
-                  color: theme.bottomAppBarColor,
-                ),
-                Shadow(
-                  blurRadius: 4.0,
-                  color: theme.bottomAppBarColor,
-                ),
-                Shadow(
-                  blurRadius: 6.0,
-                  color: theme.bottomAppBarColor,
-                ),
-                Shadow(
-                  blurRadius: 8.0,
-                  color: theme.bottomAppBarColor,
-                ),
-                Shadow(
-                  blurRadius: 10.0,
-                  color: theme.bottomAppBarColor,
-                ),
-              ],
-            ),
-          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SliderText(
+                text: widget.title,
+                fontSize: 10.0,
+              ),
+
+              SliderText(
+                text: widget.description,
+                fontSize: 8.0,
+              )
+
+            ],
+          )
         ),
 
       ],

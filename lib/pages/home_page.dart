@@ -6,7 +6,7 @@ import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
-import 'package:kgino/ui/slider_card.dart';
+import 'package:kgino/ui/sliders/slider_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -74,6 +74,7 @@ class HomePage extends StatelessWidget {
                     /// формируем карточку сериала
                     return SliderCard(
                       posterUrl: TskgApi.getPosterUrl(tskgItem.showId),
+                      title: tskgItem.title,
                       description: tskgItem.subtitle,
                       badges: tskgItem.badges,
                       onTap: () {
