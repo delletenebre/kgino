@@ -23,7 +23,7 @@ class ViewShowButton extends GetView<ViewedController> {
         
         return OutlinedButton.icon(
           onPressed: () {
-            Get.toNamed('/tskg/show/$showId/play/${lastEpisode.id}');
+            Get.toNamed('/tskg/show/$showId/play/${lastEpisode.id}/${lastEpisode.position}');
           },
           icon: Icon(Icons.play_arrow,
             color: theme.colorScheme.primary,

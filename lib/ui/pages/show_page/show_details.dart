@@ -196,7 +196,18 @@ class ShowDetails extends StatelessWidget {
                     ShowSeasons(
                       seasons: show.seasons,
                       onEpisodeTap: (episode) {
-                        Get.toNamed('/tskg/show/$showId/play/${episode.id}');
+                        final position = viewedController.getEpisodeProgress(
+                          showId: episode.showId,
+                          episodeId: episode.id,
+                        );
+
+                        String route = '/tskg/show/$showId/play/${episode.id}';
+
+                        if (position > 0) {
+                          route = '$route/$position';
+                        }
+                        
+                        Get.toNamed(route);
                       }
                     ),
 
