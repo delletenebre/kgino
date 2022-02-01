@@ -6,6 +6,7 @@ import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/home_page/favorites_slider.dart';
+import 'package:kgino/ui/pages/home_page/last_viewed_shows_slider.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/sliders/slider_card.dart';
 import 'package:kgino/ui/sliders/slider_title.dart';
@@ -117,6 +118,8 @@ class HomePage extends StatelessWidget {
               );
             }
           ),
+
+          const LastViewedShowsSlider(),
         ],
       ),
     );

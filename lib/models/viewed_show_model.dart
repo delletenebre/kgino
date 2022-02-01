@@ -10,8 +10,21 @@ class ViewedShowModel {
   String id;
 
   @HiveField(1)
+  String title;
+
+  @HiveField(2)
   List<ViewedEpisodeModel> episodes;
 
-  ViewedShowModel(this.id, this.episodes);
+  @HiveField(3)
+  DateTime updatedAt;
+
+  ViewedShowModel({
+    required this.id,
+    required this.title,
+    List<ViewedEpisodeModel>? episodes,
+    DateTime? updatedAt,
+  }) : 
+    updatedAt = updatedAt ?? DateTime.now(),
+    episodes = episodes ?? [];
 
 }

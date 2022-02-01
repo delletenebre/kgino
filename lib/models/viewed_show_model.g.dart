@@ -17,19 +17,25 @@ class ViewedShowModelAdapter extends TypeAdapter<ViewedShowModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ViewedShowModel(
-      fields[0] as String,
-      (fields[1] as List).cast<ViewedEpisodeModel>(),
+      id: fields[0] as String,
+      title: fields[1] as String,
+      episodes: (fields[2] as List).cast<ViewedEpisodeModel>(),
+      updatedAt: fields[3] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ViewedShowModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.episodes);
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.episodes)
+      ..writeByte(3)
+      ..write(obj.updatedAt);
   }
 
   @override

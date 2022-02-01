@@ -3,6 +3,7 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
+import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_control_overlay.dart';
@@ -43,6 +44,8 @@ class _PlayerPageState extends State<PlayerPage> {
   /// информация о проигрываемом видео
   TskgEpisodeDetails? _currentPlayingEpisode;
 
+  late TskgShow _currentShow;
+
   /// список идентификаторов эпизодов плейлиста
   final playlistIds = <int>[];
 
@@ -71,7 +74,8 @@ class _PlayerPageState extends State<PlayerPage> {
     /// сохраняем информацию о времени просмотра эпизода
     if (episodeId != null) {
       viewedController.updateEpisode(
-        showId: widget.showId,
+        showId: _currentShow.id,
+        title: _currentShow.title,
         episodeId: episodeId,
         position: position.inSeconds,
         updateUi: true
@@ -249,7 +253,6 @@ class _PlayerPageState extends State<PlayerPage> {
         );
         break;
     }
-
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -460,12 +463,12 @@ class _PlayerPageState extends State<PlayerPage> {
       updatePageState(PlayerPageState.loading);
 
       /// получаем данные сериала (сезоны и эпизоды)
-      final show = await TskgApi.getShow(widget.showId);
+      _currentShow = await TskgApi.getShow(widget.showId);
       
       /// очищаем спискок идентификаторов эпизодов
       playlistIds.clear();
 
-      for (final season in show.seasons) {
+      for (final season in _currentShow.seasons) {
         /// ^ перебираем сезоны
         
         for (final episode in season.episodes) {

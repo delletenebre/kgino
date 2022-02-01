@@ -14,16 +14,19 @@ class ViewedController extends GetxController  {
 
   void updateEpisode({
     required String showId,
+    required String title,
     required int episodeId,
     int position = 0,
     bool updateUi = false,
   }) {
     final updatedAt = DateTime.now();
     
-    final show = items.get(showId) ?? ViewedShowModel(showId, []);
+    final show = items.get(showId) ?? ViewedShowModel(id: showId, title: title);
+    show.updatedAt = updatedAt;
+
     final episode = show.episodes.firstWhereOrNull((episode) {
       return episode.id == episodeId;
-    }) ?? ViewedEpisodeModel(episodeId, position, updatedAt);
+    }) ?? ViewedEpisodeModel(id: episodeId);
 
     episode.position = position;
     episode.updatedAt = updatedAt;
@@ -32,9 +35,7 @@ class ViewedController extends GetxController  {
 
     _items.value.put(showId, show);
     
-    if (updateUi) {
-      _items.refresh();
-    }
+    _items.refresh();
   }
 
   int getEpisodeProgress({required String showId, required int episodeId}) {

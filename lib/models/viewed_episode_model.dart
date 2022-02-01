@@ -14,6 +14,10 @@ class ViewedEpisodeModel {
   @HiveField(2)
   DateTime updatedAt;
 
-  ViewedEpisodeModel(this.id, this.position, this.updatedAt);
+  ViewedEpisodeModel({
+    required this.id,
+    this.position = 0,
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
 }

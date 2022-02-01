@@ -5,6 +5,7 @@ import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_error.dart';
+import 'package:kgino/ui/pages/show_page/favorite_show_button.dart';
 import 'package:kgino/ui/pages/show_page/show_seasons.dart';
 import 'package:kgino/ui/pages/show_page/view_show_button.dart';
 
@@ -172,51 +173,19 @@ class ShowDetails extends StatelessWidget {
                           ),
 
                           /// кнопка добавить/удалить из избранного
-                          Obx(() {
-                            if (favoritesController.isShowInFavorite(showId)) {
-                              /// ^ если сериал уже в списке избранного
-
-                              return OutlinedButton.icon(
-                                onPressed: () {
-                                  favoritesController.removeShowFromFavorites(showId);
-                                },
-                                icon: Icon(Icons.favorite_border,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                label: const Text('Убрать из избранного'),
-                              );
-                            
-                            } else {
-                               /// ^ если сериала нет в списке избранного
-
-                              return OutlinedButton.icon(
-                                onPressed: () {
-                                  favoritesController.addShowToFavorites(show);
-                                },
-                                icon: DecoratedIcon(Icons.favorite,
-                                  color: theme.colorScheme.primary,
-                                  shadows: [
-                                    BoxShadow(
-                                      blurRadius: 12.0,
-                                      color: theme.scaffoldBackgroundColor,
-                                    ),
-                                  ],
-                                ),
-                                label: const Text('Добавить в избранное'),
-                              );
-                            
-                            }
-                          }),
-                          
-                          OutlinedButton.icon(
-                            onPressed: () {
-
-                            },
-                            icon: Icon(Icons.shuffle,
-                              color: theme.colorScheme.primary,
-                            ),
-                            label: const Text('Просмотр в случайном порядке'),
+                          FavoriteShowButton(
+                            show: show,
                           ),
+                          
+                          // OutlinedButton.icon(
+                          //   onPressed: () {
+
+                          //   },
+                          //   icon: Icon(Icons.shuffle,
+                          //     color: theme.colorScheme.primary,
+                          //   ),
+                          //   label: const Text('Просмотр в случайном порядке'),
+                          // ),
                         ],
                       ),
                     ),

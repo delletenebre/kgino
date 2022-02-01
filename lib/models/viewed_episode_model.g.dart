@@ -17,9 +17,9 @@ class ViewedEpisodeModelAdapter extends TypeAdapter<ViewedEpisodeModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ViewedEpisodeModel(
-      fields[0] as int,
-      fields[1] as int,
-      fields[2] as DateTime,
+      id: fields[0] as int,
+      position: fields[1] as int,
+      updatedAt: fields[2] as DateTime?,
     );
   }
 
