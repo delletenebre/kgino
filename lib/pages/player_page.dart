@@ -91,7 +91,6 @@ class _PlayerPageState extends State<PlayerPage> {
     /// прерываем таймер показа панели управления плеером
     showControlsOverlayTimer.cancel();
 
-
     if (_playerController != null) {
       /// ^ если плеер существует
       
@@ -103,6 +102,8 @@ class _PlayerPageState extends State<PlayerPage> {
       
       _playerController?.dispose();
     }
+
+    
   }
   
   @override
@@ -198,6 +199,11 @@ class _PlayerPageState extends State<PlayerPage> {
                     /// ^ если был нажат enter
                     
                   }
+                },
+
+                /// при изменении прогресса просмотра
+                onProgressUpdate: (duration) {
+                  
                 }
 
               ),
@@ -288,7 +294,10 @@ class _PlayerPageState extends State<PlayerPage> {
           _playerController?.play();
 
           /// обновляем информацию о просмотре
-          viewedController.updateEpisode(widget.showId, episodeId, 100);
+          viewedController.updateEpisode(
+            showId: widget.showId,
+            episodeId: episodeId,
+          );
 
           /// обновляем состояние UI
           updatePageState(PlayerPageState.idle);
@@ -485,9 +494,14 @@ class _PlayerPageState extends State<PlayerPage> {
 
 
   /// сохраняем информацию о времени просмотра эпизода
-  Future<void> saveEpisodeProgress(int episodeId, Duration position) async {
+  void saveEpisodeProgress(int episodeId, Duration position) {
     if (episodeId > 0) {
-
+      viewedController.updateEpisode(
+        showId: widget.showId,
+        episodeId: episodeId,
+        position: position.inSeconds,
+        updateUi: true
+      );
     }
   }
 

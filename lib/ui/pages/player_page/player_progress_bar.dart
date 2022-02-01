@@ -70,6 +70,7 @@ class _PlayerProgressBarState extends State<PlayerProgressBar> {
         child: ValueListenableBuilder(
           valueListenable: widget.playerController!,
           builder: (context, VideoPlayerValue video, child) {
+
             return ProgressBar(
               progress: video.position,
               total: video.duration,

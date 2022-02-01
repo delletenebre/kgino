@@ -12,7 +12,12 @@ class ViewedController extends GetxController  {
 
   Box<ViewedShowModel> get items => _items.value;
 
-  void updateEpisode(String showId, int episodeId, int position) {
+  void updateEpisode({
+    required String showId,
+    required int episodeId,
+    int position = 0,
+    bool updateUi = false,
+  }) {
     final updatedAt = DateTime.now();
     
     final show = items.get(showId) ?? ViewedShowModel(showId, []);
@@ -26,7 +31,10 @@ class ViewedController extends GetxController  {
     show.episodes..remove(episode)..add(episode);
 
     _items.value.put(showId, show);
-    _items.refresh();
+    
+    if (updateUi) {
+      _items.refresh();
+    }
   }
 
   int getEpisodeProgress({required String showId, required int episodeId}) {

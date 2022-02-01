@@ -23,6 +23,9 @@ class PlayerControlOverlay extends StatefulWidget {
 
   /// обработчик при нажатии на обрабатываемую плеером клавишу
   final Function(LogicalKeyboardKey) onShowOverlay;
+
+  /// обработчик при изменении прогресса просмотра
+  final Function(Duration) onProgressUpdate;
   
   /// контроллер видеоплеера
   final VideoPlayerController? playerController;
@@ -38,6 +41,7 @@ class PlayerControlOverlay extends StatefulWidget {
     required this.onSkipPrevious,
     required this.onSeek,
     required this.onPlayPause,
+    required this.onProgressUpdate,
     this.playerController,
     required this.title,
     this.isVisible = false,
@@ -109,6 +113,9 @@ class _PlayerControlOverlayState extends State<PlayerControlOverlay> {
               child: ValueListenableBuilder(
                 valueListenable: widget.playerController!,
                 builder: (context, VideoPlayerValue video, child) {
+                  /// пользовательский обработчик времени просмотра видео
+                  widget.onProgressUpdate(video.position);
+
                   return PlayerPlayPauseButton(
                     focusNode: playButtonFocusNode,
                     isPlaying: video.isPlaying,
