@@ -1,71 +1,36 @@
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:kgino/api/tskg/models/tskg_favorite_show.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
+import 'package:kgino/models/favorite_model.dart';
 
 class FavoritesController extends GetxController  {
   /// хранилище данных
-  final storage = GetStorage('favorites');
+  static const storageName = 'favorites';
 
   /// список избранных сериалов
-  final favorites = <String, TskgFavoriteShow>{}.obs;
+  final _items = Hive.box<FavoriteModel>(storageName).obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-
-    storage.initStorage.then((initialized) {
-      /// считываем с диска сохранённые в избранном сериалы
-      final keys = storage.getKeys();
-      for (final key in keys) {
-        favorites.putIfAbsent(
-          key,
-          () => TskgFavoriteShow.fromJson(storage.read(key))
-        );
-      }
-
-      /// обновляем UI
-      favorites.refresh();
-    });
-    
-  }
+  Box<FavoriteModel> get items => _items.value;
 
   /// есть ли сериал в списке избранного
   bool isShowInFavorite(String showId) {
-    return favorites.containsKey(showId);
+    return _items.value.containsKey(showId);
   }
 
   /// добавить сериал в список избранного
   Future<void> addShowToFavorites(TskgShow show) async {
-    favorites.putIfAbsent(show.id, () {
-      return TskgFavoriteShow(show.id, show.title, show.episodesCount);
-    });
+    final item = FavoriteModel(show.id, show.title, show.episodesCount);
+    
+    _items.value.put(show.id, item);
 
-    /// обновляем UI
-    favorites.refresh();
-
-    /// сохраняем изменения на диск
-    _saveInStorage();
+    _items.refresh();
   }
 
   /// удалить сериал из списока избранного
   Future<void> removeShowFromFavorites(String showId) async {
-    favorites.remove(showId);
+    _items.value.delete(showId);
 
-    /// обновляем UI
-    favorites.refresh();
-
-    /// сохраняем изменения на диск
-    _saveInStorage();
-  }
-
-  /// сохранить список избранного на диск
-  Future<void> _saveInStorage() async {
-    await storage.erase();
-
-    favorites.forEach((key, value) async {
-      await storage.write(key, value.toJson());
-    });
+    _items.refresh();
   }
 
 }

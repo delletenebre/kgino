@@ -11,7 +11,7 @@ class FavoriteSlider extends GetView<FavoritesController> {
   @override
   Widget build(BuildContext context) {
 
-    if (controller.favorites.isEmpty) {
+    if (controller.items.isEmpty) {
       /// ^ если список избранного пуст
     
       return const SizedBox();
@@ -25,18 +25,16 @@ class FavoriteSlider extends GetView<FavoritesController> {
           const SliderTitle('Избранные'),
 
           Obx(() => TskgSlider(
-            items: controller.favorites.entries.map((entry) {
-              final show = entry.value;
-
+            items: controller.items.values.map((show) {
               return SliderCard(
-                posterUrl: TskgApi.getPosterUrl(show.id),
+                posterUrl: TskgApi.getPosterUrl(show.showId),
                 title: show.title,
                 // badges: tskgItem.badges,
                 onTap: () {
                   /// при нажатии на сериал
                   
                   /// переходим на страницу информации о сериале
-                  Get.toNamed('/tskg/show/${show.id}');
+                  Get.toNamed('/tskg/show/${show.showId}');
                 },
               );
             }).toList(),

@@ -6,6 +6,7 @@ part 'tskg_episode.g.dart';
 @JsonSerializable()
 class TskgEpisode {
   final int id;
+  final String showId;
   final String title;
   final String description;
   final String quality;
@@ -13,6 +14,7 @@ class TskgEpisode {
   
   TskgEpisode({
     this.id = 0,
+    this.showId = '',
     this.title = '',
     this.description = '',
     this.quality = '',

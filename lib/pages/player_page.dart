@@ -61,6 +61,8 @@ class _PlayerPageState extends State<PlayerPage> {
     }
   }
 
+  final viewedController = Get.find<ViewedController>();
+
   @override
   void initState() {
     super.initState();
@@ -284,6 +286,9 @@ class _PlayerPageState extends State<PlayerPage> {
 
           /// запускаем видео
           _playerController?.play();
+
+          /// обновляем информацию о просмотре
+          viewedController.updateEpisode(widget.showId, episodeId, 100);
 
           /// обновляем состояние UI
           updatePageState(PlayerPageState.idle);

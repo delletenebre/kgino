@@ -301,6 +301,7 @@ class TskgApi {
 
             return TskgEpisode(
               id: episodeId,
+              showId: showId,
               title: episodeTitle,
               description: episodeDescription,
               quality: episodeQuality,

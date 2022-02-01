@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
+import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/utils/utils.dart';
 
 class ShowEpisodes extends StatelessWidget {
@@ -16,6 +17,9 @@ class ShowEpisodes extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    /// контроллер просмотренных эпизодов
+    final viewedController = Get.find<ViewedController>();
+
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -23,12 +27,24 @@ class ShowEpisodes extends StatelessWidget {
       children: episodes.map((episode) {
         return Stack(
           children: [
-            LinearProgressIndicator(
-              minHeight: episode.description.isEmpty ? 56.0 : 72.0,
-              value: 0.0, // TODO fix add episode progress
-              color: theme.colorScheme.primary.withOpacity(0.2),
-              backgroundColor: Colors.transparent,
-            ),
+
+            Obx(() {
+              /// сколько просмотрено в секундах
+              final position = viewedController.getEpisodeProgress(
+                showId: episode.showId,
+                episodeId: episode.id
+              );
+
+              /// прогресс просмотра в процентах в интервале [0, 1]
+              final progress = position / episode.duration.inSeconds;
+              
+              return LinearProgressIndicator(
+                minHeight: episode.description.isEmpty ? 56.0 : 72.0,
+                value: progress,
+                color: theme.colorScheme.primary.withOpacity(0.2),
+                backgroundColor: Colors.transparent,
+              );
+            }),
 
             Material(
               color: Colors.transparent,
