@@ -61,6 +61,23 @@ class _PlayerPageState extends State<PlayerPage> {
     }
   }
 
+  /// слушатель изменения позиции просмотра виде
+  Future<void> changeVideoPositionListener() async {
+    final episodeId = _currentPlayingEpisode?.id;
+    final position = await _playerController?.position ?? Duration.zero;
+    
+    /// сохраняем информацию о времени просмотра эпизода
+    if (episodeId != null) {
+      viewedController.updateEpisode(
+        showId: widget.showId,
+        episodeId: episodeId,
+        position: position.inSeconds,
+        updateUi: true
+      );
+    }
+    
+  }
+
   final viewedController = Get.find<ViewedController>();
 
   @override
@@ -91,18 +108,9 @@ class _PlayerPageState extends State<PlayerPage> {
     /// прерываем таймер показа панели управления плеером
     showControlsOverlayTimer.cancel();
 
-    if (_playerController != null) {
-      /// ^ если плеер существует
-      
-      /// сохраняем просмотренно время эпизода
-      saveEpisodeProgress(
-        _currentPlayingEpisode?.id ?? 0,
-        _playerController!.value.position
-      );
-      
-      _playerController?.dispose();
-    }
+    _playerController?.removeListener(changeVideoPositionListener);
 
+    _playerController?.dispose();
     
   }
   
@@ -201,11 +209,6 @@ class _PlayerPageState extends State<PlayerPage> {
                   }
                 },
 
-                /// при изменении прогресса просмотра
-                onProgressUpdate: (duration) {
-                  
-                }
-
               ),
             ),
             
@@ -294,10 +297,7 @@ class _PlayerPageState extends State<PlayerPage> {
           _playerController?.play();
 
           /// обновляем информацию о просмотре
-          viewedController.updateEpisode(
-            showId: widget.showId,
-            episodeId: episodeId,
-          );
+          _playerController?.addListener(changeVideoPositionListener);
 
           /// обновляем состояние UI
           updatePageState(PlayerPageState.idle);
@@ -492,18 +492,6 @@ class _PlayerPageState extends State<PlayerPage> {
     }
   }
 
-
-  /// сохраняем информацию о времени просмотра эпизода
-  void saveEpisodeProgress(int episodeId, Duration position) {
-    if (episodeId > 0) {
-      viewedController.updateEpisode(
-        showId: widget.showId,
-        episodeId: episodeId,
-        position: position.inSeconds,
-        updateUi: true
-      );
-    }
-  }
 
   /// показываем панель управления плеером
   showControlOverlay() {

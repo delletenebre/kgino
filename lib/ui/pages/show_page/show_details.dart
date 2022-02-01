@@ -21,7 +21,11 @@ class ShowDetails extends StatelessWidget {
     final theme = Theme.of(context);
     const delimiterHeight = 12.0;
 
+    /// контроллер избранного
     final favoritesController = Get.find<FavoritesController>();
+
+    /// контроллер просмотренных эпизодов
+    final viewedController = Get.find<ViewedController>();
 
     return FutureBuilder<TskgShow>(
       
@@ -161,25 +165,37 @@ class ShowDetails extends StatelessWidget {
 
                           const SizedBox(height: delimiterHeight * 2),
 
-                          OutlinedButton.icon(
-                            onPressed: () {
+                          /// кнопка смотреть/продолжить просмотр
+                          Obx(() {
+                            if (viewedController.items.containsKey(showId)) {
+                              /// ^ если есть просмотренные эпизоды
+                              
+                              return OutlinedButton.icon(
+                                onPressed: () {
+                                  //Get.toNamed('/tskg/show/$showId/play/${episode.id}');
+                                },
+                                icon: Icon(Icons.play_arrow,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                label: const Text('Продолжить просмотр'),
+                              );
 
-                            },
-                            icon: Icon(Icons.play_arrow,
-                              color: theme.colorScheme.primary,
-                            ),
-                            label: const Text('Смотреть'),
-                          ),
+                            } else {
+                              /// ^ если сериал ещё не смотрели
+                            
+                              return OutlinedButton.icon(
+                                onPressed: () {
 
-                          OutlinedButton.icon(
-                            onPressed: () {
+                                },
+                                icon: Icon(Icons.play_arrow,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                label: const Text('Смотреть'),
+                              );
 
-                            },
-                            icon: Icon(Icons.play_arrow,
-                              color: theme.colorScheme.primary,
-                            ),
-                            label: const Text('Продолжить просмотр'),
-                          ),
+                            }
+                            
+                          }),
 
                           /// кнопка добавить/удалить из избранного
                           Obx(() {

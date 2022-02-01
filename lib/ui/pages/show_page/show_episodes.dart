@@ -3,7 +3,7 @@ import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/utils/utils.dart';
 
-class ShowEpisodes extends StatelessWidget {
+class ShowEpisodes extends GetView<ViewedController> {
   final List<TskgEpisode> episodes;
   final Function(TskgEpisode) onTap;
 
@@ -18,7 +18,7 @@ class ShowEpisodes extends StatelessWidget {
     final theme = Theme.of(context);
 
     /// контроллер просмотренных эпизодов
-    final viewedController = Get.find<ViewedController>();
+    //final viewedController = Get.find<ViewedController>();
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -30,7 +30,7 @@ class ShowEpisodes extends StatelessWidget {
 
             Obx(() {
               /// сколько просмотрено в секундах
-              final position = viewedController.getEpisodeProgress(
+              final position = controller.getEpisodeProgress(
                 showId: episode.showId,
                 episodeId: episode.id
               );
