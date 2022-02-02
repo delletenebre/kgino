@@ -11,6 +11,7 @@ class SliderCard extends StatefulWidget {
   final String description;
   final List<TskgBagdeType> badges;
   final Function()? onTap;
+  final FocusNode? focusNode;
 
   const SliderCard({
     Key? key,
@@ -19,6 +20,7 @@ class SliderCard extends StatefulWidget {
     this.description = '',
     this.badges = const [],
     this.onTap,
+    this.focusNode,
   }) : super(key: key);
 
   @override
@@ -75,6 +77,7 @@ class _SliderCardState extends State<SliderCard> {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(16.0),
             child: InkWell(
+              focusNode: widget.focusNode,
               focusColor: Colors.transparent,
               borderRadius: BorderRadius.circular(16.0),
 

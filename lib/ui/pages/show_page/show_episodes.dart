@@ -35,8 +35,13 @@ class ShowEpisodes extends GetView<ViewedController> {
                 episodeId: episode.id
               );
 
+              int duration = episode.duration.inSeconds;
+              if (duration == 0) {
+                duration = 1;
+              }
+
               /// прогресс просмотра в процентах в интервале [0, 1]
-              final progress = position / episode.duration.inSeconds;
+              final progress = position / duration;
               
               return LinearProgressIndicator(
                 minHeight: episode.description.isEmpty ? 56.0 : 72.0,

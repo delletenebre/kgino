@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
+import 'package:kgino/api/tskg/models/tskg_search.dart';
 import 'package:kgino/api/tskg/models/tskg_season.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
 import 'package:kgino/utils/utils.dart';
@@ -351,9 +352,6 @@ class TskgApi {
       'x-requested-with': 'XMLHttpRequest',
     };
 
-    debugPrint('getEpisodeDetails http url: $episodeId');
-    debugPrint('getEpisodeDetails http url: $url');
-
     try {
 
       /// запрашиваем данные
@@ -376,6 +374,45 @@ class TskgApi {
 
     return null;
   }
+
+
+  /// поиск сериала
+  static Future<List<TskgSearch>> search(String searchQuery) async {
+    /// формируем uri запроса
+    final url = getUri('/show/search/$searchQuery');
+
+    final headers = {
+      'x-requested-with': 'XMLHttpRequest',
+    };
+
+    final items = <TskgSearch>[];
+
+    try {
+
+      /// запрашиваем данные
+      final response = await http.get(url, headers: headers).timeout(timeout);
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+
+        final jsonItems = json.decode(response.body);
+
+        for (final item in jsonItems) {
+          items.add(TskgSearch.fromJson(item));
+        }
+
+      }
+
+    } catch (exception) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('http error: $url');
+      debugPrint('exception: $exception');
+    }
+
+    return items;
+  }
+
 
 
   static String getTextByClassName(Document document, String className) {
