@@ -7,7 +7,6 @@ class SearchShowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 32.0),
@@ -15,11 +14,10 @@ class SearchShowButton extends StatelessWidget {
         onPressed: () {
           Get.toNamed('/tskg/search');
         },
-
         icon: const ShadowedIcon(Icons.search),
-
         label: const Text('Поиск сериала'),
       ),
     );
+
   }
 }

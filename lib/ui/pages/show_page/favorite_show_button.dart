@@ -13,6 +13,7 @@ class FavoriteShowButton extends GetView<FavoritesController> {
 
   @override
   Widget build(BuildContext context) {
+
     return Obx(() {
       if (controller.isShowInFavorite(show.id)) {
         /// ^ если сериал уже в списке избранного
@@ -38,5 +39,6 @@ class FavoriteShowButton extends GetView<FavoritesController> {
       
       }
     });
+    
   }
 }

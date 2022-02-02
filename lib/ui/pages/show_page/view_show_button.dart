@@ -12,6 +12,7 @@ class ViewShowButton extends GetView<ViewedController> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Obx(() {
       if (controller.items.containsKey(showId)) {
         /// ^ если есть просмотренные эпизоды
