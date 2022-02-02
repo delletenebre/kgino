@@ -17,7 +17,7 @@ class ViewedController extends GetxController  {
     required String title,
     required int episodeId,
     int position = 0,
-    bool updateUi = false,
+    int duration = 0,
   }) {
     final updatedAt = DateTime.now();
     
@@ -29,6 +29,7 @@ class ViewedController extends GetxController  {
     }) ?? ViewedEpisodeModel(id: episodeId);
 
     episode.position = position;
+    episode.duration = duration;
     episode.updatedAt = updatedAt;
 
     show.episodes..remove(episode)..add(episode);

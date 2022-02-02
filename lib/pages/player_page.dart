@@ -67,9 +67,17 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   /// слушатель изменения позиции просмотра виде
-  Future<void> changeVideoPositionListener() async {
+  void changeVideoPositionListener() {
     final episodeId = _currentPlayingEpisode?.id;
-    final position = await _playerController?.position ?? Duration.zero;
+
+    /// текущая позиция просмотра видео
+    final position = _playerController?.value.position.inSeconds ?? 0;
+
+    /// общая продолжительность видео
+    final duration = _playerController?.value.duration.inSeconds ?? 0;
+
+    /// позиция в процентах
+    final percentPosition = position / duration;
     
     /// сохраняем информацию о времени просмотра эпизода
     if (episodeId != null) {
@@ -77,9 +85,17 @@ class _PlayerPageState extends State<PlayerPage> {
         showId: _currentShow.id,
         title: _currentShow.title,
         episodeId: episodeId,
-        position: position.inSeconds,
-        updateUi: true
+        /// если просмотрено > 95%, считаем, что эпизод просмотрен
+        position: percentPosition > 0.95 ? duration : position,
+        duration: duration,
       );
+    }
+
+    if (position == duration) {
+      /// ^ если видео закончилось
+      
+      /// запускаем следующий по списку эпизод
+      onSkipNext();
     }
     
   }

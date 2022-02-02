@@ -24,6 +24,7 @@ class HomePage extends StatelessWidget {
 
           /// список последних просмотров
           LastViewedShowsSlider(),
+          
         ],
       ),
     );

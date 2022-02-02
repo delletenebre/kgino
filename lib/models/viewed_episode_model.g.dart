@@ -19,19 +19,22 @@ class ViewedEpisodeModelAdapter extends TypeAdapter<ViewedEpisodeModel> {
     return ViewedEpisodeModel(
       id: fields[0] as int,
       position: fields[1] as int,
-      updatedAt: fields[2] as DateTime?,
+      duration: fields[2] as int,
+      updatedAt: fields[3] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ViewedEpisodeModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.position)
       ..writeByte(2)
+      ..write(obj.duration)
+      ..writeByte(3)
       ..write(obj.updatedAt);
   }
 

@@ -19,7 +19,7 @@ class ViewedShowModelAdapter extends TypeAdapter<ViewedShowModel> {
     return ViewedShowModel(
       id: fields[0] as String,
       title: fields[1] as String,
-      episodes: (fields[2] as List).cast<ViewedEpisodeModel>(),
+      episodes: (fields[2] as List?)?.cast<ViewedEpisodeModel>(),
       updatedAt: fields[3] as DateTime?,
     );
   }
