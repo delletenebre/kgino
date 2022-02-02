@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/gestures.dart';
@@ -12,32 +13,38 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'KGino',
+    return Shortcuts(
+      shortcuts: <LogicalKeySet, Intent>{
+        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+      },
       
-      locale: Locale(AppLocale.defaultLocale),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      child: GetMaterialApp(
+        title: 'KGino',
+        
+        locale: Locale(AppLocale.defaultLocale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
 
-      // navigatorObservers: [
-      //   FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
-      // ],
+        // navigatorObservers: [
+        //   FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+        // ],
 
-      /// исправляем поведение прокручивания списков для desktop-платформ
-      scrollBehavior: ScrollConfiguration.of(context).copyWith(
-        /// позволяем проматывать списки всеми доступными способами
-        dragDevices: PointerDeviceKind.values.toSet(),
-        /// скрываем системные скроллбары
-        scrollbars: false,
+        /// исправляем поведение прокручивания списков для desktop-платформ
+        scrollBehavior: ScrollConfiguration.of(context).copyWith(
+          /// позволяем проматывать списки всеми доступными способами
+          dragDevices: PointerDeviceKind.values.toSet(),
+          /// скрываем системные скроллбары
+          scrollbars: false,
+        ),
+        
+        defaultTransition: Transition.native,
+        theme: AppTheme.dark,
+        darkTheme: AppTheme.dark,
+
+        initialRoute: AppRoutes.routes.first.name,
+        unknownRoute: AppRoutes.unknownRoute,
+        getPages: AppRoutes.routes,
       ),
-      
-      defaultTransition: Transition.native,
-      theme: AppTheme.dark,
-      darkTheme: AppTheme.dark,
-
-      initialRoute: AppRoutes.routes.first.name,
-      unknownRoute: AppRoutes.unknownRoute,
-      getPages: AppRoutes.routes,
     );
   }
 }
