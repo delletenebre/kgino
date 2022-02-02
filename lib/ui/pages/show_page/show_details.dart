@@ -1,4 +1,3 @@
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kgino/api/tskg/models/tskg_show.dart';
@@ -22,9 +21,6 @@ class ShowDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     const delimiterHeight = 12.0;
-
-    /// контроллер избранного
-    final favoritesController = Get.find<FavoritesController>();
 
     /// контроллер просмотренных эпизодов
     final viewedController = Get.find<ViewedController>();

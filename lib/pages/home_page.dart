@@ -1,9 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:kgino/api/tskg/models/tskg_item.dart';
-import 'package:kgino/api/tskg/tskg_api.dart';
-import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/home_page/favorite_shows_slider.dart';
 import 'package:kgino/ui/pages/home_page/last_added_shows_slider.dart';
