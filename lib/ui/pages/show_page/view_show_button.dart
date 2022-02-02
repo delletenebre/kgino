@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/controllers/controllers.dart';
+import 'package:kgino/ui/shadowed_icon.dart';
 
 class ViewShowButton extends GetView<ViewedController> {
   final String showId;
@@ -11,8 +12,6 @@ class ViewShowButton extends GetView<ViewedController> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Obx(() {
       if (controller.items.containsKey(showId)) {
         /// ^ если есть просмотренные эпизоды
@@ -25,9 +24,7 @@ class ViewShowButton extends GetView<ViewedController> {
           onPressed: () {
             Get.toNamed('/tskg/show/$showId/play/${lastEpisode.id}/${lastEpisode.position}');
           },
-          icon: Icon(Icons.play_arrow,
-            color: theme.colorScheme.primary,
-          ),
+          icon: const ShadowedIcon(Icons.play_arrow),
           label: const Text('Продолжить просмотр'),
         );
 
@@ -38,9 +35,7 @@ class ViewShowButton extends GetView<ViewedController> {
           onPressed: () {
             Get.toNamed('/tskg/show/$showId/play');
           },
-          icon: Icon(Icons.play_arrow,
-            color: theme.colorScheme.primary,
-          ),
+          icon: const ShadowedIcon(Icons.play_arrow),
           label: const Text('Смотреть'),
         );
 

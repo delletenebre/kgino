@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kgino/pages/home_page.dart';
 import 'package:kgino/pages/player_page.dart';
+import 'package:kgino/pages/search_page.dart';
 import 'package:kgino/pages/show_page.dart';
 import 'package:kgino/pages/unknown_route_page.dart';
 
@@ -93,7 +94,13 @@ class AppRoutes {
       },
     ),
 
-    
+    /// страница поиска сериала
+    GetPage(
+      name: '/tskg/search',
+      page: () {
+        return const SearchPage();
+      },
+    ),
 
   ];
 

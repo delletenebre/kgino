@@ -76,7 +76,7 @@ class _PlayerPageState extends State<PlayerPage> {
     /// общая продолжительность видео
     final duration = _playerController?.value.duration.inSeconds ?? 0;
 
-    /// позиция в процентах
+    /// сколько просмотрено в процентах [0,1]
     final percentPosition = position / duration;
     
     /// сохраняем информацию о времени просмотра эпизода

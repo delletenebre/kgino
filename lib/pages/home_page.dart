@@ -3,6 +3,7 @@ import 'package:kgino/ui/pages/app_page.dart';
 import 'package:kgino/ui/pages/home_page/favorite_shows_slider.dart';
 import 'package:kgino/ui/pages/home_page/last_added_shows_slider.dart';
 import 'package:kgino/ui/pages/home_page/last_viewed_shows_slider.dart';
+import 'package:kgino/ui/pages/home_page/search_show_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -15,6 +16,9 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
+          
+          /// кнопка поиска сериала
+          SearchShowButton(),
 
           /// список избранного
           FavoriteShowsSlider(),
@@ -24,7 +28,7 @@ class HomePage extends StatelessWidget {
 
           /// список последних просмотров
           LastViewedShowsSlider(),
-          
+
         ],
       ),
     );

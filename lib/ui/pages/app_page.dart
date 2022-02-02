@@ -20,9 +20,9 @@ class AppPage extends StatelessWidget {
             children: [
 
               /// невидимый элемент для возврата фокуса в начало страницы
-              const Focus(
-                child: SizedBox(height: 16.0),
-              ),
+              // const Focus(
+              //   child: SizedBox(height: 16.0),
+              // ),
 
               child,
             ],
