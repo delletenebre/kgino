@@ -29,6 +29,7 @@ class _ShowPageState extends State<ShowPage> {
     /// формируем ссылку на постер сериала
     posterUrl = TskgApi.getPosterUrl(widget.id);
 
+    /// меняем цвет фона, в зависимости от основных цветов постера
     setBackgroundColors();
   }
 

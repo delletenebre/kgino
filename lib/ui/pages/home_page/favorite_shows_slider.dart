@@ -5,8 +5,8 @@ import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/sliders/slider_card.dart';
 import 'package:kgino/ui/sliders/slider_title.dart';
 
-class FavoriteSlider extends GetView<FavoritesController> {
-  const FavoriteSlider({ Key? key }) : super(key: key);
+class FavoriteShowsSlider extends GetView<FavoritesController> {
+  const FavoriteShowsSlider({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
