@@ -9,6 +9,7 @@ import 'package:kgino/controllers/controllers.dart';
 import 'package:kgino/ui/pages/player_page/player_control_overlay.dart';
 import 'package:kgino/ui/pages/player_page/player_error.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock/wakelock.dart';
 
 enum PlayerPageState {
   idle,
@@ -97,6 +98,9 @@ class _PlayerPageState extends State<PlayerPage> {
       /// запускаем следующий по списку эпизод
       onSkipNext();
     }
+
+    /// чтобы экран не уходил в сон
+    Wakelock.toggle(enable: _playerController?.value.isPlaying ?? false);
     
   }
 
