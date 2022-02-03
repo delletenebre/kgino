@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
+import 'package:kgino/resources/resources.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/sliders/slider_card.dart';
 import 'package:kgino/ui/sliders/slider_title.dart';
@@ -103,7 +104,7 @@ class LastAddedShowsSlider extends StatelessWidget {
 
             /// пока идёт запрос данных - показываем индикатор загрузки
             return const SizedBox(
-              height: 160.0 / 5 * 4,
+              height: AppTheme.sliderCardSize / 5 * 4,
               child: Center(
                 child: CircularProgressIndicator(),
               ),

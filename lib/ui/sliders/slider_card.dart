@@ -39,10 +39,10 @@ class _SliderCardState extends State<SliderCard> {
     final _badges = widget.badges.map((badge) {
       return SliderCardBadge(
         child: badge.content(
-          size: _hasFocus ? 12.0 : 10.0,
+          size: _hasFocus ? 14.0 : 12.0,
         ),
         color: badge.color(),
-        size: _hasFocus ? 12.0 : 8.0,
+        size: _hasFocus ? 14.0 : 12.0,
       );
     }).toList();
     
@@ -145,12 +145,12 @@ class _SliderCardState extends State<SliderCard> {
 
               SliderText(
                 text: widget.description,
-                fontSize: 8.0,
+                fontSize: 12.0,
               ),
 
               SliderText(
                 text: widget.title,
-                fontSize: 10.0,
+                fontSize: 14.0,
               ),
 
             ],
