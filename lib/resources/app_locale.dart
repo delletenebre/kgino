@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class AppLocale {
@@ -12,8 +13,8 @@ class AppLocale {
   /// Список поддерживаемых языков
   static final locales = {
     'ru': 'Русский',
-    'ky': 'Кыргызча',
-    'en': 'English',
+    // 'ky': 'Кыргызча',
+    // 'en': 'English',
   };
 
   /// Язык по умолчанию
@@ -36,5 +37,5 @@ class AppLocale {
   // static DateFormat get dateTimeFullFormatter => dateFormatter.add_Hms();
   // static DateFormat get dateTimeFormatter => dateFormatter.add_Hm();
 
-  static final dateFormatter = DateFormat.yMMMd();
+  static final dateFormatter = DateFormat.yMMMd(Get.locale);
 }

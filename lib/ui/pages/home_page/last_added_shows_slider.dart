@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_item.dart';
 import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/controllers/controllers.dart';
+import 'package:kgino/resources/app_locale.dart';
 import 'package:kgino/resources/resources.dart';
 import 'package:kgino/ui/pages/tskg_slider.dart';
 import 'package:kgino/ui/sliders/slider_card.dart';
@@ -57,7 +58,7 @@ class LastAddedShowsSlider extends StatelessWidget {
                 final dateString = itemsGroupedByDate.keys.elementAt(i);
                 final date = DateTime.parse(dateString);
 
-                final dateFormatter = DateFormat('dd MMM');
+                final dateFormatter = DateFormat('dd MMM', AppLocale.defaultLocale);
 
                 /// список сериалов за определённый день
                 final elements = itemsGroupedByDate.values.elementAt(i);
