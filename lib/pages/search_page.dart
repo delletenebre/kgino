@@ -90,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
           Obx(() {
             return Wrap(
               spacing: 12.0,
-              children: items,
+              children: items.value,
             );
           }),
         ],

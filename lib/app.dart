@@ -21,8 +21,6 @@ class App extends StatelessWidget {
       child: GetMaterialApp(
         title: 'KGino',
 
-        debugShowCheckedModeBanner: false,
-        
         locale: Locale(AppLocale.defaultLocale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
