@@ -358,7 +358,7 @@ class TskgApi {
         /// ^ если запрос выполнен успешно
 
         /// возвращаем информацио об эпизоде
-        return TskgEpisodeDetails.fromJson(json.decode(response.data));
+        return TskgEpisodeDetails.fromJson(response.data);
 
       }
     } catch (exception) {
