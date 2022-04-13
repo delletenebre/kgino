@@ -27,6 +27,7 @@ dependencies:
   cached_network_image: ^3.2.0
   collection: ^1.15.0
   decorated_icon: ^1.2.1
+  dio: ^4.0.6
   flutter_svg: ^1.0.3
   get: ^4.6.1
   get_storage: ^2.0.3

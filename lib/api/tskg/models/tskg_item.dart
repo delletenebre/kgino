@@ -7,7 +7,7 @@ part 'tskg_item.g.dart';
 @JsonSerializable()
 class TskgItem {
   final DateTime date;
-  final List<TskgBagdeType> badges;
+  final List<String> badges;
   final String title;
   final String subtitle;
   final String genres;

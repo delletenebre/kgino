@@ -28,7 +28,7 @@ class ShowDetails extends StatelessWidget {
     return FutureBuilder<TskgShow>(
       
       /// запрашиваем данные о сериале
-      future: TskgApi.getShow(showId),
+      future: TskgApi().getShow(showId),
 
       builder: (context, snapshot) {
         late Widget content;

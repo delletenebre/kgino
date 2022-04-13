@@ -290,7 +290,7 @@ class _PlayerPageState extends State<PlayerPage> {
     updatePageState(PlayerPageState.loading);
 
     /// получаем данные эпизода
-    final episode = await TskgApi.getEpisodeDetails(episodeId);
+    final episode = await TskgApi().getEpisodeDetails(episodeId);
     
     if (episode != null) {
       /// ^ если данние по эпизоду получены
@@ -483,7 +483,7 @@ class _PlayerPageState extends State<PlayerPage> {
       updatePageState(PlayerPageState.loading);
 
       /// получаем данные сериала (сезоны и эпизоды)
-      _currentShow = await TskgApi.getShow(widget.showId);
+      _currentShow = await TskgApi().getShow(widget.showId);
       
       /// очищаем спискок идентификаторов эпизодов
       playlistIds.clear();

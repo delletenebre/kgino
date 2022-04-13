@@ -42,7 +42,7 @@ class _SearchPageState extends State<SearchPage> {
               items.value = [];
               items.refresh();
 
-              final result = await TskgApi.search(text);
+              final result = await TskgApi().search(text);
 
               final shows = result.where((item) {
                 return item.url.startsWith('/show/');

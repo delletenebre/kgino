@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:kgino/api/tskg/tskg_api.dart';
 import 'package:kgino/resources/app_theme.dart';
 import 'package:kgino/ui/sliders/slider_card_badge.dart';
 import 'package:kgino/ui/sliders/slider_text.dart';
@@ -9,7 +8,7 @@ class SliderCard extends StatefulWidget {
   final String posterUrl;
   final String title;
   final String description;
-  final List<TskgBagdeType> badges;
+  final List<String> badges;
   final Function()? onTap;
   final FocusNode? focusNode;
 

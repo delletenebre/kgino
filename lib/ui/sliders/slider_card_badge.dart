@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kgino/api/tskg/tskg_api.dart';
 
 class SliderCardBadge extends StatelessWidget {
   final Widget child;
@@ -34,91 +33,87 @@ class SliderCardBadge extends StatelessWidget {
   }
 }
 
-extension SliderCardBadgeExtensions on TskgBagdeType {
+extension SliderCardBadgeExtensions on String {
   Widget content({required double size}) {
     switch (this) {
       
-      case TskgBagdeType.newest:
+      case 'Новое':
         return Text('новое',
           style: TextStyle(
             fontSize: size,
           ),
         );
 
-      case TskgBagdeType.top:
+      case 'Топ':
         return Text('топ',
           style: TextStyle(
             fontSize: size,
           ),
         );
 
-      case TskgBagdeType.updated:
+      case 'Обновлено':
         return Icon(Icons.cached,
           size: size,
         );
 
-      case TskgBagdeType.temporarily:
+      case 'Временно':
         return Icon(Icons.access_time,
           size: size,
         );
 
-      case TskgBagdeType.finale:
+      case 'Финал':
         return Text('финал',
           style: TextStyle(
             fontSize: size,
           ),
         );
 
-      case TskgBagdeType.compilation:
+      case 'Подборка':
         return Text('подборка',
           style: TextStyle(
             fontSize: size,
           ),
         );
 
-      case TskgBagdeType.important:
+      case 'Важно':
         return Text('важно',
           style: TextStyle(
             fontSize: size,
           ),
         );
 
-      case TskgBagdeType.newyear:
+      case 'Новогоднее':
         return Icon(Icons.ac_unit,
           size: size,
         );
 
-      case TskgBagdeType.unknown:
-        break;
+      default:
+        return Text(this);
     }
 
-    return const Text('');
   }
 
   Color color() {
     switch (this) {
       
-      case TskgBagdeType.newest:
+      case 'Новое':
         return Colors.green.shade700;
 
-      case TskgBagdeType.top:
+      case 'Топ':
         return Colors.orange.shade700;
 
-      case TskgBagdeType.updated:
-      case TskgBagdeType.temporarily:
-      case TskgBagdeType.unknown:
-        return Colors.grey.shade700;
-
-      case TskgBagdeType.finale:
+      case 'Финал':
+      case 'Подборка':
         return Colors.blue.shade700;
 
-      case TskgBagdeType.compilation:
-        return Colors.blue.shade700;
-
-      case TskgBagdeType.important:
-      case TskgBagdeType.newyear:
+      case 'Важно':
+      case 'Новогоднее':
         return Colors.red.shade700;
 
+      case 'Обновлено':
+      case 'Временно':
+      default:
+        return Colors.grey.shade700;
     }
   }
 }

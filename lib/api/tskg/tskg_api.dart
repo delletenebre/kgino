@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:kgino/api/tskg/models/tskg_episode.dart';
 import 'package:kgino/api/tskg/models/tskg_episode_details.dart';
@@ -15,57 +16,88 @@ import 'package:kgino/utils/utils.dart';
 
 class TskgApi {
   /// время ожидания ответа от сервера
-  static const timeout = Duration(seconds: 15);
+  static const timeout = Duration(seconds: 30);
 
-  static const scheme = 'https';
-  static const host = 'www.ts.kg';
+  static const baseUrl = 'https://www.ts.kg';
 
-  /// формируем полную ссылку по относительному пути
-  static Uri getUri(String path, { Map<String, String>? queryParameters }) {
-    return Uri(
-      scheme: scheme,
-      host: host,
-      path: path,
-      queryParameters: queryParameters
+  static final dio = Dio();
+
+  TskgApi() {
+
+    dio.options = BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: timeout.inMilliseconds,
+      receiveTimeout: timeout.inMilliseconds,
+      headers: {
+        'User-Agent': 'kgino/${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      },
     );
+
+    // dio.interceptors.add(InterceptorsWrapper(
+    //   onRequest:(options, handler) {
+    //     /// действия перед тем, как запрос будет отправлен
+
+    //     /// дополнительные заголовки запроса
+    //     final headers = <String, String>{
+    //       'User-Agent': 'okhttp/3.11.0',
+    //     };
+
+    //     /// добавляем заголовки в запрос
+    //     options.headers.addAll(headers);
+        
+    //     return handler.next(options);
+    //   },
+
+    //   onResponse:(response, handler) {
+    //     // Do something with response data
+
+    //     debugPrint('==== API RESPONSE ====');
+    //     debugPrint('uri : ${response.realUri}');
+    //     //debugPrint('data: ${response.data}');
+    //     debugPrint('==== ==== ====\n\n');
+
+    //     return handler.next(response);
+    //   },
+
+    //   onError: (error, handler) {
+    //     // Do something with response error
+
+    //     debugPrint('==== API RESPONSE ====');
+    //     debugPrint('uri : ${error.response?.realUri}');
+    //     debugPrint('data: $error');
+    //     debugPrint('==== ==== ====\n\n');
+
+    //     return  handler.next(error);
+    //   }
+    // ));
+
   }
 
   /// формируем полную ссылку на постер сериала по id
   static String getPosterUrl(String showId) {
-    final url = getUri('/posters/$showId.png');
-    return url.toString();
+    return '$baseUrl/posters/$showId.png';
   }
 
   /// формируем полную ссылку на сериал по id
   static String getShowUrl(String showId) {
-    final url = getUri('/show/$showId');
-    return url.toString();
-  }
-
-  /// формируем полную ссылку на эпизод сериал по относительной ссылке
-  static String getEpisodeUrl(String relativeUrl) {
-    final url = getUri(relativeUrl);
-    return url.toString();
+    return '$baseUrl/show/$showId';
   }
 
   /// получение списка новостей
-  static Future<List<TskgItem>> getNews() async {
+  Future<List<TskgItem>> getNews() async {
     
     /// список элементов
     final items = <TskgItem>[];
-    
-    /// формируем uri запроса
-    final url = getUri('/news');
 
     try {
       /// запрашиваем данные
-      final response = await http.get(url).timeout(timeout);
+      final response = await dio.get('/news');
 
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
 
         /// парсим html
-        final document = parse(response.body);
+        final document = parse(response.data);
         
         /// получаем элементы списка новых поступлений
         final elements = document.getElementsByClassName('app-news-block');
@@ -124,43 +156,14 @@ class TskgApi {
                 if (badge.text.isEmpty) {
                   /// ^ если значок в виде иконки
 
-                  final text = badge.firstChild?.attributes['title'] ?? '';
+                  return badge.firstChild?.attributes['title'] ?? '';
 
-                  switch (text) {
-                    case 'Временно':
-                      return TskgBagdeType.temporarily;
-
-                    case 'Обновлено':
-                      return TskgBagdeType.updated;
-                  }
-                
                 } else {
                   /// ^ если значок подписан
                   
-                  switch (badge.text) {
-                    case 'Топ':
-                      return TskgBagdeType.top;
-                    
-                    case 'Новое':
-                      return TskgBagdeType.newest;
-
-                    case 'Финал':
-                      return TskgBagdeType.finale;
-
-                    case 'Подборка':
-                      return TskgBagdeType.compilation;
-
-                    case 'Важно':
-                      return TskgBagdeType.important;
-
-                    case 'Новогоднее':
-                      return TskgBagdeType.newyear;
-                  }
+                  return badge.text;
+                  
                 }
-                
-                /// если значок в виде иконки
-                /// TODO fix
-                return TskgBagdeType.unknown;
 
               });
 
@@ -186,8 +189,7 @@ class TskgApi {
     } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
-      
-      debugPrint('http error: $url');
+      debugPrint('exception: $exception');
     }
 
     return items;
@@ -195,19 +197,17 @@ class TskgApi {
 
 
   /// получение информации о сериале
-  static Future<TskgShow> getShow(String showId) async {
-    /// формируем uri запроса
-    final url = Uri.parse(getShowUrl(showId));
+  Future<TskgShow> getShow(String showId) async {
 
     try {
       /// запрашиваем данные
-      final response = await http.get(url).timeout(timeout);
+      final response = await dio.get(getShowUrl(showId));
 
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
 
         /// парсим html
-        final document = parse(response.body);
+        final document = parse(response.data);
 
         /// парсим название сериала
         final title = document.getElementById('h-show-title')?.text ?? '';
@@ -331,8 +331,6 @@ class TskgApi {
     } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
-      
-      debugPrint('http error: $url');
     }
 
     return TskgShow();
@@ -340,35 +338,32 @@ class TskgApi {
 
 
   /// получение информации о эпизоде
-  static Future<TskgEpisodeDetails?> getEpisodeDetails(int episodeId) async {
-    /// формируем uri запроса
-    final url = getUri('/show/episode/episode.json',
-      queryParameters: {
-        'episode': '$episodeId',
-      }
-    );
-
-    final headers = {
-      'x-requested-with': 'XMLHttpRequest',
-    };
+  Future<TskgEpisodeDetails?> getEpisodeDetails(int episodeId) async {
 
     try {
 
       /// запрашиваем данные
-      final response = await http.get(url, headers: headers).timeout(timeout);
+      final response = await dio.get('/show/episode/episode.json',
+        queryParameters: {
+          'episode': '$episodeId',
+        },
+        options: Options(
+          headers: {
+            'x-requested-with': 'XMLHttpRequest',
+          },
+        ),
+      );
 
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
 
         /// возвращаем информацио об эпизоде
-        return TskgEpisodeDetails.fromJson(json.decode(response.body));
+        return TskgEpisodeDetails.fromJson(json.decode(response.data));
 
       }
     } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
-      
-      debugPrint('http error: $url');
       debugPrint('exception: $exception');
     }
 
@@ -377,25 +372,25 @@ class TskgApi {
 
 
   /// поиск сериала
-  static Future<List<TskgSearch>> search(String searchQuery) async {
-    /// формируем uri запроса
-    final url = getUri('/show/search/$searchQuery');
-
-    final headers = {
-      'x-requested-with': 'XMLHttpRequest',
-    };
+  Future<List<TskgSearch>> search(String searchQuery) async {
 
     final items = <TskgSearch>[];
 
     try {
 
       /// запрашиваем данные
-      final response = await http.get(url, headers: headers).timeout(timeout);
+      final response = await dio.get('/show/search/$searchQuery',
+        options: Options(
+          headers: {
+            'x-requested-with': 'XMLHttpRequest',
+          },
+        ),
+      );
 
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
 
-        final jsonItems = json.decode(response.body);
+        final jsonItems = json.decode(response.data);
 
         for (final item in jsonItems) {
           items.add(TskgSearch.fromJson(item));
@@ -406,7 +401,6 @@ class TskgApi {
     } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
-      debugPrint('http error: $url');
       debugPrint('exception: $exception');
     }
 
@@ -425,31 +419,19 @@ class TskgApi {
   }
 }
 
-enum TskgBagdeType {
-  /// новое
-  newest,
+class ApiException implements Exception {
+  /// код HTTP-ответа
+  final int statusCode;
 
-  /// топ
-  top,
+  /// A message describing the format error.
+  final String message;
 
-  /// обновлено
-  updated,
 
-  /// временно
-  temporarily,
+  const ApiException({
+    required this.statusCode,
+    this.message = '',
+  });
 
-  /// финал
-  finale,
-
-  /// подборка
-  compilation,
-
-  /// важно
-  important,
-
-  /// новогоднее
-  newyear,
-
-  /// неизвестно
-  unknown,
+  @override
+  String toString() => 'ApiException >>> Code: $statusCode >> $message';
 }

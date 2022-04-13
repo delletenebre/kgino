@@ -23,7 +23,7 @@ class LastAddedShowsSlider extends StatelessWidget {
         const SliderTitle('Последние поступления'),
 
         FutureBuilder<List<TskgItem>>(
-          future: TskgApi.getNews(),
+          future: TskgApi().getNews(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               
