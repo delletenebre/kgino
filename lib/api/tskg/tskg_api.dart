@@ -20,6 +20,8 @@ class TskgApi {
 
   static const baseUrl = 'https://www.ts.kg';
 
+  static final userAgent = 'kgino/${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
+
   static final dio = Dio();
 
   TskgApi() {
@@ -29,7 +31,7 @@ class TskgApi {
       connectTimeout: timeout.inMilliseconds,
       receiveTimeout: timeout.inMilliseconds,
       headers: {
-        'User-Agent': 'kgino/${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+        'User-Agent': userAgent,
       },
     );
 
@@ -376,32 +378,40 @@ class TskgApi {
 
     final items = <TskgSearch>[];
 
-    try {
+    if (searchQuery.isNotEmpty) {
+      /// ^ если запрос не пустой
+      
+      try {
 
-      /// запрашиваем данные
-      final response = await dio.get('/show/search/$searchQuery',
-        options: Options(
-          headers: {
-            'x-requested-with': 'XMLHttpRequest',
-          },
-        ),
-      );
+        /// запрашиваем данные
+        final response = await dio.get('/show/search/$searchQuery',
+          options: Options(
+            headers: {
+              'x-requested-with': 'XMLHttpRequest',
+            },
+          ),
+        );
 
-      if (response.statusCode == 200) {
-        /// ^ если запрос выполнен успешно
+        debugPrint('search > searchQuery > $searchQuery');
+        debugPrint('search > response > ${response.data}');
 
-        final jsonItems = json.decode(response.data);
+        if (response.statusCode == 200) {
+          /// ^ если запрос выполнен успешно
 
-        for (final item in jsonItems) {
-          items.add(TskgSearch.fromJson(item));
+          final jsonItems = response.data;
+
+          for (final item in jsonItems) {
+            items.add(TskgSearch.fromJson(item));
+          }
+
         }
 
+      } catch (exception) {
+        /// ^ если прозошла сетевая ошибка
+        
+        debugPrint('exception: $exception');
       }
 
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
-      
-      debugPrint('exception: $exception');
     }
 
     return items;

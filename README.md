@@ -1,16 +1,6 @@
-# kgino
+# KGino
 
-A new Flutter project.
+Приложение для просмотра фильмов и сериалов с сайта [TS.KG](https://ts.kg) для Android TV
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![screenshot 1](/screenshots/screenshot_1.png?raw=true)
+![screenshot 2](/screenshots/screenshot_2.png?raw=true)
