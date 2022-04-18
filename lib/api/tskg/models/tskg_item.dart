@@ -1,6 +1,5 @@
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:kgino/api/tskg/tskg_api.dart';
 
 part 'tskg_item.g.dart';
 

@@ -63,16 +63,16 @@ class _SearchPageState extends State<SearchPage> {
               items.refresh();
             },
 
-            decoration: InputDecoration(
-              enabledBorder: const OutlineInputBorder(
+            decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white, width: 0.0),
               ),
 
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white, width: 0.0),
               ),
 
-              disabledBorder: const OutlineInputBorder(
+              disabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white, width: 0.0),
               ),
 
@@ -90,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
           Obx(() {
             return Wrap(
               spacing: 12.0,
-              children: items.value,
+              children: items,
             );
           }),
         ],
