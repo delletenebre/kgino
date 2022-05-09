@@ -88,16 +88,17 @@ class _SearchPageState extends State<SearchPage> {
           ),
 
           Obx(() {
-            return Wrap(
-              spacing: 12.0,
-              children: items,
-            );
+            if (items.isEmpty) {
+              return const SizedBox();
+            } else {
+              return Wrap(
+                spacing: 12.0,
+                children: items,
+              );
+            }
           }),
         ],
       ),
-
-
-
     );
   }
 }

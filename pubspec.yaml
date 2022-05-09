@@ -1,11 +1,11 @@
 name: kgino
-description: A new Flutter project.
+description: Просмотр TS.KG
 
 
 publish_to: 'none'
 
 
-version: 2.0.6+106
+version: 2.0.7+107
 
 # flutter pub outdated
 # flutter pub upgrade --major-versions
@@ -46,7 +46,7 @@ dev_dependencies:
     sdk: flutter
 
   build_runner: ^2.1.7
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
   json_serializable: ^6.1.4
   hive_generator: ^1.1.2
 
