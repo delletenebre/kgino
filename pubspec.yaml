@@ -5,7 +5,7 @@ description: Просмотр TS.KG
 publish_to: 'none'
 
 
-version: 2.0.7+107
+version: 2.0.8+108
 
 # flutter pub outdated
 # flutter pub upgrade --major-versions

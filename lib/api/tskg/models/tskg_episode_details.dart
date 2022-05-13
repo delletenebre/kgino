@@ -16,7 +16,7 @@ class TskgEpisodeDetails {
   final TskgEpisodeOverlay overlay;
 
   final String name;
-  final bool subtitles;
+  final dynamic subtitles;
   final String title;
   final TskgEpisodeVideo video;
 
@@ -32,7 +32,7 @@ class TskgEpisodeDetails {
     this.link = '',
     required this.overlay,
     this.name = '',
-    this.subtitles = false,
+    this.subtitles,
     this.title = '',
     required this.video,
     this.voice,
