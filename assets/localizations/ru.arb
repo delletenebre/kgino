@@ -1,0 +1,52 @@
+{
+  "@@locale": "ru",
+  "@@last_modified": "2021-08-20T00:00:00.000",
+
+  "appTitle": "KGino",
+  "@appTitle": {
+    "type": "text"
+  },
+
+
+  "search": "Поиск",
+  "@search": {
+    "type": "text"
+  },
+
+  "home": "Обзор",
+  "@home": {
+    "type": "text"
+  },
+
+  "tv": "ТВ",
+  "@tv": {
+    "type": "text"
+  },
+
+  "tvshows": "Сериалы",
+  "@tvshows": {
+    "type": "text"
+  },
+
+  "movies": "Фильмы",
+  "@movies": {
+    "type": "text"
+  },
+
+
+  "cancel": "Отмена",
+  "@cancel": {
+    "type": "text"
+  },
+  
+  "back": "Назад",
+  "@back": {
+    "type": "text"
+  },
+
+  "close": "Закрыть",
+  "@close": {
+    "type": "text"
+  }
+
+}

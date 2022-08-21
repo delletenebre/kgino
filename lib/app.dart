@@ -1,51 +1,41 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import 'controllers/controllers.dart';
-import 'resources/resources.dart';
+import 'controllers/locale_controller.dart';
+import 'controllers/theme_controller.dart';
+import 'resources/krs_theme.dart';
+import 'resources/krs_router.gr.dart';
 
 
 class App extends StatelessWidget {
-  const App({ Key? key }) : super(key: key);
+  App({ Key? key }) : super(key: key);
+
+  final _appRouter = KrsRouter(
+    //authGuard: AuthGuard(),
+  );
 
   @override
   Widget build(BuildContext context) {
+    final localeController = Get.find<LocaleController>();
+    final themeController = Get.find<ThemeController>();
 
-    return Shortcuts(
-      shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
-      },
-      
-      child: GetMaterialApp(
-        title: 'KGino',
+    return Obx(() {
+      return MaterialApp.router(
+        debugShowCheckedModeBanner: false,
 
-        locale: Locale(AppLocale.defaultLocale),
+        routerDelegate: _appRouter.delegate(),
+        routeInformationParser: _appRouter.defaultRouteParser(),
+
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
+        locale: Locale(localeController.locale),
 
-        // navigatorObservers: [
-        //   FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
-        // ],
-
-        /// исправляем поведение прокручивания списков для desktop-платформ
-        scrollBehavior: ScrollConfiguration.of(context).copyWith(
-          /// позволяем проматывать списки всеми доступными способами
-          dragDevices: PointerDeviceKind.values.toSet(),
-          /// скрываем системные скроллбары
-          scrollbars: false,
-        ),
-        
-        defaultTransition: Transition.native,
-        theme: AppTheme.dark,
-        darkTheme: AppTheme.dark,
-
-        initialRoute: AppRoutes.routes.first.name,
-        unknownRoute: AppRoutes.unknownRoute,
-        getPages: AppRoutes.routes,
-      ),
-    );
+        theme: KrsTheme.light,
+        darkTheme: KrsTheme.dark,
+        themeMode: themeController.themeMode,
+      );
+    });
   }
 }

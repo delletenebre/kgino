@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:kgino/app.dart';
-import 'package:kgino/models/favorite_model.dart';
-import 'package:kgino/models/viewed_episode_model.dart';
-import 'package:kgino/models/viewed_show_model.dart';
+import 'package:get/get.dart';
 
-import 'controllers/controllers.dart';
+import 'api/api_provider.dart';
+import 'app.dart';
+import 'controllers/locale_controller.dart';
+import 'controllers/theme_controller.dart';
 
-void main() async {
-  await Hive.initFlutter();
+void main() {
+  /// инициализируем движок взаимодействия с нативным кодом
+  WidgetsFlutterBinding.ensureInitialized();
 
-  Hive.registerAdapter<FavoriteModel>(FavoriteModelAdapter());
-  Hive.registerAdapter<ViewedShowModel>(ViewedShowModelAdapter());
-  Hive.registerAdapter<ViewedEpisodeModel>(ViewedEpisodeModelAdapter());
+  /// контроллер языка приложения
+  Get.put(LocaleController(), permanent: true);
+  /// контроллер темы оформления приложения
+  Get.put(ThemeController(), permanent: true);
+  // /// контроллер авторизации
+  // Get.put(AuthController(), permanent: true);
+  /// контроллер запросов к API-серверу
+  Get.put(ApiProvider(), permanent: true);
 
-  /// контроллер избранного
-  await Hive.openBox<FavoriteModel>(FavoritesController.storageName);
-  Get.put(FavoritesController());
 
-  /// контроллер просмотренного
-  await Hive.openBox<ViewedShowModel>(ViewedController.storageName);
-  Get.put(ViewedController());
-
-  runApp(const App());
+  runApp(App());
 }
