@@ -74,44 +74,47 @@ class _RootLayoutState extends State<RootLayout> {
     final selectedDestinationIndex = (index > -1) ? index : 0;
 
     return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            extended: false,
-            selectedIndex: selectedDestinationIndex,
-            labelType: NavigationRailLabelType.all,
-            onDestinationSelected: (index) {
-              AutoRouter.of(context).navigate(destinations[index].route);
-            },
-            destinations: destinations,
-          ),
-
-          const Expanded(
-            child: AutoRouter(),
-          )
-        ],
-      ),
-
-      // body: Stack(
+      // body: Row(
       //   children: [
-          
-      //     const AutoRouter(),
-
-      //     SizedBox(
-      //       width: 80.0,
-      //       child: NavigationRail(
-      //         backgroundColor: theme.colorScheme.surface,
-      //         extended: false,
-      //         selectedIndex: selectedDestinationIndex,
-      //         labelType: NavigationRailLabelType.all,
-      //         onDestinationSelected: (index) {
-      //           AutoRouter.of(context).navigate(destinations[index].route);
-      //         },
-      //         destinations: destinations,
+      //     NavigationRail(
+      //       extended: false,
+      //       selectedIndex: selectedDestinationIndex,
+      //       labelType: NavigationRailLabelType.all,
+      //       selectedLabelTextStyle: TextStyle(
+      //         color: theme.colorScheme.secondary
       //       ),
+      //       onDestinationSelected: (index) {
+      //         AutoRouter.of(context).navigate(destinations[index].route);
+      //       },
+      //       destinations: destinations,
       //     ),
+
+      //     const Expanded(
+      //       child: AutoRouter(),
+      //     )
       //   ],
       // ),
+
+      body: Stack(
+        children: [
+          
+          const AutoRouter(),
+
+          SizedBox(
+            width: 80.0,
+            child: NavigationRail(
+              backgroundColor: theme.colorScheme.surface,
+              extended: false,
+              selectedIndex: selectedDestinationIndex,
+              labelType: NavigationRailLabelType.all,
+              onDestinationSelected: (index) {
+                AutoRouter.of(context).navigate(destinations[index].route);
+              },
+              destinations: destinations,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
