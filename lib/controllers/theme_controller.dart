@@ -1,52 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
-class ThemeController extends GetxController {
-  /// хранилище
-  late final SharedPreferences _storage;
-  
-  /// ключ в хранилище для сохранённого значения
-  static const _storageKey = 'darkModeEnabled';
+import '../resources/krs_storage.dart';
 
-  /// текущая тема оформления
-  final Rx<bool?> _darkModeEnabled = null.obs;
-  bool? get darkModeEnabled => _darkModeEnabled.value;
-  set darkModeEnabled(bool? value) => _darkModeEnabled.value = value;
+class ThemeController extends Cubit<ThemeMode> {
+  /// ключ для сохранённого значения
+  static const _prefsKey = 'theme';
 
-  /// текущая тема оформления
-  // final _themeMode = ThemeMode.system.obs;
-  // ThemeMode get themeMode => _themeMode.value;
-  // set themeMode(ThemeMode value) => _themeMode.value = value;
+  /// хранилище данных
+  final _storage = GetIt.instance<KrsStorage>();
 
-  ThemeMode get themeMode {
-    return ThemeMode.dark;
-    if (darkModeEnabled == null) {
-      return ThemeMode.system;
-    } else if (darkModeEnabled == true) {
-      return ThemeMode.dark;
-    } else {
-      return ThemeMode.light;
+  ThemeController() : super(ThemeMode.system) {
+    /// считываем значение с диска
+    final themeMode = _storage.read(_prefsKey);
+
+    switch (themeMode) {
+      case 'ThemeMode.system':
+        emit(ThemeMode.system);
+        break;
+      case 'ThemeMode.dark':
+        emit(ThemeMode.dark);
+        break;
+      case 'ThemeMode.light':
+        emit(ThemeMode.light);
+        break;
     }
   }
 
+  void changeTheme(ThemeMode themeMode) {
+    emit(themeMode);
+  }
+
   @override
-  void onInit() async {
-    /// инициализируем хранилище
-    _storage = await SharedPreferences.getInstance();
+  Future<void> onChange(Change<ThemeMode> change) async {
+    super.onChange(change);
 
-    /// считываем тему оформления
-    darkModeEnabled = _storage.getBool(_storageKey);
-
-    /// при изменении параметров - записываем значения на диск
-    ever(_darkModeEnabled, (bool? value) {
-      if (value == null) {
-        _storage.remove(_storageKey);
-      } else {
-        _storage.setBool(_storageKey, value);
-      }
-    });
-
-    super.onInit();
+    /// сохраняем значение на диск
+    _storage.write(_prefsKey, change.nextState.toString());
   }
 }

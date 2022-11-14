@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TskgHomePage extends StatelessWidget {
-  const TskgHomePage({Key? key}) : super(key: key);
+  const TskgHomePage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/api_provider.dart';
 import 'app.dart';
-import 'controllers/locale_controller.dart';
-import 'controllers/theme_controller.dart';
+import 'resources/krs_storage.dart';
 
-void main() {
+Future<void> main() async {
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// контроллер языка приложения
-  Get.put(LocaleController(), permanent: true);
-  /// контроллер темы оформления приложения
-  Get.put(ThemeController(), permanent: true);
-  // /// контроллер авторизации
-  // Get.put(AuthController(), permanent: true);
-  /// контроллер запросов к API-серверу
-  Get.put(ApiProvider(), permanent: true);
+  /// инициализируем локальное хранилище
+  final sharedStorage = await SharedPreferences.getInstance();
 
+  /// регистрируем [KrsStorage] как singleton
+  GetIt.instance.registerSingleton<KrsStorage>(
+    KrsStorage(
+      sharedStorage: sharedStorage,
+      // secureStorage: secureStorage,
+    )
+  );
+
+  /// регистрируем провайдер запросов к REST API как singleton
+  GetIt.instance.registerSingleton<ApiProvider>(
+    ApiProvider()
+  );
 
   runApp(App());
 }

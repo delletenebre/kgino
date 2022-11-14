@@ -1,34 +1,35 @@
-import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import '../resources/krs_locale.dart';
+import '../resources/krs_storage.dart';
+
+class LocaleController extends Cubit<String> {
+  /// ключ для сохранённого значения
+  static const _prefsKey = 'locale';
+
+  /// хранилище данных
+  final _storage = GetIt.instance<KrsStorage>();
 
 
-class LocaleController extends GetxController {
-  /// хранилище
-  late final SharedPreferences _storage;
+  LocaleController() : super(KrsLocale.defaultLocale) {
+    /// считываем значение с диска
+    final locale = _storage.read(_prefsKey,
+      defaultValue: KrsLocale.defaultLocale
+    );
 
-  /// ключ в хранилище для сохранённого значения
-  static const _storageKey = 'locale';
+    emit(locale);
+  }
 
-  /// текущий язык приложения
-  final _locale = KrsLocale.defaultLocale.obs;
-  String get locale => _locale.value;
-  set locale(String value) => _locale.value = value;
+  void changeLocale(String locale) {
+    emit(locale);
+  }
 
   @override
-  onInit() async {
-    /// инициализируем хранилище
-    _storage = await SharedPreferences.getInstance();
+  Future<void> onChange(Change<String> change) async {
+    super.onChange(change);
 
-    /// считываем последние сохранённые значения с диска
-    locale = _storage.getString(_storageKey) ?? KrsLocale.defaultLocale;
-
-    /// при изменении параметров - записываем значения на диск
-    ever(_locale, (String value) async {
-      await _storage.setString(_storageKey, value);
-    });
-
-    super.onInit();
+    /// сохраняем значение на диск
+    _storage.write(_prefsKey, change.nextState);
   }
 }

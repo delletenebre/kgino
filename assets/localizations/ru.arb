@@ -33,6 +33,11 @@
     "type": "text"
   },
 
+  "settings": "Настройки",
+  "@settings": {
+    "type": "text"
+  },
+
 
   "cancel": "Отмена",
   "@cancel": {

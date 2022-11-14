@@ -1,137 +1,113 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/request/request.dart';
 
+class ApiProvider {
+  /// cinema online
+  final _ockg = Dio(BaseOptions(
+    baseUrl: 'https://oc.kg/',
+    sendTimeout: 30 * 1000,
+    receiveTimeout: 30 * 1000,
+  ));
 
-class ApiProvider extends GetConnect {
+  /// ts.kg
+  final _tskg = Dio(BaseOptions(
+    baseUrl: 'https://www.ts.kg/',
+    sendTimeout: 30 * 1000,
+    receiveTimeout: 30 * 1000,
+  ));
 
-  //final authController = Get.find<AuthController>();
-
-  @override
-  Future<void> onInit() async {
+  // /// получаем профиль пользователя
+  // Future<User?> getMe() async {
+  //   try {
     
-    // httpClient.baseUrl = 'http://217.29.18.146:5005';
-    httpClient.baseUrl = 'http://172.30.0.9:5005/api/v1';
-    // httpClient.baseUrl = 'https://ds.edu.gov.kg/api/v1';
+  //     final response = await _dio.get('/auth/profile');
 
-    /// добавляем заголовок Authorization
-    // httpClient.addRequestModifier((Request request) {
-    //   final accessToken = authController.accessToken;
-    //   request.headers['Authorization'] = 'Bearer_$accessToken';
-    //   return request;
-    // });
-
-    /// включаем отладочные логи запросов
-    httpClient.addResponseModifier((request, response) {
-      debugPrint('==== ==== ==== ====');
-      debugPrint('request url: ${request.method} ${request.url}');
-      debugPrint('request headers: ${request.headers}');
-      debugPrint('response code: ${response.status.code}');
-      debugPrint('response body: ${response.body}');
-      debugPrint('==== ==== ==== ====');
-      return response;
-    });
-
-    // Even if the server sends data from the country "Brazil",
-    // it will never be displayed to users, because you remove
-    // that data from the response, even before the response is delivered
-    // httpClient.addResponseModifier<CasesModel>((request, response) {
-    //   CasesModel model = response.body;
-    //   if (model.countries.contains('Brazil')) {
-    //     model.countries.remove('Brazilll');
-    //   }
-    // });
-
-    // httpClient.addAuthenticator((Request request) async {
-    //   final accessToken = authController.user.accessToken;
-
-    //   request.headers['Authorization'] = 'Bearer $accessToken';
+  //     return User.fromJson(response.data['data']);
       
-    //   return request;
-    // });
+  //   } on SocketException catch (_) {
 
-    /// Autenticator will be called 3 times if HttpStatus is
-    /// HttpStatus.unauthorized
-    httpClient.maxAuthRetries = 3;
+  //     debugPrint('no internet connection');
+      
+  //     return null;
+    
+  //   } catch (exception, stacktrace) {
+      
+  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+  //     return null;
+  //   }
 
-    super.onInit();
-  }
-
-  void updateAuthorization(String accessToken) {
-    /// добавляем заголовок Authorization
-    httpClient.addRequestModifier((Request request) {
-      request.headers['Authorization'] = 'Bearer_$accessToken';
-      return request;
-    });
-  }
-
-  Future<Response> login(String login, String password) async {
-    final body = {
-      'username': login,
-      'password': password,
-    };
-
-    return await post('/auth/login', body,
-      // decoder: (response) {
-      //   debugPrint(response.toString());
-      //   try {
-      //     final user = response['user'];
-      //     final roles = response['roles'];
-      //     final token = response['token'];
-          
-      //     return User.fromJson(user..addAll(
-      //       {
-      //         'token': token,
-      //         'roles': roles,
-      //       }
-      //     ));
-
-      //   } catch (exception) {
-          
-      //     return response;
-      //   }
-      // }
-    );
-  }
-
-  // Future<Response> changePassword(
-  //   String currentPassword,
-  //   String newPassword,
-  //   String confirmPassword
-  // ) async {
-  //   final body = {
-  //     'pageSize': currentPassword,
-  //   };
-
-  //   return await post('/agency/policy/', body);
+    
   // }
 
-  // /// получение профиля пользователя
-  // Future<Response> getUserProfile() async {
-  //   return await get('/users/profile',
-  //     decoder: (response) {
-  //       try {
-  //         return UserProfile.fromJson(response);
-  //       } catch (exception) {
-  //         exception.printError();
-  //         return response;
-  //       }
-  //     }
-  //   );
-  // }
-
-  // /// АГЕНТ: поиск по списку полисов
-  // Future<Response> agentSearchPolicies({
-  //   int page = 1,
-  //   int pageSize = 100,
-  //   Map<String, String> filter = const {},
-  // }) async {
-  //   final body = {
-  //     'pageSize': pageSize,
+  // /// вход по логину и паролю
+  // Future<AuthTokens> signin(String username, String password) async {
+  //   final data = {
+  //     'username': username,
+  //     'password': password,
   //   };
 
-  //   return await post('/agency/policy/list', body, query: {
-  //     'page': page,
-  //   });
+  //   try {
+    
+  //     final response = await _dio.post('/auth/login', data: data);
+
+  //     return AuthTokens.fromJson(response.data['data']);
+
+  //   } on SocketException catch (_) {
+
+  //     debugPrint('no internet connection');
+      
+  //     return AuthTokens.withError('CONNECTION');
+    
+  //   } on DioError catch (dioError) {
+
+  //     debugPrint('DioError: $dioError');
+      
+  //     return AuthTokens.withError(dioError.type.toString());
+
+  //   } catch (exception, stacktrace) {
+      
+  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+  //     return AuthTokens.withError('UNKNOWN');
+  //   }
+
+    
+  // }
+
+  // /// обновление ключа авторизации
+  // Future<AuthTokens> refreshToken(String refreshToken) async {
+  //   final data = {
+  //     'refreshToken': refreshToken,
+  //   };
+
+  //   try {
+    
+  //     final response = await _dio.post('/auth/refresh-token', data: data);
+
+  //     return AuthTokens.fromJson(response.data['data']);
+      
+  //   } on SocketException catch (_) {
+
+  //     debugPrint('no internet connection');
+      
+  //     return AuthTokens.withError('CONNECTION');
+    
+  //   } on DioError catch (dioError) {
+
+  //     debugPrint('DioError: $dioError');
+      
+  //     return AuthTokens.withError(dioError.type.toString());
+
+  //   } catch (exception, stacktrace) {
+      
+  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+  //     return AuthTokens.withError('UNKNOWN');
+  //   }
+
+    
   // }
 }
