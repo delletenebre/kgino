@@ -1,22 +1,50 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
-class ApiProvider {
+class OckgApiProvider {
   /// cinema online
-  final _ockg = Dio(BaseOptions(
-    baseUrl: 'https://oc.kg/',
+  final _dio = Dio(BaseOptions(
+    baseUrl: 'https://oc.kg/api.php?format=json',
     sendTimeout: 30 * 1000,
     receiveTimeout: 30 * 1000,
   ));
 
-  /// ts.kg
-  final _tskg = Dio(BaseOptions(
-    baseUrl: 'https://www.ts.kg/',
-    sendTimeout: 30 * 1000,
-    receiveTimeout: 30 * 1000,
-  ));
+  Future<List<OckgBestsellersCategory>> getBestsellers() async {
+
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getBestsellers',
+    });
+
+    try {
+    
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final bestsellers = jsonResponse['json'][0]['response']['bestsellers'];
+
+      return bestsellers.map<OckgBestsellersCategory>((item) {
+        return OckgBestsellersCategory.fromJson(item);
+      }).toList();
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return [];
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return [];
+    }
+
+    
+  }
 
   // /// получаем профиль пользователя
   // Future<User?> getMe() async {

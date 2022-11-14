@@ -31,7 +31,7 @@ class ScaffoldWithNavigationBar extends StatefulWidget {
 }
 
 class _ScaffoldWithNavigationBarState extends State<ScaffoldWithNavigationBar> {
-  bool _extended = false;
+  bool _extended = true;
 
   @override
   Widget build(BuildContext context) {
