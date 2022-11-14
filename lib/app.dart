@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -21,11 +20,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(context) {
-
-    final rootNavigatorKey = 
-        GlobalKey<NavigatorState>(debugLabel: 'root');
-    final mainNavigatorKey = 
-        GlobalKey<NavigatorState>(debugLabel: 'main');
   
     return MultiBlocProvider(
       providers: [
@@ -49,90 +43,41 @@ class App extends StatelessWidget {
           final locale = context.watch<LocaleController>().state;
 
           final router = GoRouter(
-            navigatorKey: rootNavigatorKey,
             initialLocation: '/',
-
-            // refreshListenable: GoRouterRefreshStream(
-            //   context.read<AuthenticationBloc>().stream
-            // ),
-
-            // redirect: (context, state) {
-            //   final authState = context.read<AuthenticationBloc>().state;
-
-            //   if (authState.authenticated) {
-            //     if (state.location == '/signin') {
-            //       return '/';
-            //     }
-            //   } else {
-            //     if (state.location != '/signin') {
-            //       return '/signin';
-            //     }
-            //   }
-              
-            // },
 
             errorBuilder: (context, state) => const ErrorPage(),
 
             routes: <RouteBase>[
-              // GoRoute(
-              //   path: '/signin',
-              //   builder: (context, state) {
-              //     return const SigninPage();
-              //   },
-              // ),
 
-              ShellRoute(
-                navigatorKey: mainNavigatorKey,
-                builder: (context, state, child) {
-                  return ScaffoldWithNavigationBar(
-                    child: child
-                  );
+              GoRoute(
+                path: '/',
+                builder: (context, state) {
+                  return const OckgHomePage();
                 },
-                routes: <RouteBase>[
-                  GoRoute(
-                    path: '/',
-                    builder: (context, state) {
-                      return const OckgHomePage();
-                    },
-                  ),
-
-                  // GoRoute(
-                  //   path: '/',
-                  //   builder: (context, state) {
-                  //     return const OckgHomePage();
-                  //   },
-                  // ),
-
-                  GoRoute(
-                    path: '/settings',
-                    builder: (context, state) {
-                      return const SettingsPage();
-                    },
-                    routes: <RouteBase>[
-                      /// The details screen to display stacked on the inner Navigator.
-                      // GoRoute(
-                      //   path: 'song/:songId',
-                      //   builder: (context, state) {
-                      //     return const SettingsPage();
-                      //   },
-                      // ),
-                    ],
-                  ),
-                ],
               ),
 
               // GoRoute(
-              //   path: '/user',
-              //   parentNavigatorKey: rootNavigatorKey,
-              //   pageBuilder: (context, state) => SheetPage(
-              //     key: state.pageKey,
-              //     child: Container(
-              //       color: Colors.yellow,
-              //     ),
-              //   ),
+              //   path: '/',
+              //   builder: (context, state) {
+              //     return const OckgHomePage();
+              //   },
               // ),
 
-              
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) {
+                  return const SettingsPage();
+                },
+                routes: <RouteBase>[
+                  /// The details screen to display stacked on the inner Navigator.
+                  // GoRoute(
+                  //   path: 'song/:songId',
+                  //   builder: (context, state) {
+                  //     return const SettingsPage();
+                  //   },
+                  // ),
+                ],
+              ),
               
             ],
           );
