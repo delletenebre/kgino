@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
@@ -12,6 +13,18 @@ class OckgApiProvider {
     sendTimeout: 30 * 1000,
     receiveTimeout: 30 * 1000,
   ));
+
+  OckgApiProvider() {
+    _dio.interceptors.add(
+      DioCacheManager(
+        CacheConfig(
+          baseUrl: _dio.options.baseUrl,
+          defaultMaxAge: const Duration(minutes: 1),
+          defaultMaxStale: const Duration(minutes: 1),
+        )
+      ).interceptor
+    );
+  }
 
   Future<List<OckgBestsellersCategory>> getBestsellers() async {
 
