@@ -8,10 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'controllers/locale_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'pages/error_page.dart';
-import 'pages/ockg/ockg_home_page.dart';
+import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 import 'resources/krs_theme.dart';
-import 'ui/scaffold_with_navigation_bar.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -52,7 +51,7 @@ class App extends StatelessWidget {
               GoRoute(
                 path: '/',
                 builder: (context, state) {
-                  return const OckgHomePage();
+                  return const HomePage();
                 },
               ),
 

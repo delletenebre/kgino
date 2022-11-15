@@ -1,73 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:kgino/pages/settings_page.dart';
 
-class HomePage extends StatelessWidget {
+import '../resources/krs_locale.dart';
+import '../ui/navigation_bar/krs_tab_bar.dart';
+import 'ockg/ockg_home_page.dart';
+
+class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
   });
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: 3);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red.withOpacity(0.2),
-      child: Column(
-        children: [
-
-          FocusScope(
-            
-            child: SizedBox(
-              height: 100,
-              child: ListView.separated(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder:(context, index) {
-                  return Material(
-                    color: Colors.green.withOpacity(0.1),
-                    child: InkWell(
-                      onTap: () {
-
-                      },
-                      child: Container(
-                        width: 200,
-                        height: 100,
-                        //color: Colors.green,
-                        child: Text('$index'),
-                      ),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) => SizedBox(width: 16.0),
-              ),
-            ),
+    final locale = KrsLocale.of(context);
+    
+    return Scaffold(
+      appBar: KrsTabBar(
+        controller: _tabController,
+        tabs: [
+          Tab(
+            text: locale.movies,
           ),
-
-          SizedBox(
-            height: 100,
-            child: ListView.separated(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder:(context, index) {
-                return Material(
-                  color: Colors.yellow.withOpacity(0.1),
-                  child: InkWell(
-                    onTap: () {
-
-                    },
-                    child: Container(
-                      width: 200,
-                      height: 100,
-                      //color: Colors.green,
-                      child: Text('$index'),
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => SizedBox(width: 16.0),
-            ),
+          Tab(
+            text: locale.tvshows,
           ),
+          Tab(
+            text: locale.settings,
+          )
+        ]
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          OckgHomePage(),
+          OckgHomePage(),
+          SettingsPage(),
         ],
-      )
+      ),
     );
   }
 }
