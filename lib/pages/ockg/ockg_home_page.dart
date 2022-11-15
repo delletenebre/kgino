@@ -23,6 +23,7 @@ class OckgHomePage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final bestsellersCategory = state.data[index];
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextButton(
                       onPressed: () {
@@ -32,26 +33,34 @@ class OckgHomePage extends StatelessWidget {
                     ),
 
                     SizedBox.fromSize(
-                      size: const Size.fromHeight(168.0 + 8.0),
+                      size: const Size.fromHeight(168.0),
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: bestsellersCategory.movies.length,
                         itemBuilder: (context, index) {
                           final movie = bestsellersCategory.movies[index];
-                          return Card(
-                            child: Column(
-                              children: [
-                                Image.network('https://oc.kg${movie.cover}',
-                                  width: 120.0,
-                                  height: 168.0,
-                                  fit: BoxFit.cover,
+                          return Stack(
+                            children: <Widget>[
+                              Image.network('https://oc.kg${movie.cover}',
+                                width: 120.0,
+                                height: 168.0,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned.fill(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+
+                                    },
+                                  ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         },
                         separatorBuilder: (context, index) {
-                          return const SizedBox(height: 24.0);
+                          return const SizedBox(width: 24.0);
                         },
                         
                       ),

@@ -34,28 +34,110 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final locale = KrsLocale.of(context);
     
     return Scaffold(
-      appBar: KrsTabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(
-            text: locale.movies,
+      body: CustomScrollView(
+        shrinkWrap: true,
+        slivers: [
+          SliverAppBar(
+            pinned: false,
+            floating: false,
+            title: KrsTabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: locale.movies,
+                ),
+                Tab(
+                  text: locale.tvshows,
+                ),
+                Tab(
+                  text: locale.settings,
+                )
+              ]
+            ),
           ),
-          Tab(
-            text: locale.tvshows,
+          // SliverToBoxAdapter(
+          //   child: KrsTabBar(
+          //     controller: _tabController,
+          //     tabs: [
+          //       Tab(
+          //         text: locale.movies,
+          //       ),
+          //       Tab(
+          //         text: locale.tvshows,
+          //       ),
+          //       Tab(
+          //         text: locale.settings,
+          //       )
+          //     ]
+          //   ),
+          // ),
+          SliverFillRemaining(
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                OckgHomePage(),
+                OckgHomePage(),
+                SettingsPage(),
+              ],
+            )
           ),
-          Tab(
-            text: locale.settings,
-          )
-        ]
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          OckgHomePage(),
-          OckgHomePage(),
-          SettingsPage(),
         ],
       ),
+      // NestedScrollView(
+      //   headerSliverBuilder: (context, value) {
+      //     return [
+      //       SliverToBoxAdapter(
+      //         child: KrsTabBar(
+      //           controller: _tabController,
+      //           tabs: [
+      //             Tab(
+      //               text: locale.movies,
+      //             ),
+      //             Tab(
+      //               text: locale.tvshows,
+      //             ),
+      //             Tab(
+      //               text: locale.settings,
+      //             )
+      //           ]
+      //         ),
+      //       ),
+      //     ];
+      //   },
+      //   body: TabBarView(
+      //     controller: _tabController,
+      //     children: const [
+      //       OckgHomePage(),
+      //       OckgHomePage(),
+      //       SettingsPage(),
+      //     ],
+      //   ),
+      // ),
+
+
+
+      // appBar: KrsTabBar(
+      //   controller: _tabController,
+      //   tabs: [
+      //     Tab(
+      //       text: locale.movies,
+      //     ),
+      //     Tab(
+      //       text: locale.tvshows,
+      //     ),
+      //     Tab(
+      //       text: locale.settings,
+      //     )
+      //   ]
+      // ),
+      // body: TabBarView(
+      //   controller: _tabController,
+      //   children: const [
+      //     OckgHomePage(),
+      //     OckgHomePage(),
+      //     SettingsPage(),
+      //   ],
+      // ),
     );
   }
 }
