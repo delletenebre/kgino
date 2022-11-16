@@ -173,6 +173,11 @@ class _KrsTabBarState extends State<KrsTabBar>
     }
     _controller = null;
     _scrollController.dispose();
+    
+    for (final focusNode in _tabFocusNodes) {
+      focusNode.dispose();
+    }
+
     super.dispose();
   }
 

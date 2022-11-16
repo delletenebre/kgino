@@ -169,6 +169,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.1"
+  ensure_visible_when_focused:
+    dependency: "direct main"
+    description:
+      name: ensure_visible_when_focused
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   equatable:
     dependency: "direct main"
     description:
