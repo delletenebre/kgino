@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:ensure_visible_when_focused/ensure_visible_when_focused.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,8 +20,10 @@ class OckgBestsellersCategoryList extends StatefulWidget {
 class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryList> {
   bool _focused = false;
   bool _wasFocused = false;
+  bool _focuseRequested = false;
 
   final _titleFocusNode = FocusNode();
+  final _fakeFocusNode = FocusNode();
   late final List<FocusNode> _elementsFocusNodes;
 
   @override
@@ -30,15 +33,14 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
       return FocusNode();
     });
 
-    _titleFocusNode.onKeyEvent = (node, event) {
-      print(_wasFocused);
-      if (_wasFocused && event.logicalKey == LogicalKeyboardKey.arrowDown) {
-        _elementsFocusNodes.first.requestFocus();
-        return KeyEventResult.skipRemainingHandlers;
-      }
+    // _titleFocusNode.onKeyEvent = (node, event) {
+    //   if (_wasFocused && event.logicalKey == LogicalKeyboardKey.arrowDown) {
+    //     _elementsFocusNodes.first.requestFocus();
+    //     return KeyEventResult.skipRemainingHandlers;
+    //   }
 
-      return KeyEventResult.ignored;
-    };
+    //   return KeyEventResult.ignored;
+    // };
 
     // _titleFocusNode.onKey = (node, event) {
     //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
@@ -77,71 +79,114 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
         //   _titleFocusNode.requestFocus();
         // }
 
-        // _wasFocused = _focused;
-        // _focused = hasFocus;
+        _wasFocused = _focused;
+        _focused = hasFocus;
       },
 
       onKey: (node, event) {
         print('onKey ${widget.category.name}');
-        print('node ${node.context?.widget}');
+        print('node hasFocus ${node.hasFocus}');
+        print('node event.character ${event.character}');
+        print('node event.isKeyPressed up ${event.isKeyPressed(LogicalKeyboardKey.arrowUp)}');
+        print('node event.isKeyPressed down ${event.isKeyPressed(LogicalKeyboardKey.arrowDown)}');
+        print('node event.logicalKey ${event.logicalKey}');
 
-        if (node.hasFocus) {
-          /// ^ если блок в фокусе
-
-          if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-            /// ^ если нажали вверх
-            
-            if (_titleFocusNode.hasFocus) {
-              /// если название категории уже в фокусе
-              
-              /// игнорируем нажатие - передаём выбор системе
-              return KeyEventResult.ignored;
-            
-            } else {
-              /// если название категории не в фокусе
-              
-              /// ставим фокус на название категории
-              _titleFocusNode.requestFocus();
-              return KeyEventResult.handled;
-
-            }
-
+        node.traversalChildren.forEachIndexed((index, element) {
+          if (index == 0 && element.hasFocus) {
+            print('title focused');
           }
+        });
 
-          if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-            /// ^ если нажали вниз
-            
-            if (_titleFocusNode.hasFocus) {
-              /// если название категории уже в фокусе
-              
-              /// 
-              // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              //   _elementsFocusNodes.first.requestFocus();
-              // });
+        if (_wasFocused && _titleFocusNode.hasFocus && event.logicalKey == LogicalKeyboardKey.arrowDown && !event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+          node.traversalChildren.elementAt(1).requestFocus();
+        }
 
-              // setState(() {
-                
-              // });
-              node.focusInDirection(TraversalDirection.left);
-              return KeyEventResult.ignored;
-              //.requestFocus();
-              //FocusScope.of(context).previousFocus();
-              //return KeyEventResult.skipRemainingHandlers;
-            
-            } else {
-              /// если название категории не в фокусе
-              
-              // /// ставим фокус на название категории
-              // _titleFocusNode.requestFocus();
-              // return KeyEventResult.handled;
+        // if (node.hasFocus) {
+        //   /// ^ если блок в фокусе
 
-            }
-            
-          }
-
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+          /// ^ если нажали вверх
           
+          if (_titleFocusNode.hasFocus) {
+            /// если название категории уже в фокусе
+            
+            /// игнорируем нажатие - передаём выбор системе
+            return KeyEventResult.ignored;
+          
+          } else {
+            /// если название категории не в фокусе
+            
+            /// ставим фокус на название категории
+            _titleFocusNode.requestFocus();
+            return KeyEventResult.handled;
+
+          }
+
+        }
+
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+          /// ^ если нажали вниз
+          
+          if (_titleFocusNode.hasFocus) {
+            _elementsFocusNodes.first.requestFocus();
+            _focuseRequested = true;
+            //return KeyEventResult.handled;
+          }
+
+        }
+
+        if (_fakeFocusNode.hasFocus) {
+          if (_focuseRequested) {
+            _elementsFocusNodes.first.requestFocus();
+            _focuseRequested = false;
+            return KeyEventResult.handled;
+          } else {
+            
+            if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+              node.nextFocus();
+            }
+            // if (!_wasFocused) {
+            //   _elementsFocusNodes.first.requestFocus();
+            // }
+            
+          }
           
         }
+
+        //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+        //     /// ^ если нажали вниз
+            
+        //     if (_titleFocusNode.hasFocus) {
+        //       /// если название категории уже в фокусе
+              
+        //       /// 
+        //       // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        //       //   _elementsFocusNodes.first.requestFocus();
+        //       // });
+
+        //       // setState(() {
+                
+        //       // });
+        //       node.focusInDirection(TraversalDirection.left);
+        //       return KeyEventResult.ignored;
+        //       //.requestFocus();
+        //       //FocusScope.of(context).previousFocus();
+        //       //return KeyEventResult.skipRemainingHandlers;
+            
+        //     } else {
+        //       /// если название категории не в фокусе
+              
+        //       // /// ставим фокус на название категории
+        //       // _titleFocusNode.requestFocus();
+        //       // return KeyEventResult.handled;
+
+        //     }
+            
+        //   }
+
+          
+          
+        // }
 
         return KeyEventResult.ignored;
       },
@@ -194,7 +239,18 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
               
             ),
           ),
-
+          // Focus(
+          //   skipTraversal: true,
+          //   canRequestFocus: true,
+          //   focusNode: _fakeFocusNode,
+          //   child: const SizedBox(),
+          // ),
+          Focus(
+            canRequestFocus: true,
+            focusNode: _fakeFocusNode,
+            
+            child: Text(widget.category.name),
+          ),
         ],
       ),
     );

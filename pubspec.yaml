@@ -19,6 +19,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   
+  collection: ^1.17.0
   dio: ^4.0.6
   dio_http_cache_lts: ^0.4.1
   ensure_visible_when_focused: ^1.1.1
