@@ -6,6 +6,8 @@ import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
+import '../models/ockg/ockg_movie.dart';
+
 class OckgApiProvider {
   /// cinema online
   final _dio = Dio(BaseOptions(
@@ -54,6 +56,39 @@ class OckgApiProvider {
       debugPrint('Exception: $exception, stacktrace: $stacktrace');
       
       return [];
+    }
+
+    
+  }
+
+
+  Future<OckgMovie?> getMovie(String movieId) async {
+
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getMovie',
+      'movie_id[0]': movieId,
+    });
+
+    try {
+    
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final movieJson = jsonResponse['json'][0]['response']['movie'];
+
+      return OckgMovie.fromJson(movieJson);
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return null;
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return null;
     }
 
     

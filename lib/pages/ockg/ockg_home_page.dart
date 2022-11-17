@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controllers/ockg/ockg_bestsellers_controller.dart';
+import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_bestsellers_category.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/ockg/ockg_bestsellers_category_list.dart';
@@ -43,7 +44,8 @@ class OckgHomePage extends StatelessWidget {
                         return OckgBestsellersCategoryList(
                           category: bestsellersCategory,
                           onMovieFocused: (movie) {
-                            
+                            final controller = context.read<OckgMovieDetailsController>();
+                            controller.getMovie(movie);
                           }
                         );
                         
