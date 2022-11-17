@@ -5,6 +5,8 @@ part 'ockg_movie.g.dart';
 
 @freezed
 class OckgMovie with _$OckgMovie {
+  const OckgMovie._();
+
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OckgMovie({
     @Default('') String movieId,
@@ -16,4 +18,6 @@ class OckgMovie with _$OckgMovie {
 
   factory OckgMovie.fromJson(Map<String, Object?> json)
       => _$OckgMovieFromJson(json);
+
+  String get coverUrl => 'https://oc.kg$cover';
 }

@@ -149,13 +149,14 @@ class __$$_OckgMovieCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_OckgMovie implements _OckgMovie {
+class _$_OckgMovie extends _OckgMovie {
   const _$_OckgMovie(
       {this.movieId = '',
       this.name = '',
       this.internationalName = '',
       this.year = '',
-      this.cover = ''});
+      this.cover = ''})
+      : super._();
 
   factory _$_OckgMovie.fromJson(Map<String, dynamic> json) =>
       _$$_OckgMovieFromJson(json);
@@ -213,13 +214,14 @@ class _$_OckgMovie implements _OckgMovie {
   }
 }
 
-abstract class _OckgMovie implements OckgMovie {
+abstract class _OckgMovie extends OckgMovie {
   const factory _OckgMovie(
       {final String movieId,
       final String name,
       final String internationalName,
       final String year,
       final String cover}) = _$_OckgMovie;
+  const _OckgMovie._() : super._();
 
   factory _OckgMovie.fromJson(Map<String, dynamic> json) =
       _$_OckgMovie.fromJson;

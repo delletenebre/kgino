@@ -1,9 +1,10 @@
 import 'package:collection/collection.dart';
-import 'package:ensure_visible_when_focused/ensure_visible_when_focused.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../../models/ockg/ockg_bestsellers_category.dart';
+import 'ockg_category_movie_card.dart';
 
 class OckgBestsellersCategoryList extends StatefulWidget {
   final OckgBestsellersCategory category;
@@ -20,10 +21,8 @@ class OckgBestsellersCategoryList extends StatefulWidget {
 class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryList> {
   bool _focused = false;
   bool _wasFocused = false;
-  bool _focuseRequested = false;
 
   final _titleFocusNode = FocusNode();
-  final _fakeFocusNode = FocusNode();
   late final List<FocusNode> _elementsFocusNodes;
 
   @override
@@ -32,24 +31,6 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
     _elementsFocusNodes = List.generate(widget.category.movies.length, (index) {
       return FocusNode();
     });
-
-    // _titleFocusNode.onKeyEvent = (node, event) {
-    //   if (_wasFocused && event.logicalKey == LogicalKeyboardKey.arrowDown) {
-    //     _elementsFocusNodes.first.requestFocus();
-    //     return KeyEventResult.skipRemainingHandlers;
-    //   }
-
-    //   return KeyEventResult.ignored;
-    // };
-
-    // _titleFocusNode.onKey = (node, event) {
-    //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-    //     _elementsFocusNodes.first.requestFocus();
-    //     return KeyEventResult.skipRemainingHandlers;
-    //   }
-
-    //   return KeyEventResult.ignored;
-    // };
 
     super.initState();
   }
@@ -70,123 +51,55 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
     return Focus(
       skipTraversal: true,
       onFocusChange: (hasFocus) {
-        //print('onFocusChange ${widget.category.name}');
-        
-        // if (!_focused && hasFocus) {
-        //   /// ^ если фокус только что перешёл на этот элемент
-          
-        //   /// запрашиваем фокус на название категории
-        //   _titleFocusNode.requestFocus();
-        // }
-
         _wasFocused = _focused;
         _focused = hasFocus;
       },
 
       onKey: (node, event) {
-        print('onKey ${widget.category.name}');
-        print('node hasFocus ${node.hasFocus}');
-        print('node event.character ${event.character}');
-        print('node event.isKeyPressed up ${event.isKeyPressed(LogicalKeyboardKey.arrowUp)}');
-        print('node event.isKeyPressed down ${event.isKeyPressed(LogicalKeyboardKey.arrowDown)}');
-        print('node event.logicalKey ${event.logicalKey}');
-
-        node.traversalChildren.forEachIndexed((index, element) {
-          if (index == 0 && element.hasFocus) {
-            print('title focused');
-          }
-        });
+        
+        // node.traversalChildren.forEachIndexed((index, element) {
+        //   if (index == 0 && element.hasFocus) {
+        //     print('title focused');
+        //   }
+        // });
 
         if (_wasFocused && _titleFocusNode.hasFocus && event.logicalKey == LogicalKeyboardKey.arrowDown && !event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
           node.traversalChildren.elementAt(1).requestFocus();
         }
 
-        // if (node.hasFocus) {
-        //   /// ^ если блок в фокусе
-
         if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
           /// ^ если нажали вверх
           
-          if (_titleFocusNode.hasFocus) {
-            /// если название категории уже в фокусе
-            
-            /// игнорируем нажатие - передаём выбор системе
-            return KeyEventResult.ignored;
-          
-          } else {
-            /// если название категории не в фокусе
+          if (!_titleFocusNode.hasFocus) {
+            /// ^ если название категории не в фокусе
             
             /// ставим фокус на название категории
             _titleFocusNode.requestFocus();
+            _ensureVisible(_titleFocusNode);
+            
+            /// останавливаем обработку нажатия
             return KeyEventResult.handled;
 
           }
 
         }
 
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-          /// ^ если нажали вниз
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)
+            || event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+          /// ^ если нажали вниз или вправо
           
           if (_titleFocusNode.hasFocus) {
-            _elementsFocusNodes.first.requestFocus();
-            _focuseRequested = true;
-            //return KeyEventResult.handled;
-          }
+            /// ^ если название категории уже в фокусе
 
-        }
-
-        if (_fakeFocusNode.hasFocus) {
-          if (_focuseRequested) {
+            /// ставим фокус на первый элемент в категории
             _elementsFocusNodes.first.requestFocus();
-            _focuseRequested = false;
+            _ensureVisible(_elementsFocusNodes.first);
+
+            /// останавливаем обработку нажатия
             return KeyEventResult.handled;
-          } else {
-            
-            if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-              node.nextFocus();
-            }
-            // if (!_wasFocused) {
-            //   _elementsFocusNodes.first.requestFocus();
-            // }
-            
           }
-          
+
         }
-
-        //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-        //     /// ^ если нажали вниз
-            
-        //     if (_titleFocusNode.hasFocus) {
-        //       /// если название категории уже в фокусе
-              
-        //       /// 
-        //       // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        //       //   _elementsFocusNodes.first.requestFocus();
-        //       // });
-
-        //       // setState(() {
-                
-        //       // });
-        //       node.focusInDirection(TraversalDirection.left);
-        //       return KeyEventResult.ignored;
-        //       //.requestFocus();
-        //       //FocusScope.of(context).previousFocus();
-        //       //return KeyEventResult.skipRemainingHandlers;
-            
-        //     } else {
-        //       /// если название категории не в фокусе
-              
-        //       // /// ставим фокус на название категории
-        //       // _titleFocusNode.requestFocus();
-        //       // return KeyEventResult.handled;
-
-        //     }
-            
-        //   }
-
-          
-          
-        // }
 
         return KeyEventResult.ignored;
       },
@@ -202,35 +115,15 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
           ),
 
           SizedBox.fromSize(
-            size: const Size.fromHeight(168.0),
+            size: const Size.fromHeight(168.0 + 16.8 * 2.0 + 4.0 + 48.0),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: widget.category.movies.length,
               itemBuilder: (context, index) {
                 final movie = widget.category.movies[index];
-                return Stack(
-                    children: <Widget>[
-                      Image.network('https://oc.kg${movie.cover}',
-                        width: 120.0,
-                        height: 168.0,
-                        fit: BoxFit.cover,
-                      ),
-                      Positioned.fill(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: EnsureVisibleWhenFocused(
-                            focusNode: _elementsFocusNodes[index],
-                            child: InkWell(
-                              focusNode: _elementsFocusNodes[index],
-                              onTap: () {
-
-                              },
-                            ),
-                          ),
-
-                        ),
-                      ),
-                    ],
+                return OckgCategoryMovieCard(
+                  focusNode: _elementsFocusNodes[index],
+                  movie: movie,
                 );
               },
               separatorBuilder: (context, index) {
@@ -239,20 +132,58 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
               
             ),
           ),
-          // Focus(
-          //   skipTraversal: true,
-          //   canRequestFocus: true,
-          //   focusNode: _fakeFocusNode,
-          //   child: const SizedBox(),
-          // ),
-          Focus(
-            canRequestFocus: true,
-            focusNode: _fakeFocusNode,
-            
-            child: Text(widget.category.name),
-          ),
         ],
       ),
     );
+  }
+
+  Future<void> _ensureVisible(FocusNode focusNode) async {
+    // Wait for the keyboard to come into view
+    Future.delayed(const Duration(milliseconds: 50), () {
+      
+      if (!mounted || !focusNode.hasFocus) {
+        /// ^ если виджет не существует или нет фокуса на элементе
+        
+        /// останавливаем выполнение
+        return;
+      }
+
+      /// находим объект, который находится в фокусе
+      final object = context.findRenderObject()!;
+      final viewport = RenderAbstractViewport.of(object);
+
+      if (viewport == null) {
+        /// ^ если прокрутки нет
+        
+        /// останавливаем выполнение
+        return;
+      }
+
+      // Get the Scrollable state (in order to retrieve its offset)
+      final scrollableState = Scrollable.of(context)!;
+
+      /// получаем смещение
+      final position = scrollableState.position;
+      late double alignment;
+
+      if (position.pixels > viewport.getOffsetToReveal(object, 0.0).offset) {
+        // Move down to the top of the viewport
+        alignment = 0.0;
+      } else if (position.pixels <
+          viewport.getOffsetToReveal(object, 1.0).offset) {
+        // Move up to the bottom of the viewport
+        alignment = 1.0;
+      } else {
+        // No scrolling is necessary to reveal the child
+        return;
+      }
+
+      position.ensureVisible(
+        object,
+        alignment: alignment,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeIn,
+      );
+    });
   }
 }
