@@ -62,7 +62,7 @@ class OckgApiProvider {
   }
 
 
-  Future<OckgMovie?> getMovie(String movieId) async {
+  Future<OckgMovie?> getMovie(int movieId) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getMovie',

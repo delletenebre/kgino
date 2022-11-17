@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_bestsellers_category.dart';
+import '../../models/ockg/ockg_movie.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/ockg/ockg_bestsellers_category_list.dart';
 
@@ -23,6 +24,23 @@ class OckgHomePage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(12.0),
               color: Colors.black.withOpacity(0.12),
+              child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
+                builder: (context, state) {
+                  if (state.success) {
+                    final movie = state.data;
+
+                    return Column(
+                      children: [
+                        Text(movie.description),
+                        Text(movie.ratingImdbValue.toString()),
+                        Text(movie.ratingKinopoiskValue.toString()),
+                      ],
+                    );
+                  }
+
+                  return const LoadingIndicator();
+                }
+              ),
             ),
           ),
 
@@ -44,6 +62,7 @@ class OckgHomePage extends StatelessWidget {
                         return OckgBestsellersCategoryList(
                           category: bestsellersCategory,
                           onMovieFocused: (movie) {
+                            print(movie.toJson());
                             final controller = context.read<OckgMovieDetailsController>();
                             controller.getMovie(movie);
                           }

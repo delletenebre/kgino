@@ -20,11 +20,26 @@ OckgMovie _$OckgMovieFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$OckgMovie {
-  String get movieId => throw _privateConstructorUsedError;
+  @IntConverter()
+  int get movieId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get internationalName => throw _privateConstructorUsedError;
   String get year => throw _privateConstructorUsedError;
   String get cover => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  List<String> get translation => throw _privateConstructorUsedError;
+  String get quality => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  List<String> get genres => throw _privateConstructorUsedError;
+  List<String> get countries => throw _privateConstructorUsedError;
+  List<String> get directors =>
+      throw _privateConstructorUsedError; // @DoubleConverter()
+// @Default(0.0) double ratingLocalValue,
+  @DoubleConverter()
+  double get ratingImdbValue => throw _privateConstructorUsedError;
+  @DoubleConverter()
+  double get ratingKinopoiskValue => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,11 +53,21 @@ abstract class $OckgMovieCopyWith<$Res> {
       _$OckgMovieCopyWithImpl<$Res, OckgMovie>;
   @useResult
   $Res call(
-      {String movieId,
+      {@IntConverter() int movieId,
       String name,
       String internationalName,
       String year,
-      String cover});
+      String cover,
+      String description,
+      List<String> translation,
+      String quality,
+      DateTime? createdAt,
+      DateTime? updatedAt,
+      List<String> genres,
+      List<String> countries,
+      List<String> directors,
+      @DoubleConverter() double ratingImdbValue,
+      @DoubleConverter() double ratingKinopoiskValue});
 }
 
 /// @nodoc
@@ -63,12 +88,22 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
     Object? internationalName = null,
     Object? year = null,
     Object? cover = null,
+    Object? description = null,
+    Object? translation = null,
+    Object? quality = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? genres = null,
+    Object? countries = null,
+    Object? directors = null,
+    Object? ratingImdbValue = null,
+    Object? ratingKinopoiskValue = null,
   }) {
     return _then(_value.copyWith(
       movieId: null == movieId
           ? _value.movieId
           : movieId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -85,6 +120,46 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
           ? _value.cover
           : cover // ignore: cast_nullable_to_non_nullable
               as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      translation: null == translation
+          ? _value.translation
+          : translation // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      quality: null == quality
+          ? _value.quality
+          : quality // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      genres: null == genres
+          ? _value.genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      countries: null == countries
+          ? _value.countries
+          : countries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      directors: null == directors
+          ? _value.directors
+          : directors // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      ratingImdbValue: null == ratingImdbValue
+          ? _value.ratingImdbValue
+          : ratingImdbValue // ignore: cast_nullable_to_non_nullable
+              as double,
+      ratingKinopoiskValue: null == ratingKinopoiskValue
+          ? _value.ratingKinopoiskValue
+          : ratingKinopoiskValue // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -97,11 +172,21 @@ abstract class _$$_OckgMovieCopyWith<$Res> implements $OckgMovieCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String movieId,
+      {@IntConverter() int movieId,
       String name,
       String internationalName,
       String year,
-      String cover});
+      String cover,
+      String description,
+      List<String> translation,
+      String quality,
+      DateTime? createdAt,
+      DateTime? updatedAt,
+      List<String> genres,
+      List<String> countries,
+      List<String> directors,
+      @DoubleConverter() double ratingImdbValue,
+      @DoubleConverter() double ratingKinopoiskValue});
 }
 
 /// @nodoc
@@ -120,12 +205,22 @@ class __$$_OckgMovieCopyWithImpl<$Res>
     Object? internationalName = null,
     Object? year = null,
     Object? cover = null,
+    Object? description = null,
+    Object? translation = null,
+    Object? quality = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? genres = null,
+    Object? countries = null,
+    Object? directors = null,
+    Object? ratingImdbValue = null,
+    Object? ratingKinopoiskValue = null,
   }) {
     return _then(_$_OckgMovie(
       movieId: null == movieId
           ? _value.movieId
           : movieId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -142,6 +237,46 @@ class __$$_OckgMovieCopyWithImpl<$Res>
           ? _value.cover
           : cover // ignore: cast_nullable_to_non_nullable
               as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      translation: null == translation
+          ? _value._translation
+          : translation // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      quality: null == quality
+          ? _value.quality
+          : quality // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      genres: null == genres
+          ? _value._genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      countries: null == countries
+          ? _value._countries
+          : countries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      directors: null == directors
+          ? _value._directors
+          : directors // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      ratingImdbValue: null == ratingImdbValue
+          ? _value.ratingImdbValue
+          : ratingImdbValue // ignore: cast_nullable_to_non_nullable
+              as double,
+      ratingKinopoiskValue: null == ratingKinopoiskValue
+          ? _value.ratingKinopoiskValue
+          : ratingKinopoiskValue // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -151,19 +286,34 @@ class __$$_OckgMovieCopyWithImpl<$Res>
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _$_OckgMovie extends _OckgMovie {
   const _$_OckgMovie(
-      {this.movieId = '',
+      {@IntConverter() this.movieId = 0,
       this.name = '',
       this.internationalName = '',
       this.year = '',
-      this.cover = ''})
-      : super._();
+      this.cover = '',
+      this.description = '',
+      final List<String> translation = const [],
+      this.quality = '',
+      this.createdAt,
+      this.updatedAt,
+      final List<String> genres = const [],
+      final List<String> countries = const [],
+      final List<String> directors = const [],
+      @DoubleConverter() this.ratingImdbValue = 0.0,
+      @DoubleConverter() this.ratingKinopoiskValue = 0.0})
+      : _translation = translation,
+        _genres = genres,
+        _countries = countries,
+        _directors = directors,
+        super._();
 
   factory _$_OckgMovie.fromJson(Map<String, dynamic> json) =>
       _$$_OckgMovieFromJson(json);
 
   @override
   @JsonKey()
-  final String movieId;
+  @IntConverter()
+  final int movieId;
   @override
   @JsonKey()
   final String name;
@@ -176,10 +326,62 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   final String cover;
+  @override
+  @JsonKey()
+  final String description;
+  final List<String> _translation;
+  @override
+  @JsonKey()
+  List<String> get translation {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_translation);
+  }
+
+  @override
+  @JsonKey()
+  final String quality;
+  @override
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
+  final List<String> _genres;
+  @override
+  @JsonKey()
+  List<String> get genres {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_genres);
+  }
+
+  final List<String> _countries;
+  @override
+  @JsonKey()
+  List<String> get countries {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_countries);
+  }
+
+  final List<String> _directors;
+  @override
+  @JsonKey()
+  List<String> get directors {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_directors);
+  }
+
+// @DoubleConverter()
+// @Default(0.0) double ratingLocalValue,
+  @override
+  @JsonKey()
+  @DoubleConverter()
+  final double ratingImdbValue;
+  @override
+  @JsonKey()
+  @DoubleConverter()
+  final double ratingKinopoiskValue;
 
   @override
   String toString() {
-    return 'OckgMovie(movieId: $movieId, name: $name, internationalName: $internationalName, year: $year, cover: $cover)';
+    return 'OckgMovie(movieId: $movieId, name: $name, internationalName: $internationalName, year: $year, cover: $cover, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue)';
   }
 
   @override
@@ -192,13 +394,46 @@ class _$_OckgMovie extends _OckgMovie {
             (identical(other.internationalName, internationalName) ||
                 other.internationalName == internationalName) &&
             (identical(other.year, year) || other.year == year) &&
-            (identical(other.cover, cover) || other.cover == cover));
+            (identical(other.cover, cover) || other.cover == cover) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            const DeepCollectionEquality()
+                .equals(other._translation, _translation) &&
+            (identical(other.quality, quality) || other.quality == quality) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            const DeepCollectionEquality().equals(other._genres, _genres) &&
+            const DeepCollectionEquality()
+                .equals(other._countries, _countries) &&
+            const DeepCollectionEquality()
+                .equals(other._directors, _directors) &&
+            (identical(other.ratingImdbValue, ratingImdbValue) ||
+                other.ratingImdbValue == ratingImdbValue) &&
+            (identical(other.ratingKinopoiskValue, ratingKinopoiskValue) ||
+                other.ratingKinopoiskValue == ratingKinopoiskValue));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, movieId, name, internationalName, year, cover);
+  int get hashCode => Object.hash(
+      runtimeType,
+      movieId,
+      name,
+      internationalName,
+      year,
+      cover,
+      description,
+      const DeepCollectionEquality().hash(_translation),
+      quality,
+      createdAt,
+      updatedAt,
+      const DeepCollectionEquality().hash(_genres),
+      const DeepCollectionEquality().hash(_countries),
+      const DeepCollectionEquality().hash(_directors),
+      ratingImdbValue,
+      ratingKinopoiskValue);
 
   @JsonKey(ignore: true)
   @override
@@ -216,18 +451,29 @@ class _$_OckgMovie extends _OckgMovie {
 
 abstract class _OckgMovie extends OckgMovie {
   const factory _OckgMovie(
-      {final String movieId,
+      {@IntConverter() final int movieId,
       final String name,
       final String internationalName,
       final String year,
-      final String cover}) = _$_OckgMovie;
+      final String cover,
+      final String description,
+      final List<String> translation,
+      final String quality,
+      final DateTime? createdAt,
+      final DateTime? updatedAt,
+      final List<String> genres,
+      final List<String> countries,
+      final List<String> directors,
+      @DoubleConverter() final double ratingImdbValue,
+      @DoubleConverter() final double ratingKinopoiskValue}) = _$_OckgMovie;
   const _OckgMovie._() : super._();
 
   factory _OckgMovie.fromJson(Map<String, dynamic> json) =
       _$_OckgMovie.fromJson;
 
   @override
-  String get movieId;
+  @IntConverter()
+  int get movieId;
   @override
   String get name;
   @override
@@ -236,6 +482,29 @@ abstract class _OckgMovie extends OckgMovie {
   String get year;
   @override
   String get cover;
+  @override
+  String get description;
+  @override
+  List<String> get translation;
+  @override
+  String get quality;
+  @override
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
+  @override
+  List<String> get genres;
+  @override
+  List<String> get countries;
+  @override
+  List<String> get directors;
+  @override // @DoubleConverter()
+// @Default(0.0) double ratingLocalValue,
+  @DoubleConverter()
+  double get ratingImdbValue;
+  @override
+  @DoubleConverter()
+  double get ratingKinopoiskValue;
   @override
   @JsonKey(ignore: true)
   _$$_OckgMovieCopyWith<_$_OckgMovie> get copyWith =>
