@@ -8,13 +8,13 @@ import '../../../resources/krs_theme.dart';
 class OckgCategoryMovieCard extends StatefulWidget {
   final FocusNode focusNode;
   final OckgMovie movie;
-  final Size posterSize;
+  final double height;
 
   const OckgCategoryMovieCard({
     super.key,
     required this.focusNode,
     required this.movie,
-    this.posterSize = const Size(120.0, 168.0),
+    this.height = 140.0,
   });
 
   @override
@@ -24,9 +24,10 @@ class OckgCategoryMovieCard extends StatefulWidget {
 class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   bool _holded = false;
   Color? _dominantColor;
+  late final Size _posterSize;
 
   VoidCallback onTap = () {
-    print('TApppperd ');
+    //print('TApppperd ');
   };
 
   final _keysMap = [
@@ -47,6 +48,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   void initState() {
     super.initState();
 
+    _posterSize = Size(widget.height * 0.7, widget.height);
     
     PaletteGenerator.fromImageProvider(
       NetworkImage(widget.movie.coverUrl),
@@ -66,29 +68,19 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final zoomedPosterSize = widget.posterSize * 1.1;
+    final zoomedPosterSize = _posterSize * 1.1;
 
     _dominantColor ??= theme.colorScheme.primary;
 
     return GestureDetector(
       onTap: onTap,
-      onTapDown: (details) {
-        _updateHoldedState(true);
-      },
-      onTapUp: (details) {
-        _updateHoldedState(false);
-      },
+      // onTapDown: (details) {
+      //   _updateHoldedState(true);
+      // },
+      // onTapUp: (details) {
+      //   _updateHoldedState(false);
+      // },
       child: Focus(
-      // FocusableActionDetector(
-      //   actions: {
-      //     ActivateIntent: CallbackAction<ActivateIntent>(
-      //       onInvoke: (Intent intent) => onTap(),
-      //     ),
-      //     ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-      //       onInvoke: (Intent intent) => onTap(),
-      //     ),
-      //   },
-      //   shortcuts: _shortcutMap,
         focusNode: widget.focusNode,
         onFocusChange: (hasFocus) {
           /// при получении фокуса на фильме
@@ -123,10 +115,9 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
                     width: (widget.focusNode.hasFocus && !_holded)
-                        ? zoomedPosterSize.width : widget.posterSize.width,
+                        ? zoomedPosterSize.width : _posterSize.width,
                     height: (widget.focusNode.hasFocus && !_holded)
-                        ? zoomedPosterSize.height : widget.posterSize.height,
-                    //clipBehavior: Clip.antiAlias,
+                        ? zoomedPosterSize.height : _posterSize.height,
                     decoration: BoxDecoration(
                       boxShadow: [
                         if (widget.focusNode.hasFocus) BoxShadow(
@@ -140,9 +131,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                             color: theme.colorScheme.primary.withOpacity(0.72),
                             width: 3.0,
                           )
-                        : Border.all(
-                            color: Colors.transparent,
-                          )
+                        : null
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(9.0),
@@ -158,7 +147,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
               
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: widget.posterSize.width * 0.05,
+                  horizontal: _posterSize.width * 0.05,
                 ),
                 child: AnimatedDefaultTextStyle(
                   duration: KrsTheme.animationDuration,
@@ -170,6 +159,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                   ),
                   child: Text(widget.movie.name,
                     maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),

@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
 
           SizedBox(
-            height: 280.0,
+            height: 252.0,
             child: TabBarView(
               controller: _tabController,
               children: const [

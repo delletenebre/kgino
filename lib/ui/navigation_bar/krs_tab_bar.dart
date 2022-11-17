@@ -345,7 +345,7 @@ class _TabButton extends StatelessWidget {
 
       textStyle: MaterialStateProperty.resolveWith((states) {
         return const TextStyle(
-          fontSize: 16.0,
+          fontSize: 14.0,
           fontWeight: FontWeight.w500,
         );
       }),
