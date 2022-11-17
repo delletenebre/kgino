@@ -72,7 +72,6 @@ class _KrsTabBarState extends State<KrsTabBar>
 
   late List<GlobalKey> _tabKeys;
   late List<FocusNode> _tabFocusNodes;
-  final GlobalKey _tabsContainerKey = GlobalKey();
   final GlobalKey _tabsParentKey = GlobalKey();
 
   int _currentIndex = 0;
@@ -379,91 +378,3 @@ class _TabButton extends StatelessWidget {
     }
   }
 }
-
-
-// Widget _buildButton(int index, Tab tab) {
-//     // final double animationValue;
-//     // if (index == _currentIndex) {
-//     //   animationValue = _animationController.value;
-//     // } else if (index == _prevIndex) {
-//     //   animationValue = 1 - _animationController.value;
-//     // } else {
-//     //   animationValue = 0;
-//     // }
-
-//     // final TextStyle? textStyle = TextStyle.lerp(
-//     //     widget.unselectedLabelStyle ?? const TextStyle(color: Colors.black),
-//     //     widget.labelStyle ?? const TextStyle(color: Colors.white),
-//     //     animationValue,
-//     // );
-//     // final Color? borderColor = Color.lerp(
-//     //     widget.unselectedBorderColor, widget.borderColor, animationValue);
-//     // final Color foregroundColor = textStyle?.color ?? Colors.black;
-
-//     // final BoxDecoration? boxDecoration = BoxDecoration.lerp(
-//     //   BoxDecoration(
-//     //     color: widget.unselectedDecoration?.color ??
-//     //         widget.unselectedBackgroundColor ??
-//     //         Colors.grey[300],
-//     //     boxShadow: widget.unselectedDecoration?.boxShadow,
-//     //     gradient: widget.unselectedDecoration?.gradient,
-//     //     borderRadius: BorderRadius.circular(widget.radius),
-//     //   ),
-//     //   BoxDecoration(
-//     //     color: widget.decoration?.color ??
-//     //         widget.backgroundColor ??
-//     //         Theme.of(context).colorScheme.secondary,
-//     //     boxShadow: widget.decoration?.boxShadow,
-//     //     gradient: widget.decoration?.gradient,
-//     //     borderRadius: BorderRadius.circular(widget.radius),
-//     //   ),
-//     //   animationValue,
-//     // );
-
-//     if (index == 0) {
-//       //
-//     } else if (index == widget.tabs.length - 1) {
-//       //
-//     }
-
-//     final label = Text(tab.text!);
-
-//     if (tab.icon != null) {
-//       /// ^ если нужно отобразить иконку
-      
-//       return TextButton.icon(
-//         key: _tabKeys[index],
-//         focusNode: _tabFocusNodes[index],
-//         onFocusChange: (hasFocus) {
-//           if (_tabBarFocused && hasFocus) {
-//             _controller?.animateTo(index);
-//           }
-//         },
-//         onPressed: () {
-//           _controller?.animateTo(index);
-//           widget.onTap?.call(index);
-//         },
-//         icon: tab.icon!,
-//         label: label,
-//       );
-
-//     } else {
-//       /// ^ если иконка не нужна
-
-//       return TextButton(
-//         key: _tabKeys[index],
-//         focusNode: _tabFocusNodes[index],
-//         onFocusChange: (hasFocus) {
-//           if (_tabBarFocused && hasFocus) {
-//             _controller?.animateTo(index);
-//           }
-//         },
-//         onPressed: () {
-//           _controller?.animateTo(index);
-//           widget.onTap?.call(index);
-//         },
-//         child: label,
-//       );
-
-//     }
-//   }

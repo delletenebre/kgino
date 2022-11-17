@@ -7,6 +7,7 @@ part 'ockg_bestsellers_category.g.dart';
 
 @freezed
 class OckgBestsellersCategory with _$OckgBestsellersCategory {
+  // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OckgBestsellersCategory({
     required String categoryId,

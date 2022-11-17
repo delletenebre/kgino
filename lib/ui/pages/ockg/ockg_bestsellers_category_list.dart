@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -19,9 +18,6 @@ class OckgBestsellersCategoryList extends StatefulWidget {
 }
 
 class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryList> {
-  bool _focused = false;
-  bool _wasFocused = false;
-
   final _titleFocusNode = FocusNode();
   late final List<FocusNode> _elementsFocusNodes;
 
@@ -51,21 +47,12 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
     return Focus(
       skipTraversal: true,
       onFocusChange: (hasFocus) {
-        _wasFocused = _focused;
-        _focused = hasFocus;
+        if (hasFocus) {
+          _ensureVisible(_elementsFocusNodes.first);
+        }
       },
 
       onKey: (node, event) {
-        
-        // node.traversalChildren.forEachIndexed((index, element) {
-        //   if (index == 0 && element.hasFocus) {
-        //     print('title focused');
-        //   }
-        // });
-
-        if (_wasFocused && _titleFocusNode.hasFocus && event.logicalKey == LogicalKeyboardKey.arrowDown && !event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-          node.traversalChildren.elementAt(1).requestFocus();
-        }
 
         if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
           /// ^ если нажали вверх
@@ -75,7 +62,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
             
             /// ставим фокус на название категории
             _titleFocusNode.requestFocus();
-            _ensureVisible(_titleFocusNode);
+            _ensureVisible(_elementsFocusNodes.first);
             
             /// останавливаем обработку нажатия
             return KeyEventResult.handled;
@@ -115,7 +102,10 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
           ),
 
           SizedBox.fromSize(
-            size: const Size.fromHeight(168.0 + 16.8 * 2.0 + 4.0 + 48.0),
+            size: const Size.fromHeight(168.0 + 12.0 + 48.0),
+          // Container(
+          //   height: 168.0 + 4.0 + 48.0,
+          //   color: Colors.red,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: widget.category.movies.length,
@@ -141,7 +131,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
     // Wait for the keyboard to come into view
     Future.delayed(const Duration(milliseconds: 50), () {
       
-      if (!mounted || !focusNode.hasFocus) {
+      if (!mounted) { // || !focusNode.hasFocus) {
         /// ^ если виджет не существует или нет фокуса на элементе
         
         /// останавливаем выполнение
@@ -181,7 +171,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
       position.ensureVisible(
         object,
         alignment: alignment,
-        duration: const Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.easeIn,
       );
     });

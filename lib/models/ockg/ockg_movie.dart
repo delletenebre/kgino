@@ -7,6 +7,7 @@ part 'ockg_movie.g.dart';
 class OckgMovie with _$OckgMovie {
   const OckgMovie._();
 
+  // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OckgMovie({
     @Default('') String movieId,

@@ -29,12 +29,6 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
     print('TApppperd ');
   };
 
-  // final Map<ShortcutActivator, Intent> _shortcutMap = const {
-  //   SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-  //   SingleActivator(LogicalKeyboardKey.numpadEnter): ActivateIntent(),
-  //   SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
-  // };
-
   final _keysMap = [
     LogicalKeyboardKey.enter,
     LogicalKeyboardKey.numpadEnter,
@@ -115,12 +109,8 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
 
           return KeyEventResult.ignored;
         },
-        child: AnimatedContainer(
-          duration: KrsTheme.animationDuration,
+        child: SizedBox(
           width: zoomedPosterSize.width,
-          decoration: BoxDecoration(
-            
-          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,110 +187,5 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
         ),
       ),
     );
-
-    // return Stack(
-    //   children: <Widget>[
-    //     GestureDetector(
-          
-    //       onTap: () {
-    //         /// при нажатии на фильм
-    //       },
-    //       onTapDown: (details) {
-    //         setState(() {
-    //           _holded = true;
-    //         });
-    //       },
-    //       onTapUp: (details) {
-    //         setState(() {
-    //           _holded = false;
-    //         });
-    //       },
-    //       child: AnimatedContainer(
-    //         duration: const Duration(milliseconds: 250),
-    //         width: 120.0 + 24.0,
-    //         decoration: BoxDecoration(
-              
-    //         ),
-    //         child: Column(
-    //           mainAxisSize: MainAxisSize.min,
-    //           crossAxisAlignment: CrossAxisAlignment.start,
-    //           children: [
-                
-    //             /// постер фильма
-    //             SizedBox.fromSize(
-    //               size: const Size(120.0 + 24.0, 168.0 + 16.8 * 2.0),
-    //               child: Center(
-    //                 child: AnimatedContainer(
-    //                   duration: const Duration(milliseconds: 250),
-    //                   width: widget.focusNode.hasFocus && !_holded ? 120.0 + 12.0 : 120.0,
-    //                   height: widget.focusNode.hasFocus && !_holded ? 168.0 + 16.8 : 168.0,
-    //                   decoration: BoxDecoration(
-    //                     border: widget.focusNode.hasFocus
-    //                       ? Border.all(
-    //                           color: theme.colorScheme.primary.withOpacity(0.62),
-    //                           width: 4.0,
-    //                         )
-    //                       : Border.all(
-    //                           color: Colors.transparent
-    //                         )
-    //                   ),
-    //                   child: Image.network('https://oc.kg${widget.movie.cover}',
-    //                     fit: BoxFit.cover,
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-                
-    //             /// название фильма
-    //             Text(widget.movie.name,
-    //               style: TextStyle(
-    //                 fontSize: 12.0,
-    //               ),
-    //               maxLines: 2,
-    //             ),
-
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-        
-    //     Positioned.fill(
-    //       child: Material(
-    //         color: Colors.transparent,
-    //         child: InkWell(
-    //           focusNode: widget.focusNode,
-    //           onFocusChange: (hasFocus) {
-    //             /// при получении фокуса на фильме
-    //             setState(() {
-                  
-    //             });
-    //           },
-              
-    //           focusColor: Colors.transparent,
-    //         ),
-
-    //       ),
-    //     ),
-    //   ],
-    // );
   }
 }
-
-/*
-Focus(
-          focusNode: widget.focusNode,
-          skipTraversal: true,
-          canRequestFocus: false,
-          onFocusChange: (hashFocus) {
-            setState(() {
-              
-            });
-          },
-          onKey: (node, event) {
-            setState(() {
-              _holded = event.isKeyPressed(LogicalKeyboardKey.enter);
-            });
-
-            return KeyEventResult.ignored;
-          },
-          child: */

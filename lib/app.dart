@@ -55,27 +55,11 @@ class App extends StatelessWidget {
                 },
               ),
 
-              // GoRoute(
-              //   path: '/',
-              //   builder: (context, state) {
-              //     return const OckgHomePage();
-              //   },
-              // ),
-
               GoRoute(
                 path: '/settings',
                 builder: (context, state) {
                   return const SettingsPage();
                 },
-                routes: <RouteBase>[
-                  /// The details screen to display stacked on the inner Navigator.
-                  // GoRoute(
-                  //   path: 'song/:songId',
-                  //   builder: (context, state) {
-                  //     return const SettingsPage();
-                  //   },
-                  // ),
-                ],
               ),
               
             ],

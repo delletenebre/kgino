@@ -20,6 +20,9 @@ class OckgHomePage extends StatelessWidget {
         builder: (context, state) {
           if (state.success) {
             return ListView.separated(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+              ),
               itemCount: state.data.length,
               itemBuilder: (context, index) {
                 final bestsellersCategory = state.data[index];

@@ -33,34 +33,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
-    final posts = List.generate(30, (index) => index);
-    
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          KrsTabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(
-                text: locale.movies,
-              ),
-              Tab(
-                text: locale.tvshows,
-              ),
-              Tab(
-                text: locale.settings,
-              )
-            ]
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: KrsTabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: locale.movies,
+                ),
+                Tab(
+                  text: locale.tvshows,
+                ),
+                Tab(
+                  text: locale.settings,
+                )
+              ]
+            ),
           ),
 
-          Container(
-            width: double.maxFinite,
-            height: 200,
-            color: Colors.black,
-          ),
           Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(12.0),
+              color: Colors.black.withOpacity(0.12),
+            ),
+          ),
+
+          SizedBox(
+            height: 280.0,
             child: TabBarView(
               controller: _tabController,
               children: const [
@@ -72,110 +76,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
         ],
       ),
-      // body: CustomScrollView(
-      //   shrinkWrap: true,
-      //   slivers: [
-      //     SliverAppBar(
-      //       pinned: false,
-      //       floating: false,
-      //       title: KrsTabBar(
-      //         controller: _tabController,
-      //         tabs: [
-      //           Tab(
-      //             text: locale.movies,
-      //           ),
-      //           Tab(
-      //             text: locale.tvshows,
-      //           ),
-      //           Tab(
-      //             text: locale.settings,
-      //           )
-      //         ]
-      //       ),
-      //     ),
-      //     // SliverToBoxAdapter(
-      //     //   child: KrsTabBar(
-      //     //     controller: _tabController,
-      //     //     tabs: [
-      //     //       Tab(
-      //     //         text: locale.movies,
-      //     //       ),
-      //     //       Tab(
-      //     //         text: locale.tvshows,
-      //     //       ),
-      //     //       Tab(
-      //     //         text: locale.settings,
-      //     //       )
-      //     //     ]
-      //     //   ),
-      //     // ),
-      //     SliverFillRemaining(
-      //       child: TabBarView(
-      //         controller: _tabController,
-      //         children: const [
-      //           OckgHomePage(),
-      //           OckgHomePage(),
-      //           SettingsPage(),
-      //         ],
-      //       )
-      //     ),
-      //   ],
-      // ),
-      // NestedScrollView(
-      //   headerSliverBuilder: (context, value) {
-      //     return [
-      //       SliverToBoxAdapter(
-      //         child: KrsTabBar(
-      //           controller: _tabController,
-      //           tabs: [
-      //             Tab(
-      //               text: locale.movies,
-      //             ),
-      //             Tab(
-      //               text: locale.tvshows,
-      //             ),
-      //             Tab(
-      //               text: locale.settings,
-      //             )
-      //           ]
-      //         ),
-      //       ),
-      //     ];
-      //   },
-      //   body: TabBarView(
-      //     controller: _tabController,
-      //     children: const [
-      //       OckgHomePage(),
-      //       OckgHomePage(),
-      //       SettingsPage(),
-      //     ],
-      //   ),
-      // ),
-
-
-
-      // appBar: KrsTabBar(
-      //   controller: _tabController,
-      //   tabs: [
-      //     Tab(
-      //       text: locale.movies,
-      //     ),
-      //     Tab(
-      //       text: locale.tvshows,
-      //     ),
-      //     Tab(
-      //       text: locale.settings,
-      //     )
-      //   ]
-      // ),
-      // body: TabBarView(
-      //   controller: _tabController,
-      //   children: const [
-      //     OckgHomePage(),
-      //     OckgHomePage(),
-      //     SettingsPage(),
-      //   ],
-      // ),
     );
   }
 }
