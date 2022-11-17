@@ -57,14 +57,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
 
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(12.0),
-              color: Colors.black.withOpacity(0.12),
-            ),
-          ),
-
-          SizedBox(
-            height: 252.0,
             child: TabBarView(
               controller: _tabController,
               children: const [

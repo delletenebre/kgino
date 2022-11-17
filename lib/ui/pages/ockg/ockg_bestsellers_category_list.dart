@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:kgino/models/ockg/ockg_movie.dart';
 
 import '../../../models/ockg/ockg_bestsellers_category.dart';
 import 'ockg_category_movie_card.dart';
 
 class OckgBestsellersCategoryList extends StatefulWidget {
   final OckgBestsellersCategory category;
+  final Function(OckgMovie) onMovieFocused;
 
   const OckgBestsellersCategoryList({
     super.key,
     required this.category,
+    required this.onMovieFocused,
   });
 
   @override
@@ -25,7 +28,14 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
   void initState() {
     /// инициализируем [FocusNode] для карточек фильмов
     _elementsFocusNodes = List.generate(widget.category.movies.length, (index) {
-      return FocusNode();
+      final focusNode = FocusNode();
+      focusNode.addListener(() {
+        if (focusNode.hasFocus) {
+          widget.onMovieFocused.call(widget.category.movies[index]);
+        }
+      });
+
+      return focusNode;
     });
 
     super.initState();
