@@ -14,53 +14,56 @@ class OckgHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    return Column(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(12.0),
-            color: Colors.black.withOpacity(0.12),
-          ),
-        ),
-
-        SizedBox(
-          height: 252.0,
-          child: BlocProvider(
-            create: (BuildContext context) => OckgBestsellersController(),
-            child: BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
-              builder: (context, state) {
-                if (state.success) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                    ),
-                    itemCount: state.data.length,
-                    itemBuilder: (context, index) {
-                      final bestsellersCategory = state.data[index];
-                      
-                      return OckgBestsellersCategoryList(
-                        category: bestsellersCategory,
-                        onMovieFocused: (movie) {
-                          
-                        }
-                      );
-                      
-                    },
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(height: 24.0);
-                    },
-                    
-                  );
-                }
-
-                return const LoadingIndicator(
-                  color: Colors.lightBlueAccent
-                );
-              }
+    return BlocProvider(
+      create: (context) => OckgMovieDetailsController(),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(12.0),
+              color: Colors.black.withOpacity(0.12),
             ),
           ),
-        ),
-      ],
+
+          SizedBox(
+            height: 252.0,
+            child: BlocProvider(
+              create: (context) => OckgBestsellersController(),
+              child: BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
+                builder: (context, state) {
+                  if (state.success) {
+                    return ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                      ),
+                      itemCount: state.data.length,
+                      itemBuilder: (context, index) {
+                        final bestsellersCategory = state.data[index];
+                        
+                        return OckgBestsellersCategoryList(
+                          category: bestsellersCategory,
+                          onMovieFocused: (movie) {
+                            
+                          }
+                        );
+                        
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(height: 24.0);
+                      },
+                      
+                    );
+                  }
+
+                  return const LoadingIndicator(
+                    color: Colors.lightBlueAccent
+                  );
+                }
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
