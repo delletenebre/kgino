@@ -7,6 +7,7 @@ import '../../models/ockg/ockg_bestsellers_category.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/ockg/ockg_bestsellers_category_list.dart';
+import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 class OckgHomePage extends StatelessWidget {
   const OckgHomePage({
@@ -29,12 +30,8 @@ class OckgHomePage extends StatelessWidget {
                   if (state.success) {
                     final movie = state.data;
 
-                    return Column(
-                      children: [
-                        Text(movie.description),
-                        Text(movie.ratingImdbValue.toString()),
-                        Text(movie.ratingKinopoiskValue.toString()),
-                      ],
+                    return OckgMovieDetais(
+                      movie: movie,
                     );
                   }
 
@@ -62,7 +59,6 @@ class OckgHomePage extends StatelessWidget {
                         return OckgBestsellersCategoryList(
                           category: bestsellersCategory,
                           onMovieFocused: (movie) {
-                            print(movie.toJson());
                             final controller = context.read<OckgMovieDetailsController>();
                             controller.getMovie(movie);
                           }
