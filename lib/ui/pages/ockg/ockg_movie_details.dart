@@ -28,7 +28,7 @@ class OckgMovieDetais extends StatelessWidget {
         const SizedBox(width: double.maxFinite),
 
         Positioned(
-          top: 0,
+          top: -52.0,
           right: 0,
 
           /// "смягчаем" границы постера

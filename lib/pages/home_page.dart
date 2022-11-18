@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              clipBehavior: Clip.none,
               children: const [
                 OckgHomePage(),
                 OckgHomePage(),

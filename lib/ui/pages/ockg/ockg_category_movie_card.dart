@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_theme.dart';
@@ -26,9 +27,9 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   late final Size _posterSize;
 
   /// обработчик выбора элемента
-  VoidCallback onTap = () {
-    //print('TApppperd ');
-  };
+  void onTap() {
+    GoRouter.of(context).go('/ockg/movie/${widget.movie.movieId}');
+  }
 
   /// кнопки, которые могут отвечать за выбор элемента
   final _selectKeysMap = [

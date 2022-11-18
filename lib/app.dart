@@ -7,9 +7,12 @@ import 'package:go_router/go_router.dart';
 
 import 'controllers/locale_controller.dart';
 import 'controllers/theme_controller.dart';
+import 'models/ockg/ockg_movie.dart';
 import 'pages/error_page.dart';
 import 'pages/home_page.dart';
+import 'pages/ockg/ockg_movie_details_page.dart';
 import 'pages/settings_page.dart';
+import 'resources/krs_router.dart';
 import 'resources/krs_theme.dart';
 
 class App extends StatelessWidget {
@@ -41,32 +44,8 @@ class App extends StatelessWidget {
           /// текущий язык приложения
           final locale = context.watch<LocaleController>().state;
 
-          final router = GoRouter(
-            initialLocation: '/',
-
-            errorBuilder: (context, state) => const ErrorPage(),
-
-            routes: <RouteBase>[
-
-              GoRoute(
-                path: '/',
-                builder: (context, state) {
-                  return const HomePage();
-                },
-              ),
-
-              GoRoute(
-                path: '/settings',
-                builder: (context, state) {
-                  return const SettingsPage();
-                },
-              ),
-              
-            ],
-          );
-
           return MaterialApp.router(
-            routerConfig: router,
+            routerConfig: KrsRouter.routes,
 
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
