@@ -13,6 +13,9 @@ class KrsTheme {
   /// длительность анимаций
   static const animationDuration = Duration(milliseconds: 250);
 
+  /// длительность быстрых анимаций
+  static const fastAnimationDuration = Duration(milliseconds: 60);
+
   /// длительность показа уведомлений
   static const snackBarDuration = Duration(seconds: 5);
 

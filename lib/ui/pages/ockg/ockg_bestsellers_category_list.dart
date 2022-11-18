@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:kgino/models/ockg/ockg_movie.dart';
 
 import '../../../models/ockg/ockg_bestsellers_category.dart';
+import '../../../resources/krs_theme.dart';
 import 'ockg_category_movie_card.dart';
 
 class OckgBestsellersCategoryList extends StatefulWidget {
@@ -137,7 +138,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
 
   Future<void> _ensureVisible(FocusNode focusNode) async {
     // Wait for the keyboard to come into view
-    Future.delayed(const Duration(milliseconds: 50), () {
+    Future.delayed(KrsTheme.fastAnimationDuration, () {
       
       if (!mounted) { // || !focusNode.hasFocus) {
         /// ^ если виджет не существует или нет фокуса на элементе
@@ -179,7 +180,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
       position.ensureVisible(
         object,
         alignment: alignment,
-        duration: const Duration(milliseconds: 250),
+        duration: KrsTheme.animationDuration,
         curve: Curves.easeIn,
       );
     });

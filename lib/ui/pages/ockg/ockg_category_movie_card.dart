@@ -115,7 +115,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                 size: zoomedPosterSize,
                 child: Center(
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
+                    duration: const Duration(milliseconds: 100),
                     width: (widget.focusNode.hasFocus && !_holded)
                         ? zoomedPosterSize.width : _posterSize.width,
                     height: (widget.focusNode.hasFocus && !_holded)
