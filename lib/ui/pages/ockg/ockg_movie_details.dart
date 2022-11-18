@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kgino/ui/loading_indicator.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
-import '../../../resources/krs_theme.dart';
 import '../../../utils.dart';
 import '../../movie_rating.dart';
 

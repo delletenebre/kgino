@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_theme.dart';
@@ -26,11 +25,13 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   Color? _dominantColor;
   late final Size _posterSize;
 
+  /// обработчик выбора элемента
   VoidCallback onTap = () {
     //print('TApppperd ');
   };
 
-  final _keysMap = [
+  /// кнопки, которые могут отвечать за выбор элемента
+  final _selectKeysMap = [
     LogicalKeyboardKey.enter,
     LogicalKeyboardKey.numpadEnter,
     LogicalKeyboardKey.select,
@@ -48,14 +49,11 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   void initState() {
     super.initState();
 
+    /// вычисляем размер постера
     _posterSize = Size(widget.height * 0.7, widget.height);
     
-    PaletteGenerator.fromImageProvider(
-      NetworkImage(widget.movie.coverUrl),
-      //size: widget.posterSize,
-      //region: newRegion,
-      //maximumColorCount: 4,
-    ).then((palette) {
+    /// получаем цветовую палитру фильма
+    widget.movie.getPaletteGenerator(widget.movie.coverUrl).then((palette) {
       if (palette.lightVibrantColor != null) {
         setState(() {
           _dominantColor = palette.lightVibrantColor!.color;
@@ -68,8 +66,10 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    /// вычисляем размер постера, на который наведён фокус
     final zoomedPosterSize = _posterSize * 1.1;
 
+    /// получаем основной цвет постера
     _dominantColor ??= theme.colorScheme.primary;
 
     return GestureDetector(
@@ -90,7 +90,9 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
         },
         
         onKey: (node, event) {
-          if (_keysMap.contains(event.logicalKey)) {
+          if (_selectKeysMap.contains(event.logicalKey)) {
+            /// ^ если была нажата клавиша выбора элемента
+            
             _updateHoldedState(event is RawKeyDownEvent);
             if (event is RawKeyUpEvent) {
               onTap();
@@ -145,6 +147,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
 
               const SizedBox(height: 4.0),
               
+              /// название фильма
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: _posterSize.width * 0.05,
@@ -164,6 +167,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                 ),
               ),
 
+              /// описание фильма
               // Text('description',
               //   style: TextStyle(
               //     fontSize: 12.0,
