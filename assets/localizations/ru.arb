@@ -39,6 +39,12 @@
   },
 
 
+  "kinopoisk": "КиноПоиск",
+  "@kinopoisk": {
+    "type": "text"
+  },
+
+
   "cancel": "Отмена",
   "@cancel": {
     "type": "text"

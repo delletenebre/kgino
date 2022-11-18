@@ -8,9 +8,9 @@ class DoubleConverter implements JsonConverter<double, dynamic> {
 
    @override
    double toJson(double object) => object;
- }
+}
 
- class IntConverter implements JsonConverter<int, dynamic> {
+class IntConverter implements JsonConverter<int, dynamic> {
    const IntConverter();
 
    @override
@@ -18,4 +18,14 @@ class DoubleConverter implements JsonConverter<double, dynamic> {
 
    @override
    int toJson(int object) => object;
- }
+}
+
+class HtmlRemoveConverter implements JsonConverter<String, String> {
+   const HtmlRemoveConverter();
+
+   @override
+   String fromJson(String json) => json.replaceAll('<br>', '\n');
+
+   @override
+   String toJson(String object) => object;
+}

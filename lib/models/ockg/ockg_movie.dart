@@ -19,6 +19,7 @@ class OckgMovie with _$OckgMovie {
     @Default('') String year,
     @Default('') String cover,
 
+    @HtmlRemoveConverter()
     @Default('') String description,
     @Default([]) List<String> translation,
     @Default('') String quality,
@@ -37,6 +38,7 @@ class OckgMovie with _$OckgMovie {
     @DoubleConverter()
     @Default(0.0) double ratingKinopoiskValue,
 
+    @Default([]) List<OckgMovie> otherMovies,
 
   }) = _OckgMovie;
 
@@ -44,4 +46,5 @@ class OckgMovie with _$OckgMovie {
       => _$OckgMovieFromJson(json);
 
   String get coverUrl => 'https://oc.kg$cover';
+  
 }

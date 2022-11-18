@@ -24,7 +24,7 @@ class OckgHomePage extends StatelessWidget {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(12.0),
-              color: Colors.black.withOpacity(0.12),
+              //color: Colors.black,
               child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
                 builder: (context, state) {
                   if (state.success) {
