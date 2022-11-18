@@ -14,6 +14,10 @@ _$_OckgMovie _$$_OckgMovieFromJson(Map<String, dynamic> json) => _$_OckgMovie(
       internationalName: json['international_name'] as String? ?? '',
       year: json['year'] as String? ?? '',
       cover: json['cover'] as String? ?? '',
+      covers: (json['covers'] as List<dynamic>?)
+              ?.map((e) => OckgMovieCover.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       description: json['description'] == null
           ? ''
           : const HtmlRemoveConverter().fromJson(json['description'] as String),
@@ -46,6 +50,10 @@ _$_OckgMovie _$$_OckgMovieFromJson(Map<String, dynamic> json) => _$_OckgMovie(
       ratingKinopoiskValue: json['rating_kinopoisk_value'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['rating_kinopoisk_value']),
+      files: (json['files'] as List<dynamic>?)
+              ?.map((e) => OckgFile.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       otherMovies: (json['other_movies'] as List<dynamic>?)
               ?.map((e) => OckgMovie.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -59,6 +67,7 @@ Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
       'international_name': instance.internationalName,
       'year': instance.year,
       'cover': instance.cover,
+      'covers': instance.covers,
       'description': const HtmlRemoveConverter().toJson(instance.description),
       'translation': instance.translation,
       'quality': instance.quality,
@@ -71,5 +80,6 @@ Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
           const DoubleConverter().toJson(instance.ratingImdbValue),
       'rating_kinopoisk_value':
           const DoubleConverter().toJson(instance.ratingKinopoiskValue),
+      'files': instance.files,
       'other_movies': instance.otherMovies,
     };

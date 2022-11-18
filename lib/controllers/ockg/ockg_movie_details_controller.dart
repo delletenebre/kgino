@@ -17,14 +17,23 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
 
 
   Future<void> getMovie(OckgMovie movie) async {
-    _api.getMovie(movie.movieId).then((movie) {
-      if (movie == null) {
+    if (movie.createdAt == null) {
+      /// ^ если данные о фильме не полные
+      
+      /// запроашиваем данные о фильме
+      final response = await _api.getMovie(movie.movieId);
+      
+      if (response == null) {
         /// ^ если данных нет
         emit(const RequestState.empty());
       } else {
-        /// ^ если данные получены успешно
-        emit(RequestState.success(movie));
+        /// ^ если запрос выполнен успешно
+        
+        /// обновляем данные о фильме
+        movie = response;
       }
-    });
+    }
+    
+    emit(RequestState.success(movie));
   }
 }

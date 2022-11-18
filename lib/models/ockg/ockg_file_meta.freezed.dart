@@ -24,7 +24,7 @@ mixin _$OckgFileMeta {
   int get playtimeSeconds => throw _privateConstructorUsedError;
   String get format => throw _privateConstructorUsedError;
   OckgFileMetaMedia get video => throw _privateConstructorUsedError;
-  OckgFileMetaMedia get audio => throw _privateConstructorUsedError;
+  List<OckgFileMetaMedia> get audio => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,10 +42,9 @@ abstract class $OckgFileMetaCopyWith<$Res> {
       {@IntConverter() int playtimeSeconds,
       String format,
       OckgFileMetaMedia video,
-      OckgFileMetaMedia audio});
+      List<OckgFileMetaMedia> audio});
 
   $OckgFileMetaMediaCopyWith<$Res> get video;
-  $OckgFileMetaMediaCopyWith<$Res> get audio;
 }
 
 /// @nodoc
@@ -82,7 +81,7 @@ class _$OckgFileMetaCopyWithImpl<$Res, $Val extends OckgFileMeta>
       audio: null == audio
           ? _value.audio
           : audio // ignore: cast_nullable_to_non_nullable
-              as OckgFileMetaMedia,
+              as List<OckgFileMetaMedia>,
     ) as $Val);
   }
 
@@ -91,14 +90,6 @@ class _$OckgFileMetaCopyWithImpl<$Res, $Val extends OckgFileMeta>
   $OckgFileMetaMediaCopyWith<$Res> get video {
     return $OckgFileMetaMediaCopyWith<$Res>(_value.video, (value) {
       return _then(_value.copyWith(video: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $OckgFileMetaMediaCopyWith<$Res> get audio {
-    return $OckgFileMetaMediaCopyWith<$Res>(_value.audio, (value) {
-      return _then(_value.copyWith(audio: value) as $Val);
     });
   }
 }
@@ -115,12 +106,10 @@ abstract class _$$_OckgFileMetaCopyWith<$Res>
       {@IntConverter() int playtimeSeconds,
       String format,
       OckgFileMetaMedia video,
-      OckgFileMetaMedia audio});
+      List<OckgFileMetaMedia> audio});
 
   @override
   $OckgFileMetaMediaCopyWith<$Res> get video;
-  @override
-  $OckgFileMetaMediaCopyWith<$Res> get audio;
 }
 
 /// @nodoc
@@ -153,9 +142,9 @@ class __$$_OckgFileMetaCopyWithImpl<$Res>
           : video // ignore: cast_nullable_to_non_nullable
               as OckgFileMetaMedia,
       audio: null == audio
-          ? _value.audio
+          ? _value._audio
           : audio // ignore: cast_nullable_to_non_nullable
-              as OckgFileMetaMedia,
+              as List<OckgFileMetaMedia>,
     ));
   }
 }
@@ -168,7 +157,8 @@ class _$_OckgFileMeta implements _OckgFileMeta {
       {@IntConverter() this.playtimeSeconds = 0,
       this.format = '',
       required this.video,
-      required this.audio});
+      required final List<OckgFileMetaMedia> audio})
+      : _audio = audio;
 
   factory _$_OckgFileMeta.fromJson(Map<String, dynamic> json) =>
       _$$_OckgFileMetaFromJson(json);
@@ -182,8 +172,12 @@ class _$_OckgFileMeta implements _OckgFileMeta {
   final String format;
   @override
   final OckgFileMetaMedia video;
+  final List<OckgFileMetaMedia> _audio;
   @override
-  final OckgFileMetaMedia audio;
+  List<OckgFileMetaMedia> get audio {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_audio);
+  }
 
   @override
   String toString() {
@@ -199,13 +193,13 @@ class _$_OckgFileMeta implements _OckgFileMeta {
                 other.playtimeSeconds == playtimeSeconds) &&
             (identical(other.format, format) || other.format == format) &&
             (identical(other.video, video) || other.video == video) &&
-            (identical(other.audio, audio) || other.audio == audio));
+            const DeepCollectionEquality().equals(other._audio, _audio));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, playtimeSeconds, format, video, audio);
+  int get hashCode => Object.hash(runtimeType, playtimeSeconds, format, video,
+      const DeepCollectionEquality().hash(_audio));
 
   @JsonKey(ignore: true)
   @override
@@ -226,7 +220,7 @@ abstract class _OckgFileMeta implements OckgFileMeta {
       {@IntConverter() final int playtimeSeconds,
       final String format,
       required final OckgFileMetaMedia video,
-      required final OckgFileMetaMedia audio}) = _$_OckgFileMeta;
+      required final List<OckgFileMetaMedia> audio}) = _$_OckgFileMeta;
 
   factory _OckgFileMeta.fromJson(Map<String, dynamic> json) =
       _$_OckgFileMeta.fromJson;
@@ -239,7 +233,7 @@ abstract class _OckgFileMeta implements OckgFileMeta {
   @override
   OckgFileMetaMedia get video;
   @override
-  OckgFileMetaMedia get audio;
+  List<OckgFileMetaMedia> get audio;
   @override
   @JsonKey(ignore: true)
   _$$_OckgFileMetaCopyWith<_$_OckgFileMeta> get copyWith =>

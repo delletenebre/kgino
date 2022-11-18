@@ -22,22 +22,18 @@ class OckgHomePage extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(12.0),
-              //color: Colors.black,
-              child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
-                builder: (context, state) {
-                  if (state.success) {
-                    final movie = state.data;
+            child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
+              builder: (context, state) {
+                if (state.success) {
+                  final movie = state.data;
 
-                    return OckgMovieDetais(
-                      movie: movie,
-                    );
-                  }
-
-                  return const LoadingIndicator();
+                  return OckgMovieDetais(
+                    movie: movie,
+                  );
                 }
-              ),
+
+                return const LoadingIndicator();
+              }
             ),
           ),
 
