@@ -45,6 +45,23 @@
   },
 
 
+  "tryAgain": "Попробовать ещё",
+  "@tryAgain": {
+    "type": "text"
+  },
+
+
+  "play": "Смотреть",
+  "@play": {
+    "type": "text"
+  },
+
+  "trailer": "Трейлер",
+  "@trailer": {
+    "type": "text"
+  },
+
+
   "cancel": "Отмена",
   "@cancel": {
     "type": "text"

@@ -5,6 +5,7 @@ import 'package:palette_generator/palette_generator.dart';
 import '../json_converters.dart';
 import 'ockg_file.dart';
 import 'ockg_movie_cover.dart';
+import 'ockg_trailer.dart';
 
 part 'ockg_movie.freezed.dart';
 part 'ockg_movie.g.dart';
@@ -47,6 +48,8 @@ class OckgMovie with _$OckgMovie {
 
     @Default([]) List<OckgFile> files,
 
+    OckgTrailer? trailer,
+
     @Default([]) List<OckgMovie> otherMovies,
 
   }) = _OckgMovie;
@@ -61,6 +64,9 @@ class OckgMovie with _$OckgMovie {
   String get posterUrl => (covers.isNotEmpty)
       ? '$baseUrl${covers.first.original}'
       : '$baseUrl$cover';
+
+  bool get hasImdbRating => ratingImdbValue > 0.0;
+  bool get hasKinopoiskRating => ratingKinopoiskValue > 0.0;
 
   Duration get playtimeDuration => Duration(
     seconds: files.fold(0, (previousValue, file) {

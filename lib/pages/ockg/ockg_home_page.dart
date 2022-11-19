@@ -46,7 +46,6 @@ class OckgHomePage extends StatelessWidget {
                 builder: (context, state) {
                   if (state.isSuccess) {
                     return ListView.separated(
-                      clipBehavior: Clip.none,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24.0,
                       ),

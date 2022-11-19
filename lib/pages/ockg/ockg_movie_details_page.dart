@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_movie.dart';
+import '../../resources/krs_locale.dart';
+import '../../resources/krs_theme.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/empty_item_message.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
@@ -18,6 +20,8 @@ class OckgMovieDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final locale = KrsLocale.of(context);
     
     return Scaffold(
       body: BlocProvider(
@@ -26,19 +30,62 @@ class OckgMovieDetailsPage extends StatelessWidget {
         ),
         child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
           builder: (context, state) {
-            return EmptyItemMessage();
-
             if (state.isError || state.isEmpty) {
-              final movie = state.data;
-
-              return EmptyItemMessage();
+              return EmptyItemMessage(
+                onRetry: () {
+                  
+                }
+              );
             }
             
             if (state.isSuccess) {
               final movie = state.data;
 
-              return OckgMovieDetais(
-                movie: movie,
+              return Column(
+                children: [
+                  Expanded(
+                    child: OckgMovieDetais(
+                      movie: movie,
+                      expanded: true,
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Row(
+                      children: [
+
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ElevatedButton(
+                            autofocus: true,
+                            style: KrsTheme.filledTonalButtonStyleOf(context),
+                            onPressed: () {
+                              context.push('/player',
+                                extra: movie.files.first.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
+                              );
+                            },
+                            child: Text(locale.play)
+                          ),
+                        ),
+
+                        if (movie.trailer != null) Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ElevatedButton(
+                            style: KrsTheme.filledTonalButtonStyleOf(context),
+                            onPressed: () {
+                              context.push('/player',
+                                extra: movie.trailer!.video
+                              );
+                            },
+                            child: Text(locale.trailer)
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ],
               );
             }
 

@@ -6,6 +6,7 @@ import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_movie_details_page.dart';
 import '../pages/settings_page.dart';
+import '../pages/player_page.dart';
 
 class KrsRouter {
   static final routes = GoRouter(
@@ -27,6 +28,17 @@ class KrsRouter {
             builder: (context, state) {
               final movieId = int.tryParse(state.params['id'] ?? '') ?? 0;
               return OckgMovieDetailsPage(movieId);
+            },
+          ),
+
+          GoRoute(
+            path: 'player',
+            builder: (context, state) {
+              
+              final videoUrl = state.extra as String;
+              return PlayerPage(
+                videoUrl: videoUrl,
+              );
             },
           ),
 

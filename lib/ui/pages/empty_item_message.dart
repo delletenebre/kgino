@@ -4,14 +4,17 @@ import 'package:go_router/go_router.dart';
 import '../../resources/krs_locale.dart';
 
 class EmptyItemMessage extends StatelessWidget {
-  const EmptyItemMessage({Key? key}) : super(key: key);
+  final Function() onRetry;
+
+  const EmptyItemMessage({
+    super.key,
+    required this.onRetry,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
-
-    print(GoRouter.of(context).location);
 
     return Center(
       child: Column(
@@ -27,42 +30,20 @@ class EmptyItemMessage extends StatelessWidget {
           OutlinedButton(
             autofocus: true,
             onPressed: () {
-              context.pop();
+              onRetry();
             },
-            child: Text('Попробовать ещё'),
+            child: Text(locale.tryAgain),
           ),
 
-          const SizedBox(height: 12.0),
+          // const SizedBox(height: 12.0),
 
-          OutlinedButton(
-            onPressed: () {
-              GoRouter.of(context).pop();
-            },
-            child: Text('Назад'),
-          ),
+          // OutlinedButton(
+          //   onPressed: () {
+          //     context.pop();
+          //   },
+          //   child: Text(locale.back),
+          // ),
 
-          Material(
-      type: MaterialType.transparency,
-      
-      child: InkWell(
-        onTap: () {
-          print(' widget.onPressed');
-        },
-
-        child: Ink(
-          padding: const EdgeInsets.all(12.0),
-          
-          
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('test'),
-            ],
-          ),
-        ),
-      ),
-    )
         ],
       ),
     );

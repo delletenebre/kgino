@@ -35,7 +35,8 @@ dependencies:
   json_annotation: ^4.7.0
   palette_generator: ^0.3.3+2
   shared_preferences: ^2.0.15
-  #video_player: ^2.4.6
+  video_player: ^2.4.7
+  wakelock: ^0.6.2
 
 dev_dependencies:
   flutter_test:

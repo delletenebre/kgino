@@ -28,6 +28,7 @@ class OckgApiProvider {
     );
   }
 
+  /// список бестселлеров по категориям
   Future<List<OckgBestsellersCategory>> getBestsellers() async {
 
     final formData = FormData.fromMap({
@@ -61,7 +62,42 @@ class OckgApiProvider {
     
   }
 
+  /// список популярных фильмов
+  Future<List<OckgMovie>> getPopMovies() async {
 
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getPopMovies',
+    });
+
+    try {
+    
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final movies = jsonResponse['json'][0]['response']['movies'];
+
+      return movies.map<OckgMovie>((item) {
+        return OckgMovie.fromJson(item);
+      }).toList();
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return [];
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return [];
+    }
+
+    
+  }
+
+  
+  /// информация о фильме
   Future<OckgMovie?> getMovie(int movieId) async {
 
     final formData = FormData.fromMap({

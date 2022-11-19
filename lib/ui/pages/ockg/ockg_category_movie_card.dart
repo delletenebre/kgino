@@ -56,11 +56,14 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
     /// получаем цветовую палитру фильма
     widget.movie.getPaletteGenerator(widget.movie.coverUrl).then((palette) {
       if (palette.lightVibrantColor != null) {
-        setState(() {
-          _dominantColor = palette.lightVibrantColor!.color;
-        });
+        if (mounted) {
+          setState(() {
+            _dominantColor = palette.lightVibrantColor!.color;
+          });
+        }
       }
     });
+    
   }
 
   @override
@@ -80,11 +83,11 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
 
     return GestureDetector(
       onTap: () {
-        print('Tapped!');
         onTap();
       },
       child: CallbackShortcuts(
         bindings: {
+          const SingleActivator(LogicalKeyboardKey.enter, includeRepeats: false): onTap,
           const SingleActivator(LogicalKeyboardKey.select, includeRepeats: false): onTap,
         },
         child: Focus(
@@ -146,7 +149,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                         boxShadow: [
                           if (widget.focusNode.hasFocus) BoxShadow(
                             color: _dominantColor!.withOpacity(0.62),
-                            blurRadius: 48.0,
+                            blurRadius: 32.0,
                           ),
                         ],
                         borderRadius: BorderRadius.circular(12.0),

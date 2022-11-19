@@ -7,10 +7,12 @@ import '../../movie_rating.dart';
 
 class OckgMovieDetais extends StatelessWidget {
   final OckgMovie movie;
+  final bool expanded;
 
   const OckgMovieDetais({
     super.key,
     required this.movie,
+    this.expanded = false,
   });
 
   @override
@@ -68,7 +70,7 @@ class OckgMovieDetais extends StatelessWidget {
           width: size.width * 0.62,
           
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -99,12 +101,12 @@ class OckgMovieDetais extends StatelessWidget {
                 ),
                 
                 /// рейтинги фильма
-                if (movie.ratingImdbValue > 0.0 || movie.ratingImdbValue > 0.0) Padding(
+                if (movie.hasImdbRating || movie.hasKinopoiskRating) Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: Row(
                     children: [
                       /// рейтинг IMDb
-                      if (movie.ratingImdbValue > 0.0) Padding(
+                      if (movie.hasImdbRating) Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: MovieRating(
                           type: MovieRatingType.imdb,
@@ -113,7 +115,7 @@ class OckgMovieDetais extends StatelessWidget {
                       ),
 
                       /// рейтинг КиноПоиск
-                      if (movie.ratingImdbValue > 0.0) MovieRating(
+                      if (movie.hasKinopoiskRating) MovieRating(
                         type: MovieRatingType.kinopoisk,
                         rating: movie.ratingKinopoiskValue,
                       ),
@@ -125,7 +127,7 @@ class OckgMovieDetais extends StatelessWidget {
                 
                 /// описание фильма
                 Text(movie.description,
-                  maxLines: 5,
+                  maxLines: expanded ? 12 : 5,
                   overflow: TextOverflow.ellipsis,
                 ),
                 

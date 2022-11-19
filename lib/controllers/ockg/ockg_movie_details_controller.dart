@@ -21,6 +21,12 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
       
       /// запрашиваем данные о фильме
       getMovieById(movieId);
+    } else {
+      _api.getPopMovies().then((movies) {
+        if (movies.isNotEmpty) {
+          getMovieById(movies.first.movieId);
+        }
+      });
     }
   }
 
