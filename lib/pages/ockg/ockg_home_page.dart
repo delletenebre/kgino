@@ -16,7 +16,6 @@ class OckgHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return BlocProvider(
       create: (context) => OckgMovieDetailsController(),
       child: Column(
@@ -24,7 +23,7 @@ class OckgHomePage extends StatelessWidget {
           Expanded(
             child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
               builder: (context, state) {
-                if (state.success) {
+                if (state.isSuccess) {
                   final movie = state.data;
 
                   return OckgMovieDetais(
@@ -32,7 +31,9 @@ class OckgHomePage extends StatelessWidget {
                   );
                 }
 
-                return const LoadingIndicator();
+                return const SizedBox();
+
+                //return const LoadingIndicator();
               }
             ),
           ),
@@ -43,7 +44,7 @@ class OckgHomePage extends StatelessWidget {
               create: (context) => OckgBestsellersController(),
               child: BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
                 builder: (context, state) {
-                  if (state.success) {
+                  if (state.isSuccess) {
                     return ListView.separated(
                       clipBehavior: Clip.none,
                       padding: const EdgeInsets.symmetric(

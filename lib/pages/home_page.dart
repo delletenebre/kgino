@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
-
+    
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -58,8 +58,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
           Expanded(
             child: TabBarView(
-              controller: _tabController,
               clipBehavior: Clip.none,
+              controller: _tabController,
               children: const [
                 OckgHomePage(),
                 OckgHomePage(),

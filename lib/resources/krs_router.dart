@@ -10,6 +10,7 @@ import '../pages/settings_page.dart';
 class KrsRouter {
   static final routes = GoRouter(
     initialLocation: '/',
+    debugLogDiagnostics: true,
 
     errorBuilder: (context, state) => const ErrorPage(),
 
@@ -24,8 +25,8 @@ class KrsRouter {
           GoRoute(
             path: 'ockg/movie/:id',
             builder: (context, state) {
-              final id = state.params['id'] ?? '';
-              return OckgMovieDetailsPage(id);
+              final movieId = int.tryParse(state.params['id'] ?? '') ?? 0;
+              return OckgMovieDetailsPage(movieId);
             },
           ),
 

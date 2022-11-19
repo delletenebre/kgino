@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kg.delletenebre.kgino">
+    package="kg.delletenebre.kgino3">
 
     <uses-feature android:name="android.software.leanback"
        android:required="false" />

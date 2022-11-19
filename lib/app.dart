@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -44,16 +45,22 @@ class App extends StatelessWidget {
           /// текущий язык приложения
           final locale = context.watch<LocaleController>().state;
 
-          return MaterialApp.router(
-            routerConfig: KrsRouter.routes,
+          return Shortcuts(
+            shortcuts: {
+              LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+            },
+            
+            child: MaterialApp.router(
+              routerConfig: KrsRouter.routes,
 
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: Locale(locale),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: Locale(locale),
 
-            theme: KrsTheme.light,
-            darkTheme: KrsTheme.dark,
-            themeMode: ThemeMode.dark//themeMode,
+              theme: KrsTheme.light,
+              darkTheme: KrsTheme.dark,
+              themeMode: ThemeMode.dark//themeMode,
+            ),
           );
         },
       ),

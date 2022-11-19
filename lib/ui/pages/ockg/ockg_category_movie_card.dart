@@ -28,7 +28,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
 
   /// обработчик выбора элемента
   void onTap() {
-    GoRouter.of(context).go('/ockg/movie/${widget.movie.movieId}');
+    context.go('/ockg/movie/${widget.movie.movieId}');
   }
 
   /// кнопки, которые могут отвечать за выбор элемента
@@ -64,6 +64,11 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -74,110 +79,127 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
     _dominantColor ??= theme.colorScheme.primary;
 
     return GestureDetector(
-      onTap: onTap,
-      // onTapDown: (details) {
-      //   _updateHoldedState(true);
-      // },
-      // onTapUp: (details) {
-      //   _updateHoldedState(false);
-      // },
-      child: Focus(
-        focusNode: widget.focusNode,
-        onFocusChange: (hasFocus) {
-          /// при получении фокуса на фильме
-          setState(() {
-            
-          });
+      onTap: () {
+        print('Tapped!');
+        onTap();
+      },
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.select, includeRepeats: false): onTap,
         },
-        
-        onKey: (node, event) {
-          if (_selectKeysMap.contains(event.logicalKey)) {
-            /// ^ если была нажата клавиша выбора элемента
-            
-            _updateHoldedState(event is RawKeyDownEvent);
-            if (event is RawKeyUpEvent) {
-              onTap();
-            }
-          } else {
-            _updateHoldedState(false);
-          }
-
-          return KeyEventResult.ignored;
-        },
-        child: SizedBox(
-          width: zoomedPosterSize.width,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: Focus(
+          focusNode: widget.focusNode,
+          onFocusChange: (hasFocus) {
+            /// при получении фокуса на фильме
+            setState(() {
               
-              /// постер фильма
-              SizedBox.fromSize(
-                size: zoomedPosterSize,
-                child: Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 100),
-                    width: (widget.focusNode.hasFocus && !_holded)
-                        ? zoomedPosterSize.width : _posterSize.width,
-                    height: (widget.focusNode.hasFocus && !_holded)
-                        ? zoomedPosterSize.height : _posterSize.height,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        if (widget.focusNode.hasFocus) BoxShadow(
-                          color: _dominantColor!.withOpacity(0.62),
-                          blurRadius: 48.0,
+            });
+          },
+
+          onKeyEvent: (node, event) {
+            if (_selectKeysMap.contains(event.logicalKey)) {
+              /// ^ если была нажата клавиша выбора элемента
+              _updateHoldedState(event is KeyDownEvent);
+              // if (event is KeyUpEvent) {
+              //   onTap();
+              // }
+            } else {
+              _updateHoldedState(false);
+            }
+            return KeyEventResult.ignored;
+          },
+          
+          // onKey: (node, event) {
+          //   if (_selectKeysMap.contains(event.logicalKey)) {
+          //     /// ^ если была нажата клавиша выбора элемента
+              
+          //     //_updateHoldedState(event is RawKeyDownEvent);
+          //     print(event);
+          //     if (event is RawKeyUpEvent) {
+          //       print('RawKeyUpEvent');
+          //       //onTap();
+          //     }
+          //   } else {
+          //     //_updateHoldedState(false);
+          //   }
+
+          //   return KeyEventResult.ignored;
+          // },
+          child: SizedBox(
+            width: zoomedPosterSize.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                
+                /// постер фильма
+                SizedBox.fromSize(
+                  size: zoomedPosterSize,
+                  child: Center(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      width: (widget.focusNode.hasFocus && !_holded)
+                          ? zoomedPosterSize.width : _posterSize.width,
+                      height: (widget.focusNode.hasFocus && !_holded)
+                          ? zoomedPosterSize.height : _posterSize.height,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          if (widget.focusNode.hasFocus) BoxShadow(
+                            color: _dominantColor!.withOpacity(0.62),
+                            blurRadius: 48.0,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: widget.focusNode.hasFocus
+                          ? Border.all(
+                              color: theme.colorScheme.primary.withOpacity(0.72),
+                              width: 3.0,
+                            )
+                          : null
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(9.0),
+                        child: Image.network(widget.movie.coverUrl,
+                          fit: BoxFit.cover,
                         ),
-                      ],
-                      borderRadius: BorderRadius.circular(12.0),
-                      border: widget.focusNode.hasFocus
-                        ? Border.all(
-                            color: theme.colorScheme.primary.withOpacity(0.72),
-                            width: 3.0,
-                          )
-                        : null
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(9.0),
-                      child: Image.network(widget.movie.coverUrl,
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 4.0),
-              
-              /// название фильма
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: _posterSize.width * 0.05,
-                ),
-                child: AnimatedDefaultTextStyle(
-                  duration: KrsTheme.animationDuration,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: (widget.focusNode.hasFocus)
-                      ? theme.textTheme.bodyMedium?.color
-                      : theme.textTheme.bodyMedium?.color?.withOpacity(0.62)
+                const SizedBox(height: 4.0),
+                
+                /// название фильма
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _posterSize.width * 0.05,
                   ),
-                  child: Text(widget.movie.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: AnimatedDefaultTextStyle(
+                    duration: KrsTheme.animationDuration,
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: (widget.focusNode.hasFocus)
+                        ? theme.textTheme.bodyMedium?.color
+                        : theme.textTheme.bodyMedium?.color?.withOpacity(0.62)
+                    ),
+                    child: Text(widget.movie.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
-              ),
 
-              /// описание фильма
-              // Text('description',
-              //   style: TextStyle(
-              //     fontSize: 12.0,
-              //     color: theme.textTheme.caption?.color?.withOpacity(0.36),
-              //   ),
-              //   maxLines: 2,
-              // ),
+                /// описание фильма
+                // Text('description',
+                //   style: TextStyle(
+                //     fontSize: 12.0,
+                //     color: theme.textTheme.caption?.color?.withOpacity(0.36),
+                //   ),
+                //   maxLines: 2,
+                // ),
 
-            ],
+              ],
+            ),
           ),
         ),
       ),
