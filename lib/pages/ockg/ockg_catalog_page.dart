@@ -42,7 +42,7 @@ class OckgCatalogPage extends StatelessWidget {
 
             /// список фильмов внизу страницы
             SizedBox(
-              height: 252.0,
+              height: 140.0 + 12.0 + 4.0 + 28.0 + 20.0,
               child: BlocProvider(
                 create: (context) => OckgCatalogController(
                   genreId: genreId,

@@ -8,14 +8,16 @@ import '../../../resources/krs_theme.dart';
 class OckgCategoryMovieCard extends StatefulWidget {
   final FocusNode? focusNode;
   final OckgMovie movie;
-  final double height;
+  // final double height;
+  final Size posterSize;
   final void Function(OckgMovie movie)? onMovieFocused;
 
   const OckgCategoryMovieCard({
     super.key,
     this.focusNode,
     required this.movie,
-    this.height = 140.0,
+    this.posterSize = const Size(100.0, 140.0),
+    //this.height = 140.0,
     this.onMovieFocused,
   });
 
@@ -26,7 +28,6 @@ class OckgCategoryMovieCard extends StatefulWidget {
 class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   bool _holded = false;
   Color? _dominantColor;
-  late final Size _posterSize;
   late final FocusNode _focusNode;
 
   /// обработчик выбора элемента
@@ -59,9 +60,6 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
         widget.onMovieFocused?.call(widget.movie);
       }
     });
-
-    /// вычисляем размер постера
-    _posterSize = Size(widget.height * 0.7, widget.height);
     
     /// получаем цветовую палитру фильма
     widget.movie.getPaletteGenerator(widget.movie.coverUrl).then((palette) {
@@ -88,8 +86,8 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
     final theme = Theme.of(context);
 
     /// вычисляем размер постера, на который наведён фокус
-    final zoomedPosterSize = _posterSize * 1.1;
-
+    final zoomedPosterSize = widget.posterSize + const Offset(10.0, 12.0);
+  
     /// получаем основной цвет постера
     _dominantColor ??= theme.colorScheme.primary;
 
@@ -138,9 +136,9 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 100),
                       width: (_focusNode.hasFocus && !_holded)
-                          ? zoomedPosterSize.width : _posterSize.width,
+                          ? zoomedPosterSize.width : widget.posterSize.width,
                       height: (_focusNode.hasFocus && !_holded)
-                          ? zoomedPosterSize.height : _posterSize.height,
+                          ? zoomedPosterSize.height : widget.posterSize.height,
                       decoration: BoxDecoration(
                         boxShadow: [
                           if (_focusNode.hasFocus) BoxShadow(
@@ -171,7 +169,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                 /// название фильма
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: _posterSize.width * 0.05,
+                    horizontal: (zoomedPosterSize.width - widget.posterSize.width) / 2,
                   ),
                   child: AnimatedDefaultTextStyle(
                     duration: KrsTheme.animationDuration,

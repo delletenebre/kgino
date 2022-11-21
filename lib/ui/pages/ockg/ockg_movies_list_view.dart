@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kgino/models/ockg/ockg_movie.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
-import '../../../resources/krs_theme.dart';
 import 'ockg_category_movie_card.dart';
 
 class OckgMoviesListView extends StatefulWidget {
@@ -22,14 +21,15 @@ class OckgMoviesListView extends StatefulWidget {
 }
 
 class _OckgMoviesListViewState extends State<OckgMoviesListView> {
-  late ScrollController _scrollController;
-  final itemWidth = 140.0;
-
+  final _autoScrollController = AutoScrollController(
+    viewportBoundaryGetter: () => const Rect.fromLTRB(24.0, 0.0, 24.0, 0.0),
+    axis: Axis.horizontal,
+  );
+  
   @override
-  void initState() {
-    _scrollController = ScrollController();
-
-    super.initState();
+  void dispose() {
+    _autoScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -38,32 +38,40 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
     return SizedBox.fromSize(
       size: const Size.fromHeight(140.0),
       child: ListView.separated(
-        // physics: NeverScrollableScrollPhysics(),
-        controller: _scrollController,
+        clipBehavior: Clip.none,
+        controller: _autoScrollController,
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         scrollDirection: Axis.horizontal,
         itemCount: widget.movies.length,
         itemBuilder: (context, index) {
           final movie = widget.movies[index];
 
-          return OckgCategoryMovieCard(
-            movie: movie,
-            height: 140.0,
-            onMovieFocused: (movie) {
-              widget.onMovieFocused.call(movie);
-              ///_scrollController.jumpTo(index * itemWidth);
-              print(_scrollController.position.maxScrollExtent);
-              print(_scrollController.offset);
+          return AutoScrollTag(
+            key: ValueKey(index), 
+            controller: _autoScrollController,
+            index: index,
+            child: OckgCategoryMovieCard(
               
-              if (_scrollController.position.maxScrollExtent !=) {
-                _scrollController.animateTo(
-                  index * itemWidth,
-                  duration: KrsTheme.animationDuration,
-                  curve: Curves.easeIn,
-                );
-              }
-              
-            }
+              movie: movie,
+              onMovieFocused: (movie) {
+                // ^ при смене фокуса
+                
+                /// прокручиваем контент к текущему элементу
+                _autoScrollController.scrollToIndex(index,
+                  preferPosition: AutoScrollPosition.begin,
+                  duration: const Duration(milliseconds: 50),
+                ).then((_) {
+                  // ^ после окончания прокрутки
+                  
+                  if (mounted) {
+                    // ^ если виджет ещё жив
+                    
+                    // вызываем пользовательский обработчик
+                    widget.onMovieFocused.call(movie);
+                  }
+                });
+              },
+            ),
           );
         },
         separatorBuilder: (context, index) {

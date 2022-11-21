@@ -35,6 +35,7 @@ dependencies:
   intl: ^0.17.0
   json_annotation: ^4.7.0
   palette_generator: ^0.3.3+2
+  scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.15
   video_player: ^2.4.7
   wakelock: ^0.6.2

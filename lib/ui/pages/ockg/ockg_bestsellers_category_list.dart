@@ -120,7 +120,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
           ),
 
           SizedBox.fromSize(
-            size: const Size.fromHeight(140.0 + 12.0 + 48.0),
+            size: const Size.fromHeight(140.0 + 12.0 + 4.0 + 28.0 + 20.0),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: widget.category.movies.length,
@@ -129,7 +129,6 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
                 return OckgCategoryMovieCard(
                   focusNode: _elementsFocusNodes[index],
                   movie: movie,
-                  height: 140.0,
                 );
               },
               separatorBuilder: (context, index) {
