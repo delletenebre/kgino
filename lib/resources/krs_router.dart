@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
+import '../pages/ockg/ockg_catalog_page.dart';
 import '../pages/ockg/ockg_movie_details_page.dart';
 import '../pages/settings_page.dart';
 import '../pages/player_page.dart';
@@ -28,6 +29,16 @@ class KrsRouter {
             builder: (context, state) {
               final movieId = int.tryParse(state.params['id'] ?? '') ?? 0;
               return OckgMovieDetailsPage(movieId);
+            },
+          ),
+
+          GoRoute(
+            path: 'ockg/genre/:id',
+            builder: (context, state) {
+              final genreId = int.tryParse(state.params['id'] ?? '') ?? 0;
+              return OckgCatalogPage(
+                genreId: genreId,
+              );
             },
           ),
 

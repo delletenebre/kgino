@@ -29,3 +29,27 @@ class HtmlRemoveConverter implements JsonConverter<String, String> {
    @override
    String toJson(String object) => object;
 }
+
+
+/// поле translation у [OckgMovie] может быть как списком, так и сериализованой
+/// переменной PHP a:1:{i:0;s:29:\"Профессиональный многоголосый\";}
+class TranslationConverter implements JsonConverter<List<String>, dynamic> {
+   const TranslationConverter();
+
+   @override
+   List<String> fromJson(dynamic json) {
+      if (json is List) {
+        return (json)
+          .map((e) => e as String)
+          .toList();
+      } else {
+        final tempString = json.toString();
+        final firstQuoteIndex = tempString.indexOf('"');
+        final secondQuoteIndex = tempString.indexOf('"', firstQuoteIndex);
+        return [tempString.substring(firstQuoteIndex, secondQuoteIndex)];
+      }
+   }
+
+   @override
+   List<String> toJson(List<String> object) => object;
+}

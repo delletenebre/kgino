@@ -19,17 +19,15 @@ class OckgMovie with _$OckgMovie {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OckgMovie({
-    @IntConverter()
-    @Default(0) int movieId,
+    @IntConverter() @Default(0) int movieId,
     @Default('') String name,
     @Default('') String internationalName,
     @Default('') String year,
     @Default('') String cover,
     @Default([]) List<OckgMovieCover> covers,
 
-    @HtmlRemoveConverter()
-    @Default('') String description,
-    @Default([]) List<String> translation,
+    @HtmlRemoveConverter() @Default('') String description,
+    @TranslationConverter() @Default([]) List<String> translation,
     @Default('') String quality,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -40,17 +38,17 @@ class OckgMovie with _$OckgMovie {
     // @DoubleConverter()
     // @Default(0.0) double ratingLocalValue,
 
-    @DoubleConverter()
-    @Default(0.0) double ratingImdbValue,
+    @DoubleConverter() @Default(0.0) double ratingImdbValue,
 
-    @DoubleConverter()
-    @Default(0.0) double ratingKinopoiskValue,
+    @DoubleConverter() @Default(0.0) double ratingKinopoiskValue,
 
     @Default([]) List<OckgFile> files,
 
     OckgTrailer? trailer,
 
     @Default([]) List<OckgMovie> otherMovies,
+
+    @Default(false) bool showPlayButton,
 
   }) = _OckgMovie;
 

@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
+import '../../../resources/krs_locale.dart';
+import '../../../resources/krs_theme.dart';
 import '../../../utils.dart';
 import '../../movie_rating.dart';
 
@@ -18,6 +20,7 @@ class OckgMovieDetais extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
     final size = MediaQuery.of(context).size;
 
     /// определяем ширину постера на фоне
@@ -79,25 +82,36 @@ class OckgMovieDetais extends StatelessWidget {
                   style: theme.textTheme.titleLarge,
                 ),
 
-                const SizedBox(height: 8.0),
+                /// оригинальное название фильма
+                if (expanded && movie.internationalName.isNotEmpty) Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(movie.internationalName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ),
 
-                Row(
-                  children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                    children: [
 
-                    /// год выпуска, жанры (оставляем не более двух)
-                    Text([ movie.year, ... movie.genres.take(2) ].join(', ')),
+                      /// год выпуска, жанры (оставляем не более двух)
+                      Text([ movie.year, ... movie.genres.take(2) ].join(', ')),
 
-                    const SizedBox(width: 8.0),
+                      const SizedBox(width: 8.0),
 
-                    /// продолжительность фильма (или общая для сериала)
-                    Text(Utils.formatDuration(movie.playtimeDuration)),
+                      /// продолжительность фильма (или общая для сериала)
+                      Text(Utils.formatDuration(movie.playtimeDuration)),
 
-                    const SizedBox(width: 8.0),
+                      const SizedBox(width: 8.0),
 
-                    /// страны фильма (оставляем не более двух)
-                    Text(movie.countries.take(2).join(', ')),
-                    
-                  ],
+                      /// страны фильма (оставляем не более двух)
+                      Text(movie.countries.take(2).join(', ')),
+                      
+                    ],
+                  ),
                 ),
                 
                 /// рейтинги фильма
@@ -130,7 +144,7 @@ class OckgMovieDetais extends StatelessWidget {
                   maxLines: expanded ? 12 : 5,
                   overflow: TextOverflow.ellipsis,
                 ),
-                
+
               ],
             ),
           ),

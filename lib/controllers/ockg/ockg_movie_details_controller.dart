@@ -15,22 +15,9 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
 
   OckgMovieDetailsController({
     this.movieId = 0,
-  }) : super(const RequestState.loading()) {
-    if (movieId > 0) {
-      /// ^ если был передан идентификатор фильма
-      
-      /// запрашиваем данные о фильме
-      getMovieById(movieId);
-    } else {
-      _api.getPopMovies().then((movies) {
-        if (movies.isNotEmpty) {
-          getMovieById(movies.first.movieId);
-        }
-      });
-    }
-  }
+  }) : super(const RequestState.loading());
 
-  Future<void> getMovieById(int movieId) async {
+  Future<void> getMovieById(int movieId, { bool showPlayButton = false }) async {
     /// запроашиваем данные о фильме
     final movie = await _api.getMovie(movieId);
     
@@ -40,26 +27,21 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
     
     } else {
       /// ^ если запрос выполнен успешно
-      
-      emit(RequestState.success(movie));
+      emit(RequestState.success(movie.copyWith(showPlayButton: showPlayButton)));
     }
   }
 
 
-  Future<void> getMovie(OckgMovie movie) async {
-    if (movie.createdAt == null) {
-      /// ^ если данные о фильме не полные
-      
-      /// запроашиваем данные о фильме
-      getMovieById(movie.movieId);
-
-    } else {
-      /// ^ если данные о фильме уже есть
-      
-      emit(RequestState.success(movie));
+  Future<void> showPopularMovies() async {
+    // запрашиваем список популярных фильмов
+    final movies = await _api.getPopMovies();
     
-    }
+    if (movies.isNotEmpty) {
+      // ^ если данные получены успешно
 
+      // запрашиваем информацию по первому фильму
+      getMovieById(movies.first.movieId, showPlayButton: true);
+    }
   }
 
 }

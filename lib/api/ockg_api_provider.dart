@@ -6,6 +6,7 @@ import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
+import '../models/ockg/ockg_catalog.dart';
 import '../models/ockg/ockg_movie.dart';
 
 class OckgApiProvider {
@@ -27,6 +28,7 @@ class OckgApiProvider {
       ).interceptor
     );
   }
+
 
   /// список бестселлеров по категориям
   Future<List<OckgBestsellersCategory>> getBestsellers() async {
@@ -58,10 +60,10 @@ class OckgApiProvider {
       
       return [];
     }
-
     
   }
 
+  
   /// список популярных фильмов
   Future<List<OckgMovie>> getPopMovies() async {
 
@@ -91,6 +93,82 @@ class OckgApiProvider {
       debugPrint('Exception: $exception, stacktrace: $stacktrace');
       
       return [];
+    }
+    
+  }
+
+
+  /// список фильмов по id жанра
+  Future<List<OckgMovie>> getMoviesByGenreId(int genreId) async {
+
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getCatalog',
+      'genre[0]': genreId,
+      'offset[0]': 0,
+      'size[0]': 20,
+    });
+
+    try {
+    
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final movies = jsonResponse['json'][0]['response']['movies'];
+
+      return movies.map<OckgMovie>((item) {
+        return OckgMovie.fromJson(item);
+      }).toList();
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return [];
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return [];
+    }
+
+    
+  }
+
+  /// список фильмов из каталога
+  Future<OckgCatalog> getCatalog({
+    int genreId = 0,
+    required int offset,
+    int size = 15,
+  }) async {
+
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getCatalog',
+      if (genreId > 0) 'genre[0]': genreId,
+      'offset[0]': offset,
+      'size[0]': size,
+    });
+
+    try {
+    
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final catalog = jsonResponse['json'][0]['response'];
+
+      return OckgCatalog.fromJson(catalog);
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return const OckgCatalog();
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return const OckgCatalog();
     }
 
     

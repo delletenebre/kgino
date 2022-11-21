@@ -6,15 +6,17 @@ import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_theme.dart';
 
 class OckgCategoryMovieCard extends StatefulWidget {
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
   final OckgMovie movie;
   final double height;
+  final void Function(OckgMovie movie)? onMovieFocused;
 
   const OckgCategoryMovieCard({
     super.key,
-    required this.focusNode,
+    this.focusNode,
     required this.movie,
     this.height = 140.0,
+    this.onMovieFocused,
   });
 
   @override
@@ -25,6 +27,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   bool _holded = false;
   Color? _dominantColor;
   late final Size _posterSize;
+  late final FocusNode _focusNode;
 
   /// обработчик выбора элемента
   void onTap() {
@@ -50,6 +53,13 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   void initState() {
     super.initState();
 
+    _focusNode = widget.focusNode ?? FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        widget.onMovieFocused?.call(widget.movie);
+      }
+    });
+
     /// вычисляем размер постера
     _posterSize = Size(widget.height * 0.7, widget.height);
     
@@ -67,8 +77,10 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void dispose() {
+    _focusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -91,7 +103,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
           const SingleActivator(LogicalKeyboardKey.select, includeRepeats: false): onTap,
         },
         child: Focus(
-          focusNode: widget.focusNode,
+          focusNode: _focusNode,
           onFocusChange: (hasFocus) {
             /// при получении фокуса на фильме
             setState(() {
@@ -112,22 +124,6 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
             return KeyEventResult.ignored;
           },
           
-          // onKey: (node, event) {
-          //   if (_selectKeysMap.contains(event.logicalKey)) {
-          //     /// ^ если была нажата клавиша выбора элемента
-              
-          //     //_updateHoldedState(event is RawKeyDownEvent);
-          //     print(event);
-          //     if (event is RawKeyUpEvent) {
-          //       print('RawKeyUpEvent');
-          //       //onTap();
-          //     }
-          //   } else {
-          //     //_updateHoldedState(false);
-          //   }
-
-          //   return KeyEventResult.ignored;
-          // },
           child: SizedBox(
             width: zoomedPosterSize.width,
             child: Column(
@@ -141,19 +137,19 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                   child: Center(
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 100),
-                      width: (widget.focusNode.hasFocus && !_holded)
+                      width: (_focusNode.hasFocus && !_holded)
                           ? zoomedPosterSize.width : _posterSize.width,
-                      height: (widget.focusNode.hasFocus && !_holded)
+                      height: (_focusNode.hasFocus && !_holded)
                           ? zoomedPosterSize.height : _posterSize.height,
                       decoration: BoxDecoration(
                         boxShadow: [
-                          if (widget.focusNode.hasFocus) BoxShadow(
+                          if (_focusNode.hasFocus) BoxShadow(
                             color: _dominantColor!.withOpacity(0.62),
                             blurRadius: 32.0,
                           ),
                         ],
                         borderRadius: BorderRadius.circular(12.0),
-                        border: widget.focusNode.hasFocus
+                        border: _focusNode.hasFocus
                           ? Border.all(
                               color: theme.colorScheme.primary.withOpacity(0.72),
                               width: 3.0,
@@ -181,7 +177,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
                     duration: KrsTheme.animationDuration,
                     style: TextStyle(
                       fontSize: 12.0,
-                      color: (widget.focusNode.hasFocus)
+                      color: (_focusNode.hasFocus)
                         ? theme.textTheme.bodyMedium?.color
                         : theme.textTheme.bodyMedium?.color?.withOpacity(0.62)
                     ),

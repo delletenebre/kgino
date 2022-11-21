@@ -11,13 +11,11 @@ class OckgFile with _$OckgFile {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OckgFile({
-    @IntConverter()
-    @Default(0) int fileId,
+    @IntConverter() @Default(0) int fileId,
     
     @Default('') String name,
 
-    @IntConverter()
-    @Default(0) int size,
+    @IntConverter() @Default(0) int size,
 
     @Default(false) bool isDir,
     

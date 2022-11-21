@@ -122,12 +122,13 @@ class __$$_OckgBestsellersCategoryCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_OckgBestsellersCategory implements _OckgBestsellersCategory {
+class _$_OckgBestsellersCategory extends _OckgBestsellersCategory {
   const _$_OckgBestsellersCategory(
       {required this.categoryId,
       required this.name,
       required final List<OckgMovie> movies})
-      : _movies = movies;
+      : _movies = movies,
+        super._();
 
   factory _$_OckgBestsellersCategory.fromJson(Map<String, dynamic> json) =>
       _$$_OckgBestsellersCategoryFromJson(json);
@@ -180,11 +181,12 @@ class _$_OckgBestsellersCategory implements _OckgBestsellersCategory {
   }
 }
 
-abstract class _OckgBestsellersCategory implements OckgBestsellersCategory {
+abstract class _OckgBestsellersCategory extends OckgBestsellersCategory {
   const factory _OckgBestsellersCategory(
       {required final String categoryId,
       required final String name,
       required final List<OckgMovie> movies}) = _$_OckgBestsellersCategory;
+  const _OckgBestsellersCategory._() : super._();
 
   factory _OckgBestsellersCategory.fromJson(Map<String, dynamic> json) =
       _$_OckgBestsellersCategory.fromJson;

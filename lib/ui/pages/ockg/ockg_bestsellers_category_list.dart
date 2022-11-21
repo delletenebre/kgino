@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kgino/models/ockg/ockg_movie.dart';
 
 import '../../../models/ockg/ockg_bestsellers_category.dart';
@@ -10,11 +11,13 @@ import 'ockg_category_movie_card.dart';
 class OckgBestsellersCategoryList extends StatefulWidget {
   final OckgBestsellersCategory category;
   final Function(OckgMovie) onMovieFocused;
+  final Function()? onTitleFocused;
 
   const OckgBestsellersCategoryList({
     super.key,
     required this.category,
     required this.onMovieFocused,
+    this.onTitleFocused,
   });
 
   @override
@@ -46,9 +49,9 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
   void dispose() {
     _titleFocusNode.dispose();
 
-    for (final focusNode in _elementsFocusNodes) {
-      focusNode.dispose();
-    }
+    // for (final focusNode in _elementsFocusNodes) {
+    //   focusNode.dispose();
+    // }
 
     super.dispose();
   }
@@ -64,6 +67,9 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
       },
 
       onKey: (node, event) {
+        if (_titleFocusNode.hasFocus && event is RawKeyUpEvent) {
+          widget.onTitleFocused?.call();
+        }
 
         if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
           /// ^ если нажали вверх
@@ -107,7 +113,8 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
           TextButton(
             focusNode: _titleFocusNode,
             onPressed: () {
-
+              // переходим на страницу с каталогом фильмов по выбранному жанру
+              context.push('/ockg/genre/${widget.category.getGenreId()}');
             },
             child: Text(widget.category.name),
           ),
