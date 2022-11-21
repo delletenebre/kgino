@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kgino/models/ockg/ockg_movie.dart';
 
-import '../../../api/ockg_api_provider.dart';
-import '../../loading_indicator.dart';
+import '../../../resources/krs_theme.dart';
 import 'ockg_category_movie_card.dart';
 
 class OckgMoviesListView extends StatefulWidget {
+  // final PagingController<int, OckgMovie> pagingController;
   final List<OckgMovie> movies;
   final void Function(OckgMovie movie) onMovieFocused;
 
   const OckgMoviesListView({
     super.key,
+    // required this.pagingController,
     required this.movies,
     required this.onMovieFocused,
   });
@@ -22,159 +22,161 @@ class OckgMoviesListView extends StatefulWidget {
 }
 
 class _OckgMoviesListViewState extends State<OckgMoviesListView> {
-  final _api = GetIt.instance<OckgApiProvider>();
-  
-  final _pagingController = PagingController<int, OckgMovie>(
-    firstPageKey: 1,
-  );
+  late ScrollController _scrollController;
+  final itemWidth = 140.0;
 
   @override
   void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
+    _scrollController = ScrollController();
 
     super.initState();
   }
 
   @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
+  Widget build(BuildContext context) {
 
-  Future<void> _fetchPage(int pageKey) async {
-  try {
-    final newPage = await _api.getCatalog(
-      genreId: 4,
-      offset: pageKey * 20,
+    return SizedBox.fromSize(
+      size: const Size.fromHeight(140.0),
+      child: ListView.separated(
+        // physics: NeverScrollableScrollPhysics(),
+        controller: _scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.movies.length,
+        itemBuilder: (context, index) {
+          final movie = widget.movies[index];
+
+          return OckgCategoryMovieCard(
+            movie: movie,
+            height: 140.0,
+            onMovieFocused: (movie) {
+              widget.onMovieFocused.call(movie);
+              ///_scrollController.jumpTo(index * itemWidth);
+              print(_scrollController.position.maxScrollExtent);
+              print(_scrollController.offset);
+              
+              if (_scrollController.position.maxScrollExtent !=) {
+                _scrollController.animateTo(
+                  index * itemWidth,
+                  duration: KrsTheme.animationDuration,
+                  curve: Curves.easeIn,
+                );
+              }
+              
+            }
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(width: 24.0);
+        },
+        
+      ),
     );
 
-    final previouslyFetchedItemsCount =
-        _pagingController.itemList?.length ?? 0;
-
-    final isLastPage = newPage.isLastPage(previouslyFetchedItemsCount);
-    final newItems = newPage.movies;
-
-    if (isLastPage) {
-      _pagingController.appendLastPage(newItems);
-    } else {
-      final nextPageKey = pageKey + 1;
-      _pagingController.appendPage(newItems, nextPageKey);
-    }
-  } catch (error) {
-    
-    _pagingController.error = error;
+    // return SizedBox.fromSize(
+    //     size: const Size.fromHeight(140.0),
+    //     child: PagedListView.separated(
+    //       scrollDirection: Axis.horizontal,
+    //       pagingController: pagingController,
+    //       padding: const EdgeInsets.all(16),
+    //       separatorBuilder: (context, index) => const SizedBox(
+    //         width: 16,
+    //       ),
+    //       builderDelegate: PagedChildBuilderDelegate<OckgMovie>(
+    //         itemBuilder: (context, movie, index) {
+    //           return OckgCategoryMovieCard(
+    //             movie: movie,
+    //             height: 140.0,
+    //             onMovieFocused: (movie) {
+    //               onMovieFocused.call(movie);
+    //             }
+    //           );
+    //         },
+    //         // firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+    //         //   error: _pagingController.error,
+    //         //   onTryAgain: () => _pagingController.refresh(),
+    //         // ),
+    //         // noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(),
+    //       ),
+    //     ),
+    // );
   }
 }
 
-  @override
-  Widget build(BuildContext context) {
-
-
-    return SizedBox.fromSize(
-        size: const Size.fromHeight(140.0),
-        child: PagedListView.separated(
-          scrollDirection: Axis.horizontal,
-          pagingController: _pagingController,
-          padding: const EdgeInsets.all(16),
-          separatorBuilder: (context, index) => const SizedBox(
-            width: 16,
-          ),
-          builderDelegate: PagedChildBuilderDelegate<OckgMovie>(
-            itemBuilder: (context, movie, index) {
-              return OckgCategoryMovieCard(
-                movie: movie,
-                height: 140.0,
-                onMovieFocused: (movie) {
-                  print('onMovieFocused: $movie');
-                  widget.onMovieFocused.call(movie);
-                }
-              );
-            },
-            // firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-            //   error: _pagingController.error,
-            //   onTryAgain: () => _pagingController.refresh(),
-            // ),
-            // noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(),
-          ),
-        ),
-    );
-
-    if (widget.movies.isEmpty) {
-      return const LoadingIndicator();
-    }
+  //   if (widget.movies.isEmpty) {
+  //     return const LoadingIndicator();
+  //   }
     
-    return Focus(
-      skipTraversal: true,
-      onFocusChange: (hasFocus) {
-        // if (hasFocus) {
-        //   _ensureVisible(_moviesFocusNodes.first);
-        // }
-      },
+  //   return Focus(
+  //     skipTraversal: true,
+  //     onFocusChange: (hasFocus) {
+  //       // if (hasFocus) {
+  //       //   _ensureVisible(_moviesFocusNodes.first);
+  //       // }
+  //     },
 
-      // onKey: (node, event) {
-      //   if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-      //     /// ^ если нажали вверх
+  //     // onKey: (node, event) {
+  //     //   if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+  //     //     /// ^ если нажали вверх
           
-      //     if (!_titleFocusNode.hasFocus) {
-      //       /// ^ если название категории не в фокусе
+  //     //     if (!_titleFocusNode.hasFocus) {
+  //     //       /// ^ если название категории не в фокусе
             
-      //       /// ставим фокус на название категории
-      //       _titleFocusNode.requestFocus();
-      //       _ensureVisible(_moviesFocusNodes.first);
+  //     //       /// ставим фокус на название категории
+  //     //       _titleFocusNode.requestFocus();
+  //     //       _ensureVisible(_moviesFocusNodes.first);
             
-      //       /// останавливаем обработку нажатия
-      //       return KeyEventResult.handled;
+  //     //       /// останавливаем обработку нажатия
+  //     //       return KeyEventResult.handled;
 
-      //     }
+  //     //     }
 
-      //   }
+  //     //   }
 
-      //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)
-      //       || event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-      //     /// ^ если нажали вниз или вправо
+  //     //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)
+  //     //       || event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+  //     //     /// ^ если нажали вниз или вправо
           
-      //     if (_titleFocusNode.hasFocus) {
-      //       /// ^ если название категории уже в фокусе
+  //     //     if (_titleFocusNode.hasFocus) {
+  //     //       /// ^ если название категории уже в фокусе
 
-      //       /// ставим фокус на первый элемент в категории
-      //       _moviesFocusNodes.first.requestFocus();
-      //       _ensureVisible(_moviesFocusNodes.first);
+  //     //       /// ставим фокус на первый элемент в категории
+  //     //       _moviesFocusNodes.first.requestFocus();
+  //     //       _ensureVisible(_moviesFocusNodes.first);
 
-      //       /// останавливаем обработку нажатия
-      //       return KeyEventResult.handled;
-      //     }
+  //     //       /// останавливаем обработку нажатия
+  //     //       return KeyEventResult.handled;
+  //     //     }
 
-      //   }
+  //     //   }
 
-      //   return KeyEventResult.ignored;
-      // },
-      child: SizedBox.fromSize(
-        size: const Size.fromHeight(140.0),
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: widget.movies.length,
-          itemBuilder: (context, index) {
-            final movie = widget.movies[index];
+  //     //   return KeyEventResult.ignored;
+  //     // },
+  //     child: SizedBox.fromSize(
+  //       size: const Size.fromHeight(140.0),
+  //       child: ListView.separated(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: widget.movies.length,
+  //         itemBuilder: (context, index) {
+  //           final movie = widget.movies[index];
 
-            return OckgCategoryMovieCard(
-              movie: movie,
-              height: 140.0,
-              onMovieFocused: (movie) {
-                print('onMovieFocused: $movie');
-                widget.onMovieFocused.call(movie);
-              }
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const SizedBox(width: 24.0);
-          },
+  //           return OckgCategoryMovieCard(
+  //             movie: movie,
+  //             height: 140.0,
+  //             onMovieFocused: (movie) {
+  //               print('onMovieFocused: $movie');
+  //               widget.onMovieFocused.call(movie);
+  //             }
+  //           );
+  //         },
+  //         separatorBuilder: (context, index) {
+  //           return const SizedBox(width: 24.0);
+  //         },
           
-        ),
-      ),
-    );
-  }
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Future<void> _ensureVisible(FocusNode focusNode) async {
   //   // Wait for the keyboard to come into view
@@ -225,4 +227,3 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
   //     );
   //   });
   // }
-}

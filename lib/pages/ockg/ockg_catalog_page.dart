@@ -47,8 +47,21 @@ class OckgCatalogPage extends StatelessWidget {
                 create: (context) => OckgCatalogController(
                   genreId: genreId,
                 ),
+                // child: BlocBuilder<OckgCatalogController, List<OckgMovie>>(
+                //   builder: (context, movies) {
+                //     final catalogController = context.read<OckgCatalogController>();
+                //     return OckgMoviesListView(
+                //       pagingController: catalogController.pagingController,
+                //       onMovieFocused: (movie) {
+                //         final controller = context.read<OckgMovieDetailsController>();
+                //         controller.getMovieById(movie.movieId);
+                //       },
+                //     );
+                //   },
+                // ),
                 child: BlocBuilder<OckgCatalogController, List<OckgMovie>>(
                   builder: (context, movies) {
+                    // final catalogController = context.read<OckgCatalogController>();
                     return OckgMoviesListView(
                       movies: movies,
                       onMovieFocused: (movie) {
