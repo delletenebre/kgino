@@ -19,10 +19,9 @@ class OckgMoviePopular extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
-    final size = MediaQuery.of(context).size;
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(32.0),
       child: Row(
         children: [
           /// постер фильма

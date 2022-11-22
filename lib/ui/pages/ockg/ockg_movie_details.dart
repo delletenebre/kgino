@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
-import '../../../resources/krs_theme.dart';
 import '../../../utils.dart';
 import '../../movie_rating.dart';
 
@@ -24,7 +23,7 @@ class OckgMovieDetais extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     /// определяем ширину постера на фоне
-    final width = (size.width < 480.0) ? size.width + (size.width * 0.1) : 480.0;
+    final width = (size.width < 420.0) ? size.width + (size.width * 0.1) : 420.0;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -34,7 +33,7 @@ class OckgMovieDetais extends StatelessWidget {
         /// постер фильма
         Positioned(
           /// отступ вверх, на размер навигационной панели
-          top: -52.0,
+          top: -72.0,
           right: 0.0,
 
           width: width,
@@ -73,7 +72,10 @@ class OckgMovieDetais extends StatelessWidget {
           width: size.width * 0.62,
           
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 32.0,
+              vertical: 24.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -116,7 +118,7 @@ class OckgMovieDetais extends StatelessWidget {
                 
                 /// рейтинги фильма
                 if (movie.hasImdbRating || movie.hasKinopoiskRating) Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+                  padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
                     children: [
                       /// рейтинг IMDb
@@ -141,7 +143,7 @@ class OckgMovieDetais extends StatelessWidget {
                 
                 /// описание фильма
                 Text(movie.description,
-                  maxLines: expanded ? 12 : 5,
+                  maxLines: expanded ? 10 : 4,
                   overflow: TextOverflow.ellipsis,
                 ),
 

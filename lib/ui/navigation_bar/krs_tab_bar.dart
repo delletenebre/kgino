@@ -63,7 +63,10 @@ class KrsTabBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _KrsTabBarState extends State<KrsTabBar>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   TabController? _controller;
 
   final ScrollController _scrollController = ScrollController();
@@ -72,7 +75,7 @@ class _KrsTabBarState extends State<KrsTabBar>
 
   late List<GlobalKey> _tabKeys;
   late List<FocusNode> _tabFocusNodes;
-  final GlobalKey _tabsParentKey = GlobalKey();
+  // final GlobalKey _tabsParentKey = GlobalKey();
 
   int _currentIndex = 0;
   int _aniIndex = 0;
@@ -182,6 +185,8 @@ class _KrsTabBarState extends State<KrsTabBar>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     assert(() {
       if (_controller!.length != widget.tabs.length) {
         throw FlutterError(
@@ -191,57 +196,82 @@ class _KrsTabBarState extends State<KrsTabBar>
       return true;
     }());
 
-    return AnimatedBuilder(
-      animation: _animationController,
-      key: _tabsParentKey,
-      builder: (context, child) => Focus(
-        skipTraversal: true,
-        onFocusChange: (hasFocus) {
-          if (!_tabBarFocused && hasFocus) {
-            /// ^ если до этого не было фокуса и фокус стал активен
-            
-            /// ставим фокус на текущую вкладку
-            _tabFocusNodes[_controller!.index].requestFocus();
-          }
+    return Focus(
+      skipTraversal: true,
+      onFocusChange: (hasFocus) {
+        if (!_tabBarFocused && hasFocus) {
+          /// ^ если до этого не было фокуса и фокус стал активен
           
-          /// запоминаем состояние фокуса на [TabBar]
+          /// ставим фокус на текущую вкладку
+          _tabFocusNodes[_controller!.index].requestFocus();
+        }
+
+        if (_tabBarFocused != hasFocus) {
+          // ^ если состояние фокуса изменилось
+          
+          // запоминаем состояние фокуса на [TabBar]
           setState(() {
             _tabBarFocused = hasFocus;
           });
-        },
-        child: Center(
-          child: SizedBox(
-            height: 40.0,
-            child: ListView(
-              shrinkWrap: true,
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              children: List.generate(widget.tabs.length, (index) {
-                final tab = widget.tabs[index] as Tab;
+        }
+      },
+      child: SizedBox(
+        height: 40.0,
+        child: ListView(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          children: List.generate(widget.tabs.length, (index) {
+            final tab = widget.tabs[index] as Tab;
 
-                return _TabButton(
-                    key: _tabKeys[index],
-                    focusNode: _tabFocusNodes[index],
-                    selected: _controller?.index == index,
-                    active: _tabBarFocused,
-                    onFocusChange: (hasFocus) {
-                      if (_tabBarFocused && hasFocus) {
-                        _controller?.animateTo(index);
-                        widget.onTap?.call(index);
-                      }
-                    },
-                    onPressed: () {
-                      _controller?.animateTo(index);
-                      widget.onTap?.call(index);
-                    },
-                    icon: tab.icon,
-                    labelText: tab.text ?? '', 
-                ) ;
-              }),
-            ),
-          ),
+
+            // if (index == 0) {
+            //   // если в текущий выбор - поиск
+              
+            //   return SizedBox(
+            //     width: 256,
+            //     height: 40.0,
+            //     child: Focus(
+            //       focusNode: _tabFocusNodes[index],
+            //       skipTraversal: true,
+            //       onFocusChange: (hasFocus) {
+            //         if (_tabBarFocused && hasFocus) {
+            //           _controller?.animateTo(index);
+            //           widget.onTap?.call(index);
+            //         }
+            //       },
+            //       child: TextField(
+            //         decoration: InputDecoration(
+            //           border: OutlineInputBorder(
+            //             borderRadius: BorderRadius.circular(40.0)
+            //           ),
+            //           hintText: 'Enter a search term',
+            //         ),
+            //       ),
+            //     ),
+            //   );
+
+            // }
+
+            return _TabButton(
+              focusNode: _tabFocusNodes[index],
+              selected: _controller?.index == index,
+              active: _tabBarFocused,
+              onFocusChange: (hasFocus) {
+                if (_tabBarFocused && hasFocus) {
+                  _controller?.animateTo(index);
+                  widget.onTap?.call(index);
+                }
+              },
+              onPressed: () {
+                _controller?.animateTo(index);
+                widget.onTap?.call(index);
+              },
+              icon: tab.icon,
+              labelText: tab.text ?? '', 
+            );
+          }),
         ),
-      ),
+      )
     );
   }
 
@@ -260,26 +290,28 @@ class _KrsTabBarState extends State<KrsTabBar>
   _goToIndex(int index) {
     if (index != _currentIndex) {
       _setCurrentIndex(index);
-      _controller?.animateTo(index);
+      //_controller?.animateTo(index);
     }
   }
 
   _setCurrentIndex(int index) {
-    // change the index
-    setState(() {
-      _currentIndex = index;
-    });
-    //_scrollTo(index); // scroll TabBar if needed
-    _triggerAnimation();
+    if (_currentIndex != index) {
+      // change the index
+      setState(() {
+        _currentIndex = index;
+      });
+      //_scrollTo(index); // scroll TabBar if needed
+      //_triggerAnimation();
+    }
   }
 
-  _triggerAnimation() {
-    // reset the animation so it's ready to go
-    _animationController.reset();
+  // _triggerAnimation() {
+  //   // reset the animation so it's ready to go
+  //   _animationController.reset();
 
-    // run the animation!
-    _animationController.forward();
-  }
+  //   // run the animation!
+  //   _animationController.forward();
+  // }
 }
 
 class _TabButton extends StatelessWidget {

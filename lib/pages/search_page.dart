@@ -7,6 +7,8 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('build SearchPage');
+    
     return Center(
       child: OutlinedButton(
         onPressed: () {

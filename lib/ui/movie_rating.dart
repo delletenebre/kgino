@@ -57,7 +57,7 @@ class MovieRating extends StatelessWidget {
         children: [
           Text(typeText,
             style: const TextStyle(
-              fontSize: 12.0,
+              fontSize: 10.0,
             ),
           ),
 
@@ -65,7 +65,7 @@ class MovieRating extends StatelessWidget {
 
           Text(rating.toStringAsFixed(1),
             style: TextStyle(
-              fontSize: 14.0,
+              fontSize: 12.0,
               color: ratingColor,
               fontWeight: FontWeight.bold,
               shadows: [

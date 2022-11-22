@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         applicationId "kg.delletenebre.kgino3"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

@@ -37,6 +37,7 @@ dependencies:
   palette_generator: ^0.3.3+2
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.15
+  speech_to_text: ^6.1.0
   video_player: ^2.4.7
   wakelock: ^0.6.2
 

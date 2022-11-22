@@ -42,6 +42,13 @@ class OckgMovieDetailsPage extends StatelessWidget {
               final movie = state.data;
               return Column(
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 32.0),
+                    child: SizedBox(
+                      height: 40.0,
+                    ),
+                  ),
+
                   Expanded(
                     child: OckgMovieDetais(
                       movie: movie,
@@ -50,7 +57,7 @@ class OckgMovieDetailsPage extends StatelessWidget {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(32.0),
                     child: Row(
                       children: [
 

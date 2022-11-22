@@ -30,14 +30,17 @@ class OckgCatalogPage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(
-                top: 12.0,
-                left: 24.0,
-                right: 24.0,
+                top: 32.0,
+                left: 32.0,
+                right: 32.0,
               ),
-              child: Text(titleText,
-                style: TextStyle(
-                  fontSize: 28.0,
-                  color: theme.colorScheme.outline,
+              child: SizedBox(
+                height: 40.0,
+                child: Text(titleText,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: theme.colorScheme.outline,
+                  ),
                 ),
               ),
             ),
