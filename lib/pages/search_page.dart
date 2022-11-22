@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -43,12 +45,16 @@ class _SearchPageState extends State<SearchPage> {
 
     //   return KeyEventResult.ignored;
     // };
+
+  _focusNode.addListener(() {
+    print(_focusNode.hasFocus);
+  });
+
     super.initState();
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
     _firstFocusNode.dispose();
     _autoScrollController.dispose();
     super.dispose();
@@ -71,6 +77,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 child: KrsTextField(
                   focusNode: _focusNode,
+                  
                   name: 'searchQuery',
                   
                   //labelText: locale.search,
@@ -79,17 +86,23 @@ class _SearchPageState extends State<SearchPage> {
                   textInputAction: TextInputAction.search,
 
                   onTextChange: (searchQuery) {
+                    final runes = searchQuery.runes.map((r) {
+                      return '%u${r.toRadixString(16).padLeft(4, '0')}';
+                    }).toList();
+                    for (final item in runes) {
+                      print(item);
+                    }
                     if (searchQuery.length > 2) {
                       context.read<OckgSearchController>().searchMovies(searchQuery);
                     }
                   },
 
-                  onSubmitted: (searchQuery) {
-                    if (searchQuery.length > 2) {
-                      context.read<OckgSearchController>().searchMovies(searchQuery);
-                    }
-                    _firstFocusNode.requestFocus();
-                  },
+                  // onSubmitted: (searchQuery) {
+                  //   if (searchQuery.length > 2) {
+                  //     context.read<OckgSearchController>().searchMovies(searchQuery);
+                  //   }
+                  //   _firstFocusNode.requestFocus();
+                  // },
                 ),
               ),
 
@@ -108,30 +121,31 @@ class _SearchPageState extends State<SearchPage> {
                     if (state.isSuccess) {
                       return SingleChildScrollView(
                         controller: _autoScrollController,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32.0,
-                          vertical: 48.0
-                        ),
-                        child: Wrap(
-                          clipBehavior: Clip.none,
-                          spacing: 12.0,
-                          runSpacing: 12.0,
-                          children: state.data.mapIndexed((index, movie) {
-                            return AutoScrollTag(
-                              key: ValueKey(index), 
-                              controller: _autoScrollController,
-                              index: index,
-                              child: OckgMovieCard(
-                                movie: movie,
-                                onMovieFocused: (movie, focusNode) {
-                                  _autoScrollController.scrollToIndex(index,
-                                    // preferPosition: AutoScrollPosition.begin,
-                                    duration: KrsTheme.fastAnimationDuration,
-                                  );
-                                },
-                              ),
-                            );
-                          }).toList(),
+                        padding: const EdgeInsets.all(32.0),
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: Wrap(
+                            clipBehavior: Clip.none,
+                            alignment: WrapAlignment.center,
+                            spacing: 24.0,
+                            runSpacing: 24.0,
+                            children: state.data.mapIndexed((index, movie) {
+                              return AutoScrollTag(
+                                key: ValueKey(index), 
+                                controller: _autoScrollController,
+                                index: index,
+                                child: OckgMovieCard(
+                                  movie: movie,
+                                  onMovieFocused: (movie, focusNode) {
+                                    _autoScrollController.scrollToIndex(index,
+                                      // preferPosition: AutoScrollPosition.begin,
+                                      duration: KrsTheme.fastAnimationDuration,
+                                    );
+                                  },
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       );
                     }

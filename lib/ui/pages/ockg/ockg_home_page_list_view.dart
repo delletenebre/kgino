@@ -33,7 +33,7 @@ class _OckgHomePageListViewState extends State<OckgHomePageListView> {
         if (state.isSuccess) {
           return ListView.separated(
             padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
+              horizontal: 32.0,
             ),
             itemCount: state.data.length,
             itemBuilder: (context, index) {

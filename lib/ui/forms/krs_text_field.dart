@@ -101,9 +101,9 @@ class _KrsTextFieldState extends State<KrsTextField> {
       });
     }
 
-    _textEditingController.addListener(() {
-      widget.onTextChange?.call(_textEditingController.text);
-    });
+    // _textEditingController.addListener(() {
+      
+    // });
     
     super.initState();
   }
@@ -126,6 +126,8 @@ class _KrsTextFieldState extends State<KrsTextField> {
       controller: _textEditingController,
       focusNode: _focusNode,
 
+      autofocus: false,
+
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: KrsInputDecoration(
         theme: theme,
@@ -140,6 +142,10 @@ class _KrsTextFieldState extends State<KrsTextField> {
       obscureText: widget.obscureText,
 
       validator: widget.validator,
+
+      onChanged: (value) {
+        widget.onTextChange?.call(_textEditingController.text);
+      },
 
       /// при нажатии "enter"
       onSubmitted: (value) {

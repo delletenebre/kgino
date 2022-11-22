@@ -100,15 +100,24 @@ class OckgApiProvider {
 
   /// поиск фильмов
   Future<List<OckgMovie>> searchMovies(String searchQuery) async {
+    // final runes = searchQuery.runes.map((r) {
+    //   return '%u${r.toRadixString(16).padLeft(4, '0')}';
+    // }).toList();
 
-    final formData = FormData.fromMap({
-      'action[0]': 'Video.search',
-      'query[0]': searchQuery,
-    });
+    // final formData = FormData.fromMap({
+    //   'action[0]': 'Video.search',
+    //   'query[0]': searchQuery,
+    // });
 
     try {
+
+      // final response = await _dio.post('', data: formData);
     
-      final response = await _dio.post('', data: formData);
+      final response = await _dio.get('https://oc.kg/suggestion.php',
+        queryParameters: {
+          'q': searchQuery,
+        }
+      );
 
       final jsonResponse = json.decode(response.data);
       final movies = jsonResponse['json'][0]['response']['movies'];
@@ -243,96 +252,4 @@ class OckgApiProvider {
     
   }
 
-  // /// получаем профиль пользователя
-  // Future<User?> getMe() async {
-  //   try {
-    
-  //     final response = await _dio.get('/auth/profile');
-
-  //     return User.fromJson(response.data['data']);
-      
-  //   } on SocketException catch (_) {
-
-  //     debugPrint('no internet connection');
-      
-  //     return null;
-    
-  //   } catch (exception, stacktrace) {
-      
-  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-  //     return null;
-  //   }
-
-    
-  // }
-
-  // /// вход по логину и паролю
-  // Future<AuthTokens> signin(String username, String password) async {
-  //   final data = {
-  //     'username': username,
-  //     'password': password,
-  //   };
-
-  //   try {
-    
-  //     final response = await _dio.post('/auth/login', data: data);
-
-  //     return AuthTokens.fromJson(response.data['data']);
-
-  //   } on SocketException catch (_) {
-
-  //     debugPrint('no internet connection');
-      
-  //     return AuthTokens.withError('CONNECTION');
-    
-  //   } on DioError catch (dioError) {
-
-  //     debugPrint('DioError: $dioError');
-      
-  //     return AuthTokens.withError(dioError.type.toString());
-
-  //   } catch (exception, stacktrace) {
-      
-  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-  //     return AuthTokens.withError('UNKNOWN');
-  //   }
-
-    
-  // }
-
-  // /// обновление ключа авторизации
-  // Future<AuthTokens> refreshToken(String refreshToken) async {
-  //   final data = {
-  //     'refreshToken': refreshToken,
-  //   };
-
-  //   try {
-    
-  //     final response = await _dio.post('/auth/refresh-token', data: data);
-
-  //     return AuthTokens.fromJson(response.data['data']);
-      
-  //   } on SocketException catch (_) {
-
-  //     debugPrint('no internet connection');
-      
-  //     return AuthTokens.withError('CONNECTION');
-    
-  //   } on DioError catch (dioError) {
-
-  //     debugPrint('DioError: $dioError');
-      
-  //     return AuthTokens.withError(dioError.type.toString());
-
-  //   } catch (exception, stacktrace) {
-      
-  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-  //     return AuthTokens.withError('UNKNOWN');
-  //   }
-
-    
-  // }
 }

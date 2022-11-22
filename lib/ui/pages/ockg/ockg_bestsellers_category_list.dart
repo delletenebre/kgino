@@ -6,7 +6,7 @@ import 'package:kgino/models/ockg/ockg_movie.dart';
 
 import '../../../models/ockg/ockg_bestsellers_category.dart';
 import '../../../resources/krs_theme.dart';
-import 'ockg_movie_card.dart';
+import 'ockg_movies_list_view.dart';
 
 class OckgBestsellersCategoryList extends StatefulWidget {
   final OckgBestsellersCategory category;
@@ -33,11 +33,6 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
     /// инициализируем [FocusNode] для карточек фильмов
     _elementsFocusNodes = List.generate(widget.category.movies.length, (index) {
       final focusNode = FocusNode();
-      focusNode.addListener(() {
-        if (focusNode.hasFocus) {
-          widget.onMovieFocused.call(widget.category.movies[index]);
-        }
-      });
 
       return focusNode;
     });
@@ -123,21 +118,33 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
 
           SizedBox.fromSize(
             size: const Size.fromHeight(140.0 + 12.0 + 4.0 + 28.0 + 20.0),
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.category.movies.length,
-              itemBuilder: (context, index) {
-                final movie = widget.category.movies[index];
-                return OckgMovieCard(
-                  focusNode: _elementsFocusNodes[index],
-                  movie: movie,
-                );
+            child: OckgMoviesListView(
+              padding: null,
+              focusNodes: _elementsFocusNodes,
+              movies: widget.category.movies,
+              onMovieFocused: (movie) {
+                widget.onMovieFocused.call(movie);
               },
-              separatorBuilder: (context, index) {
-                return const SizedBox(width: 24.0);
+              onScrollEnd: () {
+
               },
+            )
+            
+            // ListView.separated(
+            //   scrollDirection: Axis.horizontal,
+            //   itemCount: widget.category.movies.length,
+            //   itemBuilder: (context, index) {
+            //     final movie = widget.category.movies[index];
+            //     return OckgMovieCard(
+            //       focusNode: _elementsFocusNodes[index],
+            //       movie: movie,
+            //     );
+            //   },
+            //   separatorBuilder: (context, index) {
+            //     return const SizedBox(width: 24.0);
+            //   },
               
-            ),
+            // ),
           ),
         ],
       ),

@@ -7,15 +7,19 @@ import 'ockg_movie_card.dart';
 class OckgMoviesListView extends StatefulWidget {
   final bool autofocus;
   final List<OckgMovie> movies;
+  final List<FocusNode>? focusNodes;
   final void Function(OckgMovie movie) onMovieFocused;
   final void Function() onScrollEnd;
+  final EdgeInsetsGeometry? padding;
 
   const OckgMoviesListView({
     super.key,
     this.autofocus = false,
+    this.focusNodes,
     required this.movies,
     required this.onMovieFocused,
     required this.onScrollEnd,
+    this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
   });
 
   @override
@@ -66,7 +70,7 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
       child: ListView.separated(
         clipBehavior: Clip.none,
         controller: _autoScrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        padding: widget.padding,
         scrollDirection: Axis.horizontal,
         itemCount: widget.movies.length,
         itemBuilder: (context, index) {
@@ -79,7 +83,7 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
             child: OckgMovieCard(
               // поставить ли фокус на первый фильм в списке
               autofocus: (index == 0 && widget.autofocus),
-              
+              focusNode: widget.focusNodes?[index],
               // данные о фильме
               movie: movie,
 

@@ -146,7 +146,8 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
                         boxShadow: [
                           if (_focusNode.hasFocus) BoxShadow(
                             color: _dominantColor!.withOpacity(0.62),
-                            blurRadius: 32.0,
+                            blurRadius: 20.0,
+                            spreadRadius: 4.0
                           ),
                         ],
                         borderRadius: BorderRadius.circular(12.0),

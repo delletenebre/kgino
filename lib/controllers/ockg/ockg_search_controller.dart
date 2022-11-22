@@ -15,7 +15,9 @@ class OckgSearchController extends Cubit<RequestState<List<OckgMovie>>> {
   OckgSearchController() : super(const RequestState.empty());
 
   Future<void> searchMovies(String searchQuery) async {
-    emit(const RequestState.loading());
+    if (!state.isSuccess) {
+      emit(const RequestState.loading());
+    }
 
     try {
 
