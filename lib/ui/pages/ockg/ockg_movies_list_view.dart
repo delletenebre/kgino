@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kgino/models/ockg/ockg_movie.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
-import 'ockg_category_movie_card.dart';
+import 'ockg_movie_card.dart';
 
 class OckgMoviesListView extends StatefulWidget {
   final bool autofocus;
@@ -76,14 +76,14 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
             key: ValueKey(index), 
             controller: _autoScrollController,
             index: index,
-            child: OckgCategoryMovieCard(
+            child: OckgMovieCard(
               // поставить ли фокус на первый фильм в списке
               autofocus: (index == 0 && widget.autofocus),
               
               // данные о фильме
               movie: movie,
 
-              onMovieFocused: (movie) {
+              onMovieFocused: (movie, focusNode) {
                 // ^ при смене фокуса на этот фильм
                 
                 /// прокручиваем контент к текущему элементу

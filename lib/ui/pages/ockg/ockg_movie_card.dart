@@ -5,15 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_theme.dart';
 
-class OckgCategoryMovieCard extends StatefulWidget {
+class OckgMovieCard extends StatefulWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final OckgMovie movie;
   // final double height;
   final Size posterSize;
-  final void Function(OckgMovie movie)? onMovieFocused;
+  final void Function(OckgMovie movie, FocusNode focusNode)? onMovieFocused;
 
-  const OckgCategoryMovieCard({
+  const OckgMovieCard({
     super.key,
     this.focusNode,
     this.autofocus = false,
@@ -24,10 +24,10 @@ class OckgCategoryMovieCard extends StatefulWidget {
   });
 
   @override
-  State<OckgCategoryMovieCard> createState() => _OckgCategoryMovieCardState();
+  State<OckgMovieCard> createState() => _OckgMovieCardState();
 }
 
-class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
+class _OckgMovieCardState extends State<OckgMovieCard> {
   bool _holded = false;
   Color? _dominantColor;
   late final FocusNode _focusNode;
@@ -59,7 +59,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        widget.onMovieFocused?.call(widget.movie);
+        widget.onMovieFocused?.call(widget.movie, _focusNode);
       }
     });
     

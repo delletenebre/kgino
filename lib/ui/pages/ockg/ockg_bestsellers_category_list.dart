@@ -6,7 +6,7 @@ import 'package:kgino/models/ockg/ockg_movie.dart';
 
 import '../../../models/ockg/ockg_bestsellers_category.dart';
 import '../../../resources/krs_theme.dart';
-import 'ockg_category_movie_card.dart';
+import 'ockg_movie_card.dart';
 
 class OckgBestsellersCategoryList extends StatefulWidget {
   final OckgBestsellersCategory category;
@@ -128,7 +128,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
               itemCount: widget.category.movies.length,
               itemBuilder: (context, index) {
                 final movie = widget.category.movies[index];
-                return OckgCategoryMovieCard(
+                return OckgMovieCard(
                   focusNode: _elementsFocusNodes[index],
                   movie: movie,
                 );

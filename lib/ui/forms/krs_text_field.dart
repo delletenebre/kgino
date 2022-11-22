@@ -6,10 +6,13 @@ import 'krs_input_decoration.dart';
 class KrsTextField extends StatefulWidget {
   final String name;
   final bool selectTextOnFocus;
+  final FocusNode? focusNode;
+  final TextEditingController? controller;
 
-  final String? Function(String?)? validator;
+  final String? Function(String? value)? validator;
   
-  final void Function(String?)? onSubmitted;
+  final void Function(String value)? onTextChange;
+  final void Function(String value)? onSubmitted;
 
   final String labelText;
   final String? hintText;
@@ -39,8 +42,11 @@ class KrsTextField extends StatefulWidget {
     Key? key,
     required this.name,
     this.labelText = '',
+    this.focusNode,
+    this.controller,
     this.hintText,
     this.validator,
+    this.onTextChange,
     this.onSubmitted,
     this.selectTextOnFocus = true,
     this.keyboardType,
@@ -58,11 +64,14 @@ class KrsTextField extends StatefulWidget {
 }
 
 class _KrsTextFieldState extends State<KrsTextField> {
-  final _focusNode = FocusNode();
-  final _textEditingController = TextEditingController();
+  late final FocusNode _focusNode;
+  late final TextEditingController _textEditingController;
 
   @override
   void initState() {
+
+    _focusNode = widget.focusNode ?? FocusNode();
+    _textEditingController = widget.controller ?? TextEditingController();
 
     if (widget.initialValue.isNotEmpty) {
       /// ^ если начальное значение поля не пустое
@@ -88,13 +97,13 @@ class _KrsTextFieldState extends State<KrsTextField> {
             );
           }
         }
-
-        // setState(() {
-          
-        // });
         
       });
     }
+
+    _textEditingController.addListener(() {
+      widget.onTextChange?.call(_textEditingController.text);
+    });
     
     super.initState();
   }
@@ -133,7 +142,9 @@ class _KrsTextFieldState extends State<KrsTextField> {
       validator: widget.validator,
 
       /// при нажатии "enter"
-      onSubmitted: widget.onSubmitted,
+      onSubmitted: (value) {
+        widget.onSubmitted?.call(value ?? '');
+      },
 
       style: const TextStyle(
         height: 1.15,

@@ -22,6 +22,8 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
   }
 
   Future<void> getMovieById(int movieId, { bool showPlayButton = false }) async {
+    emit(const RequestState.loading());
+    
     /// запроашиваем данные о фильме
     final movie = await _api.getMovie(movieId);
 

@@ -3,7 +3,6 @@ import 'package:kgino/pages/search_page.dart';
 import 'package:kgino/pages/settings_page.dart';
 
 import '../resources/krs_locale.dart';
-import '../ui/forms/krs_text_field.dart';
 import '../ui/navigation_bar/krs_tab_bar.dart';
 import 'ockg/ockg_home_page.dart';
 import 'tskg/tskg_home_page.dart';

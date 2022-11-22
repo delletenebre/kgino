@@ -98,6 +98,42 @@ class OckgApiProvider {
   }
 
 
+  /// поиск фильмов
+  Future<List<OckgMovie>> searchMovies(String searchQuery) async {
+
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.search',
+      'query[0]': searchQuery,
+    });
+
+    try {
+    
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final movies = jsonResponse['json'][0]['response']['movies'];
+
+      return movies.map<OckgMovie>((item) {
+        return OckgMovie.fromJson(item);
+      }).toList();
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return [];
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return [];
+    }
+
+    
+  }
+
+
   /// список фильмов по id жанра
   Future<List<OckgMovie>> getMoviesByGenreId(int genreId) async {
 
@@ -132,7 +168,6 @@ class OckgApiProvider {
       return [];
     }
 
-    
   }
 
   /// список фильмов из каталога
