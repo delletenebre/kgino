@@ -15,31 +15,34 @@ class OckgSearchController extends Cubit<RequestState<List<OckgMovie>>> {
   OckgSearchController() : super(const RequestState.empty());
 
   Future<void> searchMovies(String searchQuery) async {
-    if (!state.isSuccess) {
-      emit(const RequestState.loading());
-    }
+    if (searchQuery.length > 2) {
 
-    try {
-
-      // запроашиваем фильмы по искомому запросу
-      final movies = await _api.searchMovies(searchQuery);
-
-      if (!isClosed) {
-        // ^ если контроллер ещё жив
-        
-        if (movies.isEmpty) {
-          // ^ если данных нет
-          emit(const RequestState.empty());
-        
-        } else {
-          // ^ если запрос выполнен успешно
-          
-          emit(RequestState.success(movies));
-        }
+      if (!state.isSuccess) {
+        emit(const RequestState.loading());
       }
 
-    } catch (exception) {
-      debugPrint('OckgCatalogController searchMovies() exception: $exception');
+      try {
+
+        // запроашиваем фильмы по искомому запросу
+        final movies = await _api.searchMovies(searchQuery);
+
+        if (!isClosed) {
+          // ^ если контроллер ещё жив
+          
+          if (movies.isEmpty) {
+            // ^ если данных нет
+            emit(const RequestState.empty());
+          
+          } else {
+            // ^ если запрос выполнен успешно
+            
+            emit(RequestState.success(movies));
+          }
+        }
+
+      } catch (exception) {
+        debugPrint('OckgCatalogController searchMovies() exception: $exception');
+      }
     }
   }
 

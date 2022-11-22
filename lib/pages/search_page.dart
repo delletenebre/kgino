@@ -86,23 +86,22 @@ class _SearchPageState extends State<SearchPage> {
                   textInputAction: TextInputAction.search,
 
                   onTextChange: (searchQuery) {
-                    final runes = searchQuery.runes.map((r) {
-                      return '%u${r.toRadixString(16).padLeft(4, '0')}';
-                    }).toList();
-                    for (final item in runes) {
-                      print(item);
-                    }
-                    if (searchQuery.length > 2) {
-                      context.read<OckgSearchController>().searchMovies(searchQuery);
-                    }
+                    context.read<OckgSearchController>().searchMovies(searchQuery);
                   },
 
-                  // onSubmitted: (searchQuery) {
-                  //   if (searchQuery.length > 2) {
-                  //     context.read<OckgSearchController>().searchMovies(searchQuery);
-                  //   }
-                  //   _firstFocusNode.requestFocus();
-                  // },
+                  onSubmitted: (searchQuery) {
+                    context.read<OckgSearchController>().searchMovies(searchQuery);
+                    _firstFocusNode.requestFocus();
+                  },
+
+                  onArrowDown: () {
+                    print('arrowDOwn');
+                    _firstFocusNode.requestFocus();
+                  },
+
+                  onArrowUp: () {
+                    _focusNode.previousFocus();
+                  },
                 ),
               ),
 

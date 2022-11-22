@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'krs_input_decoration.dart';
@@ -13,6 +14,9 @@ class KrsTextField extends StatefulWidget {
   
   final void Function(String value)? onTextChange;
   final void Function(String value)? onSubmitted;
+  final void Function()? onArrowDown;
+  final void Function()? onArrowUp;
+  
 
   final String labelText;
   final String? hintText;
@@ -48,6 +52,8 @@ class KrsTextField extends StatefulWidget {
     this.validator,
     this.onTextChange,
     this.onSubmitted,
+    this.onArrowDown,
+    this.onArrowUp,
     this.selectTextOnFocus = true,
     this.keyboardType,
     this.textInputAction,
@@ -120,42 +126,54 @@ class _KrsTextFieldState extends State<KrsTextField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return FormBuilderTextField(
-      name: widget.name,
-
-      controller: _textEditingController,
+    return RawKeyboardListener(
       focusNode: _focusNode,
+      onKey: (event) {
+        if (_focusNode.hasFocus) {
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+            widget.onArrowDown?.call();
+          }
 
-      autofocus: false,
-
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: KrsInputDecoration(
-        theme: theme,
-        hintText: widget.hintText,
-        labelText: widget.labelText,
-        suffixIcon: widget.suffixIcon,
-        onSuffixPressed: widget.onSuffixPressed,
-      ),
-
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      obscureText: widget.obscureText,
-
-      validator: widget.validator,
-
-      onChanged: (value) {
-        widget.onTextChange?.call(_textEditingController.text);
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+            widget.onArrowUp?.call();
+          }
+        }
       },
+      child: FormBuilderTextField(
+        name: widget.name,
 
-      /// при нажатии "enter"
-      onSubmitted: (value) {
-        widget.onSubmitted?.call(value ?? '');
-      },
+        controller: _textEditingController,
 
-      style: const TextStyle(
-        height: 1.15,
+        autofocus: false,
+
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        decoration: KrsInputDecoration(
+          theme: theme,
+          hintText: widget.hintText,
+          labelText: widget.labelText,
+          suffixIcon: widget.suffixIcon,
+          onSuffixPressed: widget.onSuffixPressed,
+        ),
+
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        obscureText: widget.obscureText,
+
+        validator: widget.validator,
+
+        onChanged: (value) {
+          widget.onTextChange?.call(_textEditingController.text);
+        },
+
+        /// при нажатии "enter"
+        onSubmitted: (value) {
+          widget.onSubmitted?.call(value ?? '');
+        },
+
+        style: const TextStyle(
+          height: 1.15,
+        ),
       ),
-      
     );
   }
 }
