@@ -4,6 +4,7 @@ import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
 import '../pages/ockg/ockg_movie_details_page.dart';
+import '../pages/search_page.dart';
 import '../pages/settings_page.dart';
 import '../pages/player_page.dart';
 
@@ -61,6 +62,13 @@ class KrsRouter {
         path: '/settings',
         builder: (context, state) {
           return const SettingsPage();
+        },
+      ),
+
+      GoRoute(
+        path: '/search',
+        builder: (context, state) {
+          return const SearchPage();
         },
       ),
       

@@ -234,6 +234,7 @@ class _KrsTabBarState extends State<KrsTabBar>
                       _controller?.animateTo(index);
                       widget.onTap?.call(index);
                     },
+                    icon: tab.icon,
                     labelText: tab.text ?? '', 
                 ) ;
               }),

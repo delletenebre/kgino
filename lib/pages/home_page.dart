@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kgino/pages/search_page.dart';
 import 'package:kgino/pages/settings_page.dart';
 
 import '../resources/krs_locale.dart';
@@ -20,7 +21,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: 3);
+    _tabController = TabController(
+      vsync: this,
+      length: 4,
+      initialIndex: 1,
+    );
   }
 
   @override
@@ -44,6 +49,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               controller: _tabController,
               tabs: [
                 Tab(
+                  text: locale.search,
+                ),
+                Tab(
                   text: locale.movies,
                 ),
                 Tab(
@@ -61,6 +69,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               clipBehavior: Clip.none,
               controller: _tabController,
               children: const [
+                SearchPage(),
                 OckgHomePage(),
                 OckgHomePage(),
                 SettingsPage(),

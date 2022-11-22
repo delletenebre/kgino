@@ -13,20 +13,18 @@ class OckgBestsellersController extends Cubit<RequestState<List<OckgBestsellersC
 
   OckgBestsellersController() : super(const RequestState.loading()) {
     _api.getBestsellers().then((bestsellers) {
-      if (bestsellers.isEmpty) {
-        /// ^ если данных нет
-        emit(const RequestState.empty());
-      } else {
-        /// ^ если данные получены успешно
-        emit(RequestState.success(bestsellers));
+      if (!isClosed) {
+        if (bestsellers.isEmpty) {
+          /// ^ если данных нет
+          emit(const RequestState.empty());
+        } else {
+          /// ^ если данные получены успешно
+          emit(RequestState.success(bestsellers));
+        }
       }
     });
     
   }
-
-  // void changeLocale(String locale) {
-    
-  // }
 
   @override
   Future<void> onChange(Change<RequestState<List<OckgBestsellersCategory>>> change) async {
