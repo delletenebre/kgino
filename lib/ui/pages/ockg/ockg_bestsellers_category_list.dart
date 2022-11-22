@@ -114,7 +114,9 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
             focusNode: _titleFocusNode,
             onPressed: () {
               // переходим на страницу с каталогом фильмов по выбранному жанру
-              context.push('/ockg/genre/${widget.category.getGenreId()}');
+              context.push('/ockg/genre/${widget.category.getGenreId()}',
+                extra: widget.category.name,
+              );
             },
             child: Text(widget.category.name),
           ),

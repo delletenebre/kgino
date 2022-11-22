@@ -1,25 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/ockg_api_provider.dart';
-import '../../models/ockg/ockg_movie.dart';
+import '../../models/ockg/ockg_catalog.dart';
 
 export '../../models/request_state.dart';
 
-class OckgCatalogController extends Cubit<List<OckgMovie>> {
+class OckgCatalogController extends Cubit<OckgCatalog> {
 
   final _api = GetIt.instance<OckgApiProvider>();
 
-  final _currentMovieList = <OckgMovie>[];
+  OckgCatalog _currentCatalog = const OckgCatalog();
 
-  int _offset = 0;
   static const _pageSize = 20;
 
   final int genreId;
 
   OckgCatalogController({
     this.genreId = 0,
-  }) : super([]) {
+  }) : super(const OckgCatalog()) {
     fetchMovies();
   }
 
@@ -27,39 +27,19 @@ class OckgCatalogController extends Cubit<List<OckgMovie>> {
     try {
       final catalog = await _api.getCatalog(
         genreId: genreId,
-        offset: _offset + _pageSize,
+        offset: _currentCatalog.offset + _pageSize,
       );
 
       if (catalog.movies.isNotEmpty) {
-        _offset = catalog.offset;
-        _currentMovieList.addAll(catalog.movies);
-        emit(_currentMovieList);
+        _currentCatalog = catalog.copyWith(
+          movies: [ ..._currentCatalog.movies, ...catalog.movies ],
+        );
+        emit(_currentCatalog);
       }
 
-      // final previouslyFetchedItemsCount =
-      //     _pagingController.itemList?.length ?? 0;
-
-      // final isLastPage = newPage.isLastPage(previouslyFetchedItemsCount);
-      // final newItems = newPage.movies;
-
-      // if (isLastPage) {
-      //   _pagingController.appendLastPage(newItems);
-      // } else {
-      //   final nextPageKey = pageKey + 1;
-      //   _pagingController.appendPage(newItems, nextPageKey);
-      // }
-    } catch (error) {
-      //_pagingController.error = error;
+    } catch (exception) {
+      debugPrint('OckgCatalogController fetchMovies() exception: $exception');
     }
   }
 
-  // void changeLocale(String locale) {
-    
-  // }
-
-  // @override
-  // Future<void> onChange(Change<RequestState<List<OckgBestsellersCategory>>> change) async {
-  //   super.onChange(change);
-
-  // }
 }

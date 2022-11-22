@@ -7,6 +7,7 @@ import '../../../resources/krs_theme.dart';
 
 class OckgCategoryMovieCard extends StatefulWidget {
   final FocusNode? focusNode;
+  final bool autofocus;
   final OckgMovie movie;
   // final double height;
   final Size posterSize;
@@ -15,6 +16,7 @@ class OckgCategoryMovieCard extends StatefulWidget {
   const OckgCategoryMovieCard({
     super.key,
     this.focusNode,
+    this.autofocus = false,
     required this.movie,
     this.posterSize = const Size(100.0, 140.0),
     //this.height = 140.0,
@@ -102,6 +104,7 @@ class _OckgCategoryMovieCardState extends State<OckgCategoryMovieCard> {
         },
         child: Focus(
           focusNode: _focusNode,
+          autofocus: widget.autofocus,
           onFocusChange: (hasFocus) {
             /// при получении фокуса на фильме
             setState(() {

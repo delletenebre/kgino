@@ -15,12 +15,16 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
 
   OckgMovieDetailsController({
     this.movieId = 0,
-  }) : super(const RequestState.loading());
+  }) : super(const RequestState.loading()) {
+    if (movieId > 0) {
+      getMovieById(movieId);
+    }
+  }
 
   Future<void> getMovieById(int movieId, { bool showPlayButton = false }) async {
     /// запроашиваем данные о фильме
     final movie = await _api.getMovie(movieId);
-    
+
     if (movie == null) {
       /// ^ если данных нет
       emit(const RequestState.empty());
@@ -28,6 +32,7 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
     } else {
       /// ^ если запрос выполнен успешно
       emit(RequestState.success(movie.copyWith(showPlayButton: showPlayButton)));
+    
     }
   }
 

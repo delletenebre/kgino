@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/ockg/ockg_movie.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
@@ -35,8 +33,10 @@ class KrsRouter {
           GoRoute(
             path: 'ockg/genre/:id',
             builder: (context, state) {
+              final titleText = state.extra! as String;
               final genreId = int.tryParse(state.params['id'] ?? '') ?? 0;
               return OckgCatalogPage(
+                titleText: titleText,
                 genreId: genreId,
               );
             },

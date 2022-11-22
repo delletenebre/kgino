@@ -3,26 +3,44 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
+import '../../models/ockg/ockg_catalog.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 import '../../ui/pages/ockg/ockg_movies_list_view.dart';
 
 class OckgCatalogPage extends StatelessWidget {
+  final String titleText;
   final int genreId;
 
   const OckgCatalogPage({
     super.key,
+    this.titleText = '',
     this.genreId = 0,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: BlocProvider(
         create: (context) => OckgMovieDetailsController(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Название категории $genreId'),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 12.0,
+                left: 24.0,
+                right: 24.0,
+              ),
+              child: Text(titleText,
+                style: TextStyle(
+                  fontSize: 28.0,
+                  color: theme.colorScheme.outline,
+                ),
+              ),
+            ),
 
             Expanded(
               child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
@@ -47,27 +65,18 @@ class OckgCatalogPage extends StatelessWidget {
                 create: (context) => OckgCatalogController(
                   genreId: genreId,
                 ),
-                // child: BlocBuilder<OckgCatalogController, List<OckgMovie>>(
-                //   builder: (context, movies) {
-                //     final catalogController = context.read<OckgCatalogController>();
-                //     return OckgMoviesListView(
-                //       pagingController: catalogController.pagingController,
-                //       onMovieFocused: (movie) {
-                //         final controller = context.read<OckgMovieDetailsController>();
-                //         controller.getMovieById(movie.movieId);
-                //       },
-                //     );
-                //   },
-                // ),
-                child: BlocBuilder<OckgCatalogController, List<OckgMovie>>(
-                  builder: (context, movies) {
-                    // final catalogController = context.read<OckgCatalogController>();
+                child: BlocBuilder<OckgCatalogController, OckgCatalog>(
+                  builder: (context, catalog) {
                     return OckgMoviesListView(
-                      movies: movies,
+                      autofocus: true,
+                      movies: catalog.movies,
                       onMovieFocused: (movie) {
                         final controller = context.read<OckgMovieDetailsController>();
                         controller.getMovieById(movie.movieId);
                       },
+                      onScrollEnd: () {
+                        context.read<OckgCatalogController>().fetchMovies();
+                      }
                     );
                   },
                 ),

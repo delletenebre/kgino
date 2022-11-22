@@ -38,9 +38,11 @@ class OckgMovieDetailsPage extends StatelessWidget {
               );
             }
             
+            print('********* $state');
+
             if (state.isSuccess) {
               final movie = state.data;
-
+              print('eniwiuriuhweruhweurhweihriuwheiruhewuiwer');
               return Column(
                 children: [
                   Expanded(
