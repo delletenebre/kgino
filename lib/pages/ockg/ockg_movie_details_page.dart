@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_movie.dart';
+import '../../models/video_player_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/loading_indicator.dart';
@@ -68,7 +69,10 @@ class OckgMovieDetailsPage extends StatelessWidget {
                             style: KrsTheme.filledTonalButtonStyleOf(context),
                             onPressed: () {
                               context.push('/player',
-                                extra: movie.files.first.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
+                                extra: VideoPlayerItem(
+                                  videoUrl: movie.files.first.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
+                                  title: movie.name,
+                                ),
                               );
                             },
                             child: Text(locale.play)
@@ -81,7 +85,11 @@ class OckgMovieDetailsPage extends StatelessWidget {
                             style: KrsTheme.filledTonalButtonStyleOf(context),
                             onPressed: () {
                               context.push('/player',
-                                extra: movie.trailer!.video
+                                extra: VideoPlayerItem(
+                                  videoUrl: movie.trailer!.video,
+                                  title: movie.name,
+                                  subtitle: locale.trailer,
+                                ),
                               );
                             },
                             child: Text(locale.trailer)

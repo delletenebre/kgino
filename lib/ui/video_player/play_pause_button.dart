@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class PlayPauseButton extends StatelessWidget {
+class PlayPauseButton extends StatefulWidget {
   final Function() onPressed;
   final bool isPlaying;
   final FocusNode? focusNode;
@@ -14,6 +14,26 @@ class PlayPauseButton extends StatelessWidget {
   });
 
   @override
+  State<PlayPauseButton> createState() => _PlayPauseButtonState();
+}
+
+class _PlayPauseButtonState extends State<PlayPauseButton> {
+
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    _focusNode = widget.focusNode ?? FocusNode();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -22,7 +42,7 @@ class PlayPauseButton extends StatelessWidget {
 
     late Widget child;
 
-    if (isPlaying) {
+    if (widget.isPlaying) {
       /// ^ если видео проигрывается
       child = Icon(Icons.pause,
         /// для правильной работы анимации, необходим параметр key
@@ -54,7 +74,6 @@ class PlayPauseButton extends StatelessWidget {
     }
 
     return Focus(
-      focusNode: focusNode,
       skipTraversal: true,
       onKey: (node, event) {
         if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
@@ -68,8 +87,8 @@ class PlayPauseButton extends StatelessWidget {
         return KeyEventResult.ignored;
       },
       child: IconButton(
-        //focusNode: focusNode,
-        onPressed: onPressed,
+        focusNode: widget.focusNode,
+        onPressed: widget.onPressed,
         icon: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           reverseDuration: Duration.zero,

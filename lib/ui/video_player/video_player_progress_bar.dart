@@ -28,9 +28,9 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
 
   @override
   void dispose() {
-    super.dispose();
-
     focusNode.dispose();
+    
+    super.dispose();
   }
 
   @override
@@ -89,7 +89,7 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
 
               barHeight: 6,
 
-              thumbRadius: focusNode.hasFocus ? 12 : 6,
+              thumbRadius: focusNode.hasFocus ? 12.0 : 6.0,
               thumbGlowRadius: 24,
 
               timeLabelType: TimeLabelType.remainingTime,
@@ -101,7 +101,7 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
                   FontFeature.tabularFigures(),
                 ],
               ),
-              timeLabelPadding: 10.0,
+              timeLabelPadding: 12.0,
 
             );
           },

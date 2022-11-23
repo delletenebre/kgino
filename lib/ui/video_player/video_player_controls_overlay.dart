@@ -19,10 +19,10 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
   final bool isVisible;
 
   /// обработчик запроса предыдущего видео
-  final Function() onSkipPrevious;
+  final Function()? onSkipPrevious;
 
   /// обработчик запроса следующего видео
-  final Function() onSkipNext;
+  final Function()? onSkipNext;
 
   /// обработчик при перемотке видео
   final Function(Duration) onSeek;
@@ -31,7 +31,7 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
   final Function() onPlayPause;
 
   /// обработчик при нажатии на обрабатываемую плеером клавишу
-  final Function(LogicalKeyboardKey) onShowOverlay;
+  final Function() onShowOverlay;
 
   const VideoPlayerControlsOverlay({
     super.key,
@@ -40,8 +40,8 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
     this.subtitleText = '',
     required this.isVisible,
 
-    required this.onSkipNext,
-    required this.onSkipPrevious,
+    this.onSkipNext,
+    this.onSkipPrevious,
     required this.onSeek,
     required this.onPlayPause,
     required this.onShowOverlay,
@@ -53,7 +53,7 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
 
 class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay> {
 
-  final _overlayFocusNode = FocusScopeNode();
+  final _overlayFocusNode = FocusNode();
   final _playButtonFocusNode = FocusNode();
 
   bool get isLoading => !widget.playerController.value.isInitialized
@@ -67,7 +67,6 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
   @override
   void dispose() {
     _overlayFocusNode.dispose();
-    _playButtonFocusNode.dispose();
 
     super.dispose();
   }
@@ -83,19 +82,33 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
       _playButtonFocusNode.requestFocus();
     }
 
-    return FocusScope(
+    return Focus(
       autofocus: true,
-      node: _overlayFocusNode,
+      skipTraversal: true,
+      
       onKey: (node, event) {
-        widget.onShowOverlay(event.logicalKey);
 
-        if (widget.isVisible) {
-          return KeyEventResult.ignored;
-        } else {
-          return KeyEventResult.handled;
+        if (!widget.isVisible) {
+          if (event.isKeyPressed(LogicalKeyboardKey.select) || event.isKeyPressed(LogicalKeyboardKey.enter)) {
+            widget.onPlayPause.call();
+            _playButtonFocusNode.requestFocus();
+            
+            return KeyEventResult.handled;
+          }
         }
+
+        widget.onShowOverlay();
+
+        // if (widget.isVisible) {
+        //   
+        // } else {
+        //   return KeyEventResult.handled;
+        // }
+
+        return KeyEventResult.ignored;
         
       },
+
       child: AnimatedOpacity(
         duration: KrsTheme.animationDuration,
         opacity: widget.isVisible ? 1.0 : 0.0,
@@ -114,10 +127,6 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                     style: TextStyle(
                       fontSize: 24.0,
                       shadows: [
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 24.0,
-                        ),
                         Shadow(
                           color: theme.colorScheme.surface,
                           blurRadius: 24.0,
@@ -154,10 +163,6 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                             color: theme.colorScheme.surface,
                             blurRadius: 16.0,
                           ),
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 16.0,
-                          ),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -168,13 +173,12 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
             ),
 
             /// ^ если видео загружается
-            // if (isLoading) const LoadingIndicator(
-            //   size: 96.0,
-            // ),
+            if (isLoading) const LoadingIndicator(
+              size: 96.0,
+            ),
 
             /// остановить/продолжить воспроизведение
-            // if (!isLoading)
-            Center(
+            if (!isLoading) Center(
               child: ValueListenableBuilder(
                 valueListenable: widget.playerController,
                 builder: (context, VideoPlayerValue video, child) {
@@ -191,19 +195,20 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
 
             AnimatedPositioned(
               duration: KrsTheme.animationDuration,
-              bottom: widget.isVisible ? 16.0 : 0.0,
-              left: 16.0,
-              right: 16.0,
+              bottom: widget.isVisible ? 32.0 : 0.0,
+              left: 32.0,
+              right: 32.0,
               child: Column(
                 children: [
-                  VideoPlayerProgressBar(
-                    playerController: widget.playerController,
-                    onSeek: (duration) {
-                      widget.onSeek.call(duration);
-                    },
+                  if (widget.playerController.value.duration.inSeconds > 0) Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: VideoPlayerProgressBar(
+                      playerController: widget.playerController,
+                      onSeek: (duration) {
+                        widget.onSeek.call(duration);
+                      },
+                    ),
                   ),
-
-                  const SizedBox(height: 12.0),
 
                   Row(
                     children: [
@@ -212,12 +217,11 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                       ),
 
                       /// кнопка предыдущего видео
-                      TextButton(
-
+                      if (widget.onSkipPrevious != null) OutlinedButton(
                         onPressed: () {
                           /// вызываем пользовательский обработчик запроса
                           /// предыдущего видео
-                          widget.onSkipPrevious.call();
+                          widget.onSkipPrevious?.call();
                         },
 
                         child: const Icon(Icons.skip_previous,
@@ -233,28 +237,28 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                         
                       ),
 
-                      const SizedBox(width: 16.0),
-
                       /// кнопка следующего видео
-                      TextButton(
+                      if (widget.onSkipNext != null) Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            /// вызываем пользовательский обработчик запроса
+                            /// следующего видео
+                            widget.onSkipNext?.call();
+                          },
 
-                        onPressed: () {
-                          /// вызываем пользовательский обработчик запроса
-                          /// следующего видео
-                          widget.onSkipNext.call();
-                        },
-
-                        child: const Icon(Icons.skip_next,
-                          size: 24.0,
-                          semanticLabel: 'Следующее видео',
-                          shadows: [
-                            BoxShadow(
-                              blurRadius: 12.0,
-                              color: Colors.black,
-                            ),
-                          ],
+                          child: const Icon(Icons.skip_next,
+                            size: 24.0,
+                            semanticLabel: 'Следующее видео',
+                            shadows: [
+                              BoxShadow(
+                                blurRadius: 12.0,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                          
                         ),
-                        
                       ),
 
                     ],
