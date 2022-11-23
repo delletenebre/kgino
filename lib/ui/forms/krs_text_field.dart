@@ -1,179 +1,179 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'krs_input_decoration.dart';
+// import 'krs_input_decoration.dart';
 
-class KrsTextField extends StatefulWidget {
-  final String name;
-  final bool selectTextOnFocus;
-  final FocusNode? focusNode;
-  final TextEditingController? controller;
+// class KrsTextField extends StatefulWidget {
+//   final String name;
+//   final bool selectTextOnFocus;
+//   final FocusNode? focusNode;
+//   final TextEditingController? controller;
 
-  final String? Function(String? value)? validator;
+//   final String? Function(String? value)? validator;
   
-  final void Function(String value)? onTextChange;
-  final void Function(String value)? onSubmitted;
-  final void Function()? onArrowDown;
-  final void Function()? onArrowUp;
+//   final void Function(String value)? onTextChange;
+//   final void Function(String value)? onSubmitted;
+//   final void Function()? onArrowDown;
+//   final void Function()? onArrowUp;
   
 
-  final String labelText;
-  final String? hintText;
+//   final String labelText;
+//   final String? hintText;
 
-  /// {@macro flutter.widgets.editableText.keyboardType}
-  final TextInputType? keyboardType;
+//   /// {@macro flutter.widgets.editableText.keyboardType}
+//   final TextInputType? keyboardType;
 
-  /// The type of action button to use for the keyboard.
-  ///
-  /// Defaults to [TextInputAction.newline] if [keyboardType] is
-  /// [TextInputType.multiline] and [TextInputAction.done] otherwise.
-  final TextInputAction? textInputAction;
+//   /// The type of action button to use for the keyboard.
+//   ///
+//   /// Defaults to [TextInputAction.newline] if [keyboardType] is
+//   /// [TextInputType.multiline] and [TextInputAction.done] otherwise.
+//   final TextInputAction? textInputAction;
 
-  /// {@macro flutter.widgets.editableText.obscureText}
-  final bool obscureText;
+//   /// {@macro flutter.widgets.editableText.obscureText}
+//   final bool obscureText;
   
-  /// начальное значение поля
-  final String initialValue;
+//   /// начальное значение поля
+//   final String initialValue;
 
-  final List<String>? autocompleteItems;
+//   final List<String>? autocompleteItems;
 
-  final IconData? suffixIcon;
-  final Function()? onSuffixPressed;
+//   final IconData? suffixIcon;
+//   final Function()? onSuffixPressed;
 
 
-  const KrsTextField({
-    Key? key,
-    required this.name,
-    this.labelText = '',
-    this.focusNode,
-    this.controller,
-    this.hintText,
-    this.validator,
-    this.onTextChange,
-    this.onSubmitted,
-    this.onArrowDown,
-    this.onArrowUp,
-    this.selectTextOnFocus = true,
-    this.keyboardType,
-    this.textInputAction,
-    this.obscureText = false,
-    this.initialValue = '',
-    this.autocompleteItems,
-    this.suffixIcon,
-    this.onSuffixPressed,
+//   const KrsTextField({
+//     Key? key,
+//     required this.name,
+//     this.labelText = '',
+//     this.focusNode,
+//     this.controller,
+//     this.hintText,
+//     this.validator,
+//     this.onTextChange,
+//     this.onSubmitted,
+//     this.onArrowDown,
+//     this.onArrowUp,
+//     this.selectTextOnFocus = true,
+//     this.keyboardType,
+//     this.textInputAction,
+//     this.obscureText = false,
+//     this.initialValue = '',
+//     this.autocompleteItems,
+//     this.suffixIcon,
+//     this.onSuffixPressed,
     
-  }) : super(key: key);
+//   }) : super(key: key);
 
-  @override
-  State<KrsTextField> createState() => _KrsTextFieldState();
-}
+//   @override
+//   State<KrsTextField> createState() => _KrsTextFieldState();
+// }
 
-class _KrsTextFieldState extends State<KrsTextField> {
-  late final FocusNode _focusNode;
-  late final TextEditingController _textEditingController;
+// class _KrsTextFieldState extends State<KrsTextField> {
+//   late final FocusNode _focusNode;
+//   late final TextEditingController _textEditingController;
 
-  @override
-  void initState() {
+//   @override
+//   void initState() {
 
-    _focusNode = widget.focusNode ?? FocusNode();
-    _textEditingController = widget.controller ?? TextEditingController();
+//     _focusNode = widget.focusNode ?? FocusNode();
+//     _textEditingController = widget.controller ?? TextEditingController();
 
-    if (widget.initialValue.isNotEmpty) {
-      /// ^ если начальное значение поля не пустое
+//     if (widget.initialValue.isNotEmpty) {
+//       /// ^ если начальное значение поля не пустое
       
-      _textEditingController.text = widget.initialValue;
-    }
+//       _textEditingController.text = widget.initialValue;
+//     }
 
-    if (widget.selectTextOnFocus) {
-      /// ^ если опция выделения текста при получении фокуса включена
-      _focusNode.addListener(() {
-        if (_focusNode.hasFocus) {
-          /// ^ если фокус получен
+//     if (widget.selectTextOnFocus) {
+//       /// ^ если опция выделения текста при получении фокуса включена
+//       _focusNode.addListener(() {
+//         if (_focusNode.hasFocus) {
+//           /// ^ если фокус получен
           
-          final text = _textEditingController.text;
+//           final text = _textEditingController.text;
           
-          if (text.isNotEmpty) {
-            /// ^ если поле не пустое
+//           if (text.isNotEmpty) {
+//             /// ^ если поле не пустое
             
-            /// выделяем текст
-            _textEditingController.selection = TextSelection(
-              baseOffset: 0,
-              extentOffset: text.length,
-            );
-          }
-        }
+//             /// выделяем текст
+//             _textEditingController.selection = TextSelection(
+//               baseOffset: 0,
+//               extentOffset: text.length,
+//             );
+//           }
+//         }
         
-      });
-    }
+//       });
+//     }
 
-    // _textEditingController.addListener(() {
+//     // _textEditingController.addListener(() {
       
-    // });
+//     // });
     
-    super.initState();
-  }
+//     super.initState();
+//   }
 
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _textEditingController.dispose();
+//   @override
+//   void dispose() {
+//     _focusNode.dispose();
+//     _textEditingController.dispose();
 
-    super.dispose();
-  }
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
 
-    return RawKeyboardListener(
-      focusNode: _focusNode,
-      onKey: (event) {
-        if (_focusNode.hasFocus) {
-          if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-            widget.onArrowDown?.call();
-          }
+//     return RawKeyboardListener(
+//       focusNode: _focusNode,
+//       onKey: (event) {
+//         if (_focusNode.hasFocus) {
+//           if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+//             widget.onArrowDown?.call();
+//           }
 
-          if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-            widget.onArrowUp?.call();
-          }
-        }
-      },
-      child: FormBuilderTextField(
-        name: widget.name,
+//           if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+//             widget.onArrowUp?.call();
+//           }
+//         }
+//       },
+//       child: FormBuilderTextField(
+//         name: widget.name,
 
-        controller: _textEditingController,
+//         controller: _textEditingController,
 
-        autofocus: false,
+//         autofocus: false,
 
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: KrsInputDecoration(
-          theme: theme,
-          hintText: widget.hintText,
-          labelText: widget.labelText,
-          suffixIcon: widget.suffixIcon,
-          onSuffixPressed: widget.onSuffixPressed,
-        ),
+//         autovalidateMode: AutovalidateMode.onUserInteraction,
+//         decoration: KrsInputDecoration(
+//           theme: theme,
+//           hintText: widget.hintText,
+//           labelText: widget.labelText,
+//           suffixIcon: widget.suffixIcon,
+//           onSuffixPressed: widget.onSuffixPressed,
+//         ),
 
-        keyboardType: widget.keyboardType,
-        textInputAction: widget.textInputAction,
-        obscureText: widget.obscureText,
+//         keyboardType: widget.keyboardType,
+//         textInputAction: widget.textInputAction,
+//         obscureText: widget.obscureText,
 
-        validator: widget.validator,
+//         validator: widget.validator,
 
-        onChanged: (value) {
-          widget.onTextChange?.call(_textEditingController.text);
-        },
+//         onChanged: (value) {
+//           widget.onTextChange?.call(_textEditingController.text);
+//         },
 
-        /// при нажатии "enter"
-        onSubmitted: (value) {
-          widget.onSubmitted?.call(value ?? '');
-        },
+//         /// при нажатии "enter"
+//         onSubmitted: (value) {
+//           widget.onSubmitted?.call(value ?? '');
+//         },
 
-        style: const TextStyle(
-          height: 1.15,
-        ),
-      ),
-    );
-  }
-}
+//         style: const TextStyle(
+//           height: 1.15,
+//         ),
+//       ),
+//     );
+//   }
+// }

@@ -258,13 +258,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_form_builder:
-    dependency: "direct main"
-    description:
-      name: flutter_form_builder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.7.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -277,13 +270,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_svg:
-    dependency: "direct main"
-    description:
-      name: flutter_svg
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -351,7 +337,7 @@ packages:
     source: hosted
     version: "2.2.0"
   html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: html
       url: "https://pub.dartlang.org"
@@ -378,13 +364,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
-  infinite_scroll_pagination:
-    dependency: "direct main"
-    description:
-      name: infinite_scroll_pagination
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.2.0"
   intl:
     dependency: "direct main"
     description:
@@ -504,20 +483,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.2"
-  path_drawing:
-    dependency: transitive
-    description:
-      name: path_drawing
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
-  path_parsing:
-    dependency: transitive
-    description:
-      name: path_parsing
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   path_provider:
     dependency: transitive
     description:
@@ -581,13 +546,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.11.1"
-  petitparser:
-    dependency: transitive
-    description:
-      name: petitparser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.1.0"
   platform:
     dependency: transitive
     description:
@@ -733,13 +691,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliver_tools:
-    dependency: transitive
-    description:
-      name: sliver_tools
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.8"
   source_gen:
     dependency: transitive
     description:
@@ -761,27 +712,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.0"
-  speech_to_text:
-    dependency: "direct main"
-    description:
-      name: speech_to_text
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.1.0"
-  speech_to_text_macos:
-    dependency: transitive
-    description:
-      name: speech_to_text_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
-  speech_to_text_platform_interface:
-    dependency: transitive
-    description:
-      name: speech_to_text_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   sqflite:
     dependency: transitive
     description:
@@ -971,13 +901,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+2"
-  xml:
-    dependency: transitive
-    description:
-      name: xml
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.1.0"
   yaml:
     dependency: transitive
     description:

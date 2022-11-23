@@ -128,23 +128,7 @@ class _OckgBestsellersCategoryListState extends State<OckgBestsellersCategoryLis
               onScrollEnd: () {
 
               },
-            )
-            
-            // ListView.separated(
-            //   scrollDirection: Axis.horizontal,
-            //   itemCount: widget.category.movies.length,
-            //   itemBuilder: (context, index) {
-            //     final movie = widget.category.movies[index];
-            //     return OckgMovieCard(
-            //       focusNode: _elementsFocusNodes[index],
-            //       movie: movie,
-            //     );
-            //   },
-            //   separatorBuilder: (context, index) {
-            //     return const SizedBox(width: 24.0);
-            //   },
-              
-            // ),
+            ),
           ),
         ],
       ),

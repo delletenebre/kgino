@@ -95,7 +95,7 @@ class OckgMovieDetais extends StatelessWidget {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 4.0),
                     child: Row(
                     children: [
 
@@ -139,12 +139,13 @@ class OckgMovieDetais extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 12.0),
-                
                 /// описание фильма
-                Text(movie.description,
-                  maxLines: expanded ? 10 : 4,
-                  overflow: TextOverflow.ellipsis,
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Text(movie.description,
+                    maxLines: expanded ? 10 : 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
 
               ],
