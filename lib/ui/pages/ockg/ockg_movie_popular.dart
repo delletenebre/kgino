@@ -6,6 +6,7 @@ import '../../../resources/krs_locale.dart';
 import '../../../resources/krs_theme.dart';
 import '../../../utils.dart';
 import '../../movie_rating.dart';
+import 'ockg_movie_card.dart';
 
 class OckgMoviePopular extends StatelessWidget {
   final OckgMovie movie;
@@ -25,13 +26,9 @@ class OckgMoviePopular extends StatelessWidget {
       child: Row(
         children: [
           /// постер фильма
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: CachedNetworkImage(
-              width: 128.0,
-              imageUrl: movie.posterUrl,
-              fit: BoxFit.cover,
-            ),
+          OckgMovieCard(
+            movie: movie,
+            showTitle: false,
           ),
 
           const SizedBox(width: 24.0),
@@ -45,7 +42,7 @@ class OckgMoviePopular extends StatelessWidget {
                   style: theme.textTheme.titleLarge,
                 ),
 
-                const SizedBox(height: 8.0),
+                const SizedBox(height: 4.0),
 
                 Row(
                   children: [
@@ -68,7 +65,7 @@ class OckgMoviePopular extends StatelessWidget {
                 
                 /// рейтинги фильма
                 if (movie.hasImdbRating || movie.hasKinopoiskRating) Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+                  padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
                     children: [
                       /// рейтинг IMDb
@@ -89,22 +86,12 @@ class OckgMoviePopular extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 12.0),
-                
                 /// описание фильма
-                Text(movie.description,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
                 Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: ElevatedButton(
-                    style: KrsTheme.filledTonalButtonStyleOf(context),
-                    onPressed: () {
-
-                    },
-                    child: Text(locale.play),
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(movie.description,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

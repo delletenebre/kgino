@@ -12,6 +12,7 @@ class OckgMovieCard extends StatefulWidget {
   // final double height;
   final Size posterSize;
   final void Function(OckgMovie movie, FocusNode focusNode)? onMovieFocused;
+  final bool showTitle;
 
   const OckgMovieCard({
     super.key,
@@ -21,6 +22,7 @@ class OckgMovieCard extends StatefulWidget {
     this.posterSize = const Size(100.0, 140.0),
     //this.height = 140.0,
     this.onMovieFocused,
+    this.showTitle = true,
   });
 
   @override
@@ -168,12 +170,12 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
                   ),
                 ),
 
-                const SizedBox(height: 4.0),
-                
                 /// название фильма
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: (zoomedPosterSize.width - widget.posterSize.width) / 2,
+                if (widget.showTitle) Padding(
+                  padding: EdgeInsets.only(
+                    top: 4.0,
+                    left: (zoomedPosterSize.width - widget.posterSize.width) / 2,
+                    right: (zoomedPosterSize.width - widget.posterSize.width) / 2,
                   ),
                   child: AnimatedDefaultTextStyle(
                     duration: KrsTheme.animationDuration,
