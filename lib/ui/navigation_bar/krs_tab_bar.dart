@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../pages/search/button_search_field.dart';
+import 'krs_tab_bar_button.dart';
+
 class KrsTabBar extends StatefulWidget implements PreferredSizeWidget {
   const KrsTabBar({
     super.key,
@@ -223,36 +226,29 @@ class _KrsTabBarState extends State<KrsTabBar>
           children: List.generate(widget.tabs.length, (index) {
             final tab = widget.tabs[index] as Tab;
 
-
-            // if (index == 0) {
-            //   // если в текущий выбор - поиск
+            if (index == 0) {
+              // если в текущий выбор - поиск
               
-            //   return SizedBox(
-            //     width: 256,
-            //     height: 40.0,
-            //     child: Focus(
-            //       focusNode: _tabFocusNodes[index],
-            //       skipTraversal: true,
-            //       onFocusChange: (hasFocus) {
-            //         if (_tabBarFocused && hasFocus) {
-            //           _controller?.animateTo(index);
-            //           widget.onTap?.call(index);
-            //         }
-            //       },
-            //       child: TextField(
-            //         decoration: InputDecoration(
-            //           border: OutlineInputBorder(
-            //             borderRadius: BorderRadius.circular(40.0)
-            //           ),
-            //           hintText: 'Enter a search term',
-            //         ),
-            //       ),
-            //     ),
-            //   );
+              return ButtonSearchField(
+                focusNode: _tabFocusNodes[index],
+                selected: _controller?.index == index,
+                active: _tabBarFocused,
+                onFocusChange: (hasFocus) {
+                  if (_tabBarFocused && hasFocus) {
+                    _controller?.animateTo(index);
+                    widget.onTap?.call(index);
+                  }
+                },
+                onPressed: () {
+                  _controller?.animateTo(index);
+                  widget.onTap?.call(index);
+                },
+                labelText: tab.text ?? '', 
+              );
 
-            // }
+            }
 
-            return _TabButton(
+            return KrsTabBarButton(
               focusNode: _tabFocusNodes[index],
               selected: _controller?.index == index,
               active: _tabBarFocused,
@@ -312,102 +308,4 @@ class _KrsTabBarState extends State<KrsTabBar>
   //   // run the animation!
   //   _animationController.forward();
   // }
-}
-
-class _TabButton extends StatelessWidget {
-  final Widget? icon;
-  final FocusNode focusNode;
-  final String labelText;
-  final Function(bool) onFocusChange;
-  final VoidCallback? onPressed;
-  final bool selected;
-  final bool active;
-
-  const _TabButton({
-    super.key,
-    this.icon,
-    required this.focusNode,
-    required this.labelText,
-    required this.onFocusChange,
-    required this.onPressed,
-    required this.selected,
-    required this.active,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final label = Text(labelText);
-
-    final styleOpacity = active ? 1.0 : 0.62;
-    final buttonStyle = ButtonStyle(
-      padding: MaterialStateProperty.all(
-        const EdgeInsets.symmetric(
-          horizontal: 24.0,
-        )
-      ),
-      
-      backgroundColor: MaterialStateProperty.resolveWith((states) {
-        if (selected) {
-          if (active) {
-            return theme.colorScheme.primary;
-          } else {
-            return theme.colorScheme.primary.withOpacity(0.12);
-          }
-        }
-
-        return Colors.transparent;
-      }),
-
-      foregroundColor: MaterialStateProperty.resolveWith((states) {
-        if (active) {
-          if (selected) {
-            return theme.colorScheme.onPrimary;
-          } else {
-            theme.colorScheme.onSecondaryContainer;
-          }
-        } else {
-          theme.colorScheme.onSecondaryContainer.withOpacity(0.12);
-        }
-        
-        return theme.colorScheme.onSecondaryContainer.withOpacity(styleOpacity);
-      }),
-
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
-
-      textStyle: MaterialStateProperty.resolveWith((states) {
-        return const TextStyle(
-          fontSize: 14.0,
-          fontWeight: FontWeight.w500,
-        );
-      }),
-      
-    );
-
-    if (icon != null) {
-      /// ^ если нужно отобразить иконку
-      
-      return TextButton.icon(
-        focusNode: focusNode,
-        onFocusChange: onFocusChange,
-        onPressed: onPressed,
-        style: buttonStyle,
-        icon: icon!,
-        label: label,
-      );
-
-    } else {
-      /// ^ если иконка не нужна
-
-      return TextButton(
-        focusNode: focusNode,
-        onFocusChange: onFocusChange,
-        onPressed: onPressed,
-        style: buttonStyle,
-        child: label,
-      );
-
-    }
-  }
 }

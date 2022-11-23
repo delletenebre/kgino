@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kgino/ui/forms/krs_text_field.dart';
 import 'package:kgino/ui/loading_indicator.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -24,8 +20,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _focusNode = FocusNode();
-  final _firstFocusNode = FocusNode();
 
   final _autoScrollController = AutoScrollController(
     viewportBoundaryGetter: () => const Rect.fromLTRB(32.0, 32.0, 32.0, 32.0),
@@ -33,29 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   );
 
   @override
-  void initState() {
-    // _focusNode.onKey = (node, event) {
-    //   if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-    //     node.previousFocus();
-    //   }
-
-    //   if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-    //     node.nextFocus();
-    //   }
-
-    //   return KeyEventResult.ignored;
-    // };
-
-  _focusNode.addListener(() {
-    print(_focusNode.hasFocus);
-  });
-
-    super.initState();
-  }
-
-  @override
   void dispose() {
-    _firstFocusNode.dispose();
     _autoScrollController.dispose();
     super.dispose();
   }
@@ -64,100 +36,53 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
-    return BlocProvider(
-      create: (context) => OckgSearchController(),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 24.0,
-                  horizontal: 32.0,
-                ),
-                child: KrsTextField(
-                  focusNode: _focusNode,
-                  
-                  name: 'searchQuery',
-                  
-                  //labelText: locale.search,
-                  hintText: 'Введите название фильма или сериала',
-                  selectTextOnFocus: false,
-                  textInputAction: TextInputAction.search,
+    return Column(
+      children: [
+        Expanded(
+          child: BlocBuilder<OckgSearchController, RequestState<List<OckgMovie>>>(
+            builder: (context, state) {
+              if (state.isLoading) {
+                return const LoadingIndicator();
+              }
 
-                  onTextChange: (searchQuery) {
-                    context.read<OckgSearchController>().searchMovies(searchQuery);
-                  },
-
-                  onSubmitted: (searchQuery) {
-                    context.read<OckgSearchController>().searchMovies(searchQuery);
-                    _firstFocusNode.requestFocus();
-                  },
-
-                  onArrowDown: () {
-                    print('arrowDOwn');
-                    _firstFocusNode.requestFocus();
-                  },
-
-                  onArrowUp: () {
-                    _focusNode.previousFocus();
-                  },
-                ),
-              ),
-
-              Focus(
-                focusNode: _firstFocusNode,
-                child: const SizedBox(),
-              ),
-
-              Expanded(
-                child: BlocBuilder<OckgSearchController, RequestState<List<OckgMovie>>>(
-                  builder: (context, state) {
-                    if (state.isLoading) {
-                      return const LoadingIndicator();
-                    }
-
-                    if (state.isSuccess) {
-                      return SingleChildScrollView(
-                        controller: _autoScrollController,
-                        padding: const EdgeInsets.all(32.0),
-                        child: SizedBox(
-                          width: double.maxFinite,
-                          child: Wrap(
-                            clipBehavior: Clip.none,
-                            alignment: WrapAlignment.center,
-                            spacing: 24.0,
-                            runSpacing: 24.0,
-                            children: state.data.mapIndexed((index, movie) {
-                              return AutoScrollTag(
-                                key: ValueKey(index), 
-                                controller: _autoScrollController,
-                                index: index,
-                                child: OckgMovieCard(
-                                  movie: movie,
-                                  onMovieFocused: (movie, focusNode) {
-                                    _autoScrollController.scrollToIndex(index,
-                                      // preferPosition: AutoScrollPosition.begin,
-                                      duration: KrsTheme.fastAnimationDuration,
-                                    );
-                                  },
-                                ),
+              if (state.isSuccess) {
+                return SingleChildScrollView(
+                  controller: _autoScrollController,
+                  padding: const EdgeInsets.all(32.0),
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: Wrap(
+                      clipBehavior: Clip.none,
+                      alignment: WrapAlignment.center,
+                      spacing: 24.0,
+                      runSpacing: 24.0,
+                      children: state.data.mapIndexed((index, movie) {
+                        return AutoScrollTag(
+                          key: ValueKey(index), 
+                          controller: _autoScrollController,
+                          index: index,
+                          child: OckgMovieCard(
+                            movie: movie,
+                            onMovieFocused: (movie, focusNode) {
+                              _autoScrollController.scrollToIndex(index,
+                                // preferPosition: AutoScrollPosition.begin,
+                                duration: KrsTheme.fastAnimationDuration,
                               );
-                            }).toList(),
+                            },
                           ),
-                        ),
-                      );
-                    }
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                );
+              }
 
-                    return const SizedBox();
-                  },
-                ),
-              ),
+              return const SizedBox();
+            },
+          ),
+        ),
 
-            ],
-          );
-        },
-      ),
+      ],
     );
   }
 
