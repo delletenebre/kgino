@@ -80,7 +80,7 @@ class _PlayerPageState extends State<PlayerPage> {
   Future<void> _initializeVideo() async {
     updatePageState(VideoPlayerPageState.loading);
 
-    _playerController = VideoPlayerController.network(widget.videoUrl);
+    _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4');//(widget.videoUrl);
     
     try {
       /// инициализируем плеер
@@ -144,12 +144,16 @@ class _PlayerPageState extends State<PlayerPage> {
                     /// обновляем время показа панели управления плеером
                     updateContolOverlayVisibilityTimer();
                   },
+
                   onSeek: (duration) {
-                    
+                    /// перематываем видео
+                    _playerController.seekTo(duration);
+
+                    /// обновляем время показа панели управления плеером
+                    updateContolOverlayVisibilityTimer();
                   },
                   
                   onShowOverlay: (keyboardKey) {
-                    print('123');
                     /// показываем панель управления плеером
                     showControlOverlay();
                   },

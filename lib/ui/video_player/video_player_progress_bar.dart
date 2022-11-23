@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +41,12 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
       return const ProgressBar(
         progress: Duration.zero,
         total: Duration.zero,
+        timeLabelTextStyle: TextStyle(
+          fontSize: 16.0,
+          fontFeatures: [
+            FontFeature.tabularFigures(),
+          ],
+        ),
       );
 
     } else {
@@ -68,7 +76,7 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
         },
         child: ValueListenableBuilder(
           valueListenable: widget.playerController!,
-          builder: (context, VideoPlayerValue video, child) {
+          builder: (context, video, child) {
 
             return ProgressBar(
               progress: video.position,
@@ -88,7 +96,10 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
               timeLabelLocation: TimeLabelLocation.sides,
 
               timeLabelTextStyle: const TextStyle(
-                fontSize: 16.0
+                fontSize: 16.0,
+                fontFeatures: [
+                  FontFeature.tabularFigures(),
+                ],
               ),
               timeLabelPadding: 10.0,
 
