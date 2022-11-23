@@ -7,7 +7,7 @@ import '../../models/ockg/ockg_movie.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/loading_indicator.dart';
-import '../../ui/pages/empty_item_message.dart';
+import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 
@@ -31,7 +31,7 @@ class OckgMovieDetailsPage extends StatelessWidget {
         child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
           builder: (context, state) {
             if (state.isError || state.isEmpty) {
-              return EmptyItemMessage(
+              return TryAgainMessage(
                 onRetry: () {
                   
                 }

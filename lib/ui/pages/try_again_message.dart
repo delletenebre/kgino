@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../resources/krs_locale.dart';
+import '../../resources/krs_theme.dart';
 
-class EmptyItemMessage extends StatelessWidget {
+class TryAgainMessage extends StatelessWidget {
   final Function() onRetry;
 
-  const EmptyItemMessage({
+  const TryAgainMessage({
     super.key,
     required this.onRetry,
   });
@@ -20,15 +20,22 @@ class EmptyItemMessage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.emoji_people,
-            size: 128.0,
-            color: theme.colorScheme.outline,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 48.0),
+            child: Icon(Icons.live_tv_outlined,
+              size: 128.0,
+              color: theme.colorScheme.outline.withOpacity(0.36),
+            ),
           ),
 
-          const SizedBox(height: 24.0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 24.0),
+            child: Text('При загрузке видео произошла ошибка'),
+          ),
 
-          OutlinedButton(
+          ElevatedButton(
             autofocus: true,
+            style: KrsTheme.filledTonalButtonStyleOf(context),
             onPressed: () {
               onRetry();
             },
