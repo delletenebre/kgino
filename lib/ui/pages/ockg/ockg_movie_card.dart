@@ -128,7 +128,7 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
           },
           
           child: SizedBox(
-            width: zoomedPosterSize.width,
+            width: widget.posterSize.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,34 +136,34 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
                 
                 /// постер фильма
                 SizedBox.fromSize(
-                  size: zoomedPosterSize,
+                  size: widget.posterSize,
                   child: Center(
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 100),
-                      width: (_focusNode.hasFocus && !_holded)
-                          ? zoomedPosterSize.width : widget.posterSize.width,
-                      height: (_focusNode.hasFocus && !_holded)
-                          ? zoomedPosterSize.height : widget.posterSize.height,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          if (_focusNode.hasFocus) BoxShadow(
-                            color: _dominantColor!.withOpacity(0.62),
-                            blurRadius: 20.0,
-                            spreadRadius: 4.0
+                    child: AnimatedScale(
+                      duration: KrsTheme.fastAnimationDuration * 2,
+                      scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
+                      child: AnimatedContainer(
+                        duration: KrsTheme.fastAnimationDuration * 2,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            if (_focusNode.hasFocus) BoxShadow(
+                              color: _dominantColor!.withOpacity(0.62),
+                              blurRadius: 20.0,
+                              spreadRadius: 4.0
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(12.0),
+                          border: _focusNode.hasFocus
+                            ? Border.all(
+                                color: theme.colorScheme.primary.withOpacity(0.72),
+                                width: 3.0,
+                              )
+                            : null
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(9.0),
+                          child: Image.network(widget.movie.coverUrl,
+                            fit: BoxFit.cover,
                           ),
-                        ],
-                        borderRadius: BorderRadius.circular(12.0),
-                        border: _focusNode.hasFocus
-                          ? Border.all(
-                              color: theme.colorScheme.primary.withOpacity(0.72),
-                              width: 3.0,
-                            )
-                          : null
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(9.0),
-                        child: Image.network(widget.movie.coverUrl,
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -172,11 +172,7 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
 
                 /// название фильма
                 if (widget.showTitle) Padding(
-                  padding: EdgeInsets.only(
-                    top: 4.0,
-                    left: (zoomedPosterSize.width - widget.posterSize.width) / 2,
-                    right: (zoomedPosterSize.width - widget.posterSize.width) / 2,
-                  ),
+                  padding: const EdgeInsets.only(top: 12.0),
                   child: AnimatedDefaultTextStyle(
                     duration: KrsTheme.animationDuration,
                     style: TextStyle(
