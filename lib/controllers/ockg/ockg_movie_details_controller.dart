@@ -9,8 +9,10 @@ export '../../models/request_state.dart';
 
 class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
 
+  /// идентификатор фильма
   final int movieId;
 
+  /// провайдер запросов к API
   final _api = GetIt.instance<OckgApiProvider>();
 
   OckgMovieDetailsController({
@@ -35,12 +37,16 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
     final movie = await _api.getMovie(movieId);
 
     if (!isClosed) {
+      /// ^ если контроллер ещё существует
+      
       if (movie == null) {
         /// ^ если данных нет
+        
         emit(const RequestState.empty());
       
       } else {
         /// ^ если запрос выполнен успешно
+        
         emit(RequestState.success(movie.copyWith(showPlayButton: showPlayButton)));
       
       }

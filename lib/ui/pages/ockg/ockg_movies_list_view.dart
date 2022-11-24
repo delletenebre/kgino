@@ -109,7 +109,7 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
           );
         },
         separatorBuilder: (context, index) {
-          return const SizedBox(width: 24.0);
+          return const SizedBox(width: 32.0);
         },
         
       ),

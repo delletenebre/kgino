@@ -82,6 +82,8 @@ class OckgMovieDetais extends StatelessWidget {
                 /// название фильма
                 Text(movie.name,
                   style: theme.textTheme.titleLarge,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
 
                 /// оригинальное название фильма
@@ -91,6 +93,8 @@ class OckgMovieDetais extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: theme.colorScheme.outline,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
 

@@ -10,6 +10,7 @@ export '../../models/request_state.dart';
 
 class OckgSearchController extends Cubit<RequestState<List<OckgMovie>>> {
 
+  /// провайдер запросов к API
   final _api = GetIt.instance<OckgApiProvider>();
 
   OckgSearchController() : super(const RequestState.empty());
@@ -23,25 +24,25 @@ class OckgSearchController extends Cubit<RequestState<List<OckgMovie>>> {
 
       try {
 
-        // запроашиваем фильмы по искомому запросу
+        /// запрашиваем фильмы по искомому запросу
         final movies = await _api.searchMovies(searchQuery);
 
         if (!isClosed) {
-          // ^ если контроллер ещё жив
+          /// ^ если контроллер ещё существует
           
           if (movies.isEmpty) {
-            // ^ если данных нет
+            /// ^ если данных нет
             emit(const RequestState.empty());
           
           } else {
-            // ^ если запрос выполнен успешно
+            /// ^ если запрос выполнен успешно
             
             emit(RequestState.success(movies));
           }
         }
 
       } catch (exception) {
-        debugPrint('OckgCatalogController searchMovies() exception: $exception');
+        debugPrint('OckgSearchController searchMovies() exception: $exception');
       }
     }
   }

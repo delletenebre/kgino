@@ -9,13 +9,19 @@ export '../../models/request_state.dart';
 
 class OckgCatalogController extends Cubit<OckgCatalog> {
 
+  /// провайдер запросов к API
   final _api = GetIt.instance<OckgApiProvider>();
 
+  /// каталог с фильмами и информацией об общем количестве фильмов
   OckgCatalog _currentCatalog = const OckgCatalog();
 
-  static const _pageSize = 20;
+  /// количество элементов на странице
+  static const _pageSize = 15;
+
+  /// текущая страница
   int _currentPage = 0;
 
+  /// идентификатор жанра
   final int genreId;
 
   OckgCatalogController({
@@ -25,23 +31,38 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
   }
 
   Future<void> fetchMovies() async {
-    try {
-      final catalog = await _api.getCatalog(
-        genreId: genreId,
-        offset: _currentCatalog.offset + (_currentPage * _pageSize),
-        pageSize: _pageSize,
-      );
+    if (_currentCatalog.movies.length < _currentCatalog.total
+      || _currentCatalog.movies.isEmpty) {
+      /// ^ если фильмов в текущем каталоге меньше чем должно быть
+      /// или фильмы ещё не загружены
+      try {
 
-      if (catalog.movies.isNotEmpty) {
-        _currentCatalog = catalog.copyWith(
-          movies: [ ..._currentCatalog.movies, ...catalog.movies ],
+        /// запрашиваем данные каталога
+        final catalog = await _api.getCatalog(
+          genreId: genreId,
+          offset: _currentCatalog.offset + (_currentPage * _pageSize),
+          pageSize: _pageSize,
         );
-        _currentPage++;
-        emit(_currentCatalog);
-      }
 
-    } catch (exception) {
-      debugPrint('OckgCatalogController fetchMovies() exception: $exception');
+        if (!isClosed) {
+          /// ^ если контроллер ещё существует
+
+          if (catalog.movies.isNotEmpty) {
+            /// ^ если данные о фильмах получены успешно
+            
+            /// обновляем каталог
+            _currentCatalog = catalog.copyWith(
+              movies: [ ..._currentCatalog.movies, ...catalog.movies ],
+            );
+            _currentPage++;
+            emit(_currentCatalog);
+          }
+          
+        }
+
+      } catch (exception) {
+        debugPrint('OckgCatalogController fetchMovies() exception: $exception');
+      }
     }
   }
 
