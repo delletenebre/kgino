@@ -14,10 +14,14 @@ enum VideoPlayerPageState {
 
 class VideoPlayerView extends StatefulWidget {
   final VideoPlayerItem videoPlayerItem;
+  final Function()? onSkipPrevious;
+  final Function()? onSkipNext;
 
   const VideoPlayerView({
     super.key,
     required this.videoPlayerItem,
+    this.onSkipPrevious,
+    this.onSkipNext,
   });
 
   @override
@@ -159,13 +163,10 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                     showControlOverlay();
                   },
                   
-                  // onSkipNext: () {
-                    
-                  // },
+                  onSkipNext: widget.onSkipNext,
                   
-                  // onSkipPrevious: () {
-                    
-                  // },
+                  onSkipPrevious: widget.onSkipPrevious,
+                  
                 ),
               ),
             ],

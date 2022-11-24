@@ -36,7 +36,12 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
 
   /// обработчик выбора элемента
   void onTap() {
-    context.go('/ockg/movie/${widget.movie.movieId}');
+
+    /// переходим на страницу деталей о фильме
+    context.goNamed('ockgMovieDetails', params: {
+      'id': '${widget.movie.movieId}',
+    });
+    
   }
 
   /// кнопки, которые могут отвечать за выбор элемента

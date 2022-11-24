@@ -11,6 +11,7 @@ class OckgMovieFileCard extends StatefulWidget {
   final Size posterSize;
   final void Function(FocusNode focusNode)? onFocused;
   final bool showTitle;
+  final Function()? onPressed;
 
   const OckgMovieFileCard({
     super.key,
@@ -20,6 +21,7 @@ class OckgMovieFileCard extends StatefulWidget {
     this.posterSize = const Size(200.0, 112.0),
     this.onFocused,
     this.showTitle = true,
+    this.onPressed,
   });
 
   @override
@@ -33,7 +35,7 @@ class _OckgMovieFileCardState extends State<OckgMovieFileCard> {
 
   /// обработчик выбора элемента
   void onTap() {
-    //context.go('/ockg/movie/${widget.movie.movieId}');
+    widget.onPressed?.call();
   }
 
   /// кнопки, которые могут отвечать за выбор элемента

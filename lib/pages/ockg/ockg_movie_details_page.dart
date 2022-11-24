@@ -96,11 +96,16 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                               autofocus: true,
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
-                                context.push('/player',
-                                  extra: VideoPlayerItem(
-                                    videoUrl: movie.files.first.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
-                                    title: movie.name,
-                                  ),
+                                /// переходим на страницу плеера фильма
+                                context.goNamed('ockgMoviePlayer',
+                                  params: {
+                                    'id': '${movie.movieId}',
+                                  },
+                                  queryParams: {
+                                    'startTime': '0',
+                                    'fileIndex': '0',
+                                  },
+                                  extra: movie,
                                 );
                               },
                               child: Text(locale.play)
@@ -112,7 +117,8 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                             child: ElevatedButton(
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
-                                context.goNamed('movieFiles',
+                                /// переходим на страницу выбора файла
+                                context.goNamed('ockgMovieFiles',
                                   params: {
                                     'id': '${movie.movieId}',
                                   },
@@ -128,6 +134,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                             child: ElevatedButton(
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
+                                /// проигрывам трейлер фильма
                                 context.push('/player',
                                   extra: VideoPlayerItem(
                                     videoUrl: movie.trailer!.video,

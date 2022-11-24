@@ -69,6 +69,20 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
                       duration: KrsTheme.fastAnimationDuration,
                     );
                   },
+                  onPressed: () {
+                    /// переходим на страницу плеера фильма
+                    context.goNamed('ockgMoviePlayer',
+                      params: {
+                        'id': '${widget.movie.movieId}',    
+                      },
+                      queryParams: {
+                        'startTime': 0.toString(),
+                        'fileIndex': index.toString(),
+                      },
+                      extra: widget.movie,
+                    );
+                  },
+                  
                 ),
                 
               );
@@ -84,28 +98,28 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
   }
 }
 // OckgMovieCard(
-                //   // поставить ли фокус на первый фильм в списке
-                //   autofocus: (index == 0 && widget.autofocus),
-                //   focusNode: widget.focusNodes?[index],
-                //   // данные о фильме
-                //   movie: movie,
+//   // поставить ли фокус на первый фильм в списке
+//   autofocus: (index == 0 && widget.autofocus),
+//   focusNode: widget.focusNodes?[index],
+//   // данные о фильме
+//   movie: movie,
 
-                //   onMovieFocused: (movie, focusNode) {
-                //     // ^ при смене фокуса на этот фильм
-                    
-                //     /// прокручиваем контент к текущему элементу
-                //     _autoScrollController.scrollToIndex(index,
-                //       preferPosition: AutoScrollPosition.begin,
-                //       duration: const Duration(milliseconds: 50),
-                //     ).then((_) {
-                //       // ^ после окончания прокрутки
-                      
-                //       if (mounted) {
-                //         // ^ если виджет ещё жив
-                        
-                //         // вызываем пользовательский обработчик
-                //         widget.onMovieFocused.call(movie);
-                //       }
-                //     });
-                //   },
-                // ),
+//   onMovieFocused: (movie, focusNode) {
+//     // ^ при смене фокуса на этот фильм
+    
+//     /// прокручиваем контент к текущему элементу
+//     _autoScrollController.scrollToIndex(index,
+//       preferPosition: AutoScrollPosition.begin,
+//       duration: const Duration(milliseconds: 50),
+//     ).then((_) {
+//       // ^ после окончания прокрутки
+      
+//       if (mounted) {
+//         // ^ если виджет ещё жив
+        
+//         // вызываем пользовательский обработчик
+//         widget.onMovieFocused.call(movie);
+//       }
+//     });
+//   },
+// ),

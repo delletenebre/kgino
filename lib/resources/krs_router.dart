@@ -7,6 +7,7 @@ import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
 import '../pages/ockg/ockg_movie_details_page.dart';
 import '../pages/ockg/ockg_movie_files_page.dart';
+import '../pages/ockg/ockg_player_page.dart';
 import '../pages/search_page.dart';
 import '../pages/settings_page.dart';
 import '../pages/player_page.dart';
@@ -28,6 +29,7 @@ class KrsRouter {
         routes: [
           GoRoute(
             path: 'ockg/movie/:id',
+            name: 'ockgMovieDetails',
             builder: (context, state) {
               final movieId = int.tryParse(state.params['id'] ?? '') ?? 0;
               return OckgMovieDetailsPage(movieId);
@@ -35,11 +37,27 @@ class KrsRouter {
             routes: [
               GoRoute(
                 path: 'files',
-                name: 'movieFiles',
+                name: 'ockgMovieFiles',
                 builder: (context, state) {
                   final movie = state.extra as OckgMovie;
                   return OckgMovieFilesPage(
                     movie: movie,
+                  );
+                },
+              ),
+
+              GoRoute(
+                path: 'player',
+                name: 'ockgMoviePlayer',
+                builder: (context, state) {
+                  final movie = state.extra as OckgMovie;
+                  final startTime = int.tryParse(state.queryParams['startTime'] ?? '0');
+                  final fileIndex = int.tryParse(state.queryParams['fileIndex'] ?? '0');
+
+                  return OckgPlayerPage(
+                    movie: movie,
+                    startTime: startTime ?? 0,
+                    fileIndex: fileIndex ?? 0,
                   );
                 },
               ),
