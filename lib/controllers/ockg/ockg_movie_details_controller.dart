@@ -25,9 +25,9 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
 
   Future<void> getMovieById(int movieId, { bool showPlayButton = false }) async {
     if (state.isSuccess && state.data.movieId == movieId) {
-      // ^ если запрашиваемый фильм уже загружен
+      /// ^ если запрашиваемый фильм уже загружен
       
-      // ничего не делать
+      /// ничего не делать
       return;
     }
 

@@ -13,10 +13,10 @@ class VideoPlayerProgressBar extends StatefulWidget {
   final VideoPlayerController? playerController;
   
   const VideoPlayerProgressBar({
-    Key? key,
+    super.key,
     this.onSeek,
     this.playerController,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoPlayerProgressBar> createState() => _VideoPlayerProgressBarState();

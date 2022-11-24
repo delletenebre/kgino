@@ -22,6 +22,7 @@ class OckgPlayerPage extends StatelessWidget {
 
     final currentFile = movie.files[fileIndex];
     final videoUrl = currentFile.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/');
+    
     String subtitle = '';
     if (movie.files.length > 1) {
       subtitle = currentFile.name;

@@ -10,7 +10,7 @@ class KrsScrollView extends StatefulWidget {
   final Function(ScrollMetrics scrollMetrics)? onEndScroll;
 
   const KrsScrollView({
-    Key? key,
+    super.key,
     required this.children,
     this.padding,
     this.physics = const BouncingScrollPhysics(
@@ -20,7 +20,7 @@ class KrsScrollView extends StatefulWidget {
     this.onStartScroll,
     this.onUpdateScroll,
     this.onEndScroll,
-  }) : super(key: key);
+  });
 
   @override
   State<KrsScrollView> createState() => _KrsScrollViewState();

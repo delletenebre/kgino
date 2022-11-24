@@ -90,22 +90,22 @@ class TskgApiProvider {
       final response = await _dio.get('/news');
 
       if (response.statusCode == 200) {
-        // ^ если запрос выполнен успешно
-        // парсим html
+        /// ^ если запрос выполнен успешно
+        /// парсим html
         final document = parse(response.data);
         
-        // получаем элементы списка новых поступлений
+        /// получаем элементы списка новых поступлений
         final elements = document.getElementsByClassName('app-news-block');
 
         for (final element in elements) {
 
-          // парсим дату добавления
-          // <div class="app-news-date"><strong>22.12.2021</strong></div>
+          /// парсим дату добавления
+          /// <div class="app-news-date"><strong>22.12.2021</strong></div>
           final dateText = element
             .getElementsByClassName('app-news-date').first.text;
           final date = DateFormat('dd.MM.yyyy').parse(dateText);
 
-          // парсим элементы новых поступлений
+          /// парсим элементы новых поступлений
           /*
             <div class="app-news-list-item">
                 <div class="clearfix news">
@@ -128,34 +128,34 @@ class TskgApiProvider {
 
               final tagSmall = listItem.getElementsByTagName('small');
 
-              // ссылка на сериал/подборку/серию
+              /// ссылка на сериал/подборку/серию
               final link = tagA.attributes['href'] ?? '';
               //debugPrint('link: $link');
               
-              // название сериала или подборки
+              /// название сериала или подборки
               final title = tagA.text;
               //debugPrint('title: $title');
 
-              // дополнительная информация (например, сезон и номер серии)
+              /// дополнительная информация (например, сезон и номер серии)
               String subtitle = '';
               if (tagSmall.isNotEmpty) {
                 subtitle = tagSmall.first.text;
               }
               //debugPrint('subtitle: $subtitle');
 
-              // жанры
+              /// жанры
               final genres = tagA.attributes['title'] ?? '';
               //debugPrint('genres: $genres');
 
-              // значки (badges)
+              /// значки (badges)
               final badges = listItem.getElementsByClassName('label').map((badge) {
                 
                 if (badge.text.isEmpty) {
-                  // ^ если значок в виде иконки
+                  /// ^ если значок в виде иконки
                   return badge.firstChild?.attributes['title'] ?? '';
 
                 } else {
-                  // ^ если значок подписан
+                  /// ^ если значок подписан
                   
                   return badge.text;
                   
