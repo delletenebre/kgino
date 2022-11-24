@@ -15,7 +15,7 @@ class OckgCatalog with _$OckgCatalog {
   const factory OckgCatalog({
     @IntConverter() @Default(0) int total,
     @IntConverter() @Default(0) int offset,
-    @IntConverter() @Default(0) int pagesize,
+    @IntConverter() @Default(20) int pagesize,
     
     @Default([]) List<OckgMovie> movies,
 

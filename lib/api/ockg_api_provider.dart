@@ -8,6 +8,7 @@ import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
 import '../constants.dart';
 import '../models/ockg/ockg_catalog.dart';
+import '../models/ockg/ockg_comment.dart';
 import '../models/ockg/ockg_movie.dart';
 
 class OckgApiProvider {
@@ -181,18 +182,19 @@ class OckgApiProvider {
 
   }
 
+
   /// список фильмов из каталога
   Future<OckgCatalog> getCatalog({
     int genreId = 0,
     required int offset,
-    int size = 15,
+    int pageSize = 15,
   }) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getCatalog',
       if (genreId > 0) 'genre[0]': genreId,
       'offset[0]': offset,
-      'size[0]': size,
+      'size[0]': pageSize,
     });
 
     try {
@@ -200,6 +202,7 @@ class OckgApiProvider {
       final response = await _dio.post('', data: formData);
 
       final jsonResponse = json.decode(response.data);
+      debugPrint('getCatalog: $jsonResponse');
       final catalog = jsonResponse['json'][0]['response'];
 
       return OckgCatalog.fromJson(catalog);
@@ -217,7 +220,6 @@ class OckgApiProvider {
       return const OckgCatalog();
     }
 
-    
   }
 
   
@@ -251,7 +253,41 @@ class OckgApiProvider {
       return null;
     }
 
+  }
+
+
+  /// комментарии к фильму
+  Future<List<OckgComment>> getComments(int movieId) async {
+
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getComments',
+      'movie_id[0]': movieId,
+    });
+
+    try {
     
+      final response = await _dio.post('', data: formData);
+
+      final jsonResponse = json.decode(response.data);
+      final movies = jsonResponse['json'][0]['response']['comments'];
+
+      return movies.map<OckgComment>((item) {
+        return OckgComment.fromJson(item);
+      }).toList();
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return [];
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return [];
+    }
+
   }
 
 }

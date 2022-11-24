@@ -15,7 +15,7 @@ _$_OckgCatalog _$$_OckgCatalogFromJson(Map<String, dynamic> json) =>
           ? 0
           : const IntConverter().fromJson(json['offset']),
       pagesize: json['pagesize'] == null
-          ? 0
+          ? 20
           : const IntConverter().fromJson(json['pagesize']),
       movies: (json['movies'] as List<dynamic>?)
               ?.map((e) => OckgMovie.fromJson(e as Map<String, dynamic>))

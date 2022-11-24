@@ -14,6 +14,7 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
   OckgCatalog _currentCatalog = const OckgCatalog();
 
   static const _pageSize = 20;
+  int _currentPage = 0;
 
   final int genreId;
 
@@ -27,13 +28,15 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
     try {
       final catalog = await _api.getCatalog(
         genreId: genreId,
-        offset: _currentCatalog.offset + _pageSize,
+        offset: _currentCatalog.offset + (_currentPage * _pageSize),
+        pageSize: _pageSize,
       );
 
       if (catalog.movies.isNotEmpty) {
         _currentCatalog = catalog.copyWith(
           movies: [ ..._currentCatalog.movies, ...catalog.movies ],
         );
+        _currentPage++;
         emit(_currentCatalog);
       }
 

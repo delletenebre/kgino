@@ -145,7 +145,7 @@ class _$_OckgCatalog extends _OckgCatalog {
   const _$_OckgCatalog(
       {@IntConverter() this.total = 0,
       @IntConverter() this.offset = 0,
-      @IntConverter() this.pagesize = 0,
+      @IntConverter() this.pagesize = 20,
       final List<OckgMovie> movies = const []})
       : _movies = movies,
         super._();
