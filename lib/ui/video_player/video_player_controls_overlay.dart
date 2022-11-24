@@ -99,14 +99,7 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
 
         widget.onShowOverlay();
 
-        // if (widget.isVisible) {
-        //   
-        // } else {
-        //   return KeyEventResult.handled;
-        // }
-
         return KeyEventResult.ignored;
-        
       },
 
       child: AnimatedOpacity(
@@ -174,7 +167,7 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
 
             /// ^ если видео загружается
             if (isLoading) const LoadingIndicator(
-              size: 96.0,
+              size: 64.0,
             ),
 
             /// остановить/продолжить воспроизведение

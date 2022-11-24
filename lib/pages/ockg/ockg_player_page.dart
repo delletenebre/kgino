@@ -5,7 +5,7 @@ import '../../models/ockg/ockg_movie.dart';
 import '../../models/video_player_item.dart';
 import '../../ui/video_player/video_player_view.dart';
 
-class OckgPlayerPage extends StatelessWidget {
+class OckgPlayerPage extends StatefulWidget {
   final int startTime;
   final int fileIndex;
   final OckgMovie movie;
@@ -18,52 +18,55 @@ class OckgPlayerPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  State<OckgPlayerPage> createState() => _OckgPlayerPageState();
+}
 
-    final currentFile = movie.files[fileIndex];
+class _OckgPlayerPageState extends State<OckgPlayerPage> {
+  late int _currentFileIndex;
+
+  VideoPlayerItem _getVideoPlayerFile() {
+    final currentFile = widget.movie.files[_currentFileIndex];
     final videoUrl = currentFile.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/');
     
     String subtitle = '';
-    if (movie.files.length > 1) {
+    if (widget.movie.files.length > 1) {
       subtitle = currentFile.name;
     }
 
-    final videoPlayerItem = VideoPlayerItem(
+    return VideoPlayerItem(
       videoUrl: videoUrl,
-      title: movie.name,
+      title: widget.movie.name,
       subtitle: subtitle,
-      startTime: startTime,
-    );
-
-    return VideoPlayerView(
-      videoPlayerItem: videoPlayerItem,
-      onSkipNext: (fileIndex + 1 < movie.files.length) ? () {
-        /// переходим к следующему файлу
-        context.replaceNamed('ockgMoviePlayer',
-          params: {
-            'id': '${movie.movieId}',    
-          },
-          queryParams: {
-            'startTime': 0.toString(),
-            'fileIndex': (fileIndex + 1).toString(),
-          },
-          extra: movie,
-        );
-      } : null,
-      onSkipPrevious: (fileIndex > 0) ? () {
-        /// переходим к предыдущему файлу
-        context.replaceNamed('ockgMoviePlayer',
-          params: {
-            'id': '${movie.movieId}',    
-          },
-          queryParams: {
-            'startTime': 0.toString(),
-            'fileIndex': (fileIndex - 1).toString(),
-          },
-          extra: movie,
-        );
-      } : null,
+      startTime: 0,
     );
   }
 
+  @override
+  void initState() {
+    _currentFileIndex = widget.fileIndex;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return VideoPlayerView(
+      videoPlayerItem: _getVideoPlayerFile(),
+      onSkipNext: (_currentFileIndex + 1 < widget.movie.files.length) ? () async {
+        /// запрашиваем следующий файл
+        
+        _currentFileIndex++;
+
+        return _getVideoPlayerFile();
+        
+      } : null,
+      onSkipPrevious: (_currentFileIndex > 0) ? () async {
+        /// запрашиваем предыдущий файл
+        
+        _currentFileIndex--;
+
+        return _getVideoPlayerFile();
+      } : null,
+    );
+  }
 }

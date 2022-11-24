@@ -51,7 +51,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
         shadows: [
           BoxShadow(
             blurRadius: 12.0,
-            color: theme.scaffoldBackgroundColor,
+            color: theme.colorScheme.surface,
           ),
         ],
       );
@@ -87,7 +87,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
         return KeyEventResult.ignored;
       },
       child: IconButton(
-        focusNode: widget.focusNode,
+        focusNode: _focusNode,
         onPressed: widget.onPressed,
         icon: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),

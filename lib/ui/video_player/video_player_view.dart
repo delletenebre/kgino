@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:kgino/ui/loading_indicator.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../models/video_player_item.dart';
@@ -14,8 +15,8 @@ enum VideoPlayerPageState {
 
 class VideoPlayerView extends StatefulWidget {
   final VideoPlayerItem videoPlayerItem;
-  final Function()? onSkipPrevious;
-  final Function()? onSkipNext;
+  final Future<VideoPlayerItem> Function()? onSkipPrevious;
+  final Future<VideoPlayerItem> Function()? onSkipNext;
 
   const VideoPlayerView({
     super.key,
@@ -33,6 +34,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   VideoPlayerPageState _pageState = VideoPlayerPageState.loading;
 
   late VideoPlayerController _playerController;
+
+  late VideoPlayerItem _videoPlayerItem;
 
   bool _isControlOverlayVisible = true;
   late final RestartableTimer _showControlsOverlayTimer;
@@ -54,6 +57,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   @override
   void initState() {
     super.initState();
+
+    /// инициализируем элемент с даннымы о видео
+    _videoPlayerItem = widget.videoPlayerItem;
 
     /// инициализируем таймер скрытия панели управления плеером
     _showControlsOverlayTimer = RestartableTimer(const Duration(seconds: 5), () {
@@ -80,7 +86,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   Future<void> _initializeVideo() async {
     updatePageState(VideoPlayerPageState.loading);
 
-    _playerController = VideoPlayerController.network(widget.videoPlayerItem.videoUrl);
+    _playerController = VideoPlayerController.network(_videoPlayerItem.videoUrl);
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
     
     try {
@@ -91,7 +97,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       await _playerController.play();
 
       /// перематываем в нужную позицию
-      await _playerController.seekTo(Duration(seconds: widget.videoPlayerItem.startTime));
+      await _playerController.seekTo(Duration(seconds: _videoPlayerItem.startTime));
 
       /// обновляем информацию о просмотре
       //_playerController.addListener(changeVideoPositionListener);
@@ -114,6 +120,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       backgroundColor: Colors.black,
       body: Builder(
         builder: ((context) {
+          if (_pageState == VideoPlayerPageState.loading) {
+            /// ^ если инициализация видео
+            
+            return const LoadingIndicator(
+              size: 64.0,
+            );
+          }
+
           if (_pageState == VideoPlayerPageState.error) {
             /// ^ если произошла ошибка
             
@@ -135,8 +149,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
               SafeArea(
                 child: VideoPlayerControlsOverlay(
-                  titleText: widget.videoPlayerItem.title,
-                  subtitleText: widget.videoPlayerItem.subtitle,
+                  titleText: _videoPlayerItem.title,
+                  subtitleText: _videoPlayerItem.subtitle,
                   isVisible: _isControlOverlayVisible,
                   playerController: _playerController,
                   onPlayPause: () {
@@ -163,9 +177,29 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                     showControlOverlay();
                   },
                   
-                  onSkipNext: widget.onSkipNext,
+                  onSkipNext: widget.onSkipPrevious != null ? () async {
+                    updatePageState(VideoPlayerPageState.loading);
+                    final videoPlayerItem = await widget.onSkipNext?.call();
+                    if (videoPlayerItem != null) {
+                      _videoPlayerItem = videoPlayerItem;
+                      setState(() {
+                        
+                      });
+                      _initializeVideo();
+                    }
+                  } : null,
                   
-                  onSkipPrevious: widget.onSkipPrevious,
+                  onSkipPrevious: widget.onSkipPrevious != null ? () async {
+                    updatePageState(VideoPlayerPageState.loading);
+                    final videoPlayerItem = await widget.onSkipPrevious?.call();
+                    if (videoPlayerItem != null) {
+                      _videoPlayerItem = videoPlayerItem;
+                      setState(() {
+                        
+                      });
+                      _initializeVideo();
+                    }
+                  } : null,
                   
                 ),
               ),
