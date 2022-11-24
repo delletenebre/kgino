@@ -90,6 +90,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                       child: Row(
                         children: [
 
+                          /// кнопка начала просмотра
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: ElevatedButton(
@@ -112,6 +113,8 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                             ),
                           ),
 
+                          /// если файлов несколько, показываем кнопку выбора
+                          /// эпизода
                           if (movie.files.length > 1) Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: ElevatedButton(
@@ -125,10 +128,12 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                   extra: movie,
                                 );
                               },
-                              child: Text('Выбрать файл')
+                              child: Text(locale.selectEpisode),
                             ),
                           ),
 
+                          /// если есть трейлер, показываем кнопку просмотра
+                          /// трейлера
                           if (movie.trailer != null) Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: ElevatedButton(

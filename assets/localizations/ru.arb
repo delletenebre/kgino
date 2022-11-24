@@ -61,6 +61,21 @@
     "type": "text"
   },
 
+  "selectEpisode": "Выбрать эпизод",
+  "@selectEpisode": {
+    "type": "text"
+  },
+
+  "episodesCount": "{count, plural, =0{{count} эпизодов} =1{{count} эпизод} few{{count} эпизода} many{{count} эпизодов} other{{count} эпизодов}",
+  "@episodesCount": {
+    "description": "количество эпизодов",
+    "placeholders": {
+      "count": {
+        
+      }
+    }
+  },
+
 
   "cancel": "Отмена",
   "@cancel": {
