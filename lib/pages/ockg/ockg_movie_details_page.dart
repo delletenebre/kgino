@@ -107,6 +107,22 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                             ),
                           ),
 
+                          if (movie.files.length > 1) Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ElevatedButton(
+                              style: KrsTheme.filledTonalButtonStyleOf(context),
+                              onPressed: () {
+                                context.goNamed('movieFiles',
+                                  params: {
+                                    'id': '${movie.movieId}',
+                                  },
+                                  extra: movie,
+                                );
+                              },
+                              child: Text('Выбрать файл')
+                            ),
+                          ),
+
                           if (movie.trailer != null) Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: ElevatedButton(
@@ -129,28 +145,28 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                     ),
                   ),
 
-                  if (movie.files.length > 1) SizedBox(
-                    height: 300,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: movie.files.length,
-                      itemBuilder: (context, index) {
-                        final file = movie.files[index];
+                  // if (movie.files.length > 1) SizedBox(
+                  //   height: 300,
+                  //   child: ListView.separated(
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemCount: movie.files.length,
+                  //     itemBuilder: (context, index) {
+                  //       final file = movie.files[index];
 
-                        return InkWell(
-                          onTap: () {
-                            print(file);
-                          },
-                          child: Card(
-                            child: Text(file.name),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(width: 24.0,);
-                      },
-                    ),
-                  )
+                  //       return InkWell(
+                  //         onTap: () {
+                  //           print(file);
+                  //         },
+                  //         child: Card(
+                  //           child: Text(file.name),
+                  //         ),
+                  //       );
+                  //     },
+                  //     separatorBuilder: (context, index) {
+                  //       return const SizedBox(width: 24.0,);
+                  //     },
+                  //   ),
+                  // )
 
                 ],
               );

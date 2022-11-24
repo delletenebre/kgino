@@ -81,26 +81,26 @@ class _OckgMoviesListViewState extends State<OckgMoviesListView> {
             controller: _autoScrollController,
             index: index,
             child: OckgMovieCard(
-              // поставить ли фокус на первый фильм в списке
+              /// поставить ли фокус на первый фильм в списке
               autofocus: (index == 0 && widget.autofocus),
               focusNode: widget.focusNodes?[index],
-              // данные о фильме
+              /// данные о фильме
               movie: movie,
 
               onMovieFocused: (movie, focusNode) {
-                // ^ при смене фокуса на этот фильм
+                /// ^ при смене фокуса на этот фильм
                 
                 /// прокручиваем контент к текущему элементу
                 _autoScrollController.scrollToIndex(index,
                   preferPosition: AutoScrollPosition.begin,
                   duration: const Duration(milliseconds: 50),
                 ).then((_) {
-                  // ^ после окончания прокрутки
+                  /// ^ после окончания прокрутки
                   
                   if (mounted) {
-                    // ^ если виджет ещё жив
+                    /// ^ если виджет ещё жив
                     
-                    // вызываем пользовательский обработчик
+                    /// вызываем пользовательский обработчик
                     widget.onMovieFocused.call(movie);
                   }
                 });

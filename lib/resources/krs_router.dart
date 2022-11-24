@@ -1,10 +1,12 @@
 import 'package:go_router/go_router.dart';
 
+import '../models/ockg/ockg_movie.dart';
 import '../models/video_player_item.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
 import '../pages/ockg/ockg_movie_details_page.dart';
+import '../pages/ockg/ockg_movie_files_page.dart';
 import '../pages/search_page.dart';
 import '../pages/settings_page.dart';
 import '../pages/player_page.dart';
@@ -30,6 +32,18 @@ class KrsRouter {
               final movieId = int.tryParse(state.params['id'] ?? '') ?? 0;
               return OckgMovieDetailsPage(movieId);
             },
+            routes: [
+              GoRoute(
+                path: 'files',
+                name: 'movieFiles',
+                builder: (context, state) {
+                  final movie = state.extra as OckgMovie;
+                  return OckgMovieFilesPage(
+                    movie: movie,
+                  );
+                },
+              ),
+            ]
           ),
 
           GoRoute(
