@@ -41,10 +41,16 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
   Widget build(BuildContext context) {
     
 
-    return RawKeyboardListener(
+    return Focus(
       focusNode: _focusNode,
 
-      onKey: (event) {
+      onFocusChange: (hasFocus) {
+        setState(() {
+          
+        });
+      },
+
+      onKey: (node, event) {
 
         /// текущая позиция видео
         final position = widget.playerController.value.position;
@@ -52,7 +58,9 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
         if (event.isKeyPressed(LogicalKeyboardKey.select) || event.isKeyPressed(LogicalKeyboardKey.enter)) {
           /// ^ если нажата кнопка выбора
           
-          widget.onEnter?.call();
+          widget.onEnter.call();
+
+          return KeyEventResult.handled;
 
         } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
           /// ^ если нажата кнопка "влево"
@@ -60,15 +68,22 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
           /// вызываем пользовательский обработчик перемотки видео
           widget.onSeek?.call(Duration(seconds: position.inSeconds - 10));
 
+          return KeyEventResult.handled;
+
         } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
           /// ^ если нажата кнопка "вправо"
           
           /// вызываем пользовательский обработчик перемотки видео
           widget.onSeek?.call(Duration(seconds: position.inSeconds + 10));
+          
+          return KeyEventResult.handled;
 
         }
+
+        return KeyEventResult.ignored;
         
       },
+
       child: ValueListenableBuilder(
         valueListenable: widget.playerController,
         builder: (context, video, child) {
