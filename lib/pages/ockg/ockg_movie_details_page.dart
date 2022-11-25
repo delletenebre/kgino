@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_movie.dart';
-import '../../models/video_player_item.dart';
+import '../../models/playable_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
@@ -141,7 +141,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                               onPressed: () {
                                 /// проигрывам трейлер фильма
                                 context.push('/player',
-                                  extra: VideoPlayerItem(
+                                  extra: PlayableItem(
                                     videoUrl: movie.trailer!.video,
                                     title: movie.name,
                                     subtitle: locale.trailer,

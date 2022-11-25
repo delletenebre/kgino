@@ -6,7 +6,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_movie.dart';
-import '../../models/video_player_item.dart';
+import '../../models/playable_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';

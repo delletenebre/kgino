@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../models/ockg/ockg_movie.dart';
-import '../models/video_player_item.dart';
+import '../models/playable_item.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
@@ -79,7 +79,7 @@ class KrsRouter {
           GoRoute(
             path: 'player',
             builder: (context, state) {
-              final videoPlayerItem = state.extra as VideoPlayerItem;
+              final videoPlayerItem = state.extra as PlayableItem;
               return PlayerPage(
                 videoPlayerItem: videoPlayerItem,
               );

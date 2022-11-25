@@ -10,7 +10,7 @@ import 'video_player_progress_bar.dart';
 class VideoPlayerControlsOverlay extends StatefulWidget {
 
   /// контроллер видеоплеера
-  final VideoPlayerController playerController;
+  final VideoPlayerController? playerController;
 
   /// название эпизода
   final String titleText;
@@ -56,8 +56,10 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
   final _overlayFocusNode = FocusNode();
   final _playButtonFocusNode = FocusNode();
 
-  bool get isLoading => !widget.playerController.value.isInitialized
-      || widget.playerController.value.isBuffering;
+  bool get isLoading {
+    return widget.playerController == null
+      || !widget.playerController!.value.isInitialized;
+  }
 
   @override
   void initState() {
@@ -122,7 +124,15 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                       shadows: [
                         Shadow(
                           color: theme.colorScheme.surface,
-                          blurRadius: 24.0,
+                          blurRadius: 2.0,
+                        ),
+                        Shadow(
+                          color: theme.colorScheme.surface,
+                          blurRadius: 4.0,
+                        ),
+                        Shadow(
+                          color: theme.colorScheme.surface,
+                          blurRadius: 8.0,
                         ),
                         Shadow(
                           color: theme.colorScheme.surface,
@@ -132,6 +142,11 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                           color: theme.colorScheme.surface,
                           blurRadius: 24.0,
                         ),
+                        Shadow(
+                          color: theme.colorScheme.surface,
+                          blurRadius: 24.0,
+                        ),
+                        
                       ],
                     ),
                     textAlign: TextAlign.center,
@@ -144,6 +159,18 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                       style: TextStyle(
                         fontSize: 16.0,
                         shadows: [
+                          Shadow(
+                            color: theme.colorScheme.surface,
+                            blurRadius: 2.0,
+                          ),
+                          Shadow(
+                            color: theme.colorScheme.surface,
+                            blurRadius: 4.0,
+                          ),
+                          Shadow(
+                            color: theme.colorScheme.surface,
+                            blurRadius: 8.0,
+                          ),
                           Shadow(
                             color: theme.colorScheme.surface,
                             blurRadius: 16.0,
@@ -173,7 +200,7 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
             /// остановить/продолжить воспроизведение
             if (!isLoading) Center(
               child: ValueListenableBuilder(
-                valueListenable: widget.playerController,
+                valueListenable: widget.playerController!,
                 builder: (context, VideoPlayerValue video, child) {
                   return PlayPauseButton(
                     focusNode: _playButtonFocusNode,
@@ -186,14 +213,14 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
               ),
             ),
 
-            AnimatedPositioned(
+            if (!isLoading) AnimatedPositioned(
               duration: KrsTheme.animationDuration,
               bottom: widget.isVisible ? 32.0 : 0.0,
               left: 32.0,
               right: 32.0,
               child: Column(
                 children: [
-                  if (widget.playerController.value.duration.inSeconds > 0) Padding(
+                  if (widget.playerController!.value.duration.inSeconds > 0) Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: VideoPlayerProgressBar(
                       playerController: widget.playerController,
