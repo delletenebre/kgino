@@ -118,74 +118,15 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
               child: Column(
                 children: [
                   /// название видео
-                  Text(widget.titleText,
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      shadows: [
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 2.0,
-                        ),
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 4.0,
-                        ),
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 8.0,
-                        ),
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 24.0,
-                        ),
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 24.0,
-                        ),
-                        Shadow(
-                          color: theme.colorScheme.surface,
-                          blurRadius: 24.0,
-                        ),
-                        
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
+                  _TitleText(widget.titleText,
+                    fontSize: 24.0,
                   ),
 
                   /// дополнительная информация о видео
                   if (widget.subtitleText.isNotEmpty) Padding(
                     padding: const EdgeInsets.only(top: 12.0),
-                    child: Text(widget.subtitleText,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        shadows: [
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 2.0,
-                          ),
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 4.0,
-                          ),
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 8.0,
-                          ),
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 16.0,
-                          ),
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 16.0,
-                          ),
-                          Shadow(
-                            color: theme.colorScheme.surface,
-                            blurRadius: 16.0,
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
+                    child: _TitleText(widget.subtitleText,
+                      fontSize: 16.0,
                     ),
                   ),
                 ],
@@ -223,7 +164,10 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                   if (widget.playerController!.value.duration.inSeconds > 0) Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: VideoPlayerProgressBar(
-                      playerController: widget.playerController,
+                      playerController: widget.playerController!,
+                      onEnter: () {
+                        widget.playerController?.play();
+                      },
                       onSeek: (duration) {
                         widget.onSeek.call(duration);
                       },
@@ -291,7 +235,55 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
         ),
       ),
     );
-
   }
+}
+
+class _TitleText extends StatelessWidget {
+  final String text;
+  final double fontSize;
   
+  const _TitleText(this.text, {
+    super.key,
+    required this.fontSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final shadowColor = theme.colorScheme.surface;
+
+    return Text(text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: fontSize,
+        shadows: [
+          Shadow(
+            color: shadowColor,
+            blurRadius: 2.0,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: 4.0,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: 8.0,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: fontSize,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: fontSize,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: fontSize,
+          ),
+          
+        ],
+      ),
+    );
+  }
 }
