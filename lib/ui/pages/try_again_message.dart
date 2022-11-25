@@ -30,7 +30,7 @@ class TryAgainMessage extends StatelessWidget {
 
           Padding(
             padding: const EdgeInsets.only(bottom: 24.0),
-            child: Text('При загрузке видео произошла ошибка'),
+            child: Text(locale.errorLoadingVideo),
           ),
 
           ElevatedButton(
@@ -41,15 +41,6 @@ class TryAgainMessage extends StatelessWidget {
             },
             child: Text(locale.tryAgain),
           ),
-
-          // const SizedBox(height: 12.0),
-
-          // OutlinedButton(
-          //   onPressed: () {
-          //     context.pop();
-          //   },
-          //   child: Text(locale.back),
-          // ),
 
         ],
       ),

@@ -1,5 +1,5 @@
 {
-  "@@locale": "ru",
+  "@@locale": "en",
   "@@last_modified": "2021-08-20T00:00:00.000",
 
   "appTitle": "KGino",
@@ -7,39 +7,39 @@
     "type": "text"
   },
 
-  "search": "Поиск",
+  "search": "Search",
   "@search": {
     "type": "text"
   },
 
-  "tvshows": "Сериалы",
+  "tvshows": "TV Shows",
   "@tvshows": {
     "type": "text"
   },
 
-  "movies": "Фильмы",
+  "movies": "Movies",
   "@movies": {
     "type": "text"
   },
 
-  "settings": "Настройки",
+  "settings": "Settings",
   "@settings": {
     "type": "text"
   },
 
 
-  "kinopoisk": "КиноПоиск",
+  "kinopoisk": "KinoPoisk",
   "@kinopoisk": {
     "type": "text"
   },
 
 
-  "errorLoadingVideo": "При загрузке видео произошла ошибка",
+  "errorLoadingVideo": "An error occurred while loading the video",
   "@errorLoadingVideo": {
     "type": "text"
   },
 
-  "tryAgain": "Попробовать ещё",
+  "tryAgain": "Try again",
   "@tryAgain": {
     "type": "text"
   },
@@ -47,12 +47,12 @@
   
 
 
-  "play": "Смотреть",
+  "play": "Play",
   "@play": {
     "type": "text"
   },
 
-  "trailer": "Трейлер",
+  "trailer": "Trailer",
   "@trailer": {
     "type": "text"
   },
@@ -62,7 +62,7 @@
     "type": "text"
   },
 
-  "episodesCount": "{count, plural, =0{{count} эпизодов} =1{{count} эпизод} few{{count} эпизода} many{{count} эпизодов} other{{count} эпизодов}",
+  "episodesCount": "{count, plural, =0{{count} episodes} =1{{count} episode} many{{count} episodes} other{{count} episodes}",
   "@episodesCount": {
     "description": "количество эпизодов",
     "placeholders": {
@@ -73,17 +73,17 @@
   },
 
 
-  "cancel": "Отмена",
+  "cancel": "Cancel",
   "@cancel": {
     "type": "text"
   },
   
-  "back": "Назад",
+  "back": "Back",
   "@back": {
     "type": "text"
   },
 
-  "close": "Закрыть",
+  "close": "Close",
   "@close": {
     "type": "text"
   }
