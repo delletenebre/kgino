@@ -148,6 +148,8 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
                       scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
                       child: AnimatedContainer(
                         duration: KrsTheme.fastAnimationDuration * 2,
+                        width: widget.posterSize.width,
+                        height: widget.posterSize.height,
                         decoration: BoxDecoration(
                           boxShadow: [
                             if (_focusNode.hasFocus) BoxShadow(
