@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
-import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +13,7 @@ class TskgApiProvider {
 
   /// ts.kg
   final _dio = Dio(BaseOptions(
-    baseUrl: 'https://ts.kg',
+    baseUrl: 'https://www.ts.kg',
     sendTimeout: requestTimeout.inMilliseconds,
     receiveTimeout: requestTimeout.inMilliseconds,
     headers: {
@@ -24,15 +22,15 @@ class TskgApiProvider {
   ));
 
   TskgApiProvider() {
-    _dio.interceptors.add(
-      DioCacheManager(
-        CacheConfig(
-          baseUrl: _dio.options.baseUrl,
-          defaultMaxAge: cacheMaxAge,
-          defaultMaxStale: cacheMaxAge,
-        )
-      ).interceptor
-    );
+    // _dio.interceptors.add(
+    //   DioCacheManager(
+    //     CacheConfig(
+    //       baseUrl: _dio.options.baseUrl,
+    //       defaultMaxAge: cacheMaxAge,
+    //       defaultMaxStale: cacheMaxAge,
+    //     )
+    //   ).interceptor
+    // );
   }
 
   /// формируем полную ссылку на постер сериала по id
@@ -54,47 +52,14 @@ class TskgApiProvider {
     return '';
   }
 
-
-  // /// список бестселлеров по категориям
-  // Future<List<OckgBestsellersCategory>> getBestsellers() async {
-
-  //   final formData = FormData.fromMap({
-  //     'action[0]': 'Video.getBestsellers',
-  //   });
-
-  //   try {
-    
-  //     final response = await _dio.post('', data: formData);
-
-  //     final jsonResponse = json.decode(response.data);
-  //     final bestsellers = jsonResponse['json'][0]['response']['bestsellers'];
-
-  //     return bestsellers.map<OckgBestsellersCategory>((item) {
-  //       return OckgBestsellersCategory.fromJson(item);
-  //     }).toList();
-      
-  //   } on SocketException catch (_) {
-
-  //     debugPrint('no internet connection');
-      
-  //     return [];
-    
-  //   } catch (exception, stacktrace) {
-      
-  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-  //     return [];
-  //   }
-    
-  // }
-
   /// получение списка новостей
   Future<List<TskgShow>> getNews() async {
     
     /// список элементов
     final items = <TskgShow>[];
 
-    try {
+    // try {
+
       /// запрашиваем данные
       final response = await _dio.get('/news');
 
@@ -193,11 +158,11 @@ class TskgApiProvider {
         }
 
       }
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
+    // } catch (exception, stack) {
+    //   /// ^ если прозошла сетевая ошибка
       
-      debugPrint('exception: $exception');
-    }
+    //   debugPrint('exception: $exception');
+    // }
 
     return items;
   }

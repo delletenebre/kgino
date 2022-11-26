@@ -239,7 +239,7 @@ class __$$_TskgShowCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TskgShow implements _TskgShow {
+class _$_TskgShow extends _TskgShow {
   const _$_TskgShow(
       {this.showId = '',
       this.date,
@@ -256,7 +256,8 @@ class _$_TskgShow implements _TskgShow {
       : _badges = badges,
         _genres = genres,
         _countries = countries,
-        _seasons = seasons;
+        _seasons = seasons,
+        super._();
 
   factory _$_TskgShow.fromJson(Map<String, dynamic> json) =>
       _$$_TskgShowFromJson(json);
@@ -375,7 +376,7 @@ class _$_TskgShow implements _TskgShow {
   }
 }
 
-abstract class _TskgShow implements TskgShow {
+abstract class _TskgShow extends TskgShow {
   const factory _TskgShow(
       {final String showId,
       final DateTime? date,
@@ -389,6 +390,7 @@ abstract class _TskgShow implements TskgShow {
       final List<String> countries,
       final String description,
       final List<TskgSeason> seasons}) = _$_TskgShow;
+  const _TskgShow._() : super._();
 
   factory _TskgShow.fromJson(Map<String, dynamic> json) = _$_TskgShow.fromJson;
 

@@ -7,6 +7,8 @@ part 'tskg_show.g.dart';
 
 @freezed
 class TskgShow with _$TskgShow {
+  const TskgShow._();
+
   const factory TskgShow({
     @Default('') String showId,
     
@@ -30,6 +32,8 @@ class TskgShow with _$TskgShow {
 
   factory TskgShow.fromJson(Map<String, Object?> json)
       => _$TskgShowFromJson(json);
+
+  String get posterUrl => 'https://www.ts.kg/posters/$showId.png';
 
   /// извлекаем идентификатор сериала из ссылки
   static String getShowIdFromLink(String link) {

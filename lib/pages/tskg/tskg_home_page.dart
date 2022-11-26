@@ -43,10 +43,7 @@ class TskgHomePage extends StatelessWidget {
           ),
 
           /// список фильмов внизу страницы
-          const SizedBox(
-            height: 252.0,
-            child: TskgHomePageListView(),
-          ),
+          const TskgHomePageListView(),
         ],
       ),
     );

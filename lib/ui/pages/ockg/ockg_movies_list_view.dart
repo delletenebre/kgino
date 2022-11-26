@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kgino/models/ockg/ockg_movie.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+import '../../../models/ockg/ockg_movie.dart';
 import 'ockg_movie_card.dart';
 
 class OckgMoviesListView extends StatefulWidget {
