@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +6,10 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
-import '../models/tskg/tskg_item.dart';
+import '../models/tskg/tskg_episode.dart';
+import '../models/tskg/tskg_season.dart';
+import '../models/tskg/tskg_show.dart';
+import '../utils.dart';
 
 class TskgApiProvider {
 
@@ -43,6 +43,15 @@ class TskgApiProvider {
   /// формируем полную ссылку на сериал по id
   String getShowUrlById(String showId) {
     return '${_dio.options.baseUrl}/show/$showId';
+  }
+
+  static String getTextByClassName(Document document, String className) {
+    final elements = document.getElementsByClassName(className);
+    if (elements.isNotEmpty) {
+      return elements.first.text.trim();
+    }
+
+    return '';
   }
 
 
@@ -80,10 +89,10 @@ class TskgApiProvider {
   // }
 
   /// получение списка новостей
-  Future<List<TskgItem>> getNews() async {
+  Future<List<TskgShow>> getNews() async {
     
     /// список элементов
-    final items = <TskgItem>[];
+    final items = <TskgShow>[];
 
     try {
       /// запрашиваем данные
@@ -144,8 +153,9 @@ class TskgApiProvider {
               //debugPrint('subtitle: $subtitle');
 
               /// жанры
-              final genres = tagA.attributes['title'] ?? '';
-              //debugPrint('genres: $genres');
+              /// data-original-title
+              final genres = (tagA.attributes['title'] ?? '').split(', ');
+              // debugPrint('genres: $genres');
 
               /// значки (badges)
               final badges = listItem.getElementsByClassName('label').map((badge) {
@@ -164,8 +174,8 @@ class TskgApiProvider {
               });
 
               items.add(
-                TskgItem(
-                  showId: TskgItem.getShowIdFromLink(link),
+                TskgShow(
+                  showId: TskgShow.getShowIdFromLink(link),
                   date: date,
                   title: title,
                   subtitle: subtitle,
@@ -190,6 +200,147 @@ class TskgApiProvider {
     }
 
     return items;
+  }
+
+
+  /// получение информации о сериале
+  Future<TskgShow> getShow(String showId) async {
+
+    try {
+      /// запрашиваем данные
+      final response = await _dio.get(getShowUrlById(showId));
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        /// парсим html
+        final document = parse(response.data);
+
+        /// парсим название сериала
+        final title = document.getElementById('h-show-title')?.text ?? '';
+
+        /// парсим название на языке оригинала
+        final originalTitle = getTextByClassName(document, 'app-show-header-title-original');
+
+        /// парсим года выпуска сериала
+        final years = getTextByClassName(document, 'app-show-header-years');
+
+        /// парсим страны, жанры
+        final tags = document.getElementsByClassName('app-show-tags')
+          .first
+          .getElementsByTagName('a');
+        final genres = tags.where((element) {
+          /// получаем атрибут href
+          final href = element.attributes['href'] ?? '';
+
+           /// находим только те элементы, которые указывают жанр сериала
+          return href.startsWith('/category') || href.startsWith('/genre');
+        }).map((element) => element.text).toList();
+        // debugPrint('show genres: $genres');
+
+        /// формируем список стран
+        final countries = tags.where((element) {
+          /// получаем атрибут href
+          final href = element.attributes['href'] ?? '';
+
+          /// находим только те элементы, которые указывают на страну
+          return href.startsWith('/show?country');
+        }).map((element) {
+          /// получаем название страны
+          final countryName = element.attributes['title'] ?? '';
+
+          /// получаем атрибут стиля элемента (изображение как background-image)
+          // String countryImageUrl = element.attributes['style'] ?? '';
+          // if (countryImageUrl.startsWith('background-image: url(')) {
+          //   /// ^ если ссылка на изображение страны не пустая
+            
+          //   /// вырезаем [background-image: url(https://www.ts.kg/img/flags/svg/4x3/ru.svg)]
+          //   countryImageUrl = countryImageUrl
+          //     .substring(22, countryImageUrl.length - 1);
+          // }
+
+          return countryName;
+          // return TskgCountry(
+          //   name: countryName,
+          //   imageUrl: countryImageUrl,
+          // );
+        }).toList();
+
+        /// парсим описание сериала
+        final description = getTextByClassName(document, 'app-show-description');
+
+        /// парсим список сезонов
+        final seasonElements = document.getElementsByClassName('app-show-seasons-section-full');
+        
+        /// формируем сезоны сериала
+        final seasons = seasonElements.map((season) {
+          /// парсим заголовок названия сезона
+          final seasonTitleTable = season.getElementsByClassName('app-show-season-title-table').first;
+          
+          /// получаем название сезона
+          final seasonTitle = seasonTitleTable.getElementsByTagName('a').first.text;
+
+          /// парсим список эпизодов сезона
+          final seasonEpisodesTable = season.getElementsByClassName('app-show-season-collapse').first;
+          final seasonEpisodeRows = seasonEpisodesTable.getElementsByTagName('tr');
+          
+          /// формируем эпизоды сезона
+          final episodes = seasonEpisodeRows.map((episodeRow) {
+            /// парсим качество записи SD|HD
+            final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
+            
+            /// парсим название и id эпизода
+            final episodeTitleElement = episodeRow.getElementsByClassName('text-primary').first;
+            final episodeTitle = episodeTitleElement.text;
+            // final episodeUrl = episodeTitleElement.attributes['href'] ?? '';
+            final episodeIdAttribute = episodeTitleElement.attributes['id'] ?? '-';
+            final episodeId = int.tryParse(episodeIdAttribute.split('-').last) ?? 0;
+            
+            /// парсим продолжительность эпизода
+            final episodeDurationString = episodeTitleElement.nextElementSibling?.text.trim() ?? '';
+            Duration episodeDuration = Duration.zero;
+            if (episodeDurationString.isNotEmpty) {
+              /// ^ если указана продолжительность эпизода
+              
+              episodeDuration = Utils.parseDuration(episodeDurationString.substring(2));
+            }
+            
+            /// парсим описание эпизода (перевод, обычно)
+            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim().replaceAll('⠀', '');
+
+            return TskgEpisode(
+              id: episodeId,
+              showId: showId,
+              title: episodeTitle,
+              description: episodeDescription,
+              quality: episodeQuality,
+              duration: episodeDuration,
+            );
+          }).toList();
+
+          return TskgSeason(
+            title: seasonTitle,
+            episodes: episodes,
+          );
+        }).toList();
+
+        return TskgShow(
+          showId: showId,
+          title: title,
+          originalTitle: originalTitle,
+          description: description,
+          years: years,
+          genres: genres,
+          countries: countries,
+          seasons: seasons,
+        );
+      }
+
+    } catch (exception) {
+      /// ^ если прозошла сетевая ошибка
+      
+    }
+
+    return const TskgShow();
   }
 
 

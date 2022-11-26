@@ -4,11 +4,11 @@ import 'package:get_it/get_it.dart';
 
 import '../../api/tskg_api_provider.dart';
 import '../../models/request_state.dart';
-import '../../models/tskg/tskg_item.dart';
+import '../../models/tskg/tskg_show.dart';
 
 export '../../models/request_state.dart';
 
-class TskgNewsController extends Cubit<RequestState<List<TskgItem>>> {
+class TskgNewsController extends Cubit<RequestState<List<TskgShow>>> {
 
   final _api = GetIt.instance<TskgApiProvider>();
 

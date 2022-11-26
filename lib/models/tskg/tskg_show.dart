@@ -1,27 +1,35 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'tskg_item.freezed.dart';
-part 'tskg_item.g.dart';
+import 'tskg_season.dart';
+
+part 'tskg_show.freezed.dart';
+part 'tskg_show.g.dart';
 
 @freezed
-class TskgItem with _$TskgItem {
-  const factory TskgItem({
-    required String showId,
+class TskgShow with _$TskgShow {
+  const factory TskgShow({
+    @Default('') String showId,
     
-    required DateTime date,
+    DateTime? date,
 
     @Default([]) List<String> badges,
 
     @Default('') String title,
 
     @Default('') String subtitle,
-    @Default('') String genres,
+    @Default([]) List<String> genres,
     @Default('') String link,
 
-  }) = _TskgItem;
+    @Default('') String originalTitle,
+    @Default('') String years,
+    @Default([]) List<String> countries,
+    @Default('') String description,
+    @Default([]) List<TskgSeason> seasons,
 
-  factory TskgItem.fromJson(Map<String, Object?> json)
-      => _$TskgItemFromJson(json);
+  }) = _TskgShow;
+
+  factory TskgShow.fromJson(Map<String, Object?> json)
+      => _$TskgShowFromJson(json);
 
   /// извлекаем идентификатор сериала из ссылки
   static String getShowIdFromLink(String link) {
