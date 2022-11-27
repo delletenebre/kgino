@@ -12,7 +12,12 @@
     "type": "text"
   },
 
-  "tvshows": "TV Shows",
+  "searchHint": "Search for movies, TV shows",
+  "@searchHint": {
+    "type": "text"
+  },
+
+  "tvshows": "TV shows",
   "@tvshows": {
     "type": "text"
   },
@@ -64,6 +69,16 @@
 
   "episodesCount": "{count, plural, =0{{count} episodes} =1{{count} episode} many{{count} episodes} other{{count} episodes}",
   "@episodesCount": {
+    "description": "количество эпизодов",
+    "placeholders": {
+      "count": {
+        
+      }
+    }
+  },
+
+  "seasonsCount": "{count, plural, =0{{count} seasons} =1{{count} season} many{{count} seasons} other{{count} seasons}",
+  "@seasonsCount": {
     "description": "количество эпизодов",
     "placeholders": {
       "count": {

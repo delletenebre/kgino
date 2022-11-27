@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../controllers/ockg/ockg_search_controller.dart';
+import '../../../resources/krs_locale.dart';
 import '../../../resources/krs_theme.dart';
 
 class ButtonSearchField extends StatefulWidget {
@@ -39,6 +40,7 @@ class _ButtonSearchFieldState extends State<ButtonSearchField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
 
     final styleOpacity = widget.active ? 1.0 : 0.62;
     final buttonStyle = ButtonStyle(
@@ -122,7 +124,7 @@ class _ButtonSearchFieldState extends State<ButtonSearchField> {
               alignment: Alignment.centerLeft,
               excludeBottomFocus: false,
               crossFadeState: widget.selected ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              firstChild: const Text('Поиск'),
+              firstChild: Text(locale.search),
               secondChild: Visibility(
                 visible: widget.selected,
                 child: TextField(
@@ -152,7 +154,7 @@ class _ButtonSearchFieldState extends State<ButtonSearchField> {
                     contentPadding: const EdgeInsets.only(top: 8.0),
                     // filled: true,
 
-                    hintText: 'Название фильма, сериала',
+                    hintText: locale.searchHint,
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       color: theme.colorScheme.outline,

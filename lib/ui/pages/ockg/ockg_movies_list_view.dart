@@ -28,8 +28,8 @@ class OckgMoviesListView extends StatefulWidget {
 
 class _OckgMoviesListViewState extends State<OckgMoviesListView> {
   final _autoScrollController = AutoScrollController(
-    viewportBoundaryGetter: () => const Rect.fromLTRB(32.0, 0.0, 32.0, 0.0),
     axis: Axis.horizontal,
+    viewportBoundaryGetter: () => const Rect.fromLTRB(32.0, 0.0, 32.0, 0.0),
   );
 
   bool _needToLoadMore = false;

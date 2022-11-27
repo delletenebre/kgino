@@ -22,8 +22,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
 
   final _autoScrollController = AutoScrollController(
-    viewportBoundaryGetter: () => const Rect.fromLTRB(32.0, 32.0, 32.0, 32.0),
     axis: Axis.vertical,
+    viewportBoundaryGetter: () => const Rect.fromLTRB(32.0, 32.0, 32.0, 32.0),
   );
 
   @override

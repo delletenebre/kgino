@@ -30,8 +30,8 @@ class OckgMovieFilesPage extends StatefulWidget {
 
 class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
   final _autoScrollController = AutoScrollController(
-    viewportBoundaryGetter: () => const Rect.fromLTRB(48.0, 0.0, 48.0, 0.0),
     axis: Axis.horizontal,
+    viewportBoundaryGetter: () => const Rect.fromLTRB(48.0, 0.0, 48.0, 0.0),
   );
 
   @override

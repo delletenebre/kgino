@@ -118,7 +118,6 @@ class TskgApiProvider {
               //debugPrint('subtitle: $subtitle');
 
               /// жанры
-              /// data-original-title
               final genres = (tagA.attributes['title'] ?? '').split(', ');
               // debugPrint('genres: $genres');
 
@@ -187,29 +186,34 @@ class TskgApiProvider {
         final originalTitle = getTextByClassName(document, 'app-show-header-title-original');
 
         /// парсим года выпуска сериала
-        final years = getTextByClassName(document, 'app-show-header-years');
+        /// убираем 'завершён/закрыт' из '2001-2010, завершён/закрыт'
+        final years = getTextByClassName(document, 'app-show-header-years')
+            .split(', ').first;
 
         /// парсим страны, жанры
         final tags = document.getElementsByClassName('app-show-tags')
-          .first
+          .last
           .getElementsByTagName('a');
+        
         final genres = tags.where((element) {
           /// получаем атрибут href
           final href = element.attributes['href'] ?? '';
 
            /// находим только те элементы, которые указывают жанр сериала
-          return href.startsWith('/category') || href.startsWith('/genre');
+          // return href.startsWith('/category') || href.startsWith('/genre');
+          return href.startsWith('/genre');
         }).map((element) => element.text).toList();
         // debugPrint('show genres: $genres');
-
+        
         /// формируем список стран
-        final countries = tags.where((element) {
-          /// получаем атрибут href
-          final href = element.attributes['href'] ?? '';
-
-          /// находим только те элементы, которые указывают на страну
-          return href.startsWith('/show?country');
-        }).map((element) {
+        final countries = document.getElementsByClassName('app-show-tags-flag')
+        // tags.where((element) {
+        //   /// получаем атрибут href
+        //   final href = element.attributes['href'] ?? '';
+        //   /// находим только те элементы, которые указывают на страну
+        //   return href.startsWith('/show?country');
+        // })
+        .map((element) {
           /// получаем название страны
           final countryName = element.attributes['title'] ?? '';
 

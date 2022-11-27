@@ -9,10 +9,10 @@ class TskgShowCard extends StatefulWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final TskgShow show;
-  // final double height;
   final Size posterSize;
-  final void Function(TskgShow show, FocusNode focusNode)? onShowFocused;
+  final void Function(FocusNode focusNode)? onFocused;
   final bool showTitle;
+  final void Function() onTap;
 
   const TskgShowCard({
     super.key,
@@ -20,9 +20,9 @@ class TskgShowCard extends StatefulWidget {
     this.autofocus = false,
     required this.show,
     this.posterSize = const Size(126.0, 102.0),
-    //this.height = 140.0,
-    this.onShowFocused,
+    this.onFocused,
     this.showTitle = true,
+    required this.onTap,
   });
 
   @override
@@ -31,16 +31,15 @@ class TskgShowCard extends StatefulWidget {
 
 class _TskgShowCardState extends State<TskgShowCard> {
   bool _holded = false;
+  Color? _glowColor;
   Color? _dominantColor;
   late final FocusNode _focusNode;
 
   /// обработчик выбора элемента
   void onTap() {
 
-    /// переходим на страницу деталей о фильме
-    context.goNamed('ockgMovieDetails', params: {
-      'id': '${widget.show.showId}',
-    });
+    /// вызывам пользовательский обработчик выбора элемента
+    widget.onTap.call();
     
   }
 
@@ -66,26 +65,27 @@ class _TskgShowCardState extends State<TskgShowCard> {
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        widget.onShowFocused?.call(widget.show, _focusNode);
+        widget.onFocused?.call(_focusNode);
       }
     });
     
     /// получаем цветовую палитру фильма
-    // widget.show.getPaletteGenerator(widget.show).then((palette) {
-    //   if (palette.lightVibrantColor != null) {
-    //     if (mounted) {
-    //       setState(() {
-    //         _dominantColor = palette.lightVibrantColor!.color;
-    //       });
-    //     }
-    //   }
-    // });
+    widget.show.getPaletteGenerator().then((palette) {
+      if (palette.lightVibrantColor != null) {
+        if (mounted) {
+          setState(() {
+            _glowColor = palette.lightVibrantColor!.color;
+            // _dominantColor = palette.dominantColor!.color;
+          });
+        }
+      }
+    });
     
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    //_focusNode.dispose();
 
     super.dispose();
   }
@@ -93,12 +93,11 @@ class _TskgShowCardState extends State<TskgShowCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    /// вычисляем размер постера, на который наведён фокус
-    final zoomedPosterSize = widget.posterSize + const Offset(10.0, 12.0);
   
-    /// получаем основной цвет постера
-    _dominantColor ??= theme.colorScheme.primary;
+    /// получаем цвет свечения
+    _glowColor ??= theme.colorScheme.primary;
+
+    _dominantColor ??= theme.colorScheme.surface;
 
     return GestureDetector(
       onTap: () {
@@ -145,7 +144,7 @@ class _TskgShowCardState extends State<TskgShowCard> {
                   child: Center(
                     child: AnimatedScale(
                       duration: KrsTheme.fastAnimationDuration * 2,
-                      scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
+                      scale: (_focusNode.hasFocus && !_holded) ? 1.15 : 1.0,
                       child: AnimatedContainer(
                         duration: KrsTheme.fastAnimationDuration * 2,
                         width: widget.posterSize.width,
@@ -153,7 +152,7 @@ class _TskgShowCardState extends State<TskgShowCard> {
                         decoration: BoxDecoration(
                           boxShadow: [
                             if (_focusNode.hasFocus) BoxShadow(
-                              color: _dominantColor!.withOpacity(0.62),
+                              color: _glowColor!.withOpacity(0.62),
                               blurRadius: 20.0,
                               spreadRadius: 4.0
                             ),
@@ -161,13 +160,16 @@ class _TskgShowCardState extends State<TskgShowCard> {
                           borderRadius: BorderRadius.circular(12.0),
                           border: _focusNode.hasFocus
                             ? Border.all(
-                                color: theme.colorScheme.primary.withOpacity(0.72),
+                                color: theme.colorScheme.onPrimaryContainer,
                                 width: 3.0,
                               )
                             : null
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(9.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(9.0),
+                            color: theme.scaffoldBackgroundColor,
+                          ),
                           child: Image.network(widget.show.posterUrl,
                             fit: BoxFit.cover,
                           ),

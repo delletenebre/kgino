@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 import 'tskg_season.dart';
 
@@ -34,6 +36,12 @@ class TskgShow with _$TskgShow {
       => _$TskgShowFromJson(json);
 
   String get posterUrl => 'https://www.ts.kg/posters/$showId.png';
+
+  Future<PaletteGenerator> getPaletteGenerator() async {
+    return PaletteGenerator.fromImageProvider(
+      NetworkImage(posterUrl)
+    );
+  }
 
   /// извлекаем идентификатор сериала из ссылки
   static String getShowIdFromLink(String link) {

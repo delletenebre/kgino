@@ -12,6 +12,11 @@
     "type": "text"
   },
 
+  "searchHint": "Название фильма, сериала",
+  "@searchHint": {
+    "type": "text"
+  },
+
   "tvshows": "Сериалы",
   "@tvshows": {
     "type": "text"
@@ -64,6 +69,16 @@
 
   "episodesCount": "{count, plural, =0{{count} эпизодов} =1{{count} эпизод} few{{count} эпизода} many{{count} эпизодов} other{{count} эпизодов}",
   "@episodesCount": {
+    "description": "количество эпизодов",
+    "placeholders": {
+      "count": {
+        
+      }
+    }
+  },
+
+  "seasonsCount": "{count, plural, =0{{count} сезонов} =1{{count} сезон} few{{count} сезона} many{{count} сезонов} other{{count} сезонов}",
+  "@seasonsCount": {
     "description": "количество эпизодов",
     "placeholders": {
       "count": {
