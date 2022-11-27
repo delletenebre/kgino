@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/ockg/ockg_movie.dart';
 import '../models/playable_item.dart';
+import '../models/tskg/tskg_show.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
@@ -11,6 +12,9 @@ import '../pages/ockg/ockg_player_page.dart';
 import '../pages/search_page.dart';
 import '../pages/settings_page.dart';
 import '../pages/player_page.dart';
+import '../pages/tskg/tskg_player_page.dart';
+import '../pages/tskg/tskg_show_details_page.dart';
+import '../pages/tskg/tskg_show_seasons_page.dart';
 
 class KrsRouter {
   static final routes = GoRouter(
@@ -56,6 +60,43 @@ class KrsRouter {
 
                   return OckgPlayerPage(
                     movie: movie,
+                    startTime: startTime ?? 0,
+                    fileIndex: fileIndex ?? 0,
+                  );
+                },
+              ),
+            ]
+          ),
+
+          GoRoute(
+            path: 'tskg/show/:id',
+            name: 'tskgShowDetails',
+            builder: (context, state) {
+              final showId = state.params['id'] ?? '';
+              return TskgShowDetailsPage(showId);
+            },
+            routes: [
+              GoRoute(
+                path: 'seasons',
+                name: 'tskgShowSeasons',
+                builder: (context, state) {
+                  final show = state.extra as TskgShow;
+                  return TskgShowSeasonsPage(
+                    show: show,
+                  );
+                },
+              ),
+
+              GoRoute(
+                path: 'player',
+                name: 'tskgShowPlayer',
+                builder: (context, state) {
+                  final show = state.extra as TskgShow;
+                  final startTime = int.tryParse(state.queryParams['startTime'] ?? '0');
+                  final fileIndex = int.tryParse(state.queryParams['fileIndex'] ?? '0');
+
+                  return TskgPlayerPage(
+                    show: show,
                     startTime: startTime ?? 0,
                     fileIndex: fileIndex ?? 0,
                   );

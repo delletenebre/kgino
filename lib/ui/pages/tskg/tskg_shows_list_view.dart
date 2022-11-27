@@ -147,9 +147,9 @@ class _TskgShowsListViewState extends State<TskgShowsListView> {
                         /// при выборе элемента
                         onTap: () {
                           /// переходим на страницу деталей о фильме
-                          // context.goNamed('tskgShowDetails', params: {
-                          //   'id': show.showId,
-                          // });
+                          context.goNamed('tskgShowDetails', params: {
+                            'id': show.showId,
+                          });
 
                         },
 
