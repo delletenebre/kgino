@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../resources/krs_theme.dart';
-
 class KrsTabBarButton extends StatelessWidget {
   final Widget? icon;
   final FocusNode focusNode;

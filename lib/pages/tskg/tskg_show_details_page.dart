@@ -116,15 +116,14 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                             ),
                           ),
 
-                          /// если файлов несколько, показываем кнопку выбора
-                          /// эпизода
+                          /// кнопка выбора эпизода
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: ElevatedButton.icon(
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
-                                /// переходим на страницу выбора файла
-                                context.goNamed('tskgShowFiles',
+                                /// переходим на страницу выбора эпизода
+                                context.goNamed('tskgShowSeasons',
                                   params: {
                                     'id': show.showId,
                                   },
@@ -136,51 +135,31 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                             ),
                           ),
 
-                          /// если файлов несколько, показываем кнопку выбора
-                          /// эпизода
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// добавляем в избранное
-                                
-                              },
-                              icon: const Icon(Icons.bookmark_add_outlined),
-                              label: Text(locale.addToFavorites),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// убираем из избранного
-                                
-                              },
-                              icon: const Icon(Icons.bookmark_remove_outlined),
-                              label: Text(locale.removeFromFavorites),
-                            ),
-                          ),
-
-                          // /// если есть трейлер, показываем кнопку просмотра
-                          // /// трейлера
-                          // if (show.trailer != null) Padding(
+                          /// кнопка добавления в избранное
+                          // Padding(
                           //   padding: const EdgeInsets.only(right: 8.0),
-                          //   child: ElevatedButton(
+                          //   child: ElevatedButton.icon(
                           //     style: KrsTheme.filledTonalButtonStyleOf(context),
                           //     onPressed: () {
-                          //       /// проигрывам трейлер фильма
-                          //       context.push('/player',
-                          //         extra: PlayableItem(
-                          //           videoUrl: show.trailer!.video,
-                          //           title: show.name,
-                          //           subtitle: locale.trailer,
-                          //         ),
-                          //       );
+                          //       /// добавляем в избранное
+                                
                           //     },
-                          //     child: Text(locale.trailer)
+                          //     icon: const Icon(Icons.bookmark_add_outlined),
+                          //     label: Text(locale.addToFavorites),
+                          //   ),
+                          // ),
+
+                          /// кнопка удаления из избранного
+                          // Padding(
+                          //   padding: const EdgeInsets.only(right: 8.0),
+                          //   child: ElevatedButton.icon(
+                          //     style: KrsTheme.filledTonalButtonStyleOf(context),
+                          //     onPressed: () {
+                          //       /// убираем из избранного
+                                
+                          //     },
+                          //     icon: const Icon(Icons.bookmark_remove_outlined),
+                          //     label: Text(locale.removeFromFavorites),
                           //   ),
                           // ),
 

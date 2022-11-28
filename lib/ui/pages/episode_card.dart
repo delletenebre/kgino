@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../resources/krs_theme.dart';
+import '../../resources/krs_theme.dart';
 
-class OckgMovieFileCard extends StatefulWidget {
+class EpisodeCard extends StatefulWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final String titleText;
@@ -12,8 +11,10 @@ class OckgMovieFileCard extends StatefulWidget {
   final void Function(FocusNode focusNode)? onFocused;
   final bool showTitle;
   final Function()? onPressed;
+  final KeyEventResult Function()? onArrowLeft;
+  final KeyEventResult Function()? onArrowRight;
 
-  const OckgMovieFileCard({
+  const EpisodeCard({
     super.key,
     this.focusNode,
     this.autofocus = false,
@@ -22,13 +23,15 @@ class OckgMovieFileCard extends StatefulWidget {
     this.onFocused,
     this.showTitle = true,
     this.onPressed,
+    this.onArrowLeft,
+    this.onArrowRight,
   });
 
   @override
-  State<OckgMovieFileCard> createState() => _OckgMovieFileCardState();
+  State<EpisodeCard> createState() => _EpisodeCardState();
 }
 
-class _OckgMovieFileCardState extends State<OckgMovieFileCard> {
+class _EpisodeCardState extends State<EpisodeCard> {
   bool _holded = false;
   Color? _dominantColor;
   late final FocusNode _focusNode;
@@ -79,7 +82,9 @@ class _OckgMovieFileCardState extends State<OckgMovieFileCard> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
 
     super.dispose();
   }
@@ -113,7 +118,7 @@ class _OckgMovieFileCardState extends State<OckgMovieFileCard> {
             });
           },
 
-          onKeyEvent: (node, event) {
+          onKey: (node, event) {
             if (_selectKeysMap.contains(event.logicalKey)) {
               /// ^ если была нажата клавиша выбора элемента
               _updateHoldedState(event is KeyDownEvent);
@@ -123,6 +128,15 @@ class _OckgMovieFileCardState extends State<OckgMovieFileCard> {
             } else {
               _updateHoldedState(false);
             }
+
+            if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+              return widget.onArrowLeft?.call() ?? KeyEventResult.ignored;
+            }
+
+            if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+              return widget.onArrowRight?.call() ?? KeyEventResult.ignored;
+            }
+
             return KeyEventResult.ignored;
           },
           

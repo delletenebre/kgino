@@ -11,7 +11,7 @@ import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
-import '../../ui/pages/ockg/ockg_movie_file_card.dart';
+import '../../ui/pages/episode_card.dart';
 import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 
@@ -58,7 +58,7 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
                 key: ValueKey(index), 
                 controller: _autoScrollController,
                 index: index,
-                child: OckgMovieFileCard(
+                child: EpisodeCard(
                   titleText: file.name,
                   onFocused: (node) {
                     /// ^ при смене фокуса на этот фильм
