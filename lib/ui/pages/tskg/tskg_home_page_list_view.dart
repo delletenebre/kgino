@@ -104,54 +104,6 @@ class _TskgHomePageListViewState extends State<TskgHomePageListView> {
                 );
               },
             );
-
-            
-
-            // return ListView.separated(
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: 32.0,
-            //   ),
-            //   itemCount: state.data.length,
-            //   itemBuilder: (context, index) {
-            //     final news = state.data[index];
-
-            //     // return OckgBestsellersCategoryList(
-            //     //   category: bestsellersCategory,
-            //     //   onMovieFocused: (movie) {
-            //     //     final controller = context.read<OckgMovieDetailsController>();
-            //     //     controller.getMovieById(movie.movieId);
-            //     //   },
-            //     //   onTitleFocused: () {
-            //     //     if (index == 0) {
-            //     //       /// ^ когда в фокусе первый заголовок списка бестселлеров
-                      
-            //     //       /// показываем популярный фильм
-            //     //       context.read<OckgMovieDetailsController>().showPopularMovies();
-            //     //     }
-                    
-            //     //   },
-            //     // );
-
-            //     return SizedBox.fromSize(
-            //       size: const Size.fromHeight(140.0 + 12.0 + 4.0 + 28.0 + 20.0),
-            //       child: TskgShowsListView(
-            //         padding: null,
-            //         // focusNodes: _elementsFocusNodes,
-            //         shows: state.data,
-            //         onShowFocused: (movie) {
-            //           widget.onShowFocused.call(movie);
-            //         },
-            //         onScrollEnd: () {
-
-            //         },
-            //       ),
-            //     );
-                
-            //   },
-            //   separatorBuilder: (context, index) {
-            //     return const SizedBox(height: 12.0);
-            //   },
-            // );
           }
 
           return const LoadingIndicator();

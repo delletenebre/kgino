@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
-import '../../models/tskg/tskg_season.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
@@ -23,14 +22,12 @@ class TskgShowSeasonsPage extends StatefulWidget {
 }
 
 class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
-  final _seasonsScrollController = AutoScrollController(
-    axis: Axis.horizontal,
-    viewportBoundaryGetter: () => const Rect.fromLTRB(48.0, 0.0, 48.0, 0.0),
+  final _seasonsScrollController = ListObserverController(
+    controller: ScrollController()
   );
 
-  final _episodesScrollController = AutoScrollController(
-    axis: Axis.horizontal,
-    viewportBoundaryGetter: () => const Rect.fromLTRB(48.0, 0.0, 48.0, 0.0),
+  final _episodesScrollController = ListObserverController(
+    controller: ScrollController(),
   );
 
   late final List<FocusNode> _seasonFocusNodes;
@@ -41,11 +38,9 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
   int _selectedSeasonIndex = 0;
   int _selectedEpisodeIndex = 0;
 
-  bool _userRequestFocus = true;
-  bool _userRequestEpisodeFocus = true;
-
   @override
   void initState() {
+    /// все эпизоды в одном списке
     for (final season in widget.show.seasons) {
       _episodes.addAll(season.episodes);
     }
@@ -68,8 +63,8 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
 
   @override
   void dispose() {
-    _seasonsScrollController.dispose();
-    _episodesScrollController.dispose();
+    // _seasonsScrollController.dispatchOnceObserve();
+    // _episodesScrollController.dispatchOnceObserve();
 
     for (final focusNode in _episodeFocusNodes) {
       focusNode.dispose();
@@ -98,35 +93,23 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
             height: 40.0 + 48.0 * 2,
             child: KrsListView(
               padding: const EdgeInsets.all(48.0),
-              autoScrollController: _seasonsScrollController,
+              controller: _seasonsScrollController,
               spacing: 8.0,
-              onScrollEnd: () {
+              onLoadNextPage: () {
                 
-              },
-              onItemFocusedFirstTime: (index) {
-                print('season onItemFocusedFirstTime index: $index');
-                print('season onItemFocusedFirstTime _selectedSeasonIndex: $_selectedSeasonIndex');
-                if (index != _selectedSeasonIndex) {
-                  _userRequestFocus = false;
-                  _seasonFocusNodes[_selectedSeasonIndex].requestFocus();
-                }
-                //_checkEpisodeBySeasonIndex(index);
               },
               onItemFocused: (index) {
-                print('season onItemFocused index: $index');
-                if (_userRequestFocus) {
-                  _checkEpisodeBySeasonIndex(index);
-                } else {
-                  _userRequestFocus = true;
-                }
-                
+                _checkEpisodeBySeasonIndex(index);
               },
+              requestItemIndex: () => _selectedSeasonIndex,
               itemFocusNodes: _seasonFocusNodes,
               itemCount: widget.show.seasons.length,
               itemBuilder: (context, index) {
                 return IconButton(
                   focusNode: _seasonFocusNodes[index],
-                  style: KrsTheme.filledTonalButtonStyleOf(context),
+                  style: _selectedSeasonIndex == index
+                      ? KrsTheme.filledButtonStyleOf(context)
+                      : KrsTheme.filledTonalButtonStyleOf(context),
                   onPressed: () {
                     /// переходим на страницу плеера фильма
                     // context.goNamed('tskgShowPlayer',
@@ -153,32 +136,18 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
             child: SizedBox.fromSize(
               size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
               child: KrsListView(
-                autoScrollController: _episodesScrollController,
+                controller: _episodesScrollController,
                 //scrollToLastPosition: false,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
                 titleText: '${currentSeason.title}, ${locale.episodesCount(currentSeason.episodes.length)}',
-                onScrollEnd: () {
+                onLoadNextPage: () {
                   
                 },
-                onItemFocusedFirstTime: (index) {
-                  print('episode onItemFocusedFirstTime index: $index');
-                  print('episode onItemFocusedFirstTime _selectedEpisodeIndex: $_selectedEpisodeIndex');
-                  if (index != _selectedEpisodeIndex) {
-                    _userRequestEpisodeFocus = false;
-                    _episodeFocusNodes[_selectedEpisodeIndex].requestFocus();
-                  }
-                  //_checkEpisodeBySeasonIndex(index);
-                },
                 onItemFocused: (index) {
-                  print('episode onItemFocused index: $index');
-                  if (_userRequestEpisodeFocus) {
-                    /// проверяем и обновляем текущий сезон по выборанному эпизоду
-                    _checkSeasonByEpisodeIndex(index);
-                  } else {
-                    _userRequestEpisodeFocus = true;
-                  }
+                  _checkSeasonByEpisodeIndex(index);
                 },
+                requestItemIndex: () => _selectedEpisodeIndex,
                 itemFocusNodes: _episodeFocusNodes,
                 itemCount: _episodeCount,
                 itemBuilder: (context, index) {
@@ -224,21 +193,27 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
       final index = episodeIndex - episodesOffset;
       
       if (episodesCount > index) {
-        
-        _seasonsScrollController.scrollToIndex(_selectedSeasonIndex,
-          preferPosition: AutoScrollPosition.begin,
-          duration: KrsTheme.fastAnimationDuration,
-        );
 
+        /// обновляем индекс сезона
         setState(() {
           _selectedSeasonIndex = i;
         });
+
+        /// прокручиваем список сезонов к выбранному сезону
+        _seasonsScrollController.animateTo(
+          index: _selectedSeasonIndex,
+          isFixedHeight: true,
+          offset: (offset) => 48.0,
+          duration: const Duration(milliseconds: 50),
+          curve: Curves.easeIn,
+        );
         
         break;
       }
       episodesOffset += episodesCount;
     }
 
+    /// обновляем индекс эпизода
     setState(() {
       _selectedEpisodeIndex = episodeIndex;
     });
@@ -246,7 +221,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
   }
 
   void _checkEpisodeBySeasonIndex(int seasonIndex) {
-    int episodesOffset = 0;
+    int minIndex = 0;
 
     for (int i = 0; i < seasonIndex; i++) {
       /// текущий сезон
@@ -255,21 +230,41 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
       /// количество эпизодов в текущем сезоне
       final episodesCount = season.episodes.length;
 
-      /// относительный индекс эпизода в нужном сезоне
-      episodesOffset += episodesCount;
+      /// минимальный индекс эпизода в нужном сезоне
+      minIndex += episodesCount;
     }
 
-    //_episodeFocusNodes[episodesOffset].requestFocus();
+    /// максимальный индекс эпизода в нужном сезоне
+    int maxIndex = minIndex + widget.show.seasons[seasonIndex].episodes.length;
 
-    _episodesScrollController.scrollToIndex(episodesOffset,
-      preferPosition: AutoScrollPosition.begin,
-      duration: KrsTheme.fastAnimationDuration,
-    );
+    if (_selectedEpisodeIndex < minIndex
+        || _selectedEpisodeIndex >= maxIndex) {
+      /// ^ если текущий выбранный эпизод не в выбранном сезоне
 
-    setState(() {
-      _selectedEpisodeIndex = episodesOffset;
-      _selectedSeasonIndex = seasonIndex;
-    });
+      /// прокручиваем список к первому эпизоду выбранного сезона
+      _episodesScrollController.animateTo(
+        index: minIndex,
+        isFixedHeight: true,
+        offset: (offset) => 48.0,
+        duration: const Duration(milliseconds: 50),
+        curve: Curves.easeIn,
+      );
+
+      /// обновляем индексы эпизода и сезона
+      setState(() {
+        _selectedEpisodeIndex = minIndex;
+        _selectedSeasonIndex = seasonIndex;
+      });
+
+    } else {
+      /// ^ если текущий выбранный эпизод из выбранного сезона
+
+      /// обновляем индекс сезона
+      setState(() {
+        _selectedSeasonIndex = seasonIndex;
+      });
+
+    }
     
   }
 }

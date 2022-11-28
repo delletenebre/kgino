@@ -34,12 +34,15 @@ dependencies:
   go_router: ^5.1.1
   html: ^0.15.1
   # infinite_scroll_pagination: ^3.2.0
+  indexed_list_view: ^2.0.2
   intl: ^0.17.0
   jiffy: ^5.0.0
   json_annotation: ^4.7.0
   palette_generator: ^0.3.3+2
   scroll_to_index: ^3.0.1
+  scrollview_observer: ^1.7.0
   shared_preferences: ^2.0.15
+  subtitle_wrapper_package: ^2.1.0
   # speech_to_text: ^6.1.0
   video_player: ^2.4.7
   wakelock: ^0.6.2
