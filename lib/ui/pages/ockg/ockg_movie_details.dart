@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
+import '../../krs_chip.dart';
 import '../../movie_rating.dart';
 
 class OckgMovieDetais extends StatelessWidget {
@@ -24,6 +25,11 @@ class OckgMovieDetais extends StatelessWidget {
 
     /// определяем ширину постера на фоне
     final width = (size.width < 420.0) ? size.width + (size.width * 0.1) : 420.0;
+
+    final audioSixChannels = movie.files.where((file) {
+      final audios = file.metainfo.audio;
+      return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
+    }).isNotEmpty;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -128,7 +134,7 @@ class OckgMovieDetais extends StatelessWidget {
                 ),
                 
                 /// рейтинги фильма
-                if (movie.hasImdbRating || movie.hasKinopoiskRating) Padding(
+                Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
                     children: [
@@ -142,10 +148,46 @@ class OckgMovieDetais extends StatelessWidget {
                       ),
 
                       /// рейтинг КиноПоиск
-                      if (movie.hasKinopoiskRating) MovieRating(
-                        type: MovieRatingType.kinopoisk,
-                        rating: movie.ratingKinopoiskValue,
+                      if (movie.hasKinopoiskRating) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: MovieRating(
+                          type: MovieRatingType.kinopoisk,
+                          rating: movie.ratingKinopoiskValue,
+                        ),
                       ),
+
+                      /// качество видео
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: KrsChip(
+                      //     child: Text(movie.quality),
+                      //   ),
+                      // ),
+
+                      /// если звук 5.1
+                      if (audioSixChannels) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: KrsChip(
+                          child: Row(
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.only(right: 4.0),
+                                child: Icon(Icons.volume_up),
+                              ),
+                              
+                              Text('5.1')
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      /// ограничения к просмотру
+                      // if (movie.mpaa.isNotEmpty) Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: KrsChip(
+                      //     child: Text(movie.mpaa),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

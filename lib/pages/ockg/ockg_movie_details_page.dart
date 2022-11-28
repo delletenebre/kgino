@@ -93,7 +93,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                           /// кнопка начала просмотра
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               autofocus: true,
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
@@ -109,7 +109,8 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                   extra: movie,
                                 );
                               },
-                              child: Text(locale.play)
+                              icon: const Icon(Icons.play_arrow),
+                              label: Text(locale.play),
                             ),
                           ),
 
@@ -117,7 +118,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                           /// эпизода
                           if (movie.files.length > 1) Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
                                 /// переходим на страницу выбора файла
@@ -128,7 +129,8 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                   extra: movie,
                                 );
                               },
-                              child: Text(locale.selectEpisode),
+                              icon: const Icon(Icons.folder_open),
+                              label: Text(locale.selectEpisode),
                             ),
                           ),
 
@@ -136,7 +138,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                           /// трейлера
                           if (movie.trailer != null) Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
                                 /// проигрывам трейлер фильма
@@ -148,7 +150,8 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                   ),
                                 );
                               },
-                              child: Text(locale.trailer)
+                              icon: const Icon(Icons.videocam),
+                              label: Text(locale.trailer),
                             ),
                           ),
 

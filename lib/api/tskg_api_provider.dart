@@ -227,6 +227,11 @@ class TskgApiProvider {
           //     .substring(22, countryImageUrl.length - 1);
           // }
 
+          if (countryName == 'Российская Федерация') {
+            return 'Россия';
+          }
+        
+
           return countryName;
           // return TskgCountry(
           //   name: countryName,

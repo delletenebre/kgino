@@ -11,6 +11,7 @@ import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
+import '../../ui/krs_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
@@ -94,7 +95,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                           /// кнопка начала просмотра
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               autofocus: true,
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
@@ -110,7 +111,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                   extra: show,
                                 );
                               },
-                              child: Text(locale.play)
+                              icon: const Icon(Icons.play_arrow),
+                              label: Text(locale.play),
                             ),
                           ),
 
@@ -118,7 +120,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                           /// эпизода
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
                                 /// переходим на страницу выбора файла
@@ -129,7 +131,36 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                   extra: show,
                                 );
                               },
-                              child: Text(locale.selectEpisode),
+                              icon: const Icon(Icons.folder_open),
+                              label: Text(locale.selectSeason),
+                            ),
+                          ),
+
+                          /// если файлов несколько, показываем кнопку выбора
+                          /// эпизода
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ElevatedButton.icon(
+                              style: KrsTheme.filledTonalButtonStyleOf(context),
+                              onPressed: () {
+                                /// добавляем в избранное
+                                
+                              },
+                              icon: const Icon(Icons.bookmark_add_outlined),
+                              label: Text(locale.addToFavorites),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ElevatedButton.icon(
+                              style: KrsTheme.filledTonalButtonStyleOf(context),
+                              onPressed: () {
+                                /// убираем из избранного
+                                
+                              },
+                              icon: const Icon(Icons.bookmark_remove_outlined),
+                              label: Text(locale.removeFromFavorites),
                             ),
                           ),
 

@@ -14,6 +14,7 @@ _$_OckgMovie _$$_OckgMovieFromJson(Map<String, dynamic> json) => _$_OckgMovie(
       internationalName: json['international_name'] as String? ?? '',
       year: json['year'] as String? ?? '',
       cover: json['cover'] as String? ?? '',
+      mpaa: json['mpaa'] as String? ?? '',
       covers: (json['covers'] as List<dynamic>?)
               ?.map((e) => OckgMovieCover.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -70,6 +71,7 @@ Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
       'international_name': instance.internationalName,
       'year': instance.year,
       'cover': instance.cover,
+      'mpaa': instance.mpaa,
       'covers': instance.covers,
       'description': const HtmlRemoveConverter().toJson(instance.description),
       'translation': const TranslationConverter().toJson(instance.translation),

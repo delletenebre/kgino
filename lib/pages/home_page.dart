@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             text: locale.movies,
                           ),
                           Tab(
-                            text: locale.tvshows,
+                            text: locale.shows,
                           ),
                           Tab(
                             text: locale.settings,

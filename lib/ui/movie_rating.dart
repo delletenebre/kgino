@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../resources/krs_locale.dart';
+import 'krs_chip.dart';
 
 enum MovieRatingType {
   imdb,
@@ -40,41 +41,24 @@ class MovieRating extends StatelessWidget {
       ratingColor = theme.colorScheme.error;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: 2.0,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.0),
-        // color: const Color(0xffF5C518),
-        border: Border.all(
-          width: 1.0,
-          color: ratingColor ?? theme.colorScheme.outline,
-        ),
-      ),
+    return KrsChip(
       child: Row(
         children: [
-          Text(typeText,
-            style: const TextStyle(
-              fontSize: 10.0,
-            ),
-          ),
+          Text(typeText),
 
           const SizedBox(width: 4.0),
 
           Text(rating.toStringAsFixed(1),
             style: TextStyle(
-              fontSize: 12.0,
               color: ratingColor,
               fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  blurRadius: 3.0,
-                  offset: const Offset(0.0, 1.0),
-                  color: theme.colorScheme.shadow.withOpacity(0.36),
-                )
-              ]
+              // shadows: [
+              //   Shadow(
+              //     blurRadius: 2.0,
+              //     offset: const Offset(0.0, 1.0),
+              //     color: theme.colorScheme.shadow.withOpacity(0.36),
+              //   )
+              // ]
             ),
           ),
         ],

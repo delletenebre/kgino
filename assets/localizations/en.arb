@@ -17,8 +17,8 @@
     "type": "text"
   },
 
-  "tvshows": "TV shows",
-  "@tvshows": {
+  "shows": "Shows",
+  "@shows": {
     "type": "text"
   },
 
@@ -62,8 +62,23 @@
     "type": "text"
   },
 
-  "selectEpisode": "Выбрать эпизод",
+  "selectEpisode": "Select episode",
   "@selectEpisode": {
+    "type": "text"
+  },
+
+  "selectSeason": "Select season",
+  "@selectEpisode": {
+    "type": "text"
+  },
+
+  "addToFavorites": "Add to favorites",
+  "@addToFavorites": {
+    "type": "text"
+  },
+
+  "removeFromFavorites": "Remove from favorites",
+  "@removeFromFavorites": {
     "type": "text"
   },
 

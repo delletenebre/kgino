@@ -24,6 +24,7 @@ class OckgMovie with _$OckgMovie {
     @Default('') String internationalName,
     @Default('') String year,
     @Default('') String cover,
+    @Default('') String mpaa,
     @Default([]) List<OckgMovieCover> covers,
 
     @HtmlRemoveConverter() @Default('') String description,

@@ -26,6 +26,7 @@ mixin _$OckgMovie {
   String get internationalName => throw _privateConstructorUsedError;
   String get year => throw _privateConstructorUsedError;
   String get cover => throw _privateConstructorUsedError;
+  String get mpaa => throw _privateConstructorUsedError;
   List<OckgMovieCover> get covers => throw _privateConstructorUsedError;
   @HtmlRemoveConverter()
   String get description => throw _privateConstructorUsedError;
@@ -65,6 +66,7 @@ abstract class $OckgMovieCopyWith<$Res> {
       String internationalName,
       String year,
       String cover,
+      String mpaa,
       List<OckgMovieCover> covers,
       @HtmlRemoveConverter() String description,
       @TranslationConverter() List<String> translation,
@@ -102,6 +104,7 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
     Object? internationalName = null,
     Object? year = null,
     Object? cover = null,
+    Object? mpaa = null,
     Object? covers = null,
     Object? description = null,
     Object? translation = null,
@@ -138,6 +141,10 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
       cover: null == cover
           ? _value.cover
           : cover // ignore: cast_nullable_to_non_nullable
+              as String,
+      mpaa: null == mpaa
+          ? _value.mpaa
+          : mpaa // ignore: cast_nullable_to_non_nullable
               as String,
       covers: null == covers
           ? _value.covers
@@ -228,6 +235,7 @@ abstract class _$$_OckgMovieCopyWith<$Res> implements $OckgMovieCopyWith<$Res> {
       String internationalName,
       String year,
       String cover,
+      String mpaa,
       List<OckgMovieCover> covers,
       @HtmlRemoveConverter() String description,
       @TranslationConverter() List<String> translation,
@@ -264,6 +272,7 @@ class __$$_OckgMovieCopyWithImpl<$Res>
     Object? internationalName = null,
     Object? year = null,
     Object? cover = null,
+    Object? mpaa = null,
     Object? covers = null,
     Object? description = null,
     Object? translation = null,
@@ -300,6 +309,10 @@ class __$$_OckgMovieCopyWithImpl<$Res>
       cover: null == cover
           ? _value.cover
           : cover // ignore: cast_nullable_to_non_nullable
+              as String,
+      mpaa: null == mpaa
+          ? _value.mpaa
+          : mpaa // ignore: cast_nullable_to_non_nullable
               as String,
       covers: null == covers
           ? _value._covers
@@ -375,6 +388,7 @@ class _$_OckgMovie extends _OckgMovie {
       this.internationalName = '',
       this.year = '',
       this.cover = '',
+      this.mpaa = '',
       final List<OckgMovieCover> covers = const [],
       @HtmlRemoveConverter() this.description = '',
       @TranslationConverter() final List<String> translation = const [],
@@ -418,6 +432,9 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   final String cover;
+  @override
+  @JsonKey()
+  final String mpaa;
   final List<OckgMovieCover> _covers;
   @override
   @JsonKey()
@@ -504,7 +521,7 @@ class _$_OckgMovie extends _OckgMovie {
 
   @override
   String toString() {
-    return 'OckgMovie(movieId: $movieId, name: $name, internationalName: $internationalName, year: $year, cover: $cover, covers: $covers, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue, files: $files, trailer: $trailer, otherMovies: $otherMovies, showPlayButton: $showPlayButton)';
+    return 'OckgMovie(movieId: $movieId, name: $name, internationalName: $internationalName, year: $year, cover: $cover, mpaa: $mpaa, covers: $covers, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue, files: $files, trailer: $trailer, otherMovies: $otherMovies, showPlayButton: $showPlayButton)';
   }
 
   @override
@@ -518,6 +535,7 @@ class _$_OckgMovie extends _OckgMovie {
                 other.internationalName == internationalName) &&
             (identical(other.year, year) || other.year == year) &&
             (identical(other.cover, cover) || other.cover == cover) &&
+            (identical(other.mpaa, mpaa) || other.mpaa == mpaa) &&
             const DeepCollectionEquality().equals(other._covers, _covers) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -554,6 +572,7 @@ class _$_OckgMovie extends _OckgMovie {
         internationalName,
         year,
         cover,
+        mpaa,
         const DeepCollectionEquality().hash(_covers),
         description,
         const DeepCollectionEquality().hash(_translation),
@@ -592,6 +611,7 @@ abstract class _OckgMovie extends OckgMovie {
       final String internationalName,
       final String year,
       final String cover,
+      final String mpaa,
       final List<OckgMovieCover> covers,
       @HtmlRemoveConverter() final String description,
       @TranslationConverter() final List<String> translation,
@@ -623,6 +643,8 @@ abstract class _OckgMovie extends OckgMovie {
   String get year;
   @override
   String get cover;
+  @override
+  String get mpaa;
   @override
   List<OckgMovieCover> get covers;
   @override
