@@ -41,6 +41,9 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
   int _selectedSeasonIndex = 0;
   int _selectedEpisodeIndex = 0;
 
+  bool _userRequestFocus = true;
+  bool _userRequestEpisodeFocus = true;
+
   @override
   void initState() {
     for (final season in widget.show.seasons) {
@@ -101,12 +104,22 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                 
               },
               onItemFocusedFirstTime: (index) {
-                print('season onItemFocusedFirstTime $index');
+                print('season onItemFocusedFirstTime index: $index');
+                print('season onItemFocusedFirstTime _selectedSeasonIndex: $_selectedSeasonIndex');
+                if (index != _selectedSeasonIndex) {
+                  _userRequestFocus = false;
+                  _seasonFocusNodes[_selectedSeasonIndex].requestFocus();
+                }
                 //_checkEpisodeBySeasonIndex(index);
               },
               onItemFocused: (index) {
-                print('season onItemFocused $index');
-                _checkEpisodeBySeasonIndex(index);
+                print('season onItemFocused index: $index');
+                if (_userRequestFocus) {
+                  _checkEpisodeBySeasonIndex(index);
+                } else {
+                  _userRequestFocus = true;
+                }
+                
               },
               itemFocusNodes: _seasonFocusNodes,
               itemCount: widget.show.seasons.length,
@@ -133,17 +146,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
             ),
           ),
 
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //     horizontal: 48.0,
-          //     vertical: 24.0,
-          //   ),
-          //   child: Text('${currentSeason.title}, ${locale.episodesCount(currentSeason.episodes.length)}',
-          //     style: TextStyle(
-          //       fontSize: 16.0,
-          //     ),
-          //   ),
-          // ),
+          const SizedBox(height: 48.0),
 
           /// список эпизодов
           Expanded(
@@ -151,20 +154,30 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
               size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
               child: KrsListView(
                 autoScrollController: _episodesScrollController,
-                scrollToLastPosition: false,
+                //scrollToLastPosition: false,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
                 titleText: '${currentSeason.title}, ${locale.episodesCount(currentSeason.episodes.length)}',
                 onScrollEnd: () {
                   
                 },
+                onItemFocusedFirstTime: (index) {
+                  print('episode onItemFocusedFirstTime index: $index');
+                  print('episode onItemFocusedFirstTime _selectedEpisodeIndex: $_selectedEpisodeIndex');
+                  if (index != _selectedEpisodeIndex) {
+                    _userRequestEpisodeFocus = false;
+                    _episodeFocusNodes[_selectedEpisodeIndex].requestFocus();
+                  }
+                  //_checkEpisodeBySeasonIndex(index);
+                },
                 onItemFocused: (index) {
-                  setState(() {
-                    _selectedEpisodeIndex = index;
-                  });
-
-                  /// проверяем и обновляем текущий сезон по выборанному эпизоду
-                  _checkSeasonByEpisodeIndex(index);
+                  print('episode onItemFocused index: $index');
+                  if (_userRequestEpisodeFocus) {
+                    /// проверяем и обновляем текущий сезон по выборанному эпизоду
+                    _checkSeasonByEpisodeIndex(index);
+                  } else {
+                    _userRequestEpisodeFocus = true;
+                  }
                 },
                 itemFocusNodes: _episodeFocusNodes,
                 itemCount: _episodeCount,
@@ -211,20 +224,25 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
       final index = episodeIndex - episodesOffset;
       
       if (episodesCount > index) {
-        setState(() {
-          _selectedSeasonIndex = i;
-        });
-
+        
         _seasonsScrollController.scrollToIndex(_selectedSeasonIndex,
           preferPosition: AutoScrollPosition.begin,
           duration: KrsTheme.fastAnimationDuration,
         );
+
+        setState(() {
+          _selectedSeasonIndex = i;
+        });
         
-        //_seasonsFocusNodes[_selectedSeasonIndex].requestFocus();
         break;
       }
       episodesOffset += episodesCount;
     }
+
+    setState(() {
+      _selectedEpisodeIndex = episodeIndex;
+    });
+
   }
 
   void _checkEpisodeBySeasonIndex(int seasonIndex) {
@@ -249,34 +267,9 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     );
 
     setState(() {
+      _selectedEpisodeIndex = episodesOffset;
       _selectedSeasonIndex = seasonIndex;
     });
     
   }
 }
-// OckgMovieCard(
-//   // поставить ли фокус на первый фильм в списке
-//   autofocus: (index == 0 && widget.autofocus),
-//   focusNode: widget.focusNodes?[index],
-//   // данные о фильме
-//   movie: movie,
-
-//   onMovieFocused: (movie, focusNode) {
-//     // ^ при смене фокуса на этот фильм
-    
-//     /// прокручиваем контент к текущему элементу
-//     _autoScrollController.scrollToIndex(index,
-//       preferPosition: AutoScrollPosition.begin,
-//       duration: const Duration(milliseconds: 50),
-//     ).then((_) {
-//       // ^ после окончания прокрутки
-      
-//       if (mounted) {
-//         // ^ если виджет ещё жив
-        
-//         // вызываем пользовательский обработчик
-//         widget.onMovieFocused.call(movie);
-//       }
-//     });
-//   },
-// ),
