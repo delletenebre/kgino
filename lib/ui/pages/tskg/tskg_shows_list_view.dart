@@ -49,23 +49,6 @@ class _TskgShowsListViewState extends State<TskgShowsListView> {
       return FocusNode();
     });
 
-    _autoScrollController.addListener(() {
-      if (!_autoScrollController.isAutoScrolling) {
-        double maxScroll = _autoScrollController.position.maxScrollExtent;
-        double currentScroll = _autoScrollController.position.pixels;
-        double delta = 200.0;
-
-        if (maxScroll - currentScroll <= delta) {
-          if (!_needToLoadMore) {
-            _needToLoadMore = true;
-            widget.onScrollEnd();
-          }
-        } else {
-          _needToLoadMore = false;
-        }
-      }
-      
-    });
     super.initState();
   }
   
@@ -94,6 +77,9 @@ class _TskgShowsListViewState extends State<TskgShowsListView> {
       child: SizedBox.fromSize(
         size: const Size.fromHeight(tskgListViewHeight),
         child: KrsListView(
+          onItemFocused: (index) {
+            widget.onShowFocused.call(widget.shows[index]);
+          },
           titleText: widget.titleText,
           itemCount: widget.shows.length,
           itemBuilder: (context, index) {
