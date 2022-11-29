@@ -82,6 +82,13 @@
     "type": "text"
   },
 
+  "addedDate": "{date, select, today{Добавлены сегодня} yesterday{Добавлены вчера} other{Добавлены {date}} }",
+  "@addedDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+
   "episodesCount": "{count, plural, =0{{count} episodes} =1{{count} episode} many{{count} episodes} other{{count} episodes}",
   "@episodesCount": {
     "description": "количество эпизодов",

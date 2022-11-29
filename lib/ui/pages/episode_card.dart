@@ -4,9 +4,8 @@ import 'package:flutter/services.dart';
 import '../../resources/krs_theme.dart';
 
 class EpisodeCard extends StatefulWidget {
-  final FocusNode? focusNode;
-  final bool autofocus;
   final String titleText;
+  final String description;
   final Size posterSize;
   final void Function(FocusNode focusNode)? onFocused;
   final bool showTitle;
@@ -16,9 +15,8 @@ class EpisodeCard extends StatefulWidget {
 
   const EpisodeCard({
     super.key,
-    this.focusNode,
-    this.autofocus = false,
     required this.titleText,
+    this.description = '',
     this.posterSize = const Size(200.0, 112.0),
     this.onFocused,
     this.showTitle = true,
@@ -60,7 +58,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
   void initState() {
     super.initState();
 
-    _focusNode = widget.focusNode ?? FocusNode();
+    _focusNode = FocusNode();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         widget.onFocused?.call(_focusNode);
@@ -82,9 +80,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
 
   @override
   void dispose() {
-    if (widget.focusNode == null) {
-      _focusNode.dispose();
-    }
+    _focusNode.dispose();
 
     super.dispose();
   }
@@ -110,7 +106,6 @@ class _EpisodeCardState extends State<EpisodeCard> {
         },
         child: Focus(
           focusNode: _focusNode,
-          autofocus: widget.autofocus,
           onFocusChange: (hasFocus) {
             /// при получении фокуса на фильме
             setState(() {
@@ -191,7 +186,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                   ),
                 ),
 
-                /// название файла
+                /// название эпизода
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: AnimatedDefaultTextStyle(
@@ -209,14 +204,17 @@ class _EpisodeCardState extends State<EpisodeCard> {
                   ),
                 ),
 
-                /// описание фильма
-                // Text('description',
-                //   style: TextStyle(
-                //     fontSize: 12.0,
-                //     color: theme.textTheme.caption?.color?.withOpacity(0.36),
-                //   ),
-                //   maxLines: 2,
-                // ),
+                /// описание эпизода
+                if (widget.description.isNotEmpty) Text(widget.description,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: (_focusNode.hasFocus)
+                        ? theme.textTheme.caption?.color
+                        : theme.textTheme.caption?.color?.withOpacity(0.36),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
 
               ],
             ),

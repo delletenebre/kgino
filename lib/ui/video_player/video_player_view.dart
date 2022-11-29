@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -35,7 +36,12 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   /// состояние страницы
   VideoPlayerState _pageState = VideoPlayerState.loading;
 
+  /// контроллер видеоплеера
   VideoPlayerController? _playerController;
+  
+  /// контроллер субтитров
+  SubtitleController? _subtitleController;
+
   late PlayableItem _playableItem;
 
   bool _isControlOverlayVisible = true;
@@ -95,6 +101,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     /// завершаем работу текущего плеера
     _playerController?.dispose();
+    
+    /// завершаем работу контроллера субтитров
+    _subtitleController = null;
   }
 
   Future<void> _initializeVideo() async {
@@ -102,6 +111,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _disposeVideoController();
 
     _playerController = VideoPlayerController.network(_playableItem.videoUrl);
+
+    if (_playableItem.subtitleUrl.isNotEmpty) {
+      _subtitleController = SubtitleController(
+        subtitleUrl: _playableItem.subtitleUrl,
+        subtitleType: SubtitleType.webvtt,
+      );
+    }
+    
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
     
     try {
@@ -166,7 +183,17 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               Center(
                 child: AspectRatio(
                   aspectRatio: _playerController!.value.aspectRatio,
-                  child: VideoPlayer(_playerController!),
+                  child: (_subtitleController != null)
+                    ? SubtitleWrapper(
+                        videoPlayerController: _playerController!,
+                        subtitleController: _subtitleController!,
+                        subtitleStyle: const SubtitleStyle(
+                          textColor: Colors.white,
+                          hasBorder: true,
+                        ),
+                        videoChild: VideoPlayer(_playerController!),
+                      )
+                    : VideoPlayer(_playerController!),
                 ),
               ),
 

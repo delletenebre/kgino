@@ -18,7 +18,8 @@ class LocaleController extends Cubit<String> {
       defaultValue: KrsLocale.defaultLocale
     );
 
-    emit(locale);
+    //emit(locale);
+    emit('ru');
   }
 
   void changeLocale(String locale) {

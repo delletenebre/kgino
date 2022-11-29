@@ -4,15 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
+import 'package:jiffy/jiffy.dart';
 
 import 'controllers/locale_controller.dart';
 import 'controllers/theme_controller.dart';
-import 'models/ockg/ockg_movie.dart';
-import 'pages/error_page.dart';
-import 'pages/home_page.dart';
-import 'pages/ockg/ockg_movie_details_page.dart';
-import 'pages/settings_page.dart';
 import 'resources/krs_router.dart';
 import 'resources/krs_theme.dart';
 
@@ -44,6 +39,9 @@ class App extends StatelessWidget {
 
           /// текущий язык приложения
           final locale = context.watch<LocaleController>().state;
+          WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+            Jiffy.locale(locale);
+          });
 
           return Shortcuts(
             shortcuts: {

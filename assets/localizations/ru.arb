@@ -82,6 +82,18 @@
     "type": "text"
   },
 
+  "added": "Убрать из избранного",
+  "@added": {
+    "type": "text"
+  },
+
+  "addedDate": "{date, select, today{Added today} yesterday{Added yesterday} other{Added {date}} }",
+  "@addedDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+
   "episodesCount": "{count, plural, =0{{count} эпизодов} =1{{count} эпизод} few{{count} эпизода} many{{count} эпизодов} other{{count} эпизодов}",
   "@episodesCount": {
     "description": "количество эпизодов",

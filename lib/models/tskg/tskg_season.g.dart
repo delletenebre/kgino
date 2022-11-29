@@ -8,7 +8,7 @@ part of 'tskg_season.dart';
 
 _$_TskgSeason _$$_TskgSeasonFromJson(Map<String, dynamic> json) =>
     _$_TskgSeason(
-      title: json['title'] as String,
+      title: json['title'] as String? ?? '',
       episodes: (json['episodes'] as List<dynamic>?)
               ?.map((e) => TskgEpisode.fromJson(e as Map<String, dynamic>))
               .toList() ??

@@ -109,13 +109,14 @@ class __$$_TskgSeasonCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_TskgSeason implements _TskgSeason {
   const _$_TskgSeason(
-      {required this.title, final List<TskgEpisode> episodes = const []})
+      {this.title = '', final List<TskgEpisode> episodes = const []})
       : _episodes = episodes;
 
   factory _$_TskgSeason.fromJson(Map<String, dynamic> json) =>
       _$$_TskgSeasonFromJson(json);
 
   @override
+  @JsonKey()
   final String title;
   final List<TskgEpisode> _episodes;
   @override
@@ -160,8 +161,7 @@ class _$_TskgSeason implements _TskgSeason {
 
 abstract class _TskgSeason implements TskgSeason {
   const factory _TskgSeason(
-      {required final String title,
-      final List<TskgEpisode> episodes}) = _$_TskgSeason;
+      {final String title, final List<TskgEpisode> episodes}) = _$_TskgSeason;
 
   factory _TskgSeason.fromJson(Map<String, dynamic> json) =
       _$_TskgSeason.fromJson;

@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
 import '../models/tskg/tskg_episode.dart';
+import '../models/tskg/tskg_episode_details.dart';
 import '../models/tskg/tskg_season.dart';
 import '../models/tskg/tskg_show.dart';
 import '../utils.dart';
@@ -316,6 +318,83 @@ class TskgApiProvider {
 
     return const TskgShow();
   }
+
+
+  /// получение информации об эпизоде
+  Future<TskgEpisodeDetails?> getEpisodeDetails(int episodeId) async {
+
+    try {
+
+      /// запрашиваем данные
+      final response = await _dio.get('/show/episode/episode.json',
+        queryParameters: {
+          'episode': '$episodeId',
+        },
+        options: Options(
+          headers: {
+            'x-requested-with': 'XMLHttpRequest',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        
+        /// возвращаем информацио об эпизоде
+        return TskgEpisodeDetails.fromJson(response.data);
+      }
+    } catch (exception) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('exception: $exception');
+    }
+
+    return null;
+  }
+
+
+  /// поиск сериала
+  // Future<List<TskgSearch>> search(String searchQuery) async {
+
+  //   final items = <TskgSearch>[];
+
+  //   if (searchQuery.isNotEmpty) {
+  //     /// ^ если запрос не пустой
+      
+  //     try {
+
+  //       /// запрашиваем данные
+  //       final response = await dio.get('/show/search/$searchQuery',
+  //         options: Options(
+  //           headers: {
+  //             'x-requested-with': 'XMLHttpRequest',
+  //           },
+  //         ),
+  //       );
+
+  //       debugPrint('search > searchQuery > $searchQuery');
+  //       debugPrint('search > response > ${response.data}');
+
+  //       if (response.statusCode == 200) {
+  //         /// ^ если запрос выполнен успешно
+  //         final jsonItems = response.data;
+
+  //         for (final item in jsonItems) {
+  //           items.add(TskgSearch.fromJson(item));
+  //         }
+
+  //       }
+
+  //     } catch (exception) {
+  //       /// ^ если прозошла сетевая ошибка
+        
+  //       debugPrint('exception: $exception');
+  //     }
+
+  //   }
+
+  //   return items;
+  // }
 
 
 }

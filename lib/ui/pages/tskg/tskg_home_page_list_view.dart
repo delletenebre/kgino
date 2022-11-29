@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:kgino/utils.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../models/tskg/tskg_show.dart';
+import '../../../resources/krs_locale.dart';
 import '../../lists/krs_list_view.dart';
 import '../../loading_indicator.dart';
 import 'tskg_show_card.dart';
-import 'tskg_shows_list_view.dart';
 
 class TskgHomePageListView extends StatefulWidget {
   const TskgHomePageListView({
@@ -38,6 +40,8 @@ class _TskgHomePageListViewState extends State<TskgHomePageListView> {
 
   @override
   Widget build(context) {
+    final locale = KrsLocale.of(context);
+    
     return BlocProvider(
       create: (context) => TskgNewsController(),
       child: BlocBuilder<TskgNewsController, RequestState<List<TskgShow>>>(
@@ -51,7 +55,7 @@ class _TskgHomePageListViewState extends State<TskgHomePageListView> {
               (item) => item.date,
             );
 
-            final itemsCount = 3;
+            final itemsCount = 2;
 
             return ListView.separated(
               controller: _autoScrollController,
@@ -70,8 +74,15 @@ class _TskgHomePageListViewState extends State<TskgHomePageListView> {
 
                 /// дата добавления сериала
                 final date = showsGroupedByDate.keys.elementAt(index)!;
-                final dateFormatter = DateFormat('dd MMMM', 'ru');
-                final titleText = 'Добавленные ${dateFormatter.format(date)}';
+                
+                late final String titleText;
+                if (date.isToday) {
+                  titleText = locale.addedDate('today');
+                } else if (date.isYesterday) {
+                  titleText = locale.addedDate('yesterday');
+                } else {
+                  titleText = locale.addedDate(Jiffy(date).MMMMd);
+                }
 
                 final shows = showsGroupedByDate.values.elementAt(index);
 

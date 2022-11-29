@@ -23,6 +23,7 @@ mixin _$PlayableItem {
   String get videoUrl => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
+  String get subtitleUrl => throw _privateConstructorUsedError;
   int get startTime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -37,7 +38,12 @@ abstract class $PlayableItemCopyWith<$Res> {
           PlayableItem value, $Res Function(PlayableItem) then) =
       _$PlayableItemCopyWithImpl<$Res, PlayableItem>;
   @useResult
-  $Res call({String videoUrl, String title, String subtitle, int startTime});
+  $Res call(
+      {String videoUrl,
+      String title,
+      String subtitle,
+      String subtitleUrl,
+      int startTime});
 }
 
 /// @nodoc
@@ -56,6 +62,7 @@ class _$PlayableItemCopyWithImpl<$Res, $Val extends PlayableItem>
     Object? videoUrl = null,
     Object? title = null,
     Object? subtitle = null,
+    Object? subtitleUrl = null,
     Object? startTime = null,
   }) {
     return _then(_value.copyWith(
@@ -70,6 +77,10 @@ class _$PlayableItemCopyWithImpl<$Res, $Val extends PlayableItem>
       subtitle: null == subtitle
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
+              as String,
+      subtitleUrl: null == subtitleUrl
+          ? _value.subtitleUrl
+          : subtitleUrl // ignore: cast_nullable_to_non_nullable
               as String,
       startTime: null == startTime
           ? _value.startTime
@@ -87,7 +98,12 @@ abstract class _$$_PlayableItemCopyWith<$Res>
       __$$_PlayableItemCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String videoUrl, String title, String subtitle, int startTime});
+  $Res call(
+      {String videoUrl,
+      String title,
+      String subtitle,
+      String subtitleUrl,
+      int startTime});
 }
 
 /// @nodoc
@@ -104,6 +120,7 @@ class __$$_PlayableItemCopyWithImpl<$Res>
     Object? videoUrl = null,
     Object? title = null,
     Object? subtitle = null,
+    Object? subtitleUrl = null,
     Object? startTime = null,
   }) {
     return _then(_$_PlayableItem(
@@ -118,6 +135,10 @@ class __$$_PlayableItemCopyWithImpl<$Res>
       subtitle: null == subtitle
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
+              as String,
+      subtitleUrl: null == subtitleUrl
+          ? _value.subtitleUrl
+          : subtitleUrl // ignore: cast_nullable_to_non_nullable
               as String,
       startTime: null == startTime
           ? _value.startTime
@@ -134,6 +155,7 @@ class _$_PlayableItem implements _PlayableItem {
       {required this.videoUrl,
       required this.title,
       this.subtitle = '',
+      this.subtitleUrl = '',
       this.startTime = 0});
 
   factory _$_PlayableItem.fromJson(Map<String, dynamic> json) =>
@@ -148,11 +170,14 @@ class _$_PlayableItem implements _PlayableItem {
   final String subtitle;
   @override
   @JsonKey()
+  final String subtitleUrl;
+  @override
+  @JsonKey()
   final int startTime;
 
   @override
   String toString() {
-    return 'PlayableItem(videoUrl: $videoUrl, title: $title, subtitle: $subtitle, startTime: $startTime)';
+    return 'PlayableItem(videoUrl: $videoUrl, title: $title, subtitle: $subtitle, subtitleUrl: $subtitleUrl, startTime: $startTime)';
   }
 
   @override
@@ -165,14 +190,16 @@ class _$_PlayableItem implements _PlayableItem {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle) &&
+            (identical(other.subtitleUrl, subtitleUrl) ||
+                other.subtitleUrl == subtitleUrl) &&
             (identical(other.startTime, startTime) ||
                 other.startTime == startTime));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, videoUrl, title, subtitle, startTime);
+  int get hashCode => Object.hash(
+      runtimeType, videoUrl, title, subtitle, subtitleUrl, startTime);
 
   @JsonKey(ignore: true)
   @override
@@ -193,6 +220,7 @@ abstract class _PlayableItem implements PlayableItem {
       {required final String videoUrl,
       required final String title,
       final String subtitle,
+      final String subtitleUrl,
       final int startTime}) = _$_PlayableItem;
 
   factory _PlayableItem.fromJson(Map<String, dynamic> json) =
@@ -204,6 +232,8 @@ abstract class _PlayableItem implements PlayableItem {
   String get title;
   @override
   String get subtitle;
+  @override
+  String get subtitleUrl;
   @override
   int get startTime;
   @override

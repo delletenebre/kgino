@@ -11,6 +11,7 @@ _$_PlayableItem _$$_PlayableItemFromJson(Map<String, dynamic> json) =>
       videoUrl: json['videoUrl'] as String,
       title: json['title'] as String,
       subtitle: json['subtitle'] as String? ?? '',
+      subtitleUrl: json['subtitleUrl'] as String? ?? '',
       startTime: json['startTime'] as int? ?? 0,
     );
 
@@ -19,5 +20,6 @@ Map<String, dynamic> _$$_PlayableItemToJson(_$_PlayableItem instance) =>
       'videoUrl': instance.videoUrl,
       'title': instance.title,
       'subtitle': instance.subtitle,
+      'subtitleUrl': instance.subtitleUrl,
       'startTime': instance.startTime,
     };

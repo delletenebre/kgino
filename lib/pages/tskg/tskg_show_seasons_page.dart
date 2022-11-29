@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
+import '../../models/tskg/tskg_episode.dart';
+import '../../models/tskg/tskg_season.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/lists/krs_list_view.dart';
 import '../../ui/pages/episode_card.dart';
+import '../../utils.dart';
 
 
 class TskgShowSeasonsPage extends StatefulWidget {
@@ -30,7 +33,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     controller: ScrollController(),
   );
 
-  final _episodes = [];
+  final _episodes = <TskgEpisode>[];
   late final int _episodeCount;
   int _selectedSeasonIndex = 0;
   int _selectedEpisodeIndex = 0;
@@ -116,7 +119,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
               size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
               child: KrsListView(
                 controller: _episodesScrollController,
-                //scrollToLastPosition: false,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
                 titleText: '${currentSeason.title}, ${locale.episodesCount(currentSeason.episodes.length)}',
@@ -129,22 +131,25 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                 requestItemIndex: () => _selectedEpisodeIndex,
                 itemCount: _episodeCount,
                 itemBuilder: (context, index) {
+                  // final seasonAndEpisode = getSeasonByGlobalEpisodeIndex(index);
+                  // final season = seasonAndEpisode.season;
                   final episode = _episodes[index];
 
                   return EpisodeCard(
                     titleText: episode.title,
+                    description: '${episode.quality} ${Utils.formatDuration(episode.duration)}',
                     onPressed: () {
                       /// переходим на страницу плеера сериала
-                      // context.goNamed('tskgShowPlayer',
-                      //   params: {
-                      //     'id': widget.show.showId,    
-                      //   },
-                      //   queryParams: {
-                      //     'startTime': 0.toString(),
-                      //     'fileIndex': index.toString(),
-                      //   },
-                      //   extra: widget.show,
-                      // );
+                      context.goNamed('tskgPlayer',
+                        params: {
+                          'id': widget.show.showId,    
+                        },
+                        queryParams: {
+                          'startTime': 0.toString(),
+                          'episodeIndex': index.toString(),
+                        },
+                        extra: widget.show,
+                      );
                     },
                   );
                 },
@@ -244,4 +249,35 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     }
     
   }
+
+  // _SeasonAndEpisode getSeasonByGlobalEpisodeIndex(int episodeIndex) {
+  //   int indexOffset = 0;
+  //   for (int i = 0; i < widget.show.seasons.length; i++) {
+  //     final season = widget.show.seasons[i];
+  //     final episodeCount = season.episodes.length;
+  //     if (episodeIndex < indexOffset + episodeCount) {
+  //       final relativeEpisodeIndex = indexOffset + episodeCount - episodeIndex - 1;
+  //       return _SeasonAndEpisode(
+  //         season: season,
+  //         episode: season.episodes[relativeEpisodeIndex],
+  //       );
+  //     } else {
+  //       indexOffset += episodeCount;
+  //     }
+  //   }
+
+  //   return _SeasonAndEpisode();
+  // }
 }
+
+
+// class _SeasonAndEpisode {
+//   final TskgSeason season;
+//   final TskgEpisode episode;
+
+//   _SeasonAndEpisode({
+//     this.season = const TskgSeason(),
+//     this.episode = const TskgEpisode(),
+
+//   });
+// }

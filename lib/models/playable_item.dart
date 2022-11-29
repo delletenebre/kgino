@@ -9,6 +9,7 @@ class PlayableItem with _$PlayableItem {
     required String videoUrl,
     required String title,
     @Default('') String subtitle,
+    @Default('') String subtitleUrl,
     @Default(0) int startTime,
 
   }) = _PlayableItem;

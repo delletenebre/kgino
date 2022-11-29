@@ -8,7 +8,7 @@ part 'tskg_season.g.dart';
 @freezed
 class TskgSeason with _$TskgSeason {
   const factory TskgSeason({
-    required String title,
+    @Default('') String title,
     @Default([]) List<TskgEpisode> episodes,
   }) = _TskgSeason;
 
