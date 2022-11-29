@@ -87,7 +87,7 @@
     "type": "text"
   },
 
-  "addedDate": "{date, select, today{Added today} yesterday{Added yesterday} other{Added {date}} }",
+  "addedDate": "{date, select, today{Добавлены сегодня} yesterday{Добавлены вчера} other{Добавлены {date}} }",
   "@addedDate": {
     "placeholders": {
       "date": {}

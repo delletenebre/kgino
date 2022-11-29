@@ -3,18 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
-import '../../models/ockg/ockg_movie.dart';
-import '../../models/playable_item.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
-import '../../ui/krs_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/try_again_message.dart';
-import '../../ui/pages/ockg/ockg_movie_details.dart';
 import '../../ui/pages/tskg/tskg_show_details.dart';
 
 
@@ -100,13 +95,13 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                               style: KrsTheme.filledTonalButtonStyleOf(context),
                               onPressed: () {
                                 /// переходим на страницу плеера фильма
-                                context.goNamed('tskgMoviePlayer',
+                                context.goNamed('tskgPlayer',
                                   params: {
                                     'id': show.showId,
                                   },
                                   queryParams: {
                                     'startTime': '0',
-                                    'fileIndex': '0',
+                                    'episodeIndex': '0',
                                   },
                                   extra: show,
                                 );

@@ -354,47 +354,56 @@ class TskgApiProvider {
 
 
   /// поиск сериала
-  // Future<List<TskgSearch>> search(String searchQuery) async {
+  Future<List<TskgShow>> searchShows(String searchQuery) async {
 
-  //   final items = <TskgSearch>[];
+    final items = <TskgShow>[];
 
-  //   if (searchQuery.isNotEmpty) {
-  //     /// ^ если запрос не пустой
+    if (searchQuery.isNotEmpty) {
+      /// ^ если запрос не пустой
       
-  //     try {
+      try {
 
-  //       /// запрашиваем данные
-  //       final response = await dio.get('/show/search/$searchQuery',
-  //         options: Options(
-  //           headers: {
-  //             'x-requested-with': 'XMLHttpRequest',
-  //           },
-  //         ),
-  //       );
+        /// запрашиваем данные
+        final response = await _dio.get('/show/search/$searchQuery',
+          options: Options(
+            headers: {
+              'x-requested-with': 'XMLHttpRequest',
+            },
+          ),
+        );
 
-  //       debugPrint('search > searchQuery > $searchQuery');
-  //       debugPrint('search > response > ${response.data}');
+        debugPrint('search > searchQuery > $searchQuery');
+        debugPrint('search > response > ${response.data}');
 
-  //       if (response.statusCode == 200) {
-  //         /// ^ если запрос выполнен успешно
-  //         final jsonItems = response.data;
+        if (response.statusCode == 200) {
+          /// ^ если запрос выполнен успешно
+          final jsonItems = response.data;
 
-  //         for (final item in jsonItems) {
-  //           items.add(TskgSearch.fromJson(item));
-  //         }
+          for (final item in jsonItems) {
+            final name = item['name'];
+            final url = item['url'];
 
-  //       }
+            if (url.startsWith('/show/')) {
+              items.add(TskgShow(
+                showId: TskgShow.getShowIdFromLink(url),
+                title: name,
+                link: url,
+              ));
+            }
+          }
 
-  //     } catch (exception) {
-  //       /// ^ если прозошла сетевая ошибка
+        }
+
+      } catch (exception) {
+        /// ^ если прозошла сетевая ошибка
         
-  //       debugPrint('exception: $exception');
-  //     }
+        debugPrint('exception: $exception');
+      }
 
-  //   }
+    }
 
-  //   return items;
-  // }
+    return items;
+  }
 
 
 }
