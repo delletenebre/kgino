@@ -23,10 +23,10 @@ class TskgSearchController extends Cubit<RequestState<List<TskgShow>>> {
       }
 
       try {
-
+        print('try searchShows $searchQuery');
         /// запрашиваем фильмы по искомому запросу
         final shows = await _api.searchShows(searchQuery);
-
+        print(shows);
         if (!isClosed) {
           /// ^ если контроллер ещё существует
           

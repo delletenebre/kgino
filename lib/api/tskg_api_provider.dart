@@ -378,6 +378,7 @@ class TskgApiProvider {
         if (response.statusCode == 200) {
           /// ^ если запрос выполнен успешно
           final jsonItems = response.data;
+          print('jsonItems $jsonItems');
 
           for (final item in jsonItems) {
             final name = item['name'];

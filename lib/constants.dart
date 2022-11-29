@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 /// время ожидания ответа от сервера
-const requestTimeout = Duration(seconds: 20);
+const requestTimeout = Duration(seconds: 10);
 
 /// время хранения запросов в кэше
 const cacheMaxAge = Duration(minutes: 1);
