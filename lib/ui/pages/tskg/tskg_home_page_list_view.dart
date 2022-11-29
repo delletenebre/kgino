@@ -1,13 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+import '../../../constants.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../models/tskg/tskg_show.dart';
+import '../../lists/krs_list_view.dart';
 import '../../loading_indicator.dart';
+import 'tskg_show_card.dart';
 import 'tskg_shows_list_view.dart';
 
 class TskgHomePageListView extends StatefulWidget {
@@ -84,21 +88,33 @@ class _TskgHomePageListViewState extends State<TskgHomePageListView> {
                     key: ValueKey(index), 
                     controller: _autoScrollController,
                     index: index,
-                    child: TskgShowsListView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0,
-                      ),
-                      // focusNodes: _elementsFocusNodes,
-                      titleText: titleText,
-                      shows: shows,
-                      onShowFocused: (show) {
-                        context.read<TskgShowDetailsController>().getShowById(
-                          show.showId,
-                        );
-                      },
-                      onScrollEnd: () {
+                    child: SizedBox.fromSize(
+                      size: const Size.fromHeight(tskgListViewHeight),
+                      child: KrsListView(
+                        onItemFocused: (index) {
+                          context.read<TskgShowDetailsController>().getShowById(
+                            shows[index].showId,
+                          );
+                        },
+                        titleText: titleText,
+                        itemCount: shows.length,
+                        itemBuilder: (context, index) {
+                          final show = shows[index];
 
-                      },
+                          return TskgShowCard(
+                            show: show,
+                            
+                            /// при выборе элемента
+                            onTap: () {
+                              /// переходим на страницу деталей о фильме
+                              context.goNamed('tskgShowDetails', params: {
+                                'id': show.showId,
+                              });
+
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 );

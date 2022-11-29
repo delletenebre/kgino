@@ -30,9 +30,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     controller: ScrollController(),
   );
 
-  late final List<FocusNode> _seasonFocusNodes;
-  late final List<FocusNode> _episodeFocusNodes;
-  
   final _episodes = [];
   late final int _episodeCount;
   int _selectedSeasonIndex = 0;
@@ -50,14 +47,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
       return previousValue + season.episodes.length;
     });
 
-    _seasonFocusNodes = List.generate(widget.show.seasons.length, (index) {
-      return FocusNode();
-    });
-
-    _episodeFocusNodes = List.generate(_episodeCount, (index) {
-      return FocusNode();
-    });
-
     super.initState();
   }
 
@@ -65,14 +54,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
   void dispose() {
     // _seasonsScrollController.dispatchOnceObserve();
     // _episodesScrollController.dispatchOnceObserve();
-
-    for (final focusNode in _episodeFocusNodes) {
-      focusNode.dispose();
-    }
-
-    for (final focusNode in _seasonFocusNodes) {
-      focusNode.dispose();
-    }
 
     super.dispose();
   }
@@ -102,11 +83,9 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                 _checkEpisodeBySeasonIndex(index);
               },
               requestItemIndex: () => _selectedSeasonIndex,
-              itemFocusNodes: _seasonFocusNodes,
               itemCount: widget.show.seasons.length,
               itemBuilder: (context, index) {
                 return IconButton(
-                  focusNode: _seasonFocusNodes[index],
                   style: _selectedSeasonIndex == index
                       ? KrsTheme.filledButtonStyleOf(context)
                       : KrsTheme.filledTonalButtonStyleOf(context),
@@ -148,13 +127,11 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   _checkSeasonByEpisodeIndex(index);
                 },
                 requestItemIndex: () => _selectedEpisodeIndex,
-                itemFocusNodes: _episodeFocusNodes,
                 itemCount: _episodeCount,
                 itemBuilder: (context, index) {
                   final episode = _episodes[index];
 
                   return EpisodeCard(
-                    focusNode: _episodeFocusNodes[index],
                     titleText: episode.title,
                     onPressed: () {
                       /// переходим на страницу плеера сериала

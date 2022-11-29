@@ -4,7 +4,6 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 
 class KrsListView extends StatefulWidget {
   final ListObserverController? controller;
-  // final bool autofocus;
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final Widget Function(BuildContext context, int index)? selectedItemBuilder;
@@ -27,7 +26,6 @@ class KrsListView extends StatefulWidget {
   const KrsListView({
     super.key,
     this.controller,
-    // this.autofocus = false,
     this.itemFocusNodes,
     required this.itemCount,
     required this.itemBuilder,
@@ -55,12 +53,18 @@ class _KrsListViewState extends State<KrsListView> {
   bool _listHasFocus = false;
 
   final _listFocusNode = FocusNode();
+  late List<FocusNode> _itemFocusNodes;
 
   @override
   void initState() {
     _listObserverController = widget.controller ?? ListObserverController(
       controller: ScrollController(),
     );
+
+    _itemFocusNodes = List.generate(widget.itemCount, (index) {
+      return FocusNode();
+    });
+
     super.initState();
   }
   
@@ -121,6 +125,7 @@ class _KrsListViewState extends State<KrsListView> {
                 /// основной контент
                 itemBuilder: (context, index) {
                   return Focus(
+                    focusNode: _itemFocusNodes[index],
                     skipTraversal: true,
                     onKey: (node, event) {
                       if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)
@@ -162,7 +167,12 @@ class _KrsListViewState extends State<KrsListView> {
 
                           /// обновляем индекс последнего элемента, на котором
                           /// был фокус
-                          widget.itemFocusNodes?[currentIndex].requestFocus();
+                          for (final focusNode in _itemFocusNodes[currentIndex].descendants) {
+                            if (focusNode.canRequestFocus) {
+                              focusNode.requestFocus();
+                            }
+                          }
+                          // _itemFocusNodes[currentIndex].descendants.first.requestFocus();
                         }
                         
                         if (mounted) {
