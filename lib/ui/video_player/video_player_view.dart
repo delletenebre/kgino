@@ -1,8 +1,9 @@
+import 'dart:convert';
+
 import 'package:async/async.dart';
-import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -39,10 +40,6 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
   /// контроллер видеоплеера
   VideoPlayerController? _playerController;
-  BetterPlayerController? _betterPlayerController;
-  
-  /// контроллер субтитров
-  SubtitleController? _subtitleController;
 
   late PlayableItem _playableItem;
 
@@ -103,46 +100,33 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     /// завершаем работу текущего плеера
     _playerController?.dispose();
-    
-    /// завершаем работу контроллера субтитров
-    _subtitleController = null;
+  }
+
+  String getStringFromBytes(ByteData data) {
+    final buffer = data.buffer;
+    var list = buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    return utf8.decode(list);
+  }
+
+  Future<ClosedCaptionFile> _loadSubtitle(String url) async {
+    final data = NetworkAssetBundle(Uri.parse(url));
+    final newdata = await data.load('');
+    String fileContents = getStringFromBytes(newdata);
+    return WebVTTCaptionFile(fileContents);
   }
 
   Future<void> _initializeVideo() async {
     /// завершаем работу текущего плеера
     _disposeVideoController();
 
-    final betterPlayerDataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      _playableItem.videoUrl
+    Future<ClosedCaptionFile>? closedCaptionFile;
+    if (_playableItem.subtitleUrl.isNotEmpty) {
+      closedCaptionFile = _loadSubtitle(_playableItem.subtitleUrl);
+    }
+
+    _playerController = VideoPlayerController.network(_playableItem.videoUrl,
+      closedCaptionFile: closedCaptionFile,
     );
-    _betterPlayerController = BetterPlayerController(
-        BetterPlayerConfiguration(
-          autoPlay: true,
-        ),
-        betterPlayerDataSource: betterPlayerDataSource,
-    );
-
-    _betterPlayerController!.addEventsListener((event) {
-      if (event.betterPlayerEventType == BetterPlayerEventType.initialized) {
-        _betterPlayerController!.setOverriddenAspectRatio(
-            _betterPlayerController!.videoPlayerController!.value.aspectRatio);
-        
-        setState(() {
-
-        });
-      }
-    });
-
-    // _playerController = VideoPlayerController.network(_playableItem.videoUrl);
-
-    // if (_playableItem.subtitleUrl.isNotEmpty) {
-    //   _subtitleController = SubtitleController(
-    //     subtitleUrl: _playableItem.subtitleUrl,
-    //     subtitleType: SubtitleType.webvtt,
-    //   );
-    // }
-    
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
     
     try {
@@ -204,28 +188,32 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
             children: [
 
               /// видео плеер
-              // Center(
-              //   child: AspectRatio(
-              //     aspectRatio: _playerController!.value.aspectRatio,
-              //     child: (_subtitleController != null)
-              //       ? SubtitleWrapper(
-              //           videoPlayerController: _playerController!,
-              //           subtitleController: _subtitleController!,
-              //           subtitleStyle: const SubtitleStyle(
-              //             textColor: Colors.white,
-              //             hasBorder: true,
-              //           ),
-              //           videoChild: VideoPlayer(_playerController!),
-              //         )
-              //       : VideoPlayer(_playerController!),
-              //   ),
-              // ),
               Center(
-                child: BetterPlayer(
-                    controller: _betterPlayerController!,
-                  ),
+                child: AspectRatio(
+                  aspectRatio: _playerController!.value.aspectRatio,
+                  child: VideoPlayer(_playerController!),
+                  // child: (_subtitleController != null)
+                  //   ? SubtitleWrapper(
+                  //       videoPlayerController: _playerController!,
+                  //       subtitleController: _subtitleController!,
+                  //       subtitleStyle: const SubtitleStyle(
+                  //         textColor: Colors.white,
+                  //         hasBorder: true,
+                  //       ),
+                  //       videoChild: VideoPlayer(_playerController!),
+                  //     )
+                  //   : VideoPlayer(_playerController!),
+                ),
               ),
-              
+
+              ValueListenableBuilder(
+                valueListenable: _playerController!,
+                builder: (context, video, child) {
+                  return ClosedCaption(
+                    text: video.caption.text,
+                  );
+                }
+              ),
 
               /// оверлей с панелью управления видео
               SafeArea(
@@ -308,7 +296,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     /// сколько просмотрено в процентах [0,1]
     final percentPosition = position / duration;
-    
+
     /// сохраняем информацию о времени просмотра эпизода
     // if (episodeId != null) {
     //   viewedController.updateEpisode(
@@ -356,4 +344,5 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     /// инициализируем новый плеер
     _initializeVideo();
   }
+
 }

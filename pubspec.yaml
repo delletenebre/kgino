@@ -21,7 +21,6 @@ dependencies:
   
   async: ^2.10.0
   audio_video_progress_bar: ^0.11.0
-  better_player: ^0.0.83
   cached_network_image: ^3.2.2
   collection: ^1.16.0
   dio: ^4.0.6
@@ -39,7 +38,6 @@ dependencies:
   scroll_to_index: ^3.0.1
   scrollview_observer: ^1.7.0
   shared_preferences: ^2.0.15
-  subtitle_wrapper_package: ^2.1.0
   # speech_to_text: ^6.1.0
   video_player: ^2.4.7
   wakelock: ^0.6.2
