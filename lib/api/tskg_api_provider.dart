@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
@@ -24,15 +25,15 @@ class TskgApiProvider {
   ));
 
   TskgApiProvider() {
-    // _dio.interceptors.add(
-    //   DioCacheManager(
-    //     CacheConfig(
-    //       baseUrl: _dio.options.baseUrl,
-    //       defaultMaxAge: cacheMaxAge,
-    //       defaultMaxStale: cacheMaxAge,
-    //     )
-    //   ).interceptor
-    // );
+    _dio.interceptors.add(
+      DioCacheManager(
+        CacheConfig(
+          baseUrl: _dio.options.baseUrl,
+          defaultMaxAge: cacheMaxAge,
+          defaultMaxStale: cacheMaxAge,
+        )
+      ).interceptor
+    );
   }
 
   /// формируем полную ссылку на постер сериала по id
