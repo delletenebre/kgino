@@ -5,6 +5,7 @@ import 'package:kgino/ui/loading_indicator.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../controllers/ockg/ockg_search_controller.dart';
+import '../controllers/tskg/tskg_search_controller.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
@@ -39,13 +40,16 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       children: [
         Expanded(
-          child: BlocBuilder<OckgSearchController, RequestState<List<OckgMovie>>>(
-            builder: (context, state) {
-              if (state.isLoading) {
+          child: Builder(
+            builder: (context) {
+              final ockgSearch = context.watch<OckgSearchController>().state;
+              final tskgSearch = context.watch<TskgSearchController>().state;
+
+              if (ockgSearch.isLoading) {
                 return const LoadingIndicator();
               }
 
-              if (state.isSuccess) {
+              if (ockgSearch.isSuccess) {
                 return SingleChildScrollView(
                   controller: _autoScrollController,
                   padding: const EdgeInsets.all(32.0),
@@ -56,7 +60,7 @@ class _SearchPageState extends State<SearchPage> {
                       alignment: WrapAlignment.center,
                       spacing: 24.0,
                       runSpacing: 24.0,
-                      children: state.data.mapIndexed((index, movie) {
+                      children: ockgSearch.data.mapIndexed((index, movie) {
                         return AutoScrollTag(
                           key: ValueKey(index), 
                           controller: _autoScrollController,

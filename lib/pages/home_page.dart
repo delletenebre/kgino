@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kgino/pages/search_page.dart';
-import 'package:kgino/pages/settings_page.dart';
 
 import '../controllers/ockg/ockg_search_controller.dart';
+import '../controllers/tskg/tskg_search_controller.dart';
 import '../resources/krs_locale.dart';
 import '../ui/navigation_bar/krs_tab_bar.dart';
 import 'ockg/ockg_home_page.dart';
+import 'search_page.dart';
+import 'settings_page.dart';
 import 'tskg/tskg_home_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -43,8 +44,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final locale = KrsLocale.of(context);
     
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => OckgSearchController(),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<OckgSearchController>(
+            create: (context) => OckgSearchController(),
+          ),
+          BlocProvider<TskgSearchController>(
+            create: (context) => TskgSearchController(),
+          ),
+        ],
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,

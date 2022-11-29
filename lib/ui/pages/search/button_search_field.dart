@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../controllers/ockg/ockg_search_controller.dart';
+import '../../../controllers/tskg/tskg_search_controller.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../resources/krs_theme.dart';
 
@@ -123,7 +124,8 @@ class _ButtonSearchFieldState extends State<ButtonSearchField> {
               duration: KrsTheme.animationDuration,
               alignment: Alignment.centerLeft,
               excludeBottomFocus: false,
-              crossFadeState: widget.selected ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              crossFadeState: widget.selected 
+                ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               firstChild: Text(locale.search),
               secondChild: Visibility(
                 visible: widget.selected,
@@ -133,10 +135,12 @@ class _ButtonSearchFieldState extends State<ButtonSearchField> {
 
                   onChanged: (searchQuery) {
                     context.read<OckgSearchController>().searchMovies(searchQuery);
+                    context.read<TskgSearchController>().searchShows(searchQuery);
                   },
 
                   onSubmitted: (searchQuery) {
                     context.read<OckgSearchController>().searchMovies(searchQuery);
+                    context.read<TskgSearchController>().searchShows(searchQuery);
                   },
 
                   style: const TextStyle(
