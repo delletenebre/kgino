@@ -59,7 +59,7 @@ class _SearchPageState extends State<SearchPage> {
               //   return const LoadingIndicator();
               // }
 
-              if (ockgSearch.isSuccess) {
+              if (items.isNotEmpty) {
                 return SingleChildScrollView(
                   controller: _autoScrollController,
                   padding: const EdgeInsets.all(32.0),
@@ -71,6 +71,7 @@ class _SearchPageState extends State<SearchPage> {
                       spacing: 24.0,
                       runSpacing: 24.0,
                       children: items.mapIndexed((index, item) {
+                        print('123: $item');
                         if (item is OckgMovie) {
                           return AutoScrollTag(
                             key: ValueKey(index), 
@@ -97,40 +98,10 @@ class _SearchPageState extends State<SearchPage> {
                             },
                           );
                         }
-
                         
                       }).toList(),
                     ),
                   ),
-                      // ),
-
-                      // if (tskgSearch.isSuccess) Expanded(
-                      //   child: SizedBox(
-                      //     width: double.maxFinite,
-                      //     child: Wrap(
-                      //       clipBehavior: Clip.none,
-                      //       alignment: WrapAlignment.center,
-                      //       spacing: 24.0,
-                      //       runSpacing: 24.0,
-                      //       children: tskgSearch.data.mapIndexed((index, show) {
-                      //         return AutoScrollTag(
-                      //           key: ValueKey(index), 
-                      //           controller: _autoScrollController,
-                      //           index: index,
-                      //           child: TskgShowCard(
-                      //             show: show,
-                      //             onTap: () {
-                      //               /// переходим на страницу деталей о фильме
-                      //               context.goNamed('tskgShowDetails', params: {
-                      //                 'id': show.showId,
-                      //               });
-                      //             },
-                      //           ),
-                      //         );
-                      //       }).toList(),
-                      //     ),
-                      //   ),
-                      // )
                 );
               }
 

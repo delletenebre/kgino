@@ -1,4 +1,5 @@
 import 'package:async/async.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
@@ -38,6 +39,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
   /// контроллер видеоплеера
   VideoPlayerController? _playerController;
+  BetterPlayerController? _betterPlayerController;
   
   /// контроллер субтитров
   SubtitleController? _subtitleController;
@@ -110,14 +112,36 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     /// завершаем работу текущего плеера
     _disposeVideoController();
 
-    _playerController = VideoPlayerController.network(_playableItem.videoUrl);
+    final betterPlayerDataSource = BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      _playableItem.videoUrl
+    );
+    _betterPlayerController = BetterPlayerController(
+        BetterPlayerConfiguration(
+          autoPlay: true,
+        ),
+        betterPlayerDataSource: betterPlayerDataSource,
+    );
 
-    if (_playableItem.subtitleUrl.isNotEmpty) {
-      _subtitleController = SubtitleController(
-        subtitleUrl: _playableItem.subtitleUrl,
-        subtitleType: SubtitleType.webvtt,
-      );
-    }
+    _betterPlayerController!.addEventsListener((event) {
+      if (event.betterPlayerEventType == BetterPlayerEventType.initialized) {
+        _betterPlayerController!.setOverriddenAspectRatio(
+            _betterPlayerController!.videoPlayerController!.value.aspectRatio);
+        
+        setState(() {
+
+        });
+      }
+    });
+
+    // _playerController = VideoPlayerController.network(_playableItem.videoUrl);
+
+    // if (_playableItem.subtitleUrl.isNotEmpty) {
+    //   _subtitleController = SubtitleController(
+    //     subtitleUrl: _playableItem.subtitleUrl,
+    //     subtitleType: SubtitleType.webvtt,
+    //   );
+    // }
     
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
     
@@ -180,22 +204,28 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
             children: [
 
               /// видео плеер
+              // Center(
+              //   child: AspectRatio(
+              //     aspectRatio: _playerController!.value.aspectRatio,
+              //     child: (_subtitleController != null)
+              //       ? SubtitleWrapper(
+              //           videoPlayerController: _playerController!,
+              //           subtitleController: _subtitleController!,
+              //           subtitleStyle: const SubtitleStyle(
+              //             textColor: Colors.white,
+              //             hasBorder: true,
+              //           ),
+              //           videoChild: VideoPlayer(_playerController!),
+              //         )
+              //       : VideoPlayer(_playerController!),
+              //   ),
+              // ),
               Center(
-                child: AspectRatio(
-                  aspectRatio: _playerController!.value.aspectRatio,
-                  child: (_subtitleController != null)
-                    ? SubtitleWrapper(
-                        videoPlayerController: _playerController!,
-                        subtitleController: _subtitleController!,
-                        subtitleStyle: const SubtitleStyle(
-                          textColor: Colors.white,
-                          hasBorder: true,
-                        ),
-                        videoChild: VideoPlayer(_playerController!),
-                      )
-                    : VideoPlayer(_playerController!),
-                ),
+                child: BetterPlayer(
+                    controller: _betterPlayerController!,
+                  ),
               ),
+              
 
               /// оверлей с панелью управления видео
               SafeArea(

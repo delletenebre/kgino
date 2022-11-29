@@ -21,20 +21,17 @@ dependencies:
   
   async: ^2.10.0
   audio_video_progress_bar: ^0.11.0
+  better_player: ^0.0.83
   cached_network_image: ^3.2.2
   collection: ^1.16.0
   dio: ^4.0.6
   dio_http_cache_lts: ^0.4.1
   equatable: ^2.0.5
   flutter_bloc: ^8.1.1
-  # flutter_form_builder: ^7.7.0
-  # flutter_svg: ^1.1.6
   freezed_annotation: ^2.1.0
   get_it: ^7.2.0
   go_router: ^5.1.1
   html: ^0.15.1
-  # infinite_scroll_pagination: ^3.2.0
-  indexed_list_view: ^2.0.2
   intl: ^0.17.0
   jiffy: ^5.0.0
   json_annotation: ^4.7.0
@@ -58,8 +55,8 @@ flutter:
   generate: true
   uses-material-design: true
 
-  assets:
-    - assets/images/
+  # assets:
+  #   - assets/images/
 
   fonts:
     - family: Golos UI
