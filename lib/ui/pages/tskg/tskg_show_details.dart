@@ -53,7 +53,7 @@ class TskgShowDetais extends StatelessWidget {
               ).createShader(rect);
             },
 
-            /// постер фильма
+            /// постер сериала
             child: CachedNetworkImage(
               imageUrl: show.posterUrl,
               fit: BoxFit.cover,
@@ -78,7 +78,7 @@ class TskgShowDetais extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// название сериала
-                Text(show.title,
+                Text(show.name,
                   style: theme.textTheme.titleLarge,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -118,7 +118,7 @@ class TskgShowDetais extends StatelessWidget {
                   ),
                 ),
                 
-                /// рейтинги фильма
+                /// рейтинги сериала
                 // if (show.hasImdbRating || show.hasKinopoiskRating) Padding(
                 //   padding: const EdgeInsets.only(top: 8.0),
                 //   child: Row(
@@ -141,7 +141,7 @@ class TskgShowDetais extends StatelessWidget {
                 //   ),
                 // ),
 
-                /// описание фильма
+                /// описание сериала
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: Text(show.description,

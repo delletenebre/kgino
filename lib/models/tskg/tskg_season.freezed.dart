@@ -14,16 +14,11 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-TskgSeason _$TskgSeasonFromJson(Map<String, dynamic> json) {
-  return _TskgSeason.fromJson(json);
-}
-
 /// @nodoc
 mixin _$TskgSeason {
   String get title => throw _privateConstructorUsedError;
   List<TskgEpisode> get episodes => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TskgSeasonCopyWith<TskgSeason> get copyWith =>
       throw _privateConstructorUsedError;
@@ -106,14 +101,11 @@ class __$$_TskgSeasonCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$_TskgSeason implements _TskgSeason {
   const _$_TskgSeason(
       {this.title = '', final List<TskgEpisode> episodes = const []})
       : _episodes = episodes;
-
-  factory _$_TskgSeason.fromJson(Map<String, dynamic> json) =>
-      _$$_TskgSeasonFromJson(json);
 
   @override
   @JsonKey()
@@ -140,7 +132,6 @@ class _$_TskgSeason implements _TskgSeason {
             const DeepCollectionEquality().equals(other._episodes, _episodes));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType, title, const DeepCollectionEquality().hash(_episodes));
@@ -150,21 +141,11 @@ class _$_TskgSeason implements _TskgSeason {
   @pragma('vm:prefer-inline')
   _$$_TskgSeasonCopyWith<_$_TskgSeason> get copyWith =>
       __$$_TskgSeasonCopyWithImpl<_$_TskgSeason>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$_TskgSeasonToJson(
-      this,
-    );
-  }
 }
 
 abstract class _TskgSeason implements TskgSeason {
   const factory _TskgSeason(
       {final String title, final List<TskgEpisode> episodes}) = _$_TskgSeason;
-
-  factory _TskgSeason.fromJson(Map<String, dynamic> json) =
-      _$_TskgSeason.fromJson;
 
   @override
   String get title;

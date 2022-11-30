@@ -142,11 +142,10 @@ class TskgApiProvider {
 
               items.add(
                 TskgShow(
-                  showId: TskgShow.getShowIdFromLink(link),
+                  showId: TskgShow.getShowIdFromUrl(link),
                   date: date,
-                  title: title,
+                  name: title,
                   subtitle: subtitle,
-                  link: link,
                   genres: genres,
                   badges: badges.toList(),
                 )
@@ -302,7 +301,7 @@ class TskgApiProvider {
 
         return TskgShow(
           showId: showId,
-          title: title,
+          name: title,
           originalTitle: originalTitle,
           description: description,
           years: years,
@@ -373,13 +372,9 @@ class TskgApiProvider {
           ),
         );
 
-        debugPrint('search > searchQuery > $searchQuery');
-        debugPrint('search > response > ${response.data}');
-
         if (response.statusCode == 200) {
           /// ^ если запрос выполнен успешно
           final jsonItems = response.data;
-          print('jsonItems $jsonItems');
 
           for (final item in jsonItems) {
             final name = item['name'];
@@ -387,9 +382,8 @@ class TskgApiProvider {
 
             if (url.startsWith('/show/')) {
               items.add(TskgShow(
-                showId: TskgShow.getShowIdFromLink(url),
-                title: name,
-                link: url,
+                showId: TskgShow.getShowIdFromUrl(url),
+                name: name,
               ));
             }
           }

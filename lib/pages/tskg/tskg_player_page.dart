@@ -99,7 +99,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     return PlayableItem(
       videoUrl: videoUrl,
       subtitleUrl: subtitleUrl,
-      title: widget.show.title,
+      title: widget.show.name,
       subtitle: subtitle,
       startTime: widget.startTime,
     );

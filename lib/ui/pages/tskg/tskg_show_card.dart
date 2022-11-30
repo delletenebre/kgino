@@ -112,7 +112,7 @@ class _TskgShowCardState extends State<TskgShowCard> {
           focusNode: _focusNode,
           autofocus: widget.autofocus,
           onFocusChange: (hasFocus) {
-            /// при получении фокуса на фильме
+            /// при получении фокуса на сериале
             setState(() {
               
             });
@@ -138,7 +138,7 @@ class _TskgShowCardState extends State<TskgShowCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 
-                /// постер фильма
+                /// постер сериала
                 SizedBox.fromSize(
                   size: widget.posterSize,
                   child: Center(
@@ -179,7 +179,7 @@ class _TskgShowCardState extends State<TskgShowCard> {
                   ),
                 ),
 
-                /// название фильма
+                /// название сериала
                 if (widget.showTitle) Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: AnimatedDefaultTextStyle(
@@ -190,7 +190,7 @@ class _TskgShowCardState extends State<TskgShowCard> {
                         ? theme.textTheme.bodyMedium?.color
                         : theme.textTheme.bodyMedium?.color?.withOpacity(0.62)
                     ),
-                    child: Text(widget.show.title,
+                    child: Text(widget.show.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

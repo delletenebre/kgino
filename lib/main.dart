@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/ockg_api_provider.dart';
@@ -10,6 +11,9 @@ import 'resources/krs_storage.dart';
 Future<void> main() async {
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
+
+  /// инициализируем хранилище
+  await Hive.initFlutter();
 
   /// инициализируем локальное хранилище
   final sharedStorage = await SharedPreferences.getInstance();

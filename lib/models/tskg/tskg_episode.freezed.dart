@@ -14,10 +14,6 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-TskgEpisode _$TskgEpisodeFromJson(Map<String, dynamic> json) {
-  return _TskgEpisode.fromJson(json);
-}
-
 /// @nodoc
 mixin _$TskgEpisode {
   int get id => throw _privateConstructorUsedError;
@@ -27,7 +23,6 @@ mixin _$TskgEpisode {
   String get quality => throw _privateConstructorUsedError;
   Duration get duration => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TskgEpisodeCopyWith<TskgEpisode> get copyWith =>
       throw _privateConstructorUsedError;
@@ -162,7 +157,7 @@ class __$$_TskgEpisodeCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$_TskgEpisode implements _TskgEpisode {
   const _$_TskgEpisode(
       {this.id = 0,
@@ -171,9 +166,6 @@ class _$_TskgEpisode implements _TskgEpisode {
       this.description = '',
       this.quality = '',
       this.duration = Duration.zero});
-
-  factory _$_TskgEpisode.fromJson(Map<String, dynamic> json) =>
-      _$$_TskgEpisodeFromJson(json);
 
   @override
   @JsonKey()
@@ -214,7 +206,6 @@ class _$_TskgEpisode implements _TskgEpisode {
                 other.duration == duration));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType, id, showId, title, description, quality, duration);
@@ -224,13 +215,6 @@ class _$_TskgEpisode implements _TskgEpisode {
   @pragma('vm:prefer-inline')
   _$$_TskgEpisodeCopyWith<_$_TskgEpisode> get copyWith =>
       __$$_TskgEpisodeCopyWithImpl<_$_TskgEpisode>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$_TskgEpisodeToJson(
-      this,
-    );
-  }
 }
 
 abstract class _TskgEpisode implements TskgEpisode {
@@ -241,9 +225,6 @@ abstract class _TskgEpisode implements TskgEpisode {
       final String description,
       final String quality,
       final Duration duration}) = _$_TskgEpisode;
-
-  factory _TskgEpisode.fromJson(Map<String, dynamic> json) =
-      _$_TskgEpisode.fromJson;
 
   @override
   int get id;

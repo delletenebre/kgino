@@ -5,7 +5,6 @@ import 'package:palette_generator/palette_generator.dart';
 import 'tskg_season.dart';
 
 part 'tskg_show.freezed.dart';
-part 'tskg_show.g.dart';
 
 @freezed
 class TskgShow with _$TskgShow {
@@ -13,17 +12,14 @@ class TskgShow with _$TskgShow {
 
   const factory TskgShow({
     @Default('') String showId,
-    
+    @Default('') String name,
+
+    /// для последних добавленных
     DateTime? date,
 
     @Default([]) List<String> badges,
-
-    @Default('') String title,
-
     @Default('') String subtitle,
     @Default([]) List<String> genres,
-    @Default('') String link,
-
     @Default('') String originalTitle,
     @Default('') String years,
     @Default([]) List<String> countries,
@@ -32,8 +28,6 @@ class TskgShow with _$TskgShow {
 
   }) = _TskgShow;
 
-  factory TskgShow.fromJson(Map<String, Object?> json)
-      => _$TskgShowFromJson(json);
 
   String get posterUrl => 'https://www.ts.kg/posters/$showId.png';
 
@@ -44,14 +38,14 @@ class TskgShow with _$TskgShow {
   }
 
   /// извлекаем идентификатор сериала из ссылки
-  static String getShowIdFromLink(String link) {
+  static String getShowIdFromUrl(String url) {
     // разделяем url по '/'
-    final path = link.split('/');
+    final path = url.split('/');
     
-    if (link.startsWith('/show') && path.length > 1) {
+    if (url.startsWith('/show') && path.length > 1) {
       /// ^ если url похож на ссылку сериала
       
-      /// идентификатор сериала должен быть третьим элементом в массиве
+      /// идентификатор сериала должен быть третьим элементом в списке
       return path.elementAt(2);
 
     } else {

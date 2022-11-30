@@ -14,26 +14,22 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-TskgShow _$TskgShowFromJson(Map<String, dynamic> json) {
-  return _TskgShow.fromJson(json);
-}
-
 /// @nodoc
 mixin _$TskgShow {
   String get showId => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+
+  /// для последних добавленных
   DateTime? get date => throw _privateConstructorUsedError;
   List<String> get badges => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
   List<String> get genres => throw _privateConstructorUsedError;
-  String get link => throw _privateConstructorUsedError;
   String get originalTitle => throw _privateConstructorUsedError;
   String get years => throw _privateConstructorUsedError;
   List<String> get countries => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   List<TskgSeason> get seasons => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TskgShowCopyWith<TskgShow> get copyWith =>
       throw _privateConstructorUsedError;
@@ -46,12 +42,11 @@ abstract class $TskgShowCopyWith<$Res> {
   @useResult
   $Res call(
       {String showId,
+      String name,
       DateTime? date,
       List<String> badges,
-      String title,
       String subtitle,
       List<String> genres,
-      String link,
       String originalTitle,
       String years,
       List<String> countries,
@@ -73,12 +68,11 @@ class _$TskgShowCopyWithImpl<$Res, $Val extends TskgShow>
   @override
   $Res call({
     Object? showId = null,
+    Object? name = null,
     Object? date = freezed,
     Object? badges = null,
-    Object? title = null,
     Object? subtitle = null,
     Object? genres = null,
-    Object? link = null,
     Object? originalTitle = null,
     Object? years = null,
     Object? countries = null,
@@ -90,6 +84,10 @@ class _$TskgShowCopyWithImpl<$Res, $Val extends TskgShow>
           ? _value.showId
           : showId // ignore: cast_nullable_to_non_nullable
               as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -98,10 +96,6 @@ class _$TskgShowCopyWithImpl<$Res, $Val extends TskgShow>
           ? _value.badges
           : badges // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       subtitle: null == subtitle
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
@@ -110,10 +104,6 @@ class _$TskgShowCopyWithImpl<$Res, $Val extends TskgShow>
           ? _value.genres
           : genres // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
       originalTitle: null == originalTitle
           ? _value.originalTitle
           : originalTitle // ignore: cast_nullable_to_non_nullable
@@ -147,12 +137,11 @@ abstract class _$$_TskgShowCopyWith<$Res> implements $TskgShowCopyWith<$Res> {
   @useResult
   $Res call(
       {String showId,
+      String name,
       DateTime? date,
       List<String> badges,
-      String title,
       String subtitle,
       List<String> genres,
-      String link,
       String originalTitle,
       String years,
       List<String> countries,
@@ -172,12 +161,11 @@ class __$$_TskgShowCopyWithImpl<$Res>
   @override
   $Res call({
     Object? showId = null,
+    Object? name = null,
     Object? date = freezed,
     Object? badges = null,
-    Object? title = null,
     Object? subtitle = null,
     Object? genres = null,
-    Object? link = null,
     Object? originalTitle = null,
     Object? years = null,
     Object? countries = null,
@@ -189,6 +177,10 @@ class __$$_TskgShowCopyWithImpl<$Res>
           ? _value.showId
           : showId // ignore: cast_nullable_to_non_nullable
               as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -197,10 +189,6 @@ class __$$_TskgShowCopyWithImpl<$Res>
           ? _value._badges
           : badges // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       subtitle: null == subtitle
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
@@ -209,10 +197,6 @@ class __$$_TskgShowCopyWithImpl<$Res>
           ? _value._genres
           : genres // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
       originalTitle: null == originalTitle
           ? _value.originalTitle
           : originalTitle // ignore: cast_nullable_to_non_nullable
@@ -238,16 +222,15 @@ class __$$_TskgShowCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$_TskgShow extends _TskgShow {
   const _$_TskgShow(
       {this.showId = '',
+      this.name = '',
       this.date,
       final List<String> badges = const [],
-      this.title = '',
       this.subtitle = '',
       final List<String> genres = const [],
-      this.link = '',
       this.originalTitle = '',
       this.years = '',
       final List<String> countries = const [],
@@ -259,12 +242,14 @@ class _$_TskgShow extends _TskgShow {
         _seasons = seasons,
         super._();
 
-  factory _$_TskgShow.fromJson(Map<String, dynamic> json) =>
-      _$$_TskgShowFromJson(json);
-
   @override
   @JsonKey()
   final String showId;
+  @override
+  @JsonKey()
+  final String name;
+
+  /// для последних добавленных
   @override
   final DateTime? date;
   final List<String> _badges;
@@ -277,9 +262,6 @@ class _$_TskgShow extends _TskgShow {
 
   @override
   @JsonKey()
-  final String title;
-  @override
-  @JsonKey()
   final String subtitle;
   final List<String> _genres;
   @override
@@ -289,9 +271,6 @@ class _$_TskgShow extends _TskgShow {
     return EqualUnmodifiableListView(_genres);
   }
 
-  @override
-  @JsonKey()
-  final String link;
   @override
   @JsonKey()
   final String originalTitle;
@@ -319,7 +298,7 @@ class _$_TskgShow extends _TskgShow {
 
   @override
   String toString() {
-    return 'TskgShow(showId: $showId, date: $date, badges: $badges, title: $title, subtitle: $subtitle, genres: $genres, link: $link, originalTitle: $originalTitle, years: $years, countries: $countries, description: $description, seasons: $seasons)';
+    return 'TskgShow(showId: $showId, name: $name, date: $date, badges: $badges, subtitle: $subtitle, genres: $genres, originalTitle: $originalTitle, years: $years, countries: $countries, description: $description, seasons: $seasons)';
   }
 
   @override
@@ -328,13 +307,12 @@ class _$_TskgShow extends _TskgShow {
         (other.runtimeType == runtimeType &&
             other is _$_TskgShow &&
             (identical(other.showId, showId) || other.showId == showId) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.date, date) || other.date == date) &&
             const DeepCollectionEquality().equals(other._badges, _badges) &&
-            (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle) &&
             const DeepCollectionEquality().equals(other._genres, _genres) &&
-            (identical(other.link, link) || other.link == link) &&
             (identical(other.originalTitle, originalTitle) ||
                 other.originalTitle == originalTitle) &&
             (identical(other.years, years) || other.years == years) &&
@@ -345,17 +323,15 @@ class _$_TskgShow extends _TskgShow {
             const DeepCollectionEquality().equals(other._seasons, _seasons));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
       showId,
+      name,
       date,
       const DeepCollectionEquality().hash(_badges),
-      title,
       subtitle,
       const DeepCollectionEquality().hash(_genres),
-      link,
       originalTitle,
       years,
       const DeepCollectionEquality().hash(_countries),
@@ -367,24 +343,16 @@ class _$_TskgShow extends _TskgShow {
   @pragma('vm:prefer-inline')
   _$$_TskgShowCopyWith<_$_TskgShow> get copyWith =>
       __$$_TskgShowCopyWithImpl<_$_TskgShow>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$_TskgShowToJson(
-      this,
-    );
-  }
 }
 
 abstract class _TskgShow extends TskgShow {
   const factory _TskgShow(
       {final String showId,
+      final String name,
       final DateTime? date,
       final List<String> badges,
-      final String title,
       final String subtitle,
       final List<String> genres,
-      final String link,
       final String originalTitle,
       final String years,
       final List<String> countries,
@@ -392,22 +360,20 @@ abstract class _TskgShow extends TskgShow {
       final List<TskgSeason> seasons}) = _$_TskgShow;
   const _TskgShow._() : super._();
 
-  factory _TskgShow.fromJson(Map<String, dynamic> json) = _$_TskgShow.fromJson;
-
   @override
   String get showId;
   @override
+  String get name;
+  @override
+
+  /// для последних добавленных
   DateTime? get date;
   @override
   List<String> get badges;
   @override
-  String get title;
-  @override
   String get subtitle;
   @override
   List<String> get genres;
-  @override
-  String get link;
   @override
   String get originalTitle;
   @override
