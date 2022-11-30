@@ -6,24 +6,24 @@ part of 'tskg_seen_episode.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TskgSeenEpisodeAdapter extends TypeAdapter<_$_TskgSeenEpisode> {
+class TskgSeenEpisodeAdapter extends TypeAdapter<TskgSeenEpisode> {
   @override
   final int typeId = 1;
 
   @override
-  _$_TskgSeenEpisode read(BinaryReader reader) {
+  TskgSeenEpisode read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return _$_TskgSeenEpisode(
+    return TskgSeenEpisode(
       id: fields[0] as int,
       position: fields[1] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, _$_TskgSeenEpisode obj) {
+  void write(BinaryWriter writer, TskgSeenEpisode obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)
