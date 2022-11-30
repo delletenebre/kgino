@@ -8,6 +8,7 @@ part 'tskg_episode_details.g.dart';
 @freezed
 class TskgEpisodeDetails with _$TskgEpisodeDetails {
   const factory TskgEpisodeDetails({
+    
     @Default(0) int id,
     @Default('') String download,
     @Default(0) int duration,

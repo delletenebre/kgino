@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../controllers/tskg/tskg_favorites_controller.dart';
+import '../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
+import '../../models/tskg/tskg_favorite.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
@@ -32,6 +36,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
   Widget build(BuildContext context) {
 
     final locale = KrsLocale.of(context);
+
+    final tskgFavoritesController = TskgFavoritesController();
 
     return Scaffold(
       body: BlocProvider(
@@ -135,33 +141,45 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                             ),
                           ),
 
-                          /// кнопка добавления в избранное
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// добавляем в избранное
+                          ValueListenableBuilder(
+                            valueListenable: tskgFavoritesController.box.listenable(),
+                            builder: (context, Box<TskgFavorite> box, _) {
+                              if (box.containsKey(show.showId)) {
+                                /// ^ если уже добавлен в избранное
                                 
-                              },
-                              icon: const Icon(Icons.bookmark_add_outlined),
-                              label: Text(locale.addToFavorites),
-                            ),
-                          ),
+                                /// кнопка удаления из избранного
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      /// убираем из избранного
+                                      tskgFavoritesController.remove(show.showId);
+                                    },
+                                    icon: const Icon(Icons.bookmark_remove),
+                                    label: Text(locale.removeFromFavorites),
+                                  ),
+                                );
+                                
+                              } else {
+                                /// ^ если ещё нет в избранном
 
-                          /// кнопка удаления из избранного
-                          // Padding(
-                          //   padding: const EdgeInsets.only(right: 8.0),
-                          //   child: ElevatedButton.icon(
-                          //     style: KrsTheme.filledTonalButtonStyleOf(context),
-                          //     onPressed: () {
-                          //       /// убираем из избранного
-                                
-                          //     },
-                          //     icon: const Icon(Icons.bookmark_remove_outlined),
-                          //     label: Text(locale.removeFromFavorites),
-                          //   ),
-                          // ),
+                                /// кнопка добавления в избранное
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      /// добавляем в избранное
+                                      tskgFavoritesController.add(show);
+                                    },
+                                    icon: const Icon(Icons.bookmark_add_outlined),
+                                    label: Text(locale.addToFavorites),
+                                  ),
+                                );
+                              }
+                            }
+                          ),
 
                         ],
                       ),

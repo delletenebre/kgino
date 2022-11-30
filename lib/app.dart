@@ -8,6 +8,7 @@ import 'package:jiffy/jiffy.dart';
 
 import 'controllers/locale_controller.dart';
 import 'controllers/theme_controller.dart';
+import 'controllers/tskg/tskg_favorites_cubit.dart';
 import 'resources/krs_router.dart';
 import 'resources/krs_theme.dart';
 

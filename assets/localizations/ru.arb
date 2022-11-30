@@ -72,6 +72,11 @@
     "type": "text"
   },
 
+  "favorites": "Избранные",
+  "@favorites": {
+    "type": "text"
+  },
+
   "addToFavorites": "Добавить в избранное",
   "@addToFavorites": {
     "type": "text"

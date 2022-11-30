@@ -67,10 +67,28 @@ class _KrsListViewState extends State<KrsListView> {
 
     super.initState();
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   for (final focusNode in _itemFocusNodes) {
+  //     focusNode.dispose();
+  //   }
+
+  //   _itemFocusNodes = List.generate(widget.itemCount, (index) {
+  //     return FocusNode();
+  //   });
+
+  //   super.didChangeDependencies();
+  // }
   
   @override
   void dispose() {
     _listFocusNode.dispose();
+
+    for (final focusNode in _itemFocusNodes) {
+      focusNode.dispose();
+    }
+
     super.dispose();
   }
 

@@ -1,15 +1,20 @@
-// import 'package:hive/hive.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
 
-// part 'tskg_favorite.g.dart';
+part 'tskg_favorite.freezed.dart';
+part 'tskg_favorite.g.dart';
 
-// @HiveType(typeId: 0)
-// class TskgFavorite {
-//   @HiveField(0)
-//   String showId;
+@freezed
+class TskgFavorite extends HiveObject with _$TskgFavorite {
+  
+  TskgFavorite._();
 
-//   @HiveField(1)
-//   int title;
+  @HiveType(typeId: 0)
+  factory TskgFavorite({
+    @HiveField(0) required String showId,
+    @HiveField(1) required String name,
+    @HiveField(2) @Default(0) int episodeCount,
+    @HiveField(3) required DateTime createdAt,
+  }) = _TskgFavorite;
 
-//   @HiveField(2)
-//   List<Person> friends;
-// }
+}

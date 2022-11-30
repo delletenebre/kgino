@@ -286,7 +286,7 @@ class TskgApiProvider {
             return TskgEpisode(
               id: episodeId,
               showId: showId,
-              title: episodeTitle,
+              name: episodeTitle,
               description: episodeDescription,
               quality: episodeQuality,
               duration: episodeDuration,

@@ -136,7 +136,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   final episode = _episodes[index];
 
                   return EpisodeCard(
-                    titleText: episode.title,
+                    titleText: episode.name,
                     description: '${episode.quality} ${Utils.formatDuration(episode.duration)}',
                     onPressed: () {
                       /// переходим на страницу плеера сериала

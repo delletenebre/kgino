@@ -1,42 +1,46 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../resources/krs_locale.dart';
-import '../../resources/krs_storage.dart';
+import '../../models/tskg/tskg_favorite.dart';
+import '../../models/tskg/tskg_show.dart';
 
-class LocaleController extends Cubit<String> {
+class TskgFavoritesController {
   /// ключ для сохранённого значения
-  static const _prefsKey = 'tskg_favorites';
+  static const boxName = 'tskg_favorites';
 
   /// хранилище данных
-  final _storage = GetIt.instance<KrsStorage>();
+  final box = Hive.box<TskgFavorite>(boxName);
 
-  LocaleController() : super(KrsLocale.defaultLocale) {
-    /// считываем значение с диска
-    
+  TskgFavoritesController();
 
-    // Hive.openBox<TskgFavorites>(_prefsKey).then((box) {
+  /// добавляем сериал в избранное
+  void add(TskgShow show) {
+    final episodeCount = show.seasons.fold(0, (previousValue, season) {
+      return previousValue + season.episodes.length;
+    });
 
-    // });
-    
-    final favorites = _storage.read(_prefsKey,
-      defaultValue: '[]'
+    final favorite = TskgFavorite(
+      showId: show.showId,
+      name: show.name,
+      episodeCount: episodeCount,
+      createdAt: DateTime.now(),
     );
-
-    //emit(locale);
-    emit('ru');
-  }
-
-  void changeLocale(String locale) {
-    emit(locale);
-  }
-
-  @override
-  Future<void> onChange(Change<String> change) async {
-    super.onChange(change);
-
+    
     /// сохраняем значение на диск
-    _storage.write(_prefsKey, change.nextState);
+    box.put(show.showId, favorite);
   }
+
+  /// удаляем сериал из избранного
+  void remove(String showId) {
+    box.delete(showId);
+  }
+
+  List<TskgFavorite> get sorted {
+    final favorites = box.values.toList()
+      ..sort((a, b) {
+        return b.createdAt.compareTo(a.createdAt);
+      });
+
+    return favorites;
+  }
+
 }

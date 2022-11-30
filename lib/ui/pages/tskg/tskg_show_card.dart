@@ -198,13 +198,13 @@ class _TskgShowCardState extends State<TskgShowCard> {
                 ),
 
                 /// описание фильма
-                // Text('description',
-                //   style: TextStyle(
-                //     fontSize: 12.0,
-                //     color: theme.textTheme.caption?.color?.withOpacity(0.36),
-                //   ),
-                //   maxLines: 2,
-                // ),
+                if (widget.show.subtitle.isNotEmpty) Text(widget.show.subtitle,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: theme.textTheme.caption?.color?.withOpacity(0.36),
+                  ),
+                  maxLines: 1,
+                ),
 
               ],
             ),

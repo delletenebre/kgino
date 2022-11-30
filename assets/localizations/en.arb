@@ -72,6 +72,11 @@
     "type": "text"
   },
 
+  "favorites": "Favorites",
+  "@favorites": {
+    "type": "text"
+  },
+
   "addToFavorites": "Add to favorites",
   "@addToFavorites": {
     "type": "text"

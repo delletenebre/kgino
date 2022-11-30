@@ -7,7 +7,7 @@ class TskgEpisode with _$TskgEpisode {
   const factory TskgEpisode({
     @Default(0) int id,
     @Default('') String showId,
-    @Default('') String title,
+    @Default('') String name,
     @Default('') String description,
     @Default('') String quality,
     @Default(Duration.zero) Duration duration,

@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$TskgEpisode {
   int get id => throw _privateConstructorUsedError;
   String get showId => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get quality => throw _privateConstructorUsedError;
   Duration get duration => throw _privateConstructorUsedError;
@@ -37,7 +37,7 @@ abstract class $TskgEpisodeCopyWith<$Res> {
   $Res call(
       {int id,
       String showId,
-      String title,
+      String name,
       String description,
       String quality,
       Duration duration});
@@ -58,7 +58,7 @@ class _$TskgEpisodeCopyWithImpl<$Res, $Val extends TskgEpisode>
   $Res call({
     Object? id = null,
     Object? showId = null,
-    Object? title = null,
+    Object? name = null,
     Object? description = null,
     Object? quality = null,
     Object? duration = null,
@@ -72,9 +72,9 @@ class _$TskgEpisodeCopyWithImpl<$Res, $Val extends TskgEpisode>
           ? _value.showId
           : showId // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       description: null == description
           ? _value.description
@@ -103,7 +103,7 @@ abstract class _$$_TskgEpisodeCopyWith<$Res>
   $Res call(
       {int id,
       String showId,
-      String title,
+      String name,
       String description,
       String quality,
       Duration duration});
@@ -122,7 +122,7 @@ class __$$_TskgEpisodeCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? showId = null,
-    Object? title = null,
+    Object? name = null,
     Object? description = null,
     Object? quality = null,
     Object? duration = null,
@@ -136,9 +136,9 @@ class __$$_TskgEpisodeCopyWithImpl<$Res>
           ? _value.showId
           : showId // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       description: null == description
           ? _value.description
@@ -162,7 +162,7 @@ class _$_TskgEpisode implements _TskgEpisode {
   const _$_TskgEpisode(
       {this.id = 0,
       this.showId = '',
-      this.title = '',
+      this.name = '',
       this.description = '',
       this.quality = '',
       this.duration = Duration.zero});
@@ -175,7 +175,7 @@ class _$_TskgEpisode implements _TskgEpisode {
   final String showId;
   @override
   @JsonKey()
-  final String title;
+  final String name;
   @override
   @JsonKey()
   final String description;
@@ -188,7 +188,7 @@ class _$_TskgEpisode implements _TskgEpisode {
 
   @override
   String toString() {
-    return 'TskgEpisode(id: $id, showId: $showId, title: $title, description: $description, quality: $quality, duration: $duration)';
+    return 'TskgEpisode(id: $id, showId: $showId, name: $name, description: $description, quality: $quality, duration: $duration)';
   }
 
   @override
@@ -198,7 +198,7 @@ class _$_TskgEpisode implements _TskgEpisode {
             other is _$_TskgEpisode &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.showId, showId) || other.showId == showId) &&
-            (identical(other.title, title) || other.title == title) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.quality, quality) || other.quality == quality) &&
@@ -208,7 +208,7 @@ class _$_TskgEpisode implements _TskgEpisode {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, showId, title, description, quality, duration);
+      runtimeType, id, showId, name, description, quality, duration);
 
   @JsonKey(ignore: true)
   @override
@@ -221,7 +221,7 @@ abstract class _TskgEpisode implements TskgEpisode {
   const factory _TskgEpisode(
       {final int id,
       final String showId,
-      final String title,
+      final String name,
       final String description,
       final String quality,
       final Duration duration}) = _$_TskgEpisode;
@@ -231,7 +231,7 @@ abstract class _TskgEpisode implements TskgEpisode {
   @override
   String get showId;
   @override
-  String get title;
+  String get name;
   @override
   String get description;
   @override
