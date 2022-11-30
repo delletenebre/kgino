@@ -126,23 +126,28 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 );
                               },
                               icon: const Icon(Icons.folder_open),
-                              label: Text(locale.selectSeason),
+                              
+                              /// если сезонов несколько "выбрать сезон", иначе
+                              /// "выбрать серию"
+                              label: Text(show.seasons.length > 1
+                                  ? locale.selectSeason : locale.selectEpisode
+                              ),
                             ),
                           ),
 
                           /// кнопка добавления в избранное
-                          // Padding(
-                          //   padding: const EdgeInsets.only(right: 8.0),
-                          //   child: ElevatedButton.icon(
-                          //     style: KrsTheme.filledTonalButtonStyleOf(context),
-                          //     onPressed: () {
-                          //       /// добавляем в избранное
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ElevatedButton.icon(
+                              style: KrsTheme.filledTonalButtonStyleOf(context),
+                              onPressed: () {
+                                /// добавляем в избранное
                                 
-                          //     },
-                          //     icon: const Icon(Icons.bookmark_add_outlined),
-                          //     label: Text(locale.addToFavorites),
-                          //   ),
-                          // ),
+                              },
+                              icon: const Icon(Icons.bookmark_add_outlined),
+                              label: Text(locale.addToFavorites),
+                            ),
+                          ),
 
                           /// кнопка удаления из избранного
                           // Padding(

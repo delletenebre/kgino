@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 
 import '../models/ockg/ockg_movie.dart';
-import '../models/playable_item.dart';
 import '../models/tskg/tskg_show.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
@@ -11,7 +10,6 @@ import '../pages/ockg/ockg_movie_files_page.dart';
 import '../pages/ockg/ockg_player_page.dart';
 import '../pages/search_page.dart';
 import '../pages/settings_page.dart';
-import '../pages/player_page.dart';
 import '../pages/tskg/tskg_player_page.dart';
 import '../pages/tskg/tskg_show_details_page.dart';
 import '../pages/tskg/tskg_show_seasons_page.dart';
@@ -117,17 +115,7 @@ class KrsRouter {
             },
           ),
 
-          GoRoute(
-            path: 'player',
-            builder: (context, state) {
-              final videoPlayerItem = state.extra as PlayableItem;
-              return PlayerPage(
-                videoPlayerItem: videoPlayerItem,
-              );
-            },
-          ),
-
-        ]
+        ],
       ),
 
       

@@ -158,14 +158,15 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: Builder(
-        builder: ((context) {
+        builder: (context) {
+
+          /// если загрузка видео
           if (_pageState == VideoPlayerState.loading) {
-            /// ^ если загрузка видео
             
             /// показываем индикатор загрузки
             return const LoadingIndicator(
@@ -173,8 +174,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
             );
           }
 
+          /// если произошла ошибка
           if (_pageState == VideoPlayerState.error) {
-            /// ^ если произошла ошибка
             
             /// показываем экран с текстом ошибки
             return TryAgainMessage(
@@ -182,6 +183,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
             );
           }
           
+          /// контейнер с видео
           return Stack(
             fit: StackFit.expand,
             alignment: Alignment.center,
@@ -192,27 +194,23 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                 child: AspectRatio(
                   aspectRatio: _playerController!.value.aspectRatio,
                   child: VideoPlayer(_playerController!),
-                  // child: (_subtitleController != null)
-                  //   ? SubtitleWrapper(
-                  //       videoPlayerController: _playerController!,
-                  //       subtitleController: _subtitleController!,
-                  //       subtitleStyle: const SubtitleStyle(
-                  //         textColor: Colors.white,
-                  //         hasBorder: true,
-                  //       ),
-                  //       videoChild: VideoPlayer(_playerController!),
-                  //     )
-                  //   : VideoPlayer(_playerController!),
                 ),
               ),
 
-              ValueListenableBuilder(
-                valueListenable: _playerController!,
-                builder: (context, video, child) {
-                  return ClosedCaption(
-                    text: video.caption.text,
-                  );
-                }
+              /// субтитры
+              Positioned(
+                bottom: 12.0,
+                child: ValueListenableBuilder(
+                  valueListenable: _playerController!,
+                  builder: (context, video, child) {
+                    return ClosedCaption(
+                      text: video.caption.text,
+                      textStyle: TextStyle(
+                        fontSize: 24.0,
+                      ),
+                    );
+                  }
+                ),
               ),
 
               /// оверлей с панелью управления видео
@@ -260,7 +258,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               ),
             ],
           );
-        }),
+        },
       ),
     );
   }

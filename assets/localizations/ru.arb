@@ -62,7 +62,7 @@
     "type": "text"
   },
 
-  "selectEpisode": "Выбрать эпизод",
+  "selectEpisode": "Выбрать серию",
   "@selectEpisode": {
     "type": "text"
   },

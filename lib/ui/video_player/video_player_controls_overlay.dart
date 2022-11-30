@@ -119,14 +119,14 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                 children: [
                   /// название видео
                   _TitleText(widget.titleText,
-                    fontSize: 24.0,
+                    fontSize: 26.0,
                   ),
 
                   /// дополнительная информация о видео
                   if (widget.subtitleText.isNotEmpty) Padding(
                     padding: const EdgeInsets.only(top: 12.0),
                     child: _TitleText(widget.subtitleText,
-                      fontSize: 16.0,
+                      fontSize: 18.0,
                     ),
                   ),
                 ],
