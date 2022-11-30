@@ -2,10 +2,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../controllers/seen_episodes_controller.dart';
 import '../controllers/tskg/tskg_favorites_controller.dart';
-import '../controllers/tskg/tskg_seen_controller.dart';
+import '../models/seen_episode.dart';
 import '../models/tskg/tskg_favorite.dart';
-import '../models/tskg/tskg_seen_episode.dart';
 
 class KrsStorage {
   KrsStorage({
@@ -17,8 +17,8 @@ class KrsStorage {
     Hive.openBox<TskgFavorite>(TskgFavoritesController.boxName);
 
     /// регистрируем модель для просмотренных эпизодов
-    Hive.registerAdapter(TskgSeenEpisodeAdapter());
-    Hive.openBox<TskgSeenEpisode>(TskgSeenController.boxName);
+    Hive.registerAdapter(SeenEpisodeAdapter());
+    Hive.openBox<SeenEpisode>(SeenEpisodesController.boxName);
   }
 
   final SharedPreferences sharedStorage;

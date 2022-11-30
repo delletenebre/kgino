@@ -1,17 +1,15 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:kgino/models/tskg/tskg_seen_episode.dart';
 
-import '../../models/tskg/tskg_episode.dart';
-import '../../models/tskg/tskg_favorite.dart';
+import '../models/seen_episode.dart';
 
-class TskgSeenController {
+class SeenEpisodesController {
   /// ключ для сохранённого значения
-  static const boxName = 'tskg_seen';
+  static const boxName = 'seen_episodes';
 
   /// хранилище данных
-  final box = Hive.box<TskgSeenEpisode>(boxName);
+  final box = Hive.box<SeenEpisode>(boxName);
 
-  TskgSeenController();
+  SeenEpisodesController();
 
   // /// добавляем сериал в избранное
   // void add(TskgEpisode episode) {

@@ -1,35 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tskg_seen_episode.dart';
+part of 'seen_episode.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TskgSeenEpisodeAdapter extends TypeAdapter<TskgSeenEpisode> {
+class SeenEpisodeAdapter extends TypeAdapter<SeenEpisode> {
   @override
   final int typeId = 1;
 
   @override
-  TskgSeenEpisode read(BinaryReader reader) {
+  SeenEpisode read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TskgSeenEpisode(
-      id: fields[0] as int,
-      position: fields[1] as int,
+    return SeenEpisode(
+      id: fields[0] as String,
+      parentId: fields[1] as String,
+      position: fields[2] as int,
+      duration: fields[3] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TskgSeenEpisode obj) {
+  void write(BinaryWriter writer, SeenEpisode obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.position);
+      ..write(obj.parentId)
+      ..writeByte(2)
+      ..write(obj.position)
+      ..writeByte(3)
+      ..write(obj.duration);
   }
 
   @override
@@ -38,7 +44,7 @@ class TskgSeenEpisodeAdapter extends TypeAdapter<TskgSeenEpisode> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TskgSeenEpisodeAdapter &&
+      other is SeenEpisodeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
