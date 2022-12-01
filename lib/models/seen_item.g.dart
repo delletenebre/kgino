@@ -20,14 +20,15 @@ class SeenItemAdapter extends TypeAdapter<SeenItem> {
       tag: fields[0] as String,
       id: fields[1] as String,
       name: fields[2] as String,
-      episodes: (fields[3] as Map).cast<String, SeenEpisode>(),
+      updatedAt: fields[3] as DateTime,
+      episodes: (fields[4] as Map).cast<String, SeenEpisode>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, SeenItem obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.tag)
       ..writeByte(1)
@@ -35,6 +36,8 @@ class SeenItemAdapter extends TypeAdapter<SeenItem> {
       ..writeByte(2)
       ..write(obj.name)
       ..writeByte(3)
+      ..write(obj.updatedAt)
+      ..writeByte(4)
       ..write(obj.episodes);
   }
 

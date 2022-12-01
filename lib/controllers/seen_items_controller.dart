@@ -50,13 +50,19 @@ class SeenItemsController {
         tag: tag,
         id: parentId.toString(),
         name: name,
+        updatedAt: DateTime.now(),
         episodes: {},
       );
 
       /// сохраняем новую запись
       _storage.put(key, seenItem);
 
-    } 
+    } else {
+      /// ^ если запись уже существует в БД
+      
+      /// обновляем дату просмотра
+      seenItem.updatedAt = DateTime.now();
+    }
     
 
     if (seenItem.episodes.containsKey(episodeId.toString())) {
@@ -106,6 +112,10 @@ class SeenItemsController {
     }
 
     return null;
+  }
+
+  List<SeenItem> findByTag(String tag) {
+    return _storage.values.where((item) => item.tag == tag).toList();
   }
 
   // /// удаляем сериал из избранного

@@ -25,14 +25,19 @@ class SeenItem extends HiveObject {
   @HiveField(2)
   final String name;
 
-  /// список просмотренных эпизодов
+  /// дата последнего просмотра
   @HiveField(3)
+  DateTime updatedAt;
+
+  /// список просмотренных эпизодов
+  @HiveField(4)
   final Map<String, SeenEpisode> episodes;
   
   SeenItem({
     required this.tag,
     required this.id,
     required this.name,
+    required this.updatedAt,
     required this.episodes,
   });
 
