@@ -12,6 +12,7 @@ class EpisodeCard extends StatefulWidget {
   final Function()? onPressed;
   final KeyEventResult Function()? onArrowLeft;
   final KeyEventResult Function()? onArrowRight;
+  final double seenValue;
 
   const EpisodeCard({
     super.key,
@@ -23,6 +24,7 @@ class EpisodeCard extends StatefulWidget {
     this.onPressed,
     this.onArrowLeft,
     this.onArrowRight,
+    this.seenValue = 0.0,
   });
 
   @override
@@ -137,85 +139,108 @@ class _EpisodeCardState extends State<EpisodeCard> {
           
           child: SizedBox(
             width: widget.posterSize.width,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                
-                /// постер фильма
-                SizedBox.fromSize(
-                  size: widget.posterSize,
-                  child: Center(
-                    child: AnimatedScale(
-                      duration: KrsTheme.fastAnimationDuration * 2,
-                      scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
-                      child: AnimatedContainer(
-                        duration: KrsTheme.fastAnimationDuration * 2,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            if (_focusNode.hasFocus) BoxShadow(
-                              color: _dominantColor!.withOpacity(0.62),
-                              blurRadius: 20.0,
-                              spreadRadius: 4.0
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    
+                    /// постер фильма
+                    SizedBox.fromSize(
+                      size: widget.posterSize,
+                      child: Center(
+                        child: AnimatedScale(
+                          duration: KrsTheme.fastAnimationDuration * 2,
+                          scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
+                          child: AnimatedContainer(
+                            duration: KrsTheme.fastAnimationDuration * 2,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                if (_focusNode.hasFocus) BoxShadow(
+                                  color: _dominantColor!.withOpacity(0.62),
+                                  blurRadius: 20.0,
+                                  spreadRadius: 4.0
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(12.0),
+                              border: _focusNode.hasFocus
+                                ? Border.all(
+                                    color: theme.colorScheme.primary.withOpacity(0.72),
+                                    width: 3.0,
+                                  )
+                                : null
                             ),
-                          ],
-                          borderRadius: BorderRadius.circular(12.0),
-                          border: _focusNode.hasFocus
-                            ? Border.all(
-                                color: theme.colorScheme.primary.withOpacity(0.72),
-                                width: 3.0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondaryContainer,
+                                borderRadius: BorderRadius.circular(9.0),
+                              ),
+                              child: Center(
+                                child: Icon(Icons.video_file_outlined,
+                                  size: 64.0,
+                                  color: _focusNode.hasFocus
+                                    ? theme.colorScheme.onSecondaryContainer
+                                    : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
+                                ),
                               )
-                            : null
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(9.0),
-                          ),
-                          child: Center(
-                            child: Icon(Icons.video_file_outlined,
-                              size: 64.0,
-                              color: _focusNode.hasFocus
-                                ? theme.colorScheme.onSecondaryContainer
-                                : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
                             ),
-                          )
+                          ),
                         ),
+                      ),
+                    ),
+
+                    /// название эпизода
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: AnimatedDefaultTextStyle(
+                        duration: KrsTheme.animationDuration,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: (_focusNode.hasFocus)
+                            ? theme.textTheme.bodyMedium?.color
+                            : theme.textTheme.bodyMedium?.color?.withOpacity(0.62),
+                        ),
+                        child: Text(widget.titleText,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+
+                    /// описание эпизода
+                    if (widget.description.isNotEmpty) Text(widget.description,
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: (_focusNode.hasFocus)
+                            ? theme.textTheme.caption?.color
+                            : theme.textTheme.caption?.color?.withOpacity(0.36),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                  ],
+                ),
+
+                if (widget.seenValue > 0.0) Positioned(
+                  left: 0.0,
+                  right: 0.0,
+                  top: widget.posterSize.height - 12.0,
+                  child: AnimatedContainer(
+                    duration: KrsTheme.fastAnimationDuration * 2,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: (_focusNode.hasFocus) ? 4.0 : 8.0,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: LinearProgressIndicator(
+                        value: widget.seenValue,
+                        color: (_focusNode.hasFocus) ? null : theme.colorScheme.primary.withOpacity(0.5),
                       ),
                     ),
                   ),
                 ),
-
-                /// название эпизода
-                Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: AnimatedDefaultTextStyle(
-                    duration: KrsTheme.animationDuration,
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: (_focusNode.hasFocus)
-                        ? theme.textTheme.bodyMedium?.color
-                        : theme.textTheme.bodyMedium?.color?.withOpacity(0.62),
-                    ),
-                    child: Text(widget.titleText,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-
-                /// описание эпизода
-                if (widget.description.isNotEmpty) Text(widget.description,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: (_focusNode.hasFocus)
-                        ? theme.textTheme.caption?.color
-                        : theme.textTheme.caption?.color?.withOpacity(0.36),
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
               ],
             ),
           ),

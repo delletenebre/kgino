@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
-import '../../../resources/krs_theme.dart';
 import '../../../utils.dart';
 import '../../movie_rating.dart';
 import 'ockg_movie_card.dart';

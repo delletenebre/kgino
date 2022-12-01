@@ -1,9 +1,12 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
+import '../../controllers/seen_items_controller.dart';
+import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
-import '../../models/tskg/tskg_season.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
@@ -67,6 +70,11 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     final locale = KrsLocale.of(context);
 
     final currentSeason = widget.show.seasons[_selectedSeasonIndex];
+    final seenEpisodesController = GetIt.instance<SeenItemsController>();
+    // final seenEpisodes = seenEpisodesController.findByParentId(
+    //   tag: SeenEpisode.tskgTag,
+    //   parentId: widget.show.showId,
+    // );
 
     return Scaffold(
       body: Column(
@@ -135,9 +143,25 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   // final season = seasonAndEpisode.season;
                   final episode = _episodes[index];
 
+                  /// просмотренное время [0; 1]
+                  double seenValue = 0.0;
+                  final seenEpisode = seenEpisodesController.findEpisode(
+                    tag: SeenItem.tskgTag,
+                    itemId: widget.show.showId,
+                    episodeId: episode.id,
+                  );
+
+                  if (seenEpisode != null) {
+                    seenValue = seenEpisode.percentPosition;
+                  }
+
                   return EpisodeCard(
                     titleText: episode.name,
                     description: '${episode.quality} ${Utils.formatDuration(episode.duration)}',
+
+                    /// время просмотра
+                    seenValue: seenValue,
+
                     onPressed: () {
                       /// переходим на страницу плеера сериала
                       context.goNamed('tskgPlayer',

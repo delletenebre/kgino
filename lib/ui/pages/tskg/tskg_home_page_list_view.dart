@@ -1,18 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:kgino/utils.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/tskg/tskg_favorites_controller.dart';
-import '../../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
-import '../../../models/tskg/tskg_favorite.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../lists/krs_list_view.dart';
@@ -44,10 +42,10 @@ class _TskgHomePageListViewState extends State<TskgHomePageListView> {
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
-    final tskgFavoritesController = TskgFavoritesController();
+    final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
 
     return ValueListenableBuilder(
-      valueListenable: tskgFavoritesController.box.listenable(),
+      valueListenable: tskgFavoritesController.listenable!,
       builder: (context, favoritesBox, _) {
         return BlocProvider<TskgNewsController>(
           create: (context) => TskgNewsController(),

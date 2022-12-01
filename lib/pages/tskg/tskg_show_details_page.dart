@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/tskg/tskg_favorites_controller.dart';
-import '../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/tskg/tskg_favorite.dart';
 import '../../models/tskg/tskg_show.dart';
@@ -37,7 +37,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
 
     final locale = KrsLocale.of(context);
 
-    final tskgFavoritesController = TskgFavoritesController();
+    /// контроллер избранных сериалов
+    final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
 
     return Scaffold(
       body: BlocProvider(
@@ -142,7 +143,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                           ),
 
                           ValueListenableBuilder(
-                            valueListenable: tskgFavoritesController.box.listenable(),
+                            valueListenable: tskgFavoritesController.listenable!,
                             builder: (context, Box<TskgFavorite> box, _) {
                               if (box.containsKey(show.showId)) {
                                 /// ^ если уже добавлен в избранное

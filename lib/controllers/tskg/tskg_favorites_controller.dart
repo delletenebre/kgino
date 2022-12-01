@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../models/tskg/tskg_favorite.dart';
@@ -5,12 +6,21 @@ import '../../models/tskg/tskg_show.dart';
 
 class TskgFavoritesController {
   /// ключ для сохранённого значения
-  static const boxName = 'tskg_favorites';
+  static const _storageKey = 'tskg_favorites';
 
   /// хранилище данных
-  final box = Hive.box<TskgFavorite>(boxName);
+  Box<TskgFavorite>? _storage;
 
-  TskgFavoritesController();
+  /// слушатель изменений в хранилище
+  ValueListenable<Box<TskgFavorite>>? get listenable => _storage!.listenable();
+
+  TskgFavoritesController() {
+    /// регистрируем модель для избранных сериалов 
+    Hive.registerAdapter(TskgFavoriteAdapter());
+    
+    /// инициализируем хранилище
+    Hive.openBox<TskgFavorite>(_storageKey).then((box) => _storage = box);
+  }
 
   /// добавляем сериал в избранное
   void add(TskgShow show) {
@@ -26,16 +36,16 @@ class TskgFavoritesController {
     );
     
     /// сохраняем значение на диск
-    box.put(show.showId, favorite);
+    _storage?.put(show.showId, favorite);
   }
 
   /// удаляем сериал из избранного
   void remove(String showId) {
-    box.delete(showId);
+    _storage?.delete(showId);
   }
 
   List<TskgFavorite> get sorted {
-    final favorites = box.values.toList()
+    final favorites = _storage!.values.toList()
       ..sort((a, b) {
         return b.createdAt.compareTo(a.createdAt);
       });

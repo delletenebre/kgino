@@ -71,7 +71,6 @@ class _SearchPageState extends State<SearchPage> {
                       spacing: 24.0,
                       runSpacing: 24.0,
                       children: items.mapIndexed((index, item) {
-                        print('123: $item');
                         if (item is OckgMovie) {
                           return AutoScrollTag(
                             key: ValueKey(index), 

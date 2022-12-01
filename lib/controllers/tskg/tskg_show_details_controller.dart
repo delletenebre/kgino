@@ -39,7 +39,7 @@ class TskgShowDetailsController extends Cubit<RequestState<TskgShow>> {
     if (!isClosed) {
       /// ^ если контроллер ещё существует
       
-      if (show == null) {
+      if (show.showId.isEmpty) {
         /// ^ если данных нет
         
         emit(const RequestState.empty());

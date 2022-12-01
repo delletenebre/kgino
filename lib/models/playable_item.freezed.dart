@@ -14,19 +14,15 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-PlayableItem _$PlayableItemFromJson(Map<String, dynamic> json) {
-  return _PlayableItem.fromJson(json);
-}
-
 /// @nodoc
 mixin _$PlayableItem {
+  String get id => throw _privateConstructorUsedError;
   String get videoUrl => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
   String get subtitleUrl => throw _privateConstructorUsedError;
   int get startTime => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $PlayableItemCopyWith<PlayableItem> get copyWith =>
       throw _privateConstructorUsedError;
@@ -39,7 +35,8 @@ abstract class $PlayableItemCopyWith<$Res> {
       _$PlayableItemCopyWithImpl<$Res, PlayableItem>;
   @useResult
   $Res call(
-      {String videoUrl,
+      {String id,
+      String videoUrl,
       String title,
       String subtitle,
       String subtitleUrl,
@@ -59,6 +56,7 @@ class _$PlayableItemCopyWithImpl<$Res, $Val extends PlayableItem>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? videoUrl = null,
     Object? title = null,
     Object? subtitle = null,
@@ -66,6 +64,10 @@ class _$PlayableItemCopyWithImpl<$Res, $Val extends PlayableItem>
     Object? startTime = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       videoUrl: null == videoUrl
           ? _value.videoUrl
           : videoUrl // ignore: cast_nullable_to_non_nullable
@@ -99,7 +101,8 @@ abstract class _$$_PlayableItemCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String videoUrl,
+      {String id,
+      String videoUrl,
       String title,
       String subtitle,
       String subtitleUrl,
@@ -117,6 +120,7 @@ class __$$_PlayableItemCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? videoUrl = null,
     Object? title = null,
     Object? subtitle = null,
@@ -124,6 +128,10 @@ class __$$_PlayableItemCopyWithImpl<$Res>
     Object? startTime = null,
   }) {
     return _then(_$_PlayableItem(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       videoUrl: null == videoUrl
           ? _value.videoUrl
           : videoUrl // ignore: cast_nullable_to_non_nullable
@@ -149,18 +157,18 @@ class __$$_PlayableItemCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$_PlayableItem implements _PlayableItem {
   const _$_PlayableItem(
-      {required this.videoUrl,
+      {required this.id,
+      required this.videoUrl,
       required this.title,
       this.subtitle = '',
       this.subtitleUrl = '',
       this.startTime = 0});
 
-  factory _$_PlayableItem.fromJson(Map<String, dynamic> json) =>
-      _$$_PlayableItemFromJson(json);
-
+  @override
+  final String id;
   @override
   final String videoUrl;
   @override
@@ -177,7 +185,7 @@ class _$_PlayableItem implements _PlayableItem {
 
   @override
   String toString() {
-    return 'PlayableItem(videoUrl: $videoUrl, title: $title, subtitle: $subtitle, subtitleUrl: $subtitleUrl, startTime: $startTime)';
+    return 'PlayableItem(id: $id, videoUrl: $videoUrl, title: $title, subtitle: $subtitle, subtitleUrl: $subtitleUrl, startTime: $startTime)';
   }
 
   @override
@@ -185,6 +193,7 @@ class _$_PlayableItem implements _PlayableItem {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_PlayableItem &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.videoUrl, videoUrl) ||
                 other.videoUrl == videoUrl) &&
             (identical(other.title, title) || other.title == title) &&
@@ -196,36 +205,28 @@ class _$_PlayableItem implements _PlayableItem {
                 other.startTime == startTime));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, videoUrl, title, subtitle, subtitleUrl, startTime);
+      runtimeType, id, videoUrl, title, subtitle, subtitleUrl, startTime);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$_PlayableItemCopyWith<_$_PlayableItem> get copyWith =>
       __$$_PlayableItemCopyWithImpl<_$_PlayableItem>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$_PlayableItemToJson(
-      this,
-    );
-  }
 }
 
 abstract class _PlayableItem implements PlayableItem {
   const factory _PlayableItem(
-      {required final String videoUrl,
+      {required final String id,
+      required final String videoUrl,
       required final String title,
       final String subtitle,
       final String subtitleUrl,
       final int startTime}) = _$_PlayableItem;
 
-  factory _PlayableItem.fromJson(Map<String, dynamic> json) =
-      _$_PlayableItem.fromJson;
-
+  @override
+  String get id;
   @override
   String get videoUrl;
   @override

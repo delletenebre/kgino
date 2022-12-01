@@ -243,7 +243,6 @@ class _TitleText extends StatelessWidget {
   final double fontSize;
   
   const _TitleText(this.text, {
-    super.key,
     required this.fontSize,
   });
 

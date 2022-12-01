@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../controllers/seen_items_controller.dart';
 import '../../models/playable_item.dart';
 import '../loading_indicator.dart';
 import '../pages/try_again_message.dart';
@@ -23,11 +25,15 @@ class VideoPlayerView extends StatefulWidget {
   final Future<PlayableItem> Function()? onSkipPrevious;
   final Future<PlayableItem> Function()? onSkipNext;
 
+  /// при обновлении времени просмотра
+  final Function(String episodeId, int position, int duration) onUpdatePosition;
+
   const VideoPlayerView({
     super.key,
     required this.onInitialPlayableItem,
     this.onSkipPrevious,
     this.onSkipNext,
+    required this.onUpdatePosition,
   });
 
   @override
@@ -86,7 +92,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     /// завершаем работу текущего плеера
     _disposeVideoController(widgetDispose: true);
-    
+
     super.dispose();
   }
 
@@ -205,7 +211,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                   builder: (context, video, child) {
                     return ClosedCaption(
                       text: video.caption.text,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 24.0,
                       ),
                     );
@@ -292,20 +298,11 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     /// общая продолжительность видео
     final duration = _playerController?.value.duration.inSeconds ?? 0;
 
-    /// сколько просмотрено в процентах [0,1]
-    final percentPosition = position / duration;
+    // /// сколько просмотрено в процентах [0,1]
+    // final percentPosition = position / duration;
 
     /// сохраняем информацию о времени просмотра эпизода
-    // if (episodeId != null) {
-    //   viewedController.updateEpisode(
-    //     showId: _currentShow.id,
-    //     title: _currentShow.title,
-    //     episodeId: episodeId,
-    //     /// если просмотрено > 95%, считаем, что эпизод просмотрен
-    //     position: percentPosition > 0.95 ? duration : position,
-    //     duration: duration,
-    //   );
-    // }
+    widget.onUpdatePosition(_playableItem.id, position, duration);
 
     /// чтобы экран не уходил в сон
     Wakelock.toggle(
@@ -320,11 +317,13 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
         /// запрашиваем следующее видео
         _changeVideo(widget.onSkipNext!);
+      
       } else {
         /// ^ если следующего видео нет
 
         /// закрываем плеер
         context.pop();
+
       }
     }
 

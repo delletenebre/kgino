@@ -34,8 +34,6 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
 
     final locale = KrsLocale.of(context);
 
-    print('MediaQuery.of(context).size.height ${MediaQuery.of(context).size.height - (32 * 2 + 40)}');
-    
     return Scaffold(
       body: BlocProvider(
         create: (context) => OckgMovieDetailsController(
@@ -144,6 +142,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                 /// проигрывам трейлер фильма
                                 context.push('/player',
                                   extra: PlayableItem(
+                                    id: '%%%trailer%%%',
                                     videoUrl: movie.trailer!.video,
                                     title: movie.name,
                                     subtitle: locale.trailer,

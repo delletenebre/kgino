@@ -1,25 +1,11 @@
 //import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../controllers/seen_episodes_controller.dart';
-import '../controllers/tskg/tskg_favorites_controller.dart';
-import '../models/seen_episode.dart';
-import '../models/tskg/tskg_favorite.dart';
 
 class KrsStorage {
   KrsStorage({
     required this.sharedStorage,
     //required this.secureStorage,
-  }) {
-    /// регистрируем модель для избранных сериалов 
-    Hive.registerAdapter(TskgFavoriteAdapter());
-    Hive.openBox<TskgFavorite>(TskgFavoritesController.boxName);
-
-    /// регистрируем модель для просмотренных эпизодов
-    Hive.registerAdapter(SeenEpisodeAdapter());
-    Hive.openBox<SeenEpisode>(SeenEpisodesController.boxName);
-  }
+  });
 
   final SharedPreferences sharedStorage;
   //final FlutterSecureStorage secureStorage;

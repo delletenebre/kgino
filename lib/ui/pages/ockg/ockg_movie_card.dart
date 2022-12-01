@@ -93,9 +93,6 @@ class _OckgMovieCardState extends State<OckgMovieCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    /// вычисляем размер постера, на который наведён фокус
-    final zoomedPosterSize = widget.posterSize + const Offset(10.0, 12.0);
   
     /// получаем основной цвет постера
     _dominantColor ??= theme.colorScheme.primary;

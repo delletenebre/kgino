@@ -51,6 +51,9 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
 
         return _getPlayableItem();
       } : null,
+      onUpdatePosition: (episodeId, position, duration) {
+        
+      }
     );
   }
 
@@ -64,6 +67,7 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
     }
 
     return PlayableItem(
+      id: currentFile.fileId.toString(),
       videoUrl: videoUrl,
       title: widget.movie.name,
       subtitle: subtitle,

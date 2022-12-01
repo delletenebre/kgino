@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/tskg_api_provider.dart';
+import '../../controllers/seen_items_controller.dart';
 import '../../models/playable_item.dart';
+import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../ui/video_player/video_player_view.dart';
@@ -47,6 +49,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final seenEpisodesController = GetIt.instance<SeenItemsController>();
 
     return VideoPlayerView(
       onInitialPlayableItem: _getPlayableItem,
@@ -66,6 +69,16 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
 
         return _getPlayableItem();
       } : null,
+      onUpdatePosition: (episodeId, position, duration) {
+        seenEpisodesController.updatePosition(
+          tag: SeenItem.tskgTag,
+          parentId: widget.show.showId,
+          episodeId: episodeId,
+          name: widget.show.name,
+          position: position,
+          duration: duration
+        );
+      }
     );
   }
 
@@ -97,6 +110,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     String subtitle = '${episode?.name}';
 
     return PlayableItem(
+      id: '${episode?.id}',
       videoUrl: videoUrl,
       subtitleUrl: subtitleUrl,
       title: widget.show.name,
@@ -105,62 +119,4 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     );
   }
 
-  /// загрузка видео-файла эпизода по id
-  // Future<void> loadEpisode(int episodeId) async {
-    
-    // if (episode != null) {
-    //   /// ^ если данние по эпизоду получены
-      
-    //   /// качество видео по умолчанию - SD
-    //   String videoUrl = episode.video.files.sd.url;
-      
-    //   if (episode.video.files.hd.url.isNotEmpty) {
-    //     /// ^ если есть видео в HD качестве
-        
-    //     /// задаём качество видео HD
-    //     videoUrl = episode.video.files.hd.url;
-    //   }
-
-    //   if (videoUrl.isNotEmpty) {
-    //     /// ^ если ссылка на видео-файл задана
-      
-    //     /// загружаем видео
-    //     _playerController = VideoPlayerController.network(videoUrl);
-
-    //     /// сохраняем информацию о проигрываемом эпизоде
-    //     _currentPlayingEpisode = episode;
-
-    //     try {
-    //       /// инициализируем плеер
-    //       await _playerController?.initialize();
-
-    //       /// запускаем видео
-    //       await _playerController?.play();
-
-    //       /// перематываем в нужную позицию
-    //       await _playerController?.seekTo(Duration(seconds: startTime));
-
-    //       /// обновляем информацию о просмотре
-    //       _playerController?.addListener(changeVideoPositionListener);
-
-    //       /// обновляем состояние UI
-    //       updatePageState(PlayerPageState.idle);
-
-    //     } catch (exception) {
-    //       /// ^ если при загрузке видео произошла ошибка
-    //       /// обновляем состояние UI
-    //       updatePageState(PlayerPageState.error);
-
-    //     }
-
-    //   }
-
-    // } else {
-    //   /// ^ если не смогли загрузить эпизод
-      
-    //   /// показываем ошибку
-    //   updatePageState(PlayerPageState.networkError);
-
-    // }
-  // }
 }
