@@ -97,21 +97,38 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
               itemCount: widget.show.seasons.length,
               itemBuilder: (context, index) {
                 return IconButton(
-                  style: _selectedSeasonIndex == index
-                      ? KrsTheme.filledButtonStyleOf(context)
-                      : KrsTheme.filledTonalButtonStyleOf(context),
+                  style: ButtonStyle(
+                    
+                    backgroundColor: MaterialStateProperty.resolveWith((states) {
+                      if (states.contains(MaterialState.focused)) {
+                        return theme.colorScheme.primary;
+                      }
+
+                      if (_selectedSeasonIndex == index) {
+                        return theme.colorScheme.primary.withOpacity(0.62);
+                      } else {
+                        return theme.colorScheme.secondaryContainer;
+                      }
+                    }),
+
+                    foregroundColor: MaterialStateProperty.resolveWith((states) {
+                      if (states.contains(MaterialState.focused)) {
+                        return theme.colorScheme.onPrimary;
+                      }
+                    }),
+                    textStyle: MaterialStateProperty.resolveWith((states) {
+                      return const TextStyle();
+                    }),
+
+                    overlayColor: MaterialStateProperty.all(null),
+                    
+                  ),
+                  // _selectedSeasonIndex == index
+                  //     ? KrsTheme.filledButtonStyleOf(context)
+                  //     : KrsTheme.filledTonalButtonStyleOf(context),
                   onPressed: () {
-                    /// переходим на страницу плеера фильма
-                    // context.goNamed('tskgShowPlayer',
-                    //   params: {
-                    //     'id': widget.show.showId,    
-                    //   },
-                    //   queryParams: {
-                    //     'startTime': 0.toString(),
-                    //     'fileIndex': index.toString(),
-                    //   },
-                    //   extra: widget.show,
-                    // );
+                    /// при нажатии на номер сезона
+                    _checkEpisodeBySeasonIndex(index);
                   },
                   icon: Text('${index + 1}'),
                 );
@@ -274,34 +291,4 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     
   }
 
-  // _SeasonAndEpisode getSeasonByGlobalEpisodeIndex(int episodeIndex) {
-  //   int indexOffset = 0;
-  //   for (int i = 0; i < widget.show.seasons.length; i++) {
-  //     final season = widget.show.seasons[i];
-  //     final episodeCount = season.episodes.length;
-  //     if (episodeIndex < indexOffset + episodeCount) {
-  //       final relativeEpisodeIndex = indexOffset + episodeCount - episodeIndex - 1;
-  //       return _SeasonAndEpisode(
-  //         season: season,
-  //         episode: season.episodes[relativeEpisodeIndex],
-  //       );
-  //     } else {
-  //       indexOffset += episodeCount;
-  //     }
-  //   }
-
-  //   return _SeasonAndEpisode();
-  // }
 }
-
-
-// class _SeasonAndEpisode {
-//   final TskgSeason season;
-//   final TskgEpisode episode;
-
-//   _SeasonAndEpisode({
-//     this.season = const TskgSeason(),
-//     this.episode = const TskgEpisode(),
-
-//   });
-// }
