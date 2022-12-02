@@ -31,24 +31,26 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
       return;
     }
 
-    emit(const RequestState.loading());
-    
-    /// запроашиваем данные о фильме
-    final movie = await _api.getMovie(movieId);
-
     if (!isClosed) {
-      /// ^ если контроллер ещё существует
+      emit(const RequestState.loading());
       
-      if (movie == null) {
-        /// ^ если данных нет
+      /// запроашиваем данные о фильме
+      final movie = await _api.getMovie(movieId);
+
+      if (!isClosed) {
+        /// ^ если контроллер ещё существует
         
-        emit(const RequestState.empty());
-      
-      } else {
-        /// ^ если запрос выполнен успешно
+        if (movie == null) {
+          /// ^ если данных нет
+          
+          emit(const RequestState.empty());
         
-        emit(RequestState.success(movie.copyWith(showPlayButton: showPlayButton)));
-      
+        } else {
+          /// ^ если запрос выполнен успешно
+          
+          emit(RequestState.success(movie.copyWith(showPlayButton: showPlayButton)));
+        
+        }
       }
     }
   }

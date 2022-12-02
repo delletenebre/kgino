@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -9,8 +8,7 @@ import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
-import '../../resources/krs_theme.dart';
-import '../../ui/lists/krs_list_view.dart';
+import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/pages/episode_card.dart';
 import '../../utils.dart';
 
@@ -83,7 +81,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
           /// номера сезонов
           SizedBox(
             height: 40.0 + 48.0 * 2,
-            child: KrsListView(
+            child: KrsHorizontalListView(
               padding: const EdgeInsets.all(48.0),
               controller: _seasonsScrollController,
               spacing: 8.0,
@@ -142,7 +140,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
           Expanded(
             child: SizedBox.fromSize(
               size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
-              child: KrsListView(
+              child: KrsHorizontalListView(
                 controller: _episodesScrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,

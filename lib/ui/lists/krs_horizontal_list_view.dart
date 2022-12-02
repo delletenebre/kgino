@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-class KrsListView extends StatefulWidget {
+class KrsHorizontalListView extends StatefulWidget {
   final ListObserverController? controller;
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
@@ -23,7 +23,7 @@ class KrsListView extends StatefulWidget {
   final bool scrollToLastPosition;
   final int Function()? requestItemIndex;
 
-  const KrsListView({
+  const KrsHorizontalListView({
     super.key,
     this.controller,
     this.itemFocusNodes,
@@ -42,10 +42,10 @@ class KrsListView extends StatefulWidget {
   });
 
   @override
-  State<KrsListView> createState() => _KrsListViewState();
+  State<KrsHorizontalListView> createState() => _KrsHorizontalListViewState();
 }
 
-class _KrsListViewState extends State<KrsListView> {
+class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
   late final ListObserverController _listObserverController;
 
   bool _needToLoadMore = false;
@@ -67,19 +67,6 @@ class _KrsListViewState extends State<KrsListView> {
 
     super.initState();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   for (final focusNode in _itemFocusNodes) {
-  //     focusNode.dispose();
-  //   }
-
-  //   _itemFocusNodes = List.generate(widget.itemCount, (index) {
-  //     return FocusNode();
-  //   });
-
-  //   super.didChangeDependencies();
-  // }
   
   @override
   void dispose() {
@@ -93,8 +80,7 @@ class _KrsListViewState extends State<KrsListView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget build(context) {
 
     return Focus(
       focusNode: _listFocusNode,
@@ -121,8 +107,8 @@ class _KrsListViewState extends State<KrsListView> {
           
           Expanded(
             // child: RawScrollbar(
-            //   thumbColor: theme.colorScheme.primary.withOpacity(0.5),
-            //   controller: _autoScrollController,
+            //   //thumbColor: theme.colorScheme.primary.withOpacity(0.5),
+            //   controller: _listObserverController.controller,
             //   thickness: 2.0,
             //   radius: const Radius.circular(2.0),
             //   thumbVisibility: true,
@@ -205,14 +191,22 @@ class _KrsListViewState extends State<KrsListView> {
                             curve: Curves.easeIn
                           );
 
-                          if (firstTimeFocus
-                              && widget.onItemFocusedFirstTime != null) {
-                            widget.onItemFocusedFirstTime?.call(currentIndex);
-                          } else {
-                            /// вызываем пользовательский обработчик
-                            widget.onItemFocused?.call(currentIndex);
-                          }
-
+                          /// при быстрой перемотке, для экономии ресурсов,
+                          /// немного тормозим вызов [onItemFocused], в котором
+                          /// происходит загрузка дополнительных сведений
+                          /// о сериале или фильме
+                          Future.delayed(const Duration(milliseconds: 250), () {
+                            if (mounted && _itemFocusNodes[currentIndex].hasFocus) {
+                              if (firstTimeFocus
+                                  && widget.onItemFocusedFirstTime != null) {
+                                widget.onItemFocusedFirstTime?.call(currentIndex);
+                              } else {
+                                /// вызываем пользовательский обработчик
+                                widget.onItemFocused?.call(currentIndex);
+                              }
+                            }
+                          });
+                          
                           if (currentIndex > widget.itemCount - 7) {
                             if (!_needToLoadMore) {
                               _needToLoadMore = true;
