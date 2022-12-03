@@ -120,6 +120,21 @@
     }
   },
 
+  "previousEpisode": "Previous episode",
+  "@previousEpisode": {
+    "type": "text"
+  },
+
+  "nextEpisode": "Next episode",
+  "@nextEpisode": {
+    "type": "text"
+  },
+
+  "startOver": "Start over",
+  "@startOver": {
+    "type": "text"
+  },
+
 
   "cancel": "Cancel",
   "@cancel": {

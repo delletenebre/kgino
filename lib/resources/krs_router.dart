@@ -90,12 +90,12 @@ class KrsRouter {
                 name: 'tskgPlayer',
                 builder: (context, state) {
                   final show = state.extra as TskgShow;
-                  final startTime = int.tryParse(state.queryParams['startTime'] ?? '0');
                   final episodeIndex = int.tryParse(state.queryParams['episodeIndex'] ?? '0');
+                  final episodeId = state.queryParams['episodeId'] ?? '';
 
                   return TskgPlayerPage(
                     show: show,
-                    startTime: startTime ?? 0,
+                    episodeId: episodeId,
                     episodeIndex: episodeIndex ?? 0,
                   );
                 },

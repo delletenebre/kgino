@@ -88,6 +88,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
       },
       child: IconButton(
         focusNode: _focusNode,
+        focusColor: theme.colorScheme.primary,
         onPressed: widget.onPressed,
         icon: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),

@@ -11,6 +11,7 @@ class PlayableItem with _$PlayableItem {
     @Default('') String subtitle,
     @Default('') String subtitleUrl,
     @Default(0) int startTime,
+    @Default(false) bool subtitlesEnabled,
 
   }) = _PlayableItem;
 }

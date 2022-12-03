@@ -22,6 +22,7 @@ mixin _$PlayableItem {
   String get subtitle => throw _privateConstructorUsedError;
   String get subtitleUrl => throw _privateConstructorUsedError;
   int get startTime => throw _privateConstructorUsedError;
+  bool get subtitlesEnabled => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PlayableItemCopyWith<PlayableItem> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $PlayableItemCopyWith<$Res> {
       String title,
       String subtitle,
       String subtitleUrl,
-      int startTime});
+      int startTime,
+      bool subtitlesEnabled});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$PlayableItemCopyWithImpl<$Res, $Val extends PlayableItem>
     Object? subtitle = null,
     Object? subtitleUrl = null,
     Object? startTime = null,
+    Object? subtitlesEnabled = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -88,6 +91,10 @@ class _$PlayableItemCopyWithImpl<$Res, $Val extends PlayableItem>
           ? _value.startTime
           : startTime // ignore: cast_nullable_to_non_nullable
               as int,
+      subtitlesEnabled: null == subtitlesEnabled
+          ? _value.subtitlesEnabled
+          : subtitlesEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -106,7 +113,8 @@ abstract class _$$_PlayableItemCopyWith<$Res>
       String title,
       String subtitle,
       String subtitleUrl,
-      int startTime});
+      int startTime,
+      bool subtitlesEnabled});
 }
 
 /// @nodoc
@@ -126,6 +134,7 @@ class __$$_PlayableItemCopyWithImpl<$Res>
     Object? subtitle = null,
     Object? subtitleUrl = null,
     Object? startTime = null,
+    Object? subtitlesEnabled = null,
   }) {
     return _then(_$_PlayableItem(
       id: null == id
@@ -152,6 +161,10 @@ class __$$_PlayableItemCopyWithImpl<$Res>
           ? _value.startTime
           : startTime // ignore: cast_nullable_to_non_nullable
               as int,
+      subtitlesEnabled: null == subtitlesEnabled
+          ? _value.subtitlesEnabled
+          : subtitlesEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -165,7 +178,8 @@ class _$_PlayableItem implements _PlayableItem {
       required this.title,
       this.subtitle = '',
       this.subtitleUrl = '',
-      this.startTime = 0});
+      this.startTime = 0,
+      this.subtitlesEnabled = false});
 
   @override
   final String id;
@@ -182,10 +196,13 @@ class _$_PlayableItem implements _PlayableItem {
   @override
   @JsonKey()
   final int startTime;
+  @override
+  @JsonKey()
+  final bool subtitlesEnabled;
 
   @override
   String toString() {
-    return 'PlayableItem(id: $id, videoUrl: $videoUrl, title: $title, subtitle: $subtitle, subtitleUrl: $subtitleUrl, startTime: $startTime)';
+    return 'PlayableItem(id: $id, videoUrl: $videoUrl, title: $title, subtitle: $subtitle, subtitleUrl: $subtitleUrl, startTime: $startTime, subtitlesEnabled: $subtitlesEnabled)';
   }
 
   @override
@@ -202,12 +219,14 @@ class _$_PlayableItem implements _PlayableItem {
             (identical(other.subtitleUrl, subtitleUrl) ||
                 other.subtitleUrl == subtitleUrl) &&
             (identical(other.startTime, startTime) ||
-                other.startTime == startTime));
+                other.startTime == startTime) &&
+            (identical(other.subtitlesEnabled, subtitlesEnabled) ||
+                other.subtitlesEnabled == subtitlesEnabled));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, videoUrl, title, subtitle, subtitleUrl, startTime);
+  int get hashCode => Object.hash(runtimeType, id, videoUrl, title, subtitle,
+      subtitleUrl, startTime, subtitlesEnabled);
 
   @JsonKey(ignore: true)
   @override
@@ -223,7 +242,8 @@ abstract class _PlayableItem implements PlayableItem {
       required final String title,
       final String subtitle,
       final String subtitleUrl,
-      final int startTime}) = _$_PlayableItem;
+      final int startTime,
+      final bool subtitlesEnabled}) = _$_PlayableItem;
 
   @override
   String get id;
@@ -237,6 +257,8 @@ abstract class _PlayableItem implements PlayableItem {
   String get subtitleUrl;
   @override
   int get startTime;
+  @override
+  bool get subtitlesEnabled;
   @override
   @JsonKey(ignore: true)
   _$$_PlayableItemCopyWith<_$_PlayableItem> get copyWith =>

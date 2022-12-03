@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerProgressBar extends StatefulWidget {
+  final FocusNode focusNode;
+
   /// обработчик при перемотке видео
   final Function(Duration)? onSeek;
 
@@ -18,6 +20,7 @@ class VideoPlayerProgressBar extends StatefulWidget {
   const VideoPlayerProgressBar({
     super.key,
     this.onSeek,
+    required this.focusNode,
     required this.onEnter,
     required this.playerController,
   });
@@ -28,21 +31,18 @@ class VideoPlayerProgressBar extends StatefulWidget {
 
 class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
 
-  final _focusNode = FocusNode();
-
   @override
   void dispose() {
-    _focusNode.dispose();
     
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    final theme = Theme.of(context);
 
     return Focus(
-      focusNode: _focusNode,
+      focusNode: widget.focusNode,
 
       onFocusChange: (hasFocus) {
         setState(() {
@@ -90,20 +90,25 @@ class _VideoPlayerProgressBarState extends State<VideoPlayerProgressBar> {
           return ProgressBar(
             progress: video.position,
             total: video.duration,
-            buffered: video.buffered.last.end,
+            buffered: video.buffered.isNotEmpty ? video.buffered.last.end : null,
             
             onSeek: (duration) {
               /// вызываем пользовательский обработчик перемотки видео
               widget.onSeek?.call(duration);
             },
 
-            barHeight: 6,
+            barHeight: 6.0,
 
-            thumbRadius: _focusNode.hasFocus ? 12.0 : 6.0,
-            thumbGlowRadius: 24,
+            thumbRadius: 8.0,
 
             timeLabelType: TimeLabelType.remainingTime,
             timeLabelLocation: TimeLabelLocation.sides,
+
+            progressBarColor: widget.focusNode.hasFocus
+              ? theme.colorScheme.primary : theme.colorScheme.outline,
+            thumbColor: widget.focusNode.hasFocus
+              ? theme.colorScheme.primary : theme.colorScheme.outline,
+            
 
             timeLabelTextStyle: const TextStyle(
               fontSize: 16.0,

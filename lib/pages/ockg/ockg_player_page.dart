@@ -51,7 +51,7 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
 
         return _getPlayableItem();
       } : null,
-      onUpdatePosition: (episodeId, position, duration) {
+      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled) {
         
       }
     );

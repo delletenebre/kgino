@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -32,6 +31,7 @@ class SeenItemsController {
     required String name,
     required int position,
     required int duration,
+    required bool subtitlesEnabled,
   }) {
 
     final key = SeenItem.getKey(
@@ -51,6 +51,7 @@ class SeenItemsController {
         id: parentId.toString(),
         name: name,
         updatedAt: DateTime.now(),
+        subtitlesEnabled: subtitlesEnabled,
         episodes: {},
       );
 
@@ -60,6 +61,9 @@ class SeenItemsController {
     } else {
       /// ^ если запись уже существует в БД
       
+      /// обновляем состояние субтитров
+      seenItem.subtitlesEnabled = subtitlesEnabled;
+
       /// обновляем дату просмотра
       seenItem.updatedAt = DateTime.now();
     }
@@ -93,20 +97,14 @@ class SeenItemsController {
 
   }
 
-  // List<SeenItem> findByParentId({required String tag, String parentId = ''}) {
-  //   return _storage.values.where((element) {
-  //     return element.tag == tag && element.parentId == parentId;
-  //   }).toList();
-  // }
-
-  SeenItem? getByKey(String key) => _storage.get(key);
+  SeenItem? findItemByKey(String key) => _storage.get(key);
 
   SeenEpisode? findEpisode({
     required String tag,
     required dynamic itemId,
     required dynamic episodeId,
   }) {
-    final seenItem = getByKey(SeenItem.getKey(tag: tag, id: itemId.toString()));
+    final seenItem = findItemByKey(SeenItem.getKey(tag: tag, id: itemId.toString()));
     if (seenItem != null) {
       return seenItem.episodes[episodeId.toString()];
     }
@@ -117,10 +115,5 @@ class SeenItemsController {
   List<SeenItem> findByTag(String tag) {
     return _storage.values.where((item) => item.tag == tag).toList();
   }
-
-  // /// удаляем сериал из избранного
-  // void remove(String showId) {
-  //   box.delete(showId);
-  // }
 
 }

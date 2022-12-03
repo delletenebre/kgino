@@ -120,6 +120,32 @@
     }
   },
 
+  "enableSubtitles": "Включить субтитры",
+  "@enableSubtitles": {
+    "type": "text"
+  },
+
+  "disableSubtitles": "Выключить субтитры",
+  "@disableSubtitles": {
+    "type": "text"
+  },
+
+
+  "previousEpisode": "Предыдущий эпизод",
+  "@previousEpisode": {
+    "type": "text"
+  },
+
+  "nextEpisode": "Следующий эпизод",
+  "@nextEpisode": {
+    "type": "text"
+  },
+
+  "startOver": "Начать сначала",
+  "@startOver": {
+    "type": "text"
+  },
+
 
   "cancel": "Отмена",
   "@cancel": {

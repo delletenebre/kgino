@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../loading_indicator.dart';
 import 'play_pause_button.dart';
+import 'video_player_controls_button.dart';
 import 'video_player_progress_bar.dart';
 
 class VideoPlayerControlsOverlay extends StatefulWidget {
@@ -33,6 +35,11 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
   /// обработчик при нажатии на обрабатываемую плеером клавишу
   final Function() onShowOverlay;
 
+  /// обработчик при нажатии на кнопку субтитров
+  final Function(bool subtitlesEnabled) onSubtitleToggle;
+
+  final bool subtitlesEnabled;
+
   const VideoPlayerControlsOverlay({
     super.key,
     required this.playerController,
@@ -45,6 +52,8 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
     required this.onSeek,
     required this.onPlayPause,
     required this.onShowOverlay,
+    required this.onSubtitleToggle,
+    this.subtitlesEnabled = false,
   });
 
   @override
@@ -54,7 +63,9 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
 class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay> {
 
   final _overlayFocusNode = FocusNode();
-  final _playButtonFocusNode = FocusNode();
+  final _progressBarFocusNode = FocusNode();
+
+  bool get hasSubtitles => widget.playerController?.closedCaptionFile != null;
 
   bool get isLoading {
     return widget.playerController == null
@@ -76,12 +87,13 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
 
     if (widget.isVisible) {
       /// ^ если панель управления отображается
       
       /// запрашиваем фокус на кнопку остановки/продолжения проигрывания
-      _playButtonFocusNode.requestFocus();
+      _progressBarFocusNode.requestFocus();
     }
 
     return Focus(
@@ -91,9 +103,16 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
       onKey: (node, event) {
 
         if (!widget.isVisible) {
+          /// ^ если оверлей не был виден пользователю
+          
           if (event.isKeyPressed(LogicalKeyboardKey.select) || event.isKeyPressed(LogicalKeyboardKey.enter)) {
+            /// ^ если был нажат Enter
+            
+            /// вызываем обработчик нажатия на play/pause
             widget.onPlayPause.call();
-            _playButtonFocusNode.requestFocus();
+            
+            /// ставим фокус на ProgressBar
+            _progressBarFocusNode.requestFocus();
             
             return KeyEventResult.handled;
           }
@@ -139,20 +158,20 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
             ),
 
             /// остановить/продолжить воспроизведение
-            if (!isLoading) Center(
-              child: ValueListenableBuilder(
-                valueListenable: widget.playerController!,
-                builder: (context, VideoPlayerValue video, child) {
-                  return PlayPauseButton(
-                    focusNode: _playButtonFocusNode,
-                    isPlaying: video.isPlaying,
-                    onPressed: () {
-                      widget.onPlayPause.call();
-                    },
-                  );
-                },
-              ),
-            ),
+            // if (!isLoading) Center(
+            //   child: ValueListenableBuilder(
+            //     valueListenable: widget.playerController!,
+            //     builder: (context, VideoPlayerValue video, child) {
+            //       return PlayPauseButton(
+            //         focusNode: _playButtonFocusNode,
+            //         isPlaying: video.isPlaying,
+            //         onPressed: () {
+            //           widget.onPlayPause.call();
+            //         },
+            //       );
+            //     },
+            //   ),
+            // ),
 
             if (!isLoading) AnimatedPositioned(
               duration: KrsTheme.animationDuration,
@@ -164,9 +183,10 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                   if (widget.playerController!.value.duration.inSeconds > 0) Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: VideoPlayerProgressBar(
+                      focusNode: _progressBarFocusNode,
                       playerController: widget.playerController!,
                       onEnter: () {
-                        widget.playerController?.play();
+                        widget.onPlayPause();
                       },
                       onSeek: (duration) {
                         widget.onSeek.call(duration);
@@ -176,27 +196,48 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
 
                   Row(
                     children: [
+                      /// кнопка включения субтитров
+                      if (hasSubtitles && !widget.subtitlesEnabled) VideoPlayerControlsButton(
+                        
+                        onPressed: () {
+                          /// вызываем пользовательский обработчик включения
+                          /// субтитров
+                          widget.onSubtitleToggle(true);
+                          
+                        },
+                        icon: const Icon(Icons.subtitles),
+                        child: Text(locale.enableSubtitles),
+                        
+                      ),
+
+                      /// кнопка выключения субтитров
+                      if (hasSubtitles && widget.subtitlesEnabled) VideoPlayerControlsButton(
+                        
+                        onPressed: () {
+                          /// вызываем пользовательский обработчик выключения
+                          /// субтитров
+                          widget.onSubtitleToggle.call(false);
+                        },
+                        icon: const Icon(Icons.subtitles_off),
+                        child: Text(locale.disableSubtitles),
+                        
+                      ),
+
                       const Expanded(
                         child: SizedBox(),
                       ),
 
                       /// кнопка предыдущего видео
-                      if (widget.onSkipPrevious != null) OutlinedButton(
+                      if (widget.onSkipPrevious != null) VideoPlayerControlsButton(
+                        
                         onPressed: () {
                           /// вызываем пользовательский обработчик запроса
                           /// предыдущего видео
                           widget.onSkipPrevious?.call();
                         },
 
-                        child: const Icon(Icons.skip_previous,
-                          size: 24.0,
-                          semanticLabel: 'Предыдущее видео',
-                          shadows: [
-                            BoxShadow(
-                              blurRadius: 12.0,
-                              color: Colors.black,
-                            ),
-                          ],
+                        child: Icon(Icons.skip_previous,
+                          semanticLabel: locale.previousEpisode,
                         ),
                         
                       ),
@@ -204,22 +245,15 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                       /// кнопка следующего видео
                       if (widget.onSkipNext != null) Padding(
                         padding: const EdgeInsets.only(left: 12.0),
-                        child: OutlinedButton(
+                        child: VideoPlayerControlsButton(
                           onPressed: () {
                             /// вызываем пользовательский обработчик запроса
                             /// следующего видео
                             widget.onSkipNext?.call();
                           },
 
-                          child: const Icon(Icons.skip_next,
-                            size: 24.0,
-                            semanticLabel: 'Следующее видео',
-                            shadows: [
-                              BoxShadow(
-                                blurRadius: 12.0,
-                                color: Colors.black,
-                              ),
-                            ],
+                          child: Icon(Icons.skip_next,
+                            semanticLabel: locale.nextEpisode,
                           ),
                           
                         ),

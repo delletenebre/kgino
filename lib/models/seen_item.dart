@@ -25,12 +25,16 @@ class SeenItem extends HiveObject {
   @HiveField(2)
   final String name;
 
-  /// дата последнего просмотра
+  /// включены или выключены субтитры
   @HiveField(3)
+  bool subtitlesEnabled;
+
+  /// дата последнего просмотра
+  @HiveField(4)
   DateTime updatedAt;
 
   /// список просмотренных эпизодов
-  @HiveField(4)
+  @HiveField(5)
   final Map<String, SeenEpisode> episodes;
   
   SeenItem({
@@ -39,6 +43,7 @@ class SeenItem extends HiveObject {
     required this.name,
     required this.updatedAt,
     required this.episodes,
+    required this.subtitlesEnabled,
   });
 
 }

@@ -10,14 +10,14 @@ import '../../models/tskg/tskg_show.dart';
 import '../../ui/video_player/video_player_view.dart';
 
 class TskgPlayerPage extends StatefulWidget {
-  final int startTime;
   final int episodeIndex;
+  final String episodeId;
   final TskgShow show;
 
   const TskgPlayerPage({
     super.key,
     required this.show,
-    this.startTime = 0,
+    this.episodeId = '',
     this.episodeIndex = 0,
   });
 
@@ -29,6 +29,8 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
   final _episodes = <TskgEpisode>[];
   late final int _episodeCount;
   int _currentIndex = 0;
+  bool _subtitlesEnabled = false;
+  int _startTime = 0;
 
   @override
   void initState() {
@@ -44,6 +46,38 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       return previousValue + season.episodes.length;
     });
 
+    /// контроллер просмотренных эпизодов
+    final seenItemsController = GetIt.instance<SeenItemsController>();
+    
+    /// проверяем был ли сериал уже в просмотренных
+    final seenShow = seenItemsController.findItemByKey(
+      SeenItem.getKey(
+        tag: SeenItem.tskgTag,
+        id: widget.show.showId,
+      )
+    );
+    
+    if (seenShow != null) {
+      /// ^ если сериал уже был в просмотренных
+      
+      /// восстонавливаем состояние субтитров (включены или выключены)
+      _subtitlesEnabled = seenShow.subtitlesEnabled;
+      
+      /// проверяем был ли эпизод в просмотренных
+      final seenEpisode = seenItemsController.findEpisode(
+        tag: SeenItem.tskgTag,
+        itemId: widget.show.showId,
+        episodeId: widget.episodeId,
+      );
+
+      if (seenEpisode != null) {
+        /// ^ если эпизод уже был в просмотренных
+        
+        /// восстанавливаем время просмотра
+        _startTime = seenEpisode.position;
+      }
+    }
+
     super.initState();
   }
 
@@ -53,30 +87,38 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
 
     return VideoPlayerView(
       onInitialPlayableItem: _getPlayableItem,
+
       onSkipNext: (_currentIndex + 1 < _episodeCount) ? () {
         /// переходим к следующему файлу
         setState(() {
+          _startTime = 0;
           _currentIndex++;
         });
 
         return _getPlayableItem();
       } : null,
+
       onSkipPrevious: (_currentIndex > 0) ? () {
         /// переходим к предыдущему файлу
         setState(() {
+          _startTime = 0;
           _currentIndex--;
         });
 
         return _getPlayableItem();
       } : null,
-      onUpdatePosition: (episodeId, position, duration) {
+
+      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled) {
+        _subtitlesEnabled = subtitlesEnabled;
+
         seenEpisodesController.updatePosition(
           tag: SeenItem.tskgTag,
           parentId: widget.show.showId,
           episodeId: episodeId,
           name: widget.show.name,
           position: position,
-          duration: duration
+          duration: duration,
+          subtitlesEnabled: _subtitlesEnabled,
         );
       }
     );
@@ -115,7 +157,8 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       subtitleUrl: subtitleUrl,
       title: widget.show.name,
       subtitle: subtitle,
-      startTime: widget.startTime,
+      subtitlesEnabled: _subtitlesEnabled,
+      startTime: _startTime,
     );
   }
 

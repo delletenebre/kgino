@@ -3,13 +3,12 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../controllers/seen_items_controller.dart';
 import '../../models/playable_item.dart';
+import '../../resources/krs_locale.dart';
 import '../loading_indicator.dart';
 import '../pages/try_again_message.dart';
 import 'video_player_controls_overlay.dart';
@@ -26,7 +25,7 @@ class VideoPlayerView extends StatefulWidget {
   final Future<PlayableItem> Function()? onSkipNext;
 
   /// при обновлении времени просмотра
-  final Function(String episodeId, int position, int duration) onUpdatePosition;
+  final Function(String episodeId, int position, int duration, bool subtitlesEnabled) onUpdatePosition;
 
   const VideoPlayerView({
     super.key,
@@ -54,6 +53,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
   /// индикатор загрузки данных
   bool get isLoading => _pageState == VideoPlayerState.loading;
+
+  /// включены или выключены субтитры
+  bool _subtitlesEnabled = false;
+
+  /// если больше, чем ноль, то спросить, нужно ли продолжить просмотр с этого
+  /// момента; когда -1 - означает, что спрашивать больше не нужно, т.к. была
+  /// первая инициализация
+  int _startTime = 0;
 
   /// обновление состояния страницы
   void _updatePageState(VideoPlayerState state) {
@@ -137,23 +144,27 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     
     try {
       /// инициализируем плеер
-      await _playerController!.initialize();
+      await _playerController!.initialize().then((_) {
+        /// проверяем нужную позицию
+        if (_startTime > -1) {
+          print('_playableItem.startTime ${_playableItem.startTime}');
+          _startTime = _playableItem.startTime;
+        } else {
+          /// запускаем видео
+          _playerController!.play();
+        }
 
-      /// запускаем видео
-      await _playerController!.play();
+        /// обновляем информацию о просмотре
+        _playerController!.addListener(_changeVideoPositionListener);
 
-      /// перематываем в нужную позицию
-      await _playerController!.seekTo(
-        Duration(
-          seconds: _playableItem.startTime
-        )
-      );
+        /// включены или выключены субтитры
+        _subtitlesEnabled = _playableItem.subtitlesEnabled;
 
-      /// обновляем информацию о просмотре
-      _playerController!.addListener(_changeVideoPositionListener);
+        /// обновляем состояние UI
+        _updatePageState(VideoPlayerState.initialized);
+      });
 
-      /// обновляем состояние UI
-      _updatePageState(VideoPlayerState.initialized);
+      
 
     } catch (exception) {
       /// ^ если при загрузке видео произошла ошибка
@@ -165,6 +176,60 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
   @override
   Widget build(context) {
+    final locale = KrsLocale.of(context);
+    
+    if (_startTime > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        final seekToPosition = await showGeneralDialog(
+          context: context,
+          barrierColor: Colors.black,
+          barrierDismissible: false,
+          pageBuilder: (_, __, ___) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// кнопка продолжить просмотр
+                  ElevatedButton(
+                    autofocus: true,
+                    onPressed: () {
+                      if (mounted) {
+                        Navigator.of(context).pop(true);
+                      }
+                    },
+                    child: Text(locale.continueWatching),
+                  ),
+
+                  /// кнопка начать сначала
+                  ElevatedButton(
+                    onPressed: () {
+                      if (mounted) {
+                        Navigator.of(context).pop(false);
+                      }
+                    },
+                    child: Text(locale.startOver),
+                  ),
+                ],
+              )
+            );
+          },
+        );
+
+        if (seekToPosition == null) {
+          _startTime = -1;
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        } else {
+          if (seekToPosition == true) {
+            await _playerController?.seekTo(Duration(seconds: _startTime));
+          }
+          _startTime = -1;
+          _playerController?.play();
+        }
+        
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -204,7 +269,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               ),
 
               /// субтитры
-              Positioned(
+              if (_subtitlesEnabled) Positioned(
                 bottom: 12.0,
                 child: ValueListenableBuilder(
                   valueListenable: _playerController!,
@@ -259,6 +324,13 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                     /// запрашиваем предыдущее видео
                     _changeVideo(widget.onSkipPrevious!);
                   },
+
+                  subtitlesEnabled: _subtitlesEnabled,
+                  onSubtitleToggle: (subtitlesEnabled) {
+                    setState(() {
+                      _subtitlesEnabled = subtitlesEnabled;
+                    });
+                  },
                   
                 ),
               ),
@@ -302,7 +374,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     // final percentPosition = position / duration;
 
     /// сохраняем информацию о времени просмотра эпизода
-    widget.onUpdatePosition(_playableItem.id, position, duration);
+    widget.onUpdatePosition(_playableItem.id, position, duration, _subtitlesEnabled);
 
     /// чтобы экран не уходил в сон
     Wakelock.toggle(

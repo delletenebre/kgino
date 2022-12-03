@@ -69,10 +69,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
 
     final currentSeason = widget.show.seasons[_selectedSeasonIndex];
     final seenEpisodesController = GetIt.instance<SeenItemsController>();
-    // final seenEpisodes = seenEpisodesController.findByParentId(
-    //   tag: SeenEpisode.tskgTag,
-    //   parentId: widget.show.showId,
-    // );
 
     return Scaffold(
       body: Column(
@@ -185,6 +181,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                         },
                         queryParams: {
                           'startTime': 0.toString(),
+                          'episodeId': episode.id.toString(),
                           'episodeIndex': index.toString(),
                         },
                         extra: widget.show,

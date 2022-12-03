@@ -61,7 +61,6 @@ class _KrsVerticalListViewState extends State<KrsVerticalListView> {
             isFixedHeight: true,
             offset: (offset) => 0.0,
           );
-          // _focusNodes[0].requestFocus();
           _focusNodes[0].children.first.children.first.children.first.children.first.requestFocus();
         }
       },
