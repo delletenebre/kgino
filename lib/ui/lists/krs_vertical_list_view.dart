@@ -56,12 +56,18 @@ class _KrsVerticalListViewState extends State<KrsVerticalListView> {
       },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          _listObserverController.jumpTo(
-            index: 0,
-            isFixedHeight: true,
-            offset: (offset) => 0.0,
-          );
-          _focusNodes[0].children.first.children.first.children.first.children.first.requestFocus();
+          try {
+            _listObserverController.jumpTo(
+              index: 0,
+              isFixedHeight: true,
+              offset: (offset) => 0.0,
+            );
+          
+            _focusNodes[0].children.first.children.first.children.first.children.first.requestFocus();
+          } catch (exception) {
+
+          }
+          
         }
       },
       child: ListViewObserver(

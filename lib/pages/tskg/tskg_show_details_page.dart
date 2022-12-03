@@ -19,6 +19,7 @@ import '../../ui/krs_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/tskg/tskg_show_details.dart';
+import '../../utils.dart';
 
 
 class TskgShowDetailsPage extends StatefulWidget {
@@ -158,7 +159,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: KrsTooltip(
-                                    message: episode.name,
+                                    message: episode.name + Utils.formatDuration(Duration(seconds: 60)),
                                     child: ElevatedButton.icon(
                                       autofocus: true,
                                       style: KrsTheme.filledTonalButtonStyleOf(context),

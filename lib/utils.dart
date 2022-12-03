@@ -37,7 +37,7 @@ class Utils {
       tokens.add('$minutes м');
     }
 
-    if (hours == 0) {
+    if (hours == 0 && seconds > 0) {
       tokens.add('$seconds с');
     }
 

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/material.dart';
@@ -215,31 +216,31 @@ class TskgApiProvider {
         //   /// находим только те элементы, которые указывают на страну
         //   return href.startsWith('/show?country');
         // })
-        .map((element) {
-          /// получаем название страны
-          final countryName = element.attributes['title'] ?? '';
+          .map((element) {
+            /// получаем название страны
+            final countryName = element.attributes['title'] ?? '';
 
-          /// получаем атрибут стиля элемента (изображение как background-image)
-          // String countryImageUrl = element.attributes['style'] ?? '';
-          // if (countryImageUrl.startsWith('background-image: url(')) {
-          //   /// ^ если ссылка на изображение страны не пустая
-            
-          //   /// вырезаем [background-image: url(https://www.ts.kg/img/flags/svg/4x3/ru.svg)]
-          //   countryImageUrl = countryImageUrl
-          //     .substring(22, countryImageUrl.length - 1);
-          // }
+            /// получаем атрибут стиля элемента (изображение как background-image)
+            // String countryImageUrl = element.attributes['style'] ?? '';
+            // if (countryImageUrl.startsWith('background-image: url(')) {
+            //   /// ^ если ссылка на изображение страны не пустая
+              
+            //   /// вырезаем [background-image: url(https://www.ts.kg/img/flags/svg/4x3/ru.svg)]
+            //   countryImageUrl = countryImageUrl
+            //     .substring(22, countryImageUrl.length - 1);
+            // }
 
-          if (countryName == 'Российская Федерация') {
-            return 'Россия';
-          }
-        
+            if (countryName == 'Российская Федерация') {
+              return 'Россия';
+            }
+          
 
-          return countryName;
-          // return TskgCountry(
-          //   name: countryName,
-          //   imageUrl: countryImageUrl,
-          // );
-        }).toList();
+            return countryName;
+            // return TskgCountry(
+            //   name: countryName,
+            //   imageUrl: countryImageUrl,
+            // );
+          }).toList();
 
         /// парсим описание сериала
         final description = getTextByClassName(document, 'app-show-description');
@@ -248,7 +249,7 @@ class TskgApiProvider {
         final seasonElements = document.getElementsByClassName('app-show-seasons-section-full');
         
         /// формируем сезоны сериала
-        final seasons = seasonElements.map((season) {
+        final seasons = seasonElements.mapIndexed((seasonIndex, season) {
           /// парсим заголовок названия сезона
           final seasonTitleTable = season.getElementsByClassName('app-show-season-title-table').first;
           
@@ -260,13 +261,21 @@ class TskgApiProvider {
           final seasonEpisodeRows = seasonEpisodesTable.getElementsByTagName('tr');
           
           /// формируем эпизоды сезона
-          final episodes = seasonEpisodeRows.map((episodeRow) {
+          final episodes = seasonEpisodeRows.mapIndexed((episodeIndex, episodeRow) {
             /// парсим качество записи SD|HD
             final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
             
             /// парсим название и id эпизода
             final episodeTitleElement = episodeRow.getElementsByClassName('text-primary').first;
-            final episodeTitle = episodeTitleElement.text;
+            String episodeTitle = episodeTitleElement.text;
+
+
+            final regExp = RegExp(r'^\d+?\: (.+?)$');
+            
+            if (regExp.hasMatch(episodeTitle)) {
+              episodeTitle = regExp.firstMatch(episodeTitle)?.group(1) ?? '';
+            }
+
             // final episodeUrl = episodeTitleElement.attributes['href'] ?? '';
             final episodeIdAttribute = episodeTitleElement.attributes['id'] ?? '-';
             final episodeId = int.tryParse(episodeIdAttribute.split('-').last) ?? 0;
@@ -286,7 +295,7 @@ class TskgApiProvider {
             return TskgEpisode(
               id: episodeId,
               showId: showId,
-              name: episodeTitle,
+              name: '${seasonIndex + 1}x${episodeIndex + 1} $episodeTitle' ,
               description: episodeDescription,
               quality: episodeQuality,
               duration: episodeDuration,
