@@ -82,6 +82,7 @@ class SeenItemsController {
 
       /// создаём новую запись о просмотре эпизода
       final seenEpisode = SeenEpisode(
+        id: episodeId.toString(),
         position: position,
         duration: duration,
         updatedAt: DateTime.now(),

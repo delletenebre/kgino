@@ -86,7 +86,6 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     if (widget.isVisible) {

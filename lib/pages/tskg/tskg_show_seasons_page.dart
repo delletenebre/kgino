@@ -56,9 +56,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
 
   @override
   void dispose() {
-    // _seasonsScrollController.dispatchOnceObserve();
-    // _episodesScrollController.dispatchOnceObserve();
-
     super.dispose();
   }
 
@@ -117,9 +114,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                     overlayColor: MaterialStateProperty.all(null),
                     
                   ),
-                  // _selectedSeasonIndex == index
-                  //     ? KrsTheme.filledButtonStyleOf(context)
-                  //     : KrsTheme.filledTonalButtonStyleOf(context),
+                  
                   onPressed: () {
                     /// при нажатии на номер сезона
                     _checkEpisodeBySeasonIndex(index);
@@ -150,8 +145,6 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                 requestItemIndex: () => _selectedEpisodeIndex,
                 itemCount: _episodeCount,
                 itemBuilder: (context, index) {
-                  // final seasonAndEpisode = getSeasonByGlobalEpisodeIndex(index);
-                  // final season = seasonAndEpisode.season;
                   final episode = _episodes[index];
 
                   /// просмотренное время [0; 1]

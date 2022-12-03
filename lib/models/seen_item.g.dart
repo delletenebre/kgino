@@ -66,21 +66,24 @@ class SeenEpisodeAdapter extends TypeAdapter<SeenEpisode> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SeenEpisode(
-      position: fields[0] as int,
-      duration: fields[1] as int,
-      updatedAt: fields[2] as DateTime,
+      id: fields[0] as String,
+      position: fields[1] as int,
+      duration: fields[2] as int,
+      updatedAt: fields[3] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, SeenEpisode obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.position)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.duration)
+      ..write(obj.position)
       ..writeByte(2)
+      ..write(obj.duration)
+      ..writeByte(3)
       ..write(obj.updatedAt);
   }
 

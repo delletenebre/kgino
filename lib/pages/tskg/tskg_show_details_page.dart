@@ -5,13 +5,17 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../controllers/seen_items_controller.dart';
 import '../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
+import '../../models/seen_item.dart';
+import '../../models/tskg/tskg_episode.dart';
 import '../../models/tskg/tskg_favorite.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
+import '../../ui/krs_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/tskg/tskg_show_details.dart';
@@ -39,6 +43,9 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
 
     /// контроллер избранных сериалов
     final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
+
+    /// контроллер просмотренных эпизодов
+    final seenItemsController = GetIt.instance<SeenItemsController>();
 
     return Scaffold(
       body: BlocProvider(
@@ -95,27 +102,88 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                         children: [
 
                           /// кнопка начала просмотра
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              autofocus: true,
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// переходим на страницу плеера фильма
-                                context.goNamed('tskgPlayer',
-                                  params: {
-                                    'id': show.showId,
-                                  },
-                                  queryParams: {
-                                    'startTime': '0',
-                                    'episodeIndex': '0',
-                                  },
-                                  extra: show,
+                          
+                          ValueListenableBuilder(
+                            valueListenable: seenItemsController.listenable,
+                            builder: (context, box, child) {
+                              final seenItem = seenItemsController.findItemByKey(
+                                SeenItem.getKey(
+                                  tag: SeenItem.tskgTag,
+                                  id: show.showId,
+                                )
+                              );
+
+                              if (seenItem == null || seenItem.episodes.isEmpty) {
+                                /// ^ если сериал ещё не был просмотрен
+                                
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    autofocus: true,
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      /// переходим на страницу плеера сериала
+                                      context.goNamed('tskgPlayer',
+                                        params: {
+                                          'id': show.showId,    
+                                        },
+                                        queryParams: {
+                                          'episodeIndex': '0',
+                                        },
+                                        extra: show,
+                                      );
+                                    },
+                                    icon: const Icon(Icons.play_arrow),
+                                    label: Text(locale.play),
+                                  ),
                                 );
-                              },
-                              icon: const Icon(Icons.play_arrow),
-                              label: Text(locale.play),
-                            ),
+                                
+                              } else {
+                                /// ^ если у сериала есть просмотреные серии
+                                
+                                final seenEpisodes = seenItem.episodes.values.toList();
+                                seenEpisodes.sort((a, b) {
+                                  return b.updatedAt.compareTo(a.updatedAt);
+                                });
+                                final seenEpisode = seenEpisodes.first;
+                                print(seenEpisodes.first.position);
+                                final episodes = <TskgEpisode>[];
+                                for (final season in show.seasons) {
+                                  episodes.addAll(season.episodes);
+                                }
+                                final episode = episodes.singleWhere((episode) {
+                                  return episode.id.toString() == seenEpisode.id;
+                                });
+                                final episodeIndex = episodes.indexOf(episode);
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: KrsTooltip(
+                                    message: episode.name,
+                                    child: ElevatedButton.icon(
+                                      autofocus: true,
+                                      style: KrsTheme.filledTonalButtonStyleOf(context),
+                                      onPressed: () {
+                                        /// переходим на страницу плеера сериала
+                                        context.goNamed('tskgPlayer',
+                                          params: {
+                                            'id': show.showId,    
+                                          },
+                                          queryParams: {
+                                            'episodeId': seenEpisode.id.toString(),
+                                            'episodeIndex': episodeIndex.toString(),
+                                          },
+                                          extra: show,
+                                        );
+                                      },
+                                      icon: const Icon(Icons.play_arrow),
+                                      label: Text(locale.continueWatching),
+                                    ),
+                                  ),
+                                );
+                              }
+                              
+                            }
                           ),
 
                           /// кнопка выбора эпизода
@@ -186,30 +254,6 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                       ),
                     ),
                   ),
-
-                  // if (movie.files.length > 1) SizedBox(
-                  //   height: 300,
-                  //   child: ListView.separated(
-                  //     scrollDirection: Axis.horizontal,
-                  //     itemCount: movie.files.length,
-                  //     itemBuilder: (context, index) {
-                  //       final file = movie.files[index];
-
-                  //       return InkWell(
-                  //         onTap: () {
-                  //           print(file);
-                  //         },
-                  //         child: Card(
-                  //           child: Text(file.name),
-                  //         ),
-                  //       );
-                  //     },
-                  //     separatorBuilder: (context, index) {
-                  //       return const SizedBox(width: 24.0,);
-                  //     },
-                  //   ),
-                  // )
-
                 ],
               );
             }

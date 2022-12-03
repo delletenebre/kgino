@@ -5,9 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:kgino/utils.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';

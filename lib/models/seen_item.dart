@@ -51,19 +51,24 @@ class SeenItem extends HiveObject {
 @HiveType(typeId: 2)
 class SeenEpisode extends HiveObject {
 
-  /// время просмотра эпизода (в секундах)
+  /// идентификатор эпизода
   @HiveField(0)
+  final String id;
+
+  /// время просмотра эпизода (в секундах)
+  @HiveField(1)
   int position;
 
   /// продолжительность эпизода (в секундах)
-  @HiveField(1)
+  @HiveField(2)
   final int duration;
 
   /// время обновления данных
-  @HiveField(2)
+  @HiveField(3)
   DateTime updatedAt;
   
   SeenEpisode({
+    required this.id,
     required this.position,
     required this.duration,
     required this.updatedAt,
