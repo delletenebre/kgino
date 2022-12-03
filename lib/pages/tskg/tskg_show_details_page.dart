@@ -146,7 +146,6 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                   return b.updatedAt.compareTo(a.updatedAt);
                                 });
                                 final seenEpisode = seenEpisodes.first;
-                                print(seenEpisodes.first.position);
                                 final episodes = <TskgEpisode>[];
                                 for (final season in show.seasons) {
                                   episodes.addAll(season.episodes);
