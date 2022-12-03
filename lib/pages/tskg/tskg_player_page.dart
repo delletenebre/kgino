@@ -83,6 +83,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
+    /// контроллер просмотренных эпизодов
     final seenEpisodesController = GetIt.instance<SeenItemsController>();
 
     return VideoPlayerView(

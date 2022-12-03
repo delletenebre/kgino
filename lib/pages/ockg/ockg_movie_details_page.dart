@@ -101,7 +101,6 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                     'id': '${movie.movieId}',
                                   },
                                   queryParams: {
-                                    'startTime': '0',
                                     'fileIndex': '0',
                                   },
                                   extra: movie,
