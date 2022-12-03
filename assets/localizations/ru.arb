@@ -72,7 +72,7 @@
     "type": "text"
   },
 
-  "favorites": "Избранные",
+  "favorites": "Вы хотели посмотреть",
   "@favorites": {
     "type": "text"
   },
@@ -87,8 +87,9 @@
     "type": "text"
   },
 
-  "added": "Убрать из избранного",
-  "@added": {
+
+  "continueWatching": "Продолжить просмотр",
+  "@continueWatching": {
     "type": "text"
   },
 

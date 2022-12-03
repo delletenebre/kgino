@@ -7,6 +7,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:kgino/utils.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';
@@ -19,6 +20,7 @@ import '../../../resources/krs_locale.dart';
 import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_vertical_list_view.dart';
 import '../../loading_indicator.dart';
+import 'tskg_loading_card.dart';
 import 'tskg_show_card.dart';
 
 class TskgHomePageListView extends StatelessWidget {
@@ -31,6 +33,7 @@ class TskgHomePageListView extends StatelessWidget {
     final locale = KrsLocale.of(context);
     final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
     final seenItemsController = GetIt.instance<SeenItemsController>();
+    
 
     return ValueListenableBuilder(
       valueListenable: seenItemsController.listenable,
@@ -44,7 +47,7 @@ class TskgHomePageListView extends StatelessWidget {
                 name: seenItem.name,
               );
             });
-
+        
         return ValueListenableBuilder(
           valueListenable: tskgFavoritesController.listenable!,
           builder: (context, favoritesBox, _) {
@@ -61,9 +64,27 @@ class TskgHomePageListView extends StatelessWidget {
               create: (context) => TskgNewsController(),
               child: BlocBuilder<TskgNewsController, RequestState<List<TskgShow>>>(
                 builder: (context, state) {
+                  final showList = [];
+
+                  if (seenShows.isNotEmpty) {
+                    showList.add({
+                      'titleText': locale.continueWatching,
+                      'shows': seenShows,
+                    });
+                  }
+
+                  if (state.isLoading) {
+                    showList.add({
+                      'titleText': locale.addedDate('today'),
+                      'shows': [],
+                    });
+                  }
 
                   if (state.isSuccess) {
                     final news = state.data;
+
+                    /// за сколько дней показывать последние добавления
+                    const lastAddedDays = 2;
                     
                     /// сериалы сгруппированные по дате добавления
                     final showsGroupedByDate = groupBy(
@@ -71,56 +92,72 @@ class TskgHomePageListView extends StatelessWidget {
                       (item) => item.date,
                     );
 
-                    /// общее количество разделов
-                    int itemsCount = 1;
-
-                    /// добавляем последние добавления за два дня
-                    const lastAddedDays = 2;
-                    itemsCount += lastAddedDays;
-
-                    /// если есть просмотренные сериалы
-                    if (seenShows.isNotEmpty) {
-                      itemsCount++;
-                    }
-
-                    /// если есть избранные
-                    if (favoriteShows.isNotEmpty) {
-                      itemsCount++;
-                    }
-
-                    return KrsVerticalListView(
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        final date = showsGroupedByDate.keys.elementAt(index)!;
+                    for (int index = 0; index < lastAddedDays; index++) {
+                      final date = showsGroupedByDate.keys.elementAt(index)!;
                         
-                        late final String titleText;
-                        if (date.isToday) {
-                          titleText = locale.addedDate('today');
-                        } else if (date.isYesterday) {
-                          titleText = locale.addedDate('yesterday');
-                        } else {
-                          titleText = locale.addedDate(Jiffy(date).MMMMd);
-                        }
+                      late final String titleText;
+                      if (date.isToday) {
+                        titleText = locale.addedDate('today');
+                      } else if (date.isYesterday) {
+                        titleText = locale.addedDate('yesterday');
+                      } else {
+                        titleText = locale.addedDate(Jiffy(date).MMMMd);
+                      }
 
-                        final shows = showsGroupedByDate.values.elementAt(index);
+                      final shows = showsGroupedByDate.values.elementAt(index);
+
+                      showList.add({
+                        'titleText': titleText,
+                        'shows': shows
+                      });
+
+                    }
+                  }
+
+                  if (favoriteShows.isNotEmpty) {
+                    showList.add({
+                      'titleText': locale.favorites,
+                      'shows': favoriteShows,
+                    });
+                  }
+
+                  if (showList.isNotEmpty) {
+                    return KrsVerticalListView(
+                      key: ValueKey(showList.length),
+                      itemCount: showList.length,
+                      itemBuilder: (context, index) {
+                        final showItem = showList[index];
+
+                        if (showItem['shows'].isEmpty) {
+                          return SizedBox.fromSize(
+                            size: const Size.fromHeight(tskgListViewHeight + 16.0),
+                            child: KrsHorizontalListView(
+                              titleText: showItem['titleText'],
+                              itemCount: 3,
+                              itemBuilder: (context, index) {
+                                return const TskgLoadingCard();
+                              }
+                            ),
+                          );
+                        }
 
                         return SizedBox.fromSize(
                           size: const Size.fromHeight(tskgListViewHeight + 16.0),
                           child: KrsHorizontalListView(
                             onItemFocused: (index) {
                               context.read<TskgShowDetailsController>().getShowById(
-                                shows[index].showId,
+                                showItem['shows'].elementAt(index).showId,
                               );
                             },
-                            titleText: titleText,
-                            itemCount: shows.length,
+                            titleText: showItem['titleText'],
+                            itemCount: showItem['shows'].length,
                             itemBuilder: (context, index) {
-                              final show = shows[index];
-
+                              final show = showItem['shows'].elementAt(index);
+                              
                               return TskgShowCard(
                                 show: show,
                                 
-                                /// при выборе элемента
+                                /// при выб оре элемента
                                 onTap: () {
                                   /// переходим на страницу деталей о фильме
                                   context.goNamed('tskgShowDetails', params: {
@@ -135,184 +172,6 @@ class TskgHomePageListView extends StatelessWidget {
                       },
                       
                     );
-
-                    // return ListView.separated(
-                    //   controller: _autoScrollController,
-                    //   itemCount: itemsCount,
-                      
-                    //   /// разделитель
-                    //   separatorBuilder: (context, index) {
-                    //     return const SizedBox(height: 24.0);
-                    //   },
-
-                    //   itemBuilder: (context, index) {
-                    //     /// последний элемент в списке - отступ для красоты
-                    //     if (index == itemsCount - 1) {
-                    //       return const SizedBox(height: 40.0);
-                    //     }
-
-                    //     /// первый элемент и если есть просмотренные сериалы
-                    //     if (seenShows.isNotEmpty && index == 0) {
-                    //       return Focus(
-                    //         skipTraversal: true,
-                    //         onFocusChange: (hasFocus) {
-                    //           if (hasFocus) {
-                    //             _autoScrollController.scrollToIndex(index,
-                    //               preferPosition: AutoScrollPosition.begin,
-                    //             );
-                    //           }
-                    //         },
-                    //         child: AutoScrollTag(
-                    //           key: ValueKey(index),
-                    //           controller: _autoScrollController,
-                    //           index: index,
-                    //           child: SizedBox.fromSize(
-                    //             size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    //             child: KrsListView(
-                    //               /// TODO check remove all favorites and add two
-                    //               /// RangeError (index): Invalid value: Only valid value is 0: 1
-                    //               /// in KrsListView -> focusNode: _itemFocusNodes[index],
-                    //               key: ValueKey('seenShows ${seenShows.length}'),
-                    //               onItemFocused: (index) {
-                    //                 context.read<TskgShowDetailsController>().getShowById(
-                    //                   seenShows.elementAt(index).showId,
-                    //                 );
-                    //               },
-                    //               titleText: 'Продолжить просмотр',
-                    //               itemCount: seenShows.length,
-                    //               itemBuilder: (context, index) {
-                    //                 final show = seenShows.elementAt(index);
-
-                    //                 return TskgShowCard(
-                    //                   show: show,
-                                      
-                    //                   /// при выборе элемента
-                    //                   onTap: () {
-                    //                     /// переходим на страницу деталей о фильме
-                    //                     context.goNamed('tskgShowDetails', params: {
-                    //                       'id': show.showId,
-                    //                     });
-
-                    //                   },
-                    //                 );
-                    //               },
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       );
-                    //     }
-
-                    //     if (favoriteShows.isNotEmpty && index >= itemsCount - 2) {
-                    //       return Focus(
-                    //         skipTraversal: true,
-                    //         onFocusChange: (hasFocus) {
-                    //           if (hasFocus) {
-                    //             _autoScrollController.scrollToIndex(index,
-                    //               preferPosition: AutoScrollPosition.begin,
-                    //             );
-                    //           }
-                    //         },
-                    //         child: AutoScrollTag(
-                    //           key: ValueKey(index),
-                    //           controller: _autoScrollController,
-                    //           index: index,
-                    //           child: SizedBox.fromSize(
-                    //             size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    //             child: KrsListView(
-                    //               /// TODO check remove all favorites and add two
-                    //               /// RangeError (index): Invalid value: Only valid value is 0: 1
-                    //               /// in KrsListView -> focusNode: _itemFocusNodes[index],
-                    //               key: ValueKey('favoriteShows ${favoriteShows.length}'),
-                    //               onItemFocused: (index) {
-                    //                 context.read<TskgShowDetailsController>().getShowById(
-                    //                   favoriteShows.elementAt(index).showId,
-                    //                 );
-                    //               },
-                    //               titleText: locale.favorites,
-                    //               itemCount: favoriteShows.length,
-                    //               itemBuilder: (context, index) {
-                    //                 final show = favoriteShows.elementAt(index);
-
-                    //                 return TskgShowCard(
-                    //                   show: show,
-                                      
-                    //                   /// при выборе элемента
-                    //                   onTap: () {
-                    //                     /// переходим на страницу деталей о фильме
-                    //                     context.goNamed('tskgShowDetails', params: {
-                    //                       'id': show.showId,
-                    //                     });
-
-                    //                   },
-                    //                 );
-                    //               },
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       );
-                    //     }
-
-                    //     // TODO fix index if seenShows.isNotEmpty
-                        
-                    //     /// дата добавления сериала
-                    //     final date = showsGroupedByDate.keys.elementAt(index)!;
-                        
-                    //     late final String titleText;
-                    //     if (date.isToday) {
-                    //       titleText = locale.addedDate('today');
-                    //     } else if (date.isYesterday) {
-                    //       titleText = locale.addedDate('yesterday');
-                    //     } else {
-                    //       titleText = locale.addedDate(Jiffy(date).MMMMd);
-                    //     }
-
-                    //     final shows = showsGroupedByDate.values.elementAt(index);
-
-                    //     return Focus(
-                    //       skipTraversal: true,
-                    //       onFocusChange: (hasFocus) {
-                    //         if (hasFocus) {
-                    //           _autoScrollController.scrollToIndex(index,
-                    //             preferPosition: AutoScrollPosition.begin,
-                    //           );
-                    //         }
-                    //       },
-                    //       child: AutoScrollTag(
-                    //         key: ValueKey(index), 
-                    //         controller: _autoScrollController,
-                    //         index: index,
-                    //         child: SizedBox.fromSize(
-                    //           size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    //           child: KrsListView(
-                    //             onItemFocused: (index) {
-                    //               context.read<TskgShowDetailsController>().getShowById(
-                    //                 shows[index].showId,
-                    //               );
-                    //             },
-                    //             titleText: titleText,
-                    //             itemCount: shows.length,
-                    //             itemBuilder: (context, index) {
-                    //               final show = shows[index];
-
-                    //               return TskgShowCard(
-                    //                 show: show,
-                                    
-                    //                 /// при выборе элемента
-                    //                 onTap: () {
-                    //                   /// переходим на страницу деталей о фильме
-                    //                   context.goNamed('tskgShowDetails', params: {
-                    //                     'id': show.showId,
-                    //                   });
-
-                    //                 },
-                    //               );
-                    //             },
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    // );
                   }
 
                   return const LoadingIndicator();

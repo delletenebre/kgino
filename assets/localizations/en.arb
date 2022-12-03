@@ -87,6 +87,12 @@
     "type": "text"
   },
 
+
+  "continueWatching": "Continue Watching",
+  "@continueWatching": {
+    "type": "text"
+  },
+  
   "addedDate": "{date, select, today{Added today} yesterday{Added yesterday} other{Added {date}} }",
   "@addedDate": {
     "placeholders": {

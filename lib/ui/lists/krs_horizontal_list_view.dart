@@ -152,12 +152,11 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                     },
                     onFocusChange: (hasFocus) {
                       if (hasFocus) {
-                        
                         int currentIndex = index;
                         
                         final firstTimeFocus = !_listHasFocus;
 
-                        if (widget.scrollToLastPosition && firstTimeFocus) {
+                        if (widget.scrollToLastPosition && firstTimeFocus) {                          
                           /// ^ если фокус был только что перемещён на список
                           
                           if (widget.requestItemIndex != null) {
