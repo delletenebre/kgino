@@ -53,13 +53,13 @@ class KrsRouter {
                 name: 'ockgMoviePlayer',
                 builder: (context, state) {
                   final movie = state.extra as OckgMovie;
-                  final startTime = int.tryParse(state.queryParams['startTime'] ?? '0');
                   final fileIndex = int.tryParse(state.queryParams['fileIndex'] ?? '0');
+                  final fileId = state.queryParams['startId'] ?? '';
 
                   return OckgPlayerPage(
                     movie: movie,
-                    startTime: startTime ?? 0,
                     fileIndex: fileIndex ?? 0,
+                    fileId: fileId,
                   );
                 },
               ),

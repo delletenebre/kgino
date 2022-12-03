@@ -36,7 +36,7 @@ class SeenItemsController {
 
     final key = SeenItem.getKey(
       tag: tag,
-      id: parentId,
+      id: parentId.toString(),
     );
 
     /// ищем запись просмотра сериала или фильма в БД

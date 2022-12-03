@@ -148,6 +148,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         /// проверяем нужную позицию
         if (_startTime > -1) {
           _startTime = _playableItem.startTime;
+          if (_startTime == 0) {
+            _playerController!.play();
+          }
         } else {
           /// запускаем видео
           _playerController!.play();

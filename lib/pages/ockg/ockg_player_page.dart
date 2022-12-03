@@ -67,7 +67,7 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
 
       if (seenEpisode != null) {
         /// ^ если эпизод уже был в просмотренных
-        
+        print('_startTime $_startTime');
         /// восстанавливаем время просмотра
         _startTime = seenEpisode.position;
       }
