@@ -9,12 +9,9 @@ import 'package:kgino/utils.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';
-import '../../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
-import '../../../models/seen_item.dart';
-import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/home_page_vertical_list_view.dart';
@@ -70,7 +67,7 @@ class TskgHomePageListView extends StatelessWidget {
           
           final favoriteShows = tskgFavoritesController.data;
 
-          final showList = [];
+          final showList = <Map<String, dynamic>>[];
 
           if (seenShows.isNotEmpty) {
             showList.add({
@@ -129,27 +126,50 @@ class TskgHomePageListView extends StatelessWidget {
 
           if (showList.isNotEmpty) {
             return HomePageVerticalListView(
-              //key: ValueKey(showList.length),
+              // children: showList.map((showItem) {
+              //   //final showItem = showList[index];
+
+              //   return SizedBox.fromSize(
+              //     size: const Size.fromHeight(tskgListViewHeight + 16.0),
+              //     child: KrsHorizontalListView(
+              //       key: ValueKey(showItem['shows'].toString()),
+              //       onItemFocused: (index) {
+              //         context.read<TskgShowDetailsController>().getShowById(
+              //           showItem['shows'].elementAt(index).showId,
+              //         );
+              //       },
+              //       titleText: showItem['titleText'],
+              //       itemCount: showItem['shows'].length,
+              //       itemBuilder: (context, index) {
+              //         final show = showItem['shows'].elementAt(index);
+                      
+              //         return TskgShowCard(
+              //           show: show,
+                        
+              //           /// при выб оре элемента
+              //           onTap: () {
+              //             /// переходим на страницу деталей о фильме
+              //             context.goNamed('tskgShowDetails',
+              //               params: {
+              //                 'id': show.showId,
+              //               },
+              //               extra: context.read<TskgFavoritesCubit>(),
+              //             );
+
+              //           },
+              //         );
+              //       },
+              //     ),
+              //   );
+              // }).toList()
               itemCount: showList.length,
               itemBuilder: (context, index) {
                 final showItem = showList[index];
 
-                if (showItem['shows'].isEmpty) {
-                  return SizedBox.fromSize(
-                    size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    child: KrsHorizontalListView(
-                      titleText: showItem['titleText'],
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        return const TskgLoadingCard();
-                      }
-                    ),
-                  );
-                }
-
                 return SizedBox.fromSize(
                   size: const Size.fromHeight(tskgListViewHeight + 16.0),
                   child: KrsHorizontalListView(
+                    //key: ValueKey(showItem['shows'].toString()),
                     onItemFocused: (index) {
                       context.read<TskgShowDetailsController>().getShowById(
                         showItem['shows'].elementAt(index).showId,

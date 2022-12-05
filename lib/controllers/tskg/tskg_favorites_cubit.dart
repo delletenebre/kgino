@@ -15,7 +15,9 @@ class TskgFavoritesCubit extends Cubit<RequestState<List<TskgShow>>> {
 
   TskgFavoritesCubit() : super(const RequestState.loading()) {
     /// регистрируем модель для избранных сериалов 
-    Hive.registerAdapter(TskgFavoriteAdapter());
+    if (!Hive.isAdapterRegistered(TskgFavoriteAdapter().typeId)) {
+      Hive.registerAdapter(TskgFavoriteAdapter());
+    }
     
     /// инициализируем хранилище
     Hive.openBox<TskgFavorite>(_storageKey).then((box) {

@@ -23,6 +23,7 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
   int _currentFocusableIndex = 0;
 
   final _focusNode = FocusNode();
+  late List<FocusNode> _focusNodes;
 
   @override
   void initState() {
@@ -30,20 +31,21 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
       controller: ScrollController(),
     );
 
+    _focusNodes = List.generate(widget.itemCount, (index) => FocusNode());
+
     super.initState();
   }
   
   @override
   void dispose() {
     _focusNode.dispose();
+
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
     
     _listObserverController.controller?.dispose();
     super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant HomePageVerticalListView oldWidget) {
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -65,7 +67,8 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
               curve: Curves.easeIn
             );
 
-            _focusNode.focusableChildAt(_currentFocusableIndex)?.requestFocus();
+            _focusNodes[_currentFocusableIndex].firstFocusableChild?.requestFocus();
+            //_focusNode.focusableChildAt(_currentFocusableIndex)?.requestFocus();
 
             return KeyEventResult.handled;
           }
@@ -83,7 +86,7 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
               curve: Curves.easeIn
             );
 
-            _focusNode.focusableChildAt(_currentFocusableIndex)?.requestFocus();
+            _focusNodes[_currentFocusableIndex].firstFocusableChild?.requestFocus();
 
             return KeyEventResult.handled;
           }
@@ -101,7 +104,8 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
             );
             
             /// берём в фокус первый элемент в списке
-            _focusNode.focusableChildAt(_currentFocusableIndex)?.requestFocus();
+            _focusNodes[_currentFocusableIndex].firstFocusableChild?.requestFocus();
+            //_focusNode.focusableChildAt(_currentFocusableIndex)?.requestFocus();
 
           } catch (exception) {
             debugPrint('exception: $exception');
@@ -111,50 +115,51 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
       },
       child: ListViewObserver(
         controller: _listObserverController,
-        child: ListView(
-          controller: _listObserverController.controller,
-          children: List.generate(widget.itemCount, (index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
-              child: widget.itemBuilder(context, index),
-            );
-          }),
-        ),
-        // child: ListView.builder(
-        //   clipBehavior: Clip.antiAlias,
+        // child: ListView(
         //   controller: _listObserverController.controller,
-        //   padding: const EdgeInsets.symmetric(vertical: 32.0),
-        //   itemCount: widget.itemCount,
-          
-        //   /// разделитель
-        //   // separatorBuilder: (context, index) {
-        //   //   return const SizedBox(height: 24.0);
-        //   // },
-
-        //   /// основной контент
-        //   itemBuilder: (context, index) {
+        //   children: List.generate(widget.itemCount, (index) {
         //     return Padding(
         //       padding: const EdgeInsets.only(bottom: 24.0),
-        //       child: Focus(
-        //         canRequestFocus: false,
-        //         skipTraversal: true,
-        //         onFocusChange: (hasFocus) {
-        //           if (hasFocus) {
-        //             _currentFocusableIndex = index;
-        //             _listObserverController.animateTo(
-        //               index: index,
-        //               isFixedHeight: true,
-        //               offset: (offset) => 0.0,
-        //               duration: const Duration(milliseconds: 50),
-        //               curve: Curves.easeIn
-        //             );
-        //           }
-        //         },
-        //         child: widget.itemBuilder(context, index),
-        //       ),
+        //       child: widget.itemBuilder(context, index),
         //     );
-        //   },
+        //   }),
         // ),
+        child: ListView.builder(
+          clipBehavior: Clip.antiAlias,
+          controller: _listObserverController.controller,
+          padding: const EdgeInsets.symmetric(vertical: 32.0),
+          itemCount: widget.itemCount,
+          
+          /// разделитель
+          // separatorBuilder: (context, index) {
+          //   return const SizedBox(height: 24.0);
+          // },
+
+          /// основной контент
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: Focus(
+                focusNode: _focusNodes[index],
+                canRequestFocus: false,
+                skipTraversal: true,
+                onFocusChange: (hasFocus) {
+                  if (hasFocus) {
+                    _currentFocusableIndex = index;
+                    _listObserverController.animateTo(
+                      index: index,
+                      isFixedHeight: true,
+                      offset: (offset) => 0.0,
+                      duration: const Duration(milliseconds: 50),
+                      curve: Curves.easeIn
+                    );
+                  }
+                },
+                child: widget.itemBuilder(context, index),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

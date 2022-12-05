@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-class KrsHorizontalListView extends StatefulWidget {
+class KrsHorizontalListView2 extends StatefulWidget {
   final ListObserverController? controller;
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
@@ -11,6 +11,9 @@ class KrsHorizontalListView extends StatefulWidget {
 
   /// при получении фокуса на элемент
   final void Function(int index)? onItemFocused;
+  
+  /// при получении фокуса на элемент с другого элемента приложения
+  final void Function(int index)? onItemFocusedFirstTime;
 
   final void Function()? onLoadNextPage;
   final EdgeInsets padding;
@@ -19,13 +22,14 @@ class KrsHorizontalListView extends StatefulWidget {
   final bool scrollToLastPosition;
   final int Function()? requestItemIndex;
 
-  const KrsHorizontalListView({
+  const KrsHorizontalListView2({
     super.key,
     this.controller,
     this.itemFocusNodes,
     required this.itemCount,
     required this.itemBuilder,
     this.onItemFocused,
+    this.onItemFocusedFirstTime,
     this.onLoadNextPage,
     this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
     this.spacing = 32.0,
@@ -36,10 +40,10 @@ class KrsHorizontalListView extends StatefulWidget {
   });
 
   @override
-  State<KrsHorizontalListView> createState() => _KrsHorizontalListViewState();
+  State<KrsHorizontalListView2> createState() => _KrsHorizontalListView2State();
 }
 
-class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
+class _KrsHorizontalListView2State extends State<KrsHorizontalListView2> {
   late final ListObserverController _listObserverController;
 
   bool _needToLoadMore = false;
@@ -70,24 +74,24 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
     super.dispose();
   }
 
-  // @override
-  // void didUpdateWidget(covariant KrsHorizontalListView oldWidget) {
-  //   if (widget.itemCount != oldWidget.itemCount) {
-  //     for (final focusNode in _itemFocusNodes) {
-  //       focusNode.dispose();
-  //     }
+  @override
+  void didUpdateWidget(covariant KrsHorizontalListView2 oldWidget) {
+    if (widget.itemCount != oldWidget.itemCount) {
+      for (final focusNode in _itemFocusNodes) {
+        focusNode.dispose();
+      }
 
-  //     _itemFocusNodes = List.generate(widget.itemCount, (index) {
-  //       return FocusNode();
-  //     });
+      _itemFocusNodes = List.generate(widget.itemCount, (index) {
+        return FocusNode();
+      });
+    }
 
-  //   }
-
-  //   super.didUpdateWidget(oldWidget);
-  // }
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(context) {
+
     return Focus(
       canRequestFocus: false,
       skipTraversal: true,
@@ -212,8 +216,13 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                               currentIndex = widget.itemCount - 1;
                             }
                             if (mounted && _itemFocusNodes[currentIndex].hasFocus) {
-                              /// вызываем пользовательский обработчик
-                              widget.onItemFocused?.call(currentIndex);
+                              if (firstTimeFocus
+                                  && widget.onItemFocusedFirstTime != null) {
+                                widget.onItemFocusedFirstTime?.call(currentIndex);
+                              } else {
+                                /// вызываем пользовательский обработчик
+                                widget.onItemFocused?.call(currentIndex);
+                              }
                             }
                           });
                           
