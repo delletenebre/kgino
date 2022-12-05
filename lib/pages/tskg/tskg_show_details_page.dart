@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/seen_items_controller.dart';
 import '../../controllers/tskg/tskg_favorites_controller.dart';
+import '../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
@@ -24,9 +25,11 @@ import '../../utils.dart';
 
 class TskgShowDetailsPage extends StatefulWidget {
   final String showId;
+  final TskgFavoritesCubit favoritesController;
 
   const TskgShowDetailsPage(this.showId, {
     super.key,
+    required this.favoritesController,
   });
 
   @override
@@ -43,7 +46,9 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
     final locale = KrsLocale.of(context);
 
     /// контроллер избранных сериалов
-    final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
+    //final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
+    // final tskgFavoritesController = context.watch<TskgFavoritesCubit>().state;
+
 
     /// контроллер просмотренных эпизодов
     final seenItemsController = GetIt.instance<SeenItemsController>();
@@ -210,10 +215,10 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                             ),
                           ),
 
-                          ValueListenableBuilder(
-                            valueListenable: tskgFavoritesController.listenable!,
-                            builder: (context, Box<TskgFavorite> box, _) {
-                              if (box.containsKey(show.showId)) {
+                          BlocBuilder<TskgFavoritesCubit, RequestState<List<TskgShow>>>(
+                            bloc: widget.favoritesController,
+                            builder: (context, state) {
+                              if (widget.favoritesController.containsShow(show.showId)) {
                                 /// ^ если уже добавлен в избранное
                                 
                                 /// кнопка удаления из избранного
@@ -223,7 +228,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                     style: KrsTheme.filledTonalButtonStyleOf(context),
                                     onPressed: () {
                                       /// убираем из избранного
-                                      tskgFavoritesController.remove(show.showId);
+                                      widget.favoritesController.remove(show.showId);
                                     },
                                     icon: const Icon(Icons.bookmark_remove),
                                     label: Text(locale.removeFromFavorites),
@@ -240,7 +245,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                     style: KrsTheme.filledTonalButtonStyleOf(context),
                                     onPressed: () {
                                       /// добавляем в избранное
-                                      tskgFavoritesController.add(show);
+                                      widget.favoritesController.add(show);
                                     },
                                     icon: const Icon(Icons.bookmark_add_outlined),
                                     label: Text(locale.addToFavorites),
@@ -248,7 +253,46 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 );
                               }
                             }
-                          ),
+                          )
+                          // ValueListenableBuilder(
+                          //   valueListenable: tskgFavoritesController.listenable!,
+                          //   builder: (context, Box<TskgFavorite> box, _) {
+                          //     if (box.containsKey(show.showId)) {
+                          //       /// ^ если уже добавлен в избранное
+                                
+                          //       /// кнопка удаления из избранного
+                          //       return Padding(
+                          //         padding: const EdgeInsets.only(right: 8.0),
+                          //         child: ElevatedButton.icon(
+                          //           style: KrsTheme.filledTonalButtonStyleOf(context),
+                          //           onPressed: () {
+                          //             /// убираем из избранного
+                          //             tskgFavoritesController.remove(show.showId);
+                          //           },
+                          //           icon: const Icon(Icons.bookmark_remove),
+                          //           label: Text(locale.removeFromFavorites),
+                          //         ),
+                          //       );
+                                
+                          //     } else {
+                          //       /// ^ если ещё нет в избранном
+
+                          //       /// кнопка добавления в избранное
+                          //       return Padding(
+                          //         padding: const EdgeInsets.only(right: 8.0),
+                          //         child: ElevatedButton.icon(
+                          //           style: KrsTheme.filledTonalButtonStyleOf(context),
+                          //           onPressed: () {
+                          //             /// добавляем в избранное
+                          //             tskgFavoritesController.add(show);
+                          //           },
+                          //           icon: const Icon(Icons.bookmark_add_outlined),
+                          //           label: Text(locale.addToFavorites),
+                          //         ),
+                          //       );
+                          //     }
+                          //   }
+                          // ),
 
                         ],
                       ),

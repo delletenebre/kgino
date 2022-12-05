@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class Utils {
   static Duration parseDuration(String time) {
     int hours = 0;
@@ -64,4 +66,33 @@ extension DateUtils on DateTime {
         yesterday.month == month &&
         yesterday.year == year;
   }
+}
+
+extension FocusNodeUtils on FocusNode {
+  FocusNode? get firstFocusableChild {
+    if (children.isNotEmpty) {
+      final child = children.first;
+      if (child.canRequestFocus) {
+        return child;
+      } else {
+        return child.firstFocusableChild;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  FocusNode? focusableChildAt(int index) {
+    if (children.length >= index) {
+      final child = children.elementAt(index);
+      if (child.canRequestFocus) {
+        return child;
+      } else {
+        return child.firstFocusableChild;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }

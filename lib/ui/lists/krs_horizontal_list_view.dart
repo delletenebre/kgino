@@ -52,7 +52,6 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
   int _lastFocusedIndex = 0;
   bool _listHasFocus = false;
 
-  final _listFocusNode = FocusNode();
   late List<FocusNode> _itemFocusNodes;
 
   @override
@@ -70,8 +69,6 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
   
   @override
   void dispose() {
-    _listFocusNode.dispose();
-
     for (final focusNode in _itemFocusNodes) {
       focusNode.dispose();
     }
@@ -80,11 +77,26 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
   }
 
   @override
+  void didUpdateWidget(covariant KrsHorizontalListView oldWidget) {
+    if (widget.itemCount != oldWidget.itemCount) {
+      for (final focusNode in _itemFocusNodes) {
+        focusNode.dispose();
+      }
+
+      _itemFocusNodes = List.generate(widget.itemCount, (index) {
+        return FocusNode();
+      });
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(context) {
 
-    return Focus(
-      focusNode: _listFocusNode,
-      skipTraversal: true,
+    return FocusScope(
+      canRequestFocus: false,
+      //skipTraversal: true,
       onFocusChange: (hasFocus) {
         _listHasFocus = hasFocus;
       },
@@ -130,6 +142,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                 itemBuilder: (context, index) {
                   return Focus(
                     focusNode: _itemFocusNodes[index],
+                    canRequestFocus: false,
                     skipTraversal: true,
                     onKey: (node, event) {
                       if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)
@@ -151,7 +164,10 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                       return KeyEventResult.ignored;
                     },
                     onFocusChange: (hasFocus) {
+                      print('I"M HEEEEREEE $hasFocus');
                       if (hasFocus) {
+                        
+
                         int currentIndex = index;
                         
                         final firstTimeFocus = !_listHasFocus;

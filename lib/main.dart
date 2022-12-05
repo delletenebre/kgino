@@ -44,9 +44,9 @@ Future<void> main() async {
   );
 
   /// регистрируем контроллер избранных сериалов ts.kg как singleton
-  GetIt.instance.registerSingleton<TskgFavoritesController>(
-    TskgFavoritesController()
-  );
+  // GetIt.instance.registerSingleton<TskgFavoritesController>(
+  //   TskgFavoritesController()
+  // );
 
   runApp(const App());
 }
