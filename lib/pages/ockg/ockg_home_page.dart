@@ -16,7 +16,7 @@ class OckgHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OckgMovieDetailsController()..showPopularMovies(),
+      create: (context) => OckgMovieDetailsController(),//..showPopularMovies()
       child: Column(
         children: [
           /// детали фильма, при фокусе на каком-либо фильме
@@ -27,15 +27,9 @@ class OckgHomePage extends StatelessWidget {
                 if (state.isSuccess) {
                   final movie = state.data;
 
-                  if (movie.showPlayButton) {
-                    return OckgMoviePopular(
-                      movie: movie,
-                    );
-                  } else {
-                    return OckgMovieDetais(
-                      movie: movie,
-                    );
-                  }
+                  return OckgMovieDetais(
+                    movie: movie,
+                  );
                   
                 }
 

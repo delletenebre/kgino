@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -104,8 +105,10 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
       },
       child: CallbackShortcuts(
         bindings: {
-          const SingleActivator(LogicalKeyboardKey.enter, includeRepeats: false): onTap,
-          const SingleActivator(LogicalKeyboardKey.select, includeRepeats: false): onTap,
+          const SingleActivator(
+            LogicalKeyboardKey.enter, includeRepeats: false): onTap,
+          const SingleActivator(
+            LogicalKeyboardKey.select, includeRepeats: false): onTap,
         },
         child: Focus(
           focusNode: _focusNode,
@@ -168,8 +171,12 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
                             borderRadius: BorderRadius.circular(9.0),
                             color: theme.scaffoldBackgroundColor,
                           ),
-                          child: Image.network(widget.item.posterUrl,
-                            fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(9.0),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.item.posterUrl,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

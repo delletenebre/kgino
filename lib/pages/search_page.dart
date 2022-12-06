@@ -11,7 +11,6 @@ import '../models/ockg/ockg_movie.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 import '../ui/pages/ockg/ockg_movie_card.dart';
-import '../ui/pages/tskg/tskg_show_card.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({

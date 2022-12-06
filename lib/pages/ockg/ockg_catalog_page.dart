@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../constants.dart';
 import '../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_catalog.dart';
 import '../../models/ockg/ockg_movie.dart';
-import '../../ui/lists/krs_horizontal_list_view2.dart';
+import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 import '../../ui/pages/ockg/ockg_movies_list_view.dart';
@@ -74,14 +75,14 @@ class OckgCatalogPage extends StatelessWidget {
                 child: BlocBuilder<OckgCatalogController, OckgCatalog>(
                   builder: (context, catalog) {
                     // TODO check and fix if needed
-                    return KrsHorizontalListView2(
+                    return KrsHorizontalListView(
                       itemCount: catalog.movies.length,
                       itemBuilder: (context, focusNode, index) {
                         final movie = catalog.movies[index];
 
                         return KrsListItemCard(
                           focusNode: focusNode,
-                          posterSize: const Size(100.0, 140.0),
+                          posterSize: ockgPosterSize,
                           
                           /// данные о фильме
                           item: movie,

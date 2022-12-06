@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kgino/constants.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../movie_rating.dart';
-import 'ockg_movie_card.dart';
 
 class OckgMoviePopular extends StatelessWidget {
   final OckgMovie movie;
@@ -19,7 +19,6 @@ class OckgMoviePopular extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final locale = KrsLocale.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(32.0),
@@ -29,6 +28,7 @@ class OckgMoviePopular extends StatelessWidget {
           KrsListItemCard(
             item: movie,
             titleEnabled: false,
+            posterSize: ockgPosterSize,
             onTap: () {
               /// переходим на страницу деталей о фильме
               context.goNamed('ockgMovieDetails', params: {

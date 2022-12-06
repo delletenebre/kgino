@@ -86,7 +86,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
               },
               requestItemIndex: () => _selectedSeasonIndex,
               itemCount: widget.show.seasons.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, focusNode, index) {
                 return IconButton(
                   style: ButtonStyle(
                     
@@ -144,7 +144,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                 },
                 requestItemIndex: () => _selectedEpisodeIndex,
                 itemCount: _episodeCount,
-                itemBuilder: (context, index) {
+                itemBuilder: (context, focusNode, index) {
                   final episode = _episodes[index];
 
                   /// просмотренное время [0; 1]

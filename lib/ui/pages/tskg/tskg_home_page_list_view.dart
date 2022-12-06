@@ -10,17 +10,15 @@ import 'package:kgino/utils.dart';
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';
 import '../../../controllers/tskg/tskg_favorites_controller.dart';
-import '../../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../models/seen_item.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
-import '../../lists/home_page_vertical_list_view2.dart';
-import '../../lists/krs_horizontal_list_view2.dart';
+import '../../lists/home_page_vertical_list_view.dart';
+import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
-import 'tskg_show_card.dart';
 
 class TskgHomePageListView extends HookWidget {
   const TskgHomePageListView({
@@ -128,14 +126,14 @@ class TskgHomePageListView extends HookWidget {
           }
 
           if (showList.isNotEmpty) {
-            return HomePageVerticalListView2(
+            return HomePageVerticalListView(
               itemCount: showList.length,
               itemBuilder: (context, focusNode, index) {
                 final showItem = showList[index];
 
                 return SizedBox.fromSize(
                   size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                  child: KrsHorizontalListView2(
+                  child: KrsHorizontalListView(
                     focusNode: focusNode,
                     onItemFocused: (index) {
                       context.read<TskgShowDetailsController>().getShowById(
