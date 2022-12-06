@@ -102,6 +102,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                   },
                                   queryParams: {
                                     'fileIndex': '0',
+                                    'fileId': '${movie.files.first.fileId}',
                                   },
                                   extra: movie,
                                 );

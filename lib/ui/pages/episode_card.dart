@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../resources/krs_theme.dart';
 
 class EpisodeCard extends StatefulWidget {
+  final FocusNode focusNode;
   final String titleText;
   final String description;
   final Size posterSize;
@@ -16,6 +17,7 @@ class EpisodeCard extends StatefulWidget {
 
   const EpisodeCard({
     super.key,
+    required this.focusNode,
     required this.titleText,
     this.description = '',
     this.posterSize = const Size(200.0, 112.0),
@@ -60,7 +62,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
   void initState() {
     super.initState();
 
-    _focusNode = FocusNode();
+    _focusNode = widget.focusNode;
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         widget.onFocused?.call(_focusNode);
@@ -82,7 +84,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    //_focusNode.dispose();
 
     super.dispose();
   }

@@ -78,6 +78,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
     return BlocProvider(
       key: ValueKey(widget.itemCount),
       create: (context) => FocusableListCubit(
+        controller: widget.controller,
         itemCount: widget.itemCount,
         offset: 48.0,
         keyEventResult: KeyEventResult.handled,
@@ -101,7 +102,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
             },
             onFocusChange: (hasFocus) {
               if (hasFocus) {
-                listCubit.jumpToCurrent();
+                listCubit.jumpToCurrent(widget.requestItemIndex);
               }
             },
             skipTraversal: true,

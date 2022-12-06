@@ -1,20 +1,24 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 import 'focusable_list_state.dart';
 
 class FocusableListCubit extends Cubit<FocusableListState> {
+  final ListObserverController? controller;
   late FocusableListState _currentState;
   final double offset;
   final KeyEventResult keyEventResult;
 
   FocusableListCubit({
+    this.controller,
     required int itemCount,
     this.offset = 0.0,
     this.keyEventResult = KeyEventResult.ignored,
   }) : super(FocusableListState()) {
     final focusNodes = _generateFocusNodes(itemCount);
     _currentState = FocusableListState(
+      controller: controller,
       focusNodes: focusNodes,
     );
     emit(_currentState);
@@ -70,7 +74,10 @@ class FocusableListCubit extends Cubit<FocusableListState> {
   }
 
   /// переход к текущему элементу без анимации
-  void jumpToCurrent() {
+  void jumpToCurrent(int Function()? requestItemIndex) {
+    if (requestItemIndex != null) {
+      state.focusableIndex = requestItemIndex();
+    }
     jumpTo(state.focusableIndex);
   }
 

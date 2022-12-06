@@ -88,6 +88,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
               itemCount: widget.show.seasons.length,
               itemBuilder: (context, focusNode, index) {
                 return IconButton(
+                  focusNode: focusNode,
                   style: ButtonStyle(
                     
                     backgroundColor: MaterialStateProperty.resolveWith((states) {
@@ -160,6 +161,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   }
 
                   return EpisodeCard(
+                    focusNode: focusNode,
                     titleText: episode.name,
                     description: '${episode.quality} ${Utils.formatDuration(episode.duration)}',
 

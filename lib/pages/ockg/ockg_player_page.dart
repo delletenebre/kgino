@@ -51,7 +51,7 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
         id: widget.movie.movieId.toString(),
       )
     );
-    
+
     if (seenShow != null) {
       /// ^ если фильм уже был в просмотренных
       
@@ -60,14 +60,17 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
       
       /// проверяем был ли эпизод в просмотренных
       final seenEpisode = seenItemsController.findEpisode(
-        tag: SeenItem.tskgTag,
+        tag: SeenItem.ockgTag,
         itemId: widget.movie.movieId,
         episodeId: widget.fileId,
       );
 
+      print('seenEpisode $seenEpisode');
+      print('seenEpisode widget.fileId ${widget.fileId}');
+
       if (seenEpisode != null) {
         /// ^ если эпизод уже был в просмотренных
-        print('_startTime $_startTime');
+
         /// восстанавливаем время просмотра
         _startTime = seenEpisode.position;
       }

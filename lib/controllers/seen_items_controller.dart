@@ -67,7 +67,6 @@ class SeenItemsController {
       /// обновляем дату просмотра
       seenItem.updatedAt = DateTime.now();
     }
-    
 
     if (seenItem.episodes.containsKey(episodeId.toString())) {
       /// ^ если запись уже существует в БД
@@ -105,7 +104,12 @@ class SeenItemsController {
     required dynamic itemId,
     required dynamic episodeId,
   }) {
-    final seenItem = findItemByKey(SeenItem.getKey(tag: tag, id: itemId.toString()));
+    final seenItem = findItemByKey(
+      SeenItem.getKey(
+        tag: tag,
+        id: itemId.toString()
+      )
+    );
     if (seenItem != null) {
       return seenItem.episodes[episodeId.toString()];
     }

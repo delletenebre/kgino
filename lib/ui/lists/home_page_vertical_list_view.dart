@@ -59,7 +59,7 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
             },
             onFocusChange: (hasFocus) {
               if (hasFocus) {
-                listCubit.jumpToCurrent();
+                listCubit.jumpToCurrent(null);
               }
             },
             child: ListViewObserver(

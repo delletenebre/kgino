@@ -61,6 +61,7 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
               // }
 
               return EpisodeCard(
+                focusNode: focusNode,
                 titleText: episode.name,
                 //description: '${episode.quality} ${Utils.formatDuration(episode.duration)}',
 
@@ -86,8 +87,8 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
                       'id': '${widget.movie.movieId}',    
                     },
                     queryParams: {
-                      'startTime': 0.toString(),
                       'fileIndex': index.toString(),
+                      'fileId': episode.fileId.toString(),
                     },
                     extra: widget.movie,
                   );

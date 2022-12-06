@@ -10,7 +10,6 @@ import '../../models/ockg/ockg_movie.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
-import '../../ui/pages/ockg/ockg_movies_list_view.dart';
 
 class OckgCatalogPage extends StatelessWidget {
   final String titleText;
