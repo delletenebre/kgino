@@ -36,12 +36,12 @@ class TskgFavoritesController {
     );
     
     /// сохраняем значение на диск
-    _storage?.put(show.showId, favorite);
+    _storage.put(show.showId, favorite);
   }
 
   /// удаляем сериал из избранного
   void remove(String showId) {
-    _storage?.delete(showId);
+    _storage.delete(showId);
   }
 
   List<TskgFavorite> get sorted {

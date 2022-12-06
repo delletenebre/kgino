@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
@@ -8,16 +9,19 @@ import 'package:kgino/utils.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';
+import '../../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
+import '../../../models/seen_item.dart';
+import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../lists/home_page_vertical_list_view2.dart';
 import '../../lists/krs_horizontal_list_view2.dart';
 import '../../loading_indicator.dart';
 import 'tskg_show_card.dart';
 
-class TskgHomePageListView extends StatelessWidget {
+class TskgHomePageListView extends HookWidget {
   const TskgHomePageListView({
     super.key,
   });
@@ -25,45 +29,43 @@ class TskgHomePageListView extends StatelessWidget {
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
-    // final tskgFavoritesController = GetIt.instance<TskgFavoritesController>();
+    
+    /// контроллер последних просмотренных сериалов
     final seenItemsController = GetIt.instance<SeenItemsController>();
-
-    // useValueListenable(seenItemsController.listenable);
-    // useValueListenable(tskgFavoritesController.listenable);
-
+    useValueListenable(seenItemsController.listenable);
     /// список последних просмотренных сериалов
-    // final seenShows = seenItemsController.findByTag(SeenItem.tskgTag)
-    //   .map((seenItem) {
-    //     return TskgShow(
-    //       showId: seenItem.id,
-    //       name: seenItem.name,
-    //     );
-    //   });
-    final seenShows = [];
+    final seenShows = seenItemsController.findByTag(SeenItem.tskgTag)
+      .map((seenItem) {
+        return TskgShow(
+          showId: seenItem.id,
+          name: seenItem.name,
+        );
+      })
+      .toList();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<TskgFavoritesCubit>(
-          create: (context) => TskgFavoritesCubit(),
-        ),
+    /// контроллер избранных сериалов
+    final favoritesController = GetIt.instance<TskgFavoritesController>();
+    useValueListenable(favoritesController.listenable);
+    /// список избранных сериалов
+    final favoriteShows = favoritesController.sorted
+      .map((item) {
+        return TskgShow(
+          showId: item.showId,
+          name: item.name,
+        );
+      })
+      .toList();
 
-        BlocProvider<TskgNewsController>(
-          create: (context) => TskgNewsController(),
-        ),
-
-      ],
+    return BlocProvider(
+      create: (context) => TskgNewsController(),
       child: Builder(
         builder: (context) {
-          final tskgFavoritesController = context.watch<TskgFavoritesCubit>().state;
+          // final tskgFavoritesController = context.watch<TskgFavoritesCubit>().state;
           final state = context.watch<TskgNewsController>().state;
 
-          /// список избранных сериалов
-          
-          if (tskgFavoritesController.isLoading || state.isLoading) {
+          if (state.isLoading) {
             return const LoadingIndicator();
           }
-          
-          final favoriteShows = tskgFavoritesController.data;
 
           final showList = <CategoryListItem>[];
 
@@ -155,7 +157,6 @@ class TskgHomePageListView extends StatelessWidget {
                             params: {
                               'id': show.showId,
                             },
-                            extra: context.read<TskgFavoritesCubit>(),
                           );
 
                         },

@@ -72,10 +72,7 @@ class KrsRouter {
             name: 'tskgShowDetails',
             builder: (context, state) {
               final showId = state.params['id'] ?? '';
-              final favoritesController = state.extra as TskgFavoritesCubit;
-              return TskgShowDetailsPage(showId,
-                favoritesController: favoritesController,
-              );
+              return TskgShowDetailsPage(showId);
             },
             routes: [
               GoRoute(
