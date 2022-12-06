@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
@@ -13,10 +12,9 @@ import '../../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../resources/krs_locale.dart';
-import '../../lists/krs_horizontal_list_view.dart';
-import '../../lists/home_page_vertical_list_view.dart';
+import '../../lists/home_page_vertical_list_view2.dart';
+import '../../lists/krs_horizontal_list_view2.dart';
 import '../../loading_indicator.dart';
-import 'tskg_loading_card.dart';
 import 'tskg_show_card.dart';
 
 class TskgHomePageListView extends StatelessWidget {
@@ -67,27 +65,26 @@ class TskgHomePageListView extends StatelessWidget {
           
           final favoriteShows = tskgFavoritesController.data;
 
-          final showList = <Map<String, dynamic>>[];
+          final showList = <CategoryListItem>[];
 
           if (seenShows.isNotEmpty) {
-            showList.add({
-              'titleText': locale.continueWatching,
-              'shows': seenShows,
-            });
-          }
-
-          if (state.isLoading) {
-            showList.add({
-              'titleText': locale.addedDate('today'),
-              'shows': [],
-            });
+            showList.add(
+              CategoryListItem(
+                key: const ValueKey(0),
+                title: locale.continueWatching,
+                items: seenShows,
+              )
+            );
           }
 
           if (favoriteShows.isNotEmpty) {
-            showList.add({
-              'titleText': locale.favorites,
-              'shows': favoriteShows,
-            });
+            showList.add(
+              CategoryListItem(
+                key: const ValueKey(1),
+                title: locale.favorites,
+                items: favoriteShows,
+              )
+            );
           }
 
           if (state.isSuccess) {
@@ -116,71 +113,39 @@ class TskgHomePageListView extends StatelessWidget {
 
               final shows = showsGroupedByDate.values.elementAt(index);
 
-              showList.add({
-                'titleText': titleText,
-                'shows': shows
-              });
+              showList.add(
+                CategoryListItem(
+                  key: ValueKey(10 + index),
+                  title: titleText,
+                  items: shows,
+                )
+              );
 
             }
           }
 
           if (showList.isNotEmpty) {
-            return HomePageVerticalListView(
-              // children: showList.map((showItem) {
-              //   //final showItem = showList[index];
-
-              //   return SizedBox.fromSize(
-              //     size: const Size.fromHeight(tskgListViewHeight + 16.0),
-              //     child: KrsHorizontalListView(
-              //       key: ValueKey(showItem['shows'].toString()),
-              //       onItemFocused: (index) {
-              //         context.read<TskgShowDetailsController>().getShowById(
-              //           showItem['shows'].elementAt(index).showId,
-              //         );
-              //       },
-              //       titleText: showItem['titleText'],
-              //       itemCount: showItem['shows'].length,
-              //       itemBuilder: (context, index) {
-              //         final show = showItem['shows'].elementAt(index);
-                      
-              //         return TskgShowCard(
-              //           show: show,
-                        
-              //           /// при выб оре элемента
-              //           onTap: () {
-              //             /// переходим на страницу деталей о фильме
-              //             context.goNamed('tskgShowDetails',
-              //               params: {
-              //                 'id': show.showId,
-              //               },
-              //               extra: context.read<TskgFavoritesCubit>(),
-              //             );
-
-              //           },
-              //         );
-              //       },
-              //     ),
-              //   );
-              // }).toList()
+            return HomePageVerticalListView2(
               itemCount: showList.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, focusNode, index) {
                 final showItem = showList[index];
 
                 return SizedBox.fromSize(
                   size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                  child: KrsHorizontalListView(
-                    //key: ValueKey(showItem['shows'].toString()),
+                  child: KrsHorizontalListView2(
+                    focusNode: focusNode,
                     onItemFocused: (index) {
                       context.read<TskgShowDetailsController>().getShowById(
-                        showItem['shows'].elementAt(index).showId,
+                        showItem.items.elementAt(index).showId,
                       );
                     },
-                    titleText: showItem['titleText'],
-                    itemCount: showItem['shows'].length,
-                    itemBuilder: (context, index) {
-                      final show = showItem['shows'].elementAt(index);
+                    titleText: showItem.title,
+                    itemCount: showItem.items.length,
+                    itemBuilder: (context, focusNode, index) {
+                      final show = showItem.items.elementAt(index);
                       
                       return TskgShowCard(
+                        focusNode: focusNode,
                         show: show,
                         
                         /// при выб оре элемента
@@ -209,4 +174,16 @@ class TskgHomePageListView extends StatelessWidget {
     );
     
   }
+}
+
+class CategoryListItem {
+  final Key key;
+  final String title;
+  final List<dynamic> items;
+
+  CategoryListItem({
+    required this.key,
+    required this.title,
+    required this.items,
+  });
 }

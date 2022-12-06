@@ -18,6 +18,7 @@ class KrsHorizontalListView extends StatefulWidget {
   final String titleText;
   final bool scrollToLastPosition;
   final int Function()? requestItemIndex;
+  final FocusNode? focusNode;
 
   const KrsHorizontalListView({
     super.key,
@@ -32,6 +33,7 @@ class KrsHorizontalListView extends StatefulWidget {
     this.titleText = '',
     this.scrollToLastPosition = true,
     this.requestItemIndex,
+    this.focusNode,
 
   });
 
@@ -44,9 +46,9 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
 
   bool _needToLoadMore = false;
   int _lastFocusedIndex = 0;
-  bool _listHasFocus = false;
 
   late List<FocusNode> _itemFocusNodes;
+  late FocusNode _focusNode;
 
   @override
   void initState() {
@@ -58,6 +60,8 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
       return FocusNode();
     });
 
+    _focusNode = widget.focusNode ?? FocusNode();
+
     super.initState();
   }
   
@@ -67,33 +71,44 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
       focusNode.dispose();
     }
 
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
+
     super.dispose();
   }
 
-  // @override
-  // void didUpdateWidget(covariant KrsHorizontalListView oldWidget) {
-  //   if (widget.itemCount != oldWidget.itemCount) {
-  //     for (final focusNode in _itemFocusNodes) {
-  //       focusNode.dispose();
-  //     }
+  @override
+  void didUpdateWidget(covariant KrsHorizontalListView oldWidget) {
+    if (widget.itemCount != oldWidget.itemCount) {
+      for (final focusNode in _itemFocusNodes) {
+        focusNode.dispose();
+      }
 
-  //     _itemFocusNodes = List.generate(widget.itemCount, (index) {
-  //       return FocusNode();
-  //     });
+      if (widget.focusNode == null) {
+        _focusNode.dispose();
+      }
 
-  //   }
+      _itemFocusNodes = List.generate(widget.itemCount, (index) {
+        return FocusNode();
+      });
 
-  //   super.didUpdateWidget(oldWidget);
-  // }
+      _focusNode = widget.focusNode ?? FocusNode();
+
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(context) {
+    if (_itemFocusNodes.isEmpty) {
+      return const SizedBox();
+    }
+
     return Focus(
-      canRequestFocus: false,
+      focusNode: _focusNode,
       skipTraversal: true,
-      onFocusChange: (hasFocus) {
-        _listHasFocus = hasFocus;
-      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +177,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
 
                         int currentIndex = index;
                         
-                        final firstTimeFocus = !_listHasFocus;
+                        final firstTimeFocus = !_focusNode.hasFocus;
 
                         if (widget.scrollToLastPosition && firstTimeFocus) {                          
                           /// ^ если фокус был только что перемещён на список
@@ -179,7 +194,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                           try {
                             /// обновляем индекс последнего элемента, на котором
                             /// был фокус
-                            for (final focusNode in _itemFocusNodes[currentIndex].descendants) {
+                            for (final focusNode in getFocusNode(currentIndex).descendants) {
                               if (focusNode.canRequestFocus) {
                                 focusNode.requestFocus();
                               }
@@ -211,7 +226,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                             if (currentIndex > widget.itemCount) {
                               currentIndex = widget.itemCount - 1;
                             }
-                            if (mounted && _itemFocusNodes[currentIndex].hasFocus) {
+                            if (mounted && getFocusNode(currentIndex).hasFocus) {
                               /// вызываем пользовательский обработчик
                               widget.onItemFocused?.call(currentIndex);
                             }
@@ -241,5 +256,13 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
         ],
       ),
     );
+  }
+
+  FocusNode getFocusNode(int index) {
+    if (_itemFocusNodes.length >= index) {
+      return _itemFocusNodes.last;
+    }
+
+    return _itemFocusNodes[index];
   }
 }

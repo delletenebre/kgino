@@ -40,12 +40,27 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
   void dispose() {
     _focusNode.dispose();
 
-    for (final focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
+    _dispose();
     
     _listObserverController.controller?.dispose();
     super.dispose();
+  }
+
+  void _dispose() {
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant HomePageVerticalListView oldWidget) {
+    if (oldWidget.itemCount != widget.itemCount) {
+      _dispose();
+      _focusNodes = List.generate(widget.itemCount, (index) => FocusNode());
+    }
+
+
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
