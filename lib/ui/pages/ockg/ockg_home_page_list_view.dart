@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../../models/ockg/ockg_bestsellers_category.dart';
+import '../../lists/home_page_vertical_list_view2.dart';
 import '../../lists/krs_horizontal_list_view2.dart';
+import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
 import 'ockg_bestsellers_category_list.dart';
 import 'ockg_movie_card.dart';
@@ -33,13 +36,12 @@ class _OckgHomePageListViewState extends State<OckgHomePageListView> {
     return BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
       builder: (context, state) {
         if (state.isSuccess) {
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32.0,
-            ),
+          final categories = state.data;
+
+          return HomePageVerticalListView2(
             itemCount: state.data.length,
-            itemBuilder: (context, index) {
-              final bestsellersCategory = state.data[index];
+            itemBuilder: (context, focusNode, index) {
+              final bestsellersCategory = categories[index];
 
               return SizedBox.fromSize(
                 size: const Size.fromHeight(300 + 16.0),
@@ -49,30 +51,40 @@ class _OckgHomePageListViewState extends State<OckgHomePageListView> {
                   itemBuilder: (context, focusNode, index) {
                     final movie = bestsellersCategory.movies[index];
 
-                    return OckgMovieCard(
+                    return KrsListItemCard(
                       focusNode: focusNode,
+                      posterSize: const Size(100.0, 140.0),
                       
                       /// данные о фильме
-                      movie: movie,
+                      item: movie,
 
-                      onMovieFocused: (movie, focusNode) {
-                        /// ^ при смене фокуса на этот фильм
-                        
-                        // /// прокручиваем контент к текущему элементу
-                        // _autoScrollController.scrollToIndex(index,
-                        //   preferPosition: AutoScrollPosition.begin,
-                        //   duration: const Duration(milliseconds: 50),
-                        // ).then((_) {
-                        //   /// ^ после окончания прокрутки
-                          
-                        //   if (mounted) {
-                        //     /// ^ если виджет ещё жив
-                            
-                        //     /// вызываем пользовательский обработчик
-                        //     widget.onMovieFocused.call(movie);
-                        //   }
-                        // });
+                      /// при выб оре элемента
+                      onTap: () {
+                        /// переходим на страницу деталей о фильме
+                        context.goNamed('ockgMovieDetails', params: {
+                          'id': '${movie.movieId}',
+                        });
+
                       },
+
+                      // onFocused: (focusNode) {
+                      //   /// ^ при смене фокуса на этот фильм
+                        
+                      //   // /// прокручиваем контент к текущему элементу
+                      //   // _autoScrollController.scrollToIndex(index,
+                      //   //   preferPosition: AutoScrollPosition.begin,
+                      //   //   duration: const Duration(milliseconds: 50),
+                      //   // ).then((_) {
+                      //   //   /// ^ после окончания прокрутки
+                          
+                      //   //   if (mounted) {
+                      //   //     /// ^ если виджет ещё жив
+                            
+                      //   //     /// вызываем пользовательский обработчик
+                      //   //     widget.onMovieFocused.call(movie);
+                      //   //   }
+                      //   // });
+                      // },
                     );
                   },
                 ),
@@ -94,9 +106,6 @@ class _OckgHomePageListViewState extends State<OckgHomePageListView> {
               //   },
               // );
               
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 12.0);
             },
           );
         }

@@ -18,6 +18,7 @@ import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../lists/home_page_vertical_list_view2.dart';
 import '../../lists/krs_horizontal_list_view2.dart';
+import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
 import 'tskg_show_card.dart';
 
@@ -146,13 +147,13 @@ class TskgHomePageListView extends HookWidget {
                     itemBuilder: (context, focusNode, index) {
                       final show = showItem.items.elementAt(index);
                       
-                      return TskgShowCard(
+                      return KrsListItemCard(
                         focusNode: focusNode,
-                        show: show,
+                        item: show,
                         
                         /// при выб оре элемента
                         onTap: () {
-                          /// переходим на страницу деталей о фильме
+                          /// переходим на страницу деталей о сериале
                           context.goNamed('tskgShowDetails',
                             params: {
                               'id': show.showId,

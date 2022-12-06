@@ -11,6 +11,7 @@ _$_OckgMovie _$$_OckgMovieFromJson(Map<String, dynamic> json) => _$_OckgMovie(
           ? 0
           : const IntConverter().fromJson(json['movie_id']),
       name: json['name'] as String? ?? '',
+      subtitle: json['subtitle'] as String? ?? '',
       internationalName: json['international_name'] as String? ?? '',
       year: json['year'] as String? ?? '',
       cover: json['cover'] as String? ?? '',
@@ -68,6 +69,7 @@ Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
     <String, dynamic>{
       'movie_id': const IntConverter().toJson(instance.movieId),
       'name': instance.name,
+      'subtitle': instance.subtitle,
       'international_name': instance.internationalName,
       'year': instance.year,
       'cover': instance.cover,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
+import '../../lists/krs_list_item_card.dart';
 import '../../movie_rating.dart';
 import 'ockg_movie_card.dart';
 
@@ -24,9 +26,15 @@ class OckgMoviePopular extends StatelessWidget {
       child: Row(
         children: [
           /// постер фильма
-          OckgMovieCard(
-            movie: movie,
-            showTitle: false,
+          KrsListItemCard(
+            item: movie,
+            titleEnabled: false,
+            onTap: () {
+              /// переходим на страницу деталей о фильме
+              context.goNamed('ockgMovieDetails', params: {
+                'id': '${movie.movieId}',
+              });
+            },
           ),
 
           const SizedBox(width: 24.0),

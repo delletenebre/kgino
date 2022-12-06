@@ -21,6 +21,7 @@ class OckgMovie with _$OckgMovie {
   const factory OckgMovie({
     @IntConverter() @Default(0) int movieId,
     @Default('') String name,
+    @Default('') String subtitle,
     @Default('') String internationalName,
     @Default('') String year,
     @Default('') String cover,
@@ -73,9 +74,15 @@ class OckgMovie with _$OckgMovie {
     })
   );
 
-  Future<PaletteGenerator> getPaletteGenerator(String imageUrl) async {
+  // Future<PaletteGenerator> getPaletteGenerator(String imageUrl) async {
+  //   return PaletteGenerator.fromImageProvider(
+  //     NetworkImage(imageUrl)
+  //   );
+  // }
+
+  Future<PaletteGenerator> getPaletteGenerator() async {
     return PaletteGenerator.fromImageProvider(
-      NetworkImage(imageUrl)
+      NetworkImage(posterUrl)
     );
   }
   

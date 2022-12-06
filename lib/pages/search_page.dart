@@ -70,35 +70,35 @@ class _SearchPageState extends State<SearchPage> {
                       alignment: WrapAlignment.center,
                       spacing: 24.0,
                       runSpacing: 24.0,
-                      children: items.mapIndexed((index, item) {
-                        if (item is OckgMovie) {
-                          return AutoScrollTag(
-                            key: ValueKey(index), 
-                            controller: _autoScrollController,
-                            index: index,
-                            child: OckgMovieCard(
-                              movie: item,
-                              onMovieFocused: (movie, focusNode) {
-                                _autoScrollController.scrollToIndex(index,
-                                  // preferPosition: AutoScrollPosition.begin,
-                                  duration: KrsTheme.fastAnimationDuration,
-                                );
-                              },
-                            ),
-                          );
-                        } else {
-                          return TskgShowCard(
-                            show: item,
-                            onTap: () {
-                              /// переходим на страницу деталей о фильме
-                              context.goNamed('tskgShowDetails', params: {
-                                'id': item.showId,
-                              });
-                            },
-                          );
-                        }
+                      // children: items.mapIndexed((index, item) {
+                      //   if (item is OckgMovie) {
+                      //     return AutoScrollTag(
+                      //       key: ValueKey(index), 
+                      //       controller: _autoScrollController,
+                      //       index: index,
+                      //       child: OckgMovieCard(
+                      //         movie: item,
+                      //         onMovieFocused: (movie, focusNode) {
+                      //           _autoScrollController.scrollToIndex(index,
+                      //             // preferPosition: AutoScrollPosition.begin,
+                      //             duration: KrsTheme.fastAnimationDuration,
+                      //           );
+                      //         },
+                      //       ),
+                      //     );
+                      //   } else {
+                      //     return TskgShowCard(
+                      //       show: item,
+                      //       onTap: () {
+                      //         /// переходим на страницу деталей о фильме
+                      //         context.goNamed('tskgShowDetails', params: {
+                      //           'id': item.showId,
+                      //         });
+                      //       },
+                      //     );
+                      //   }
                         
-                      }).toList(),
+                      // }).toList(),
                     ),
                   ),
                 );

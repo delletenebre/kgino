@@ -23,6 +23,7 @@ mixin _$OckgMovie {
   @IntConverter()
   int get movieId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String get subtitle => throw _privateConstructorUsedError;
   String get internationalName => throw _privateConstructorUsedError;
   String get year => throw _privateConstructorUsedError;
   String get cover => throw _privateConstructorUsedError;
@@ -63,6 +64,7 @@ abstract class $OckgMovieCopyWith<$Res> {
   $Res call(
       {@IntConverter() int movieId,
       String name,
+      String subtitle,
       String internationalName,
       String year,
       String cover,
@@ -101,6 +103,7 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
   $Res call({
     Object? movieId = null,
     Object? name = null,
+    Object? subtitle = null,
     Object? internationalName = null,
     Object? year = null,
     Object? cover = null,
@@ -129,6 +132,10 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      subtitle: null == subtitle
+          ? _value.subtitle
+          : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
       internationalName: null == internationalName
           ? _value.internationalName
@@ -232,6 +239,7 @@ abstract class _$$_OckgMovieCopyWith<$Res> implements $OckgMovieCopyWith<$Res> {
   $Res call(
       {@IntConverter() int movieId,
       String name,
+      String subtitle,
       String internationalName,
       String year,
       String cover,
@@ -269,6 +277,7 @@ class __$$_OckgMovieCopyWithImpl<$Res>
   $Res call({
     Object? movieId = null,
     Object? name = null,
+    Object? subtitle = null,
     Object? internationalName = null,
     Object? year = null,
     Object? cover = null,
@@ -297,6 +306,10 @@ class __$$_OckgMovieCopyWithImpl<$Res>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      subtitle: null == subtitle
+          ? _value.subtitle
+          : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
       internationalName: null == internationalName
           ? _value.internationalName
@@ -385,6 +398,7 @@ class _$_OckgMovie extends _OckgMovie {
   const _$_OckgMovie(
       {@IntConverter() this.movieId = 0,
       this.name = '',
+      this.subtitle = '',
       this.internationalName = '',
       this.year = '',
       this.cover = '',
@@ -423,6 +437,9 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   final String name;
+  @override
+  @JsonKey()
+  final String subtitle;
   @override
   @JsonKey()
   final String internationalName;
@@ -521,7 +538,7 @@ class _$_OckgMovie extends _OckgMovie {
 
   @override
   String toString() {
-    return 'OckgMovie(movieId: $movieId, name: $name, internationalName: $internationalName, year: $year, cover: $cover, mpaa: $mpaa, covers: $covers, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue, files: $files, trailer: $trailer, otherMovies: $otherMovies, showPlayButton: $showPlayButton)';
+    return 'OckgMovie(movieId: $movieId, name: $name, subtitle: $subtitle, internationalName: $internationalName, year: $year, cover: $cover, mpaa: $mpaa, covers: $covers, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue, files: $files, trailer: $trailer, otherMovies: $otherMovies, showPlayButton: $showPlayButton)';
   }
 
   @override
@@ -531,6 +548,8 @@ class _$_OckgMovie extends _OckgMovie {
             other is _$_OckgMovie &&
             (identical(other.movieId, movieId) || other.movieId == movieId) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.subtitle, subtitle) ||
+                other.subtitle == subtitle) &&
             (identical(other.internationalName, internationalName) ||
                 other.internationalName == internationalName) &&
             (identical(other.year, year) || other.year == year) &&
@@ -569,6 +588,7 @@ class _$_OckgMovie extends _OckgMovie {
         runtimeType,
         movieId,
         name,
+        subtitle,
         internationalName,
         year,
         cover,
@@ -608,6 +628,7 @@ abstract class _OckgMovie extends OckgMovie {
   const factory _OckgMovie(
       {@IntConverter() final int movieId,
       final String name,
+      final String subtitle,
       final String internationalName,
       final String year,
       final String cover,
@@ -637,6 +658,8 @@ abstract class _OckgMovie extends OckgMovie {
   int get movieId;
   @override
   String get name;
+  @override
+  String get subtitle;
   @override
   String get internationalName;
   @override
