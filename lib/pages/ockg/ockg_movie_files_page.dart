@@ -69,26 +69,14 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
                 seenValue: seenValue,
 
                 onPressed: () {
-                  /// переходим на страницу плеера сериала
-                  // context.goNamed('tskgPlayer',
-                  //   params: {
-                  //     'id': widget.show.showId,    
-                  //   },
-                  //   queryParams: {
-                  //     'startTime': 0.toString(),
-                  //     'episodeId': episode.id.toString(),
-                  //     'episodeIndex': index.toString(),
-                  //   },
-                  //   extra: widget.show,
-                  // );
                   /// переходим на страницу плеера фильма
                   context.goNamed('ockgMoviePlayer',
                     params: {
                       'id': '${widget.movie.movieId}',    
                     },
                     queryParams: {
-                      'fileIndex': index.toString(),
-                      'fileId': episode.fileId.toString(),
+                      'fileIndex': '$index',
+                      'fileId': '${episode.fileId}',
                     },
                     extra: widget.movie,
                   );

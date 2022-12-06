@@ -159,7 +159,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: KrsTooltip(
-                                    message: episode.name + Utils.formatDuration(episode.duration),
+                                    message: '${episode.name} / ${Utils.formatDuration(Duration(seconds: seenEpisode.position))} из ${Utils.formatDuration(episode.duration)}',
                                     child: ElevatedButton.icon(
                                       autofocus: true,
                                       style: KrsTheme.filledTonalButtonStyleOf(context),
@@ -170,8 +170,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                             'id': show.showId,    
                                           },
                                           queryParams: {
-                                            'episodeId': seenEpisode.id.toString(),
-                                            'episodeIndex': episodeIndex.toString(),
+                                            'episodeId': seenEpisode.id,
+                                            'episodeIndex': '$episodeIndex',
                                           },
                                           extra: show,
                                         );
@@ -210,48 +210,6 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                             ),
                           ),
 
-                          // BlocProvider.value(
-                          //   value: GetIt.instance<TskgFavoritesCubit>(),
-                          //   child: BlocBuilder<TskgFavoritesCubit, RequestState<List<TskgShow>>>(
-                          //     builder: (context, state) {
-                          //       final favoritesController = context.read<TskgFavoritesCubit>();
-                          //       if (favoritesController.containsShow(show.showId)) {
-                          //         /// ^ если уже добавлен в избранное
-                                  
-                          //         /// кнопка удаления из избранного
-                          //         return Padding(
-                          //           padding: const EdgeInsets.only(right: 8.0),
-                          //           child: ElevatedButton.icon(
-                          //             style: KrsTheme.filledTonalButtonStyleOf(context),
-                          //             onPressed: () {
-                          //               /// убираем из избранного
-                          //               favoritesController.remove(show.showId);
-                          //             },
-                          //             icon: const Icon(Icons.bookmark_remove),
-                          //             label: Text(locale.removeFromFavorites),
-                          //           ),
-                          //         );
-                                  
-                          //       } else {
-                          //         /// ^ если ещё нет в избранном
-
-                          //         /// кнопка добавления в избранное
-                          //         return Padding(
-                          //           padding: const EdgeInsets.only(right: 8.0),
-                          //           child: ElevatedButton.icon(
-                          //             style: KrsTheme.filledTonalButtonStyleOf(context),
-                          //             onPressed: () {
-                          //               /// добавляем в избранное
-                          //               favoritesController.add(show);
-                          //             },
-                          //             icon: const Icon(Icons.bookmark_add_outlined),
-                          //             label: Text(locale.addToFavorites),
-                          //           ),
-                          //         );
-                          //       }
-                          //     }
-                          //   ),
-                          // ),
                           ValueListenableBuilder(
                             valueListenable: favoritesController.listenable,
                             builder: (context, Box<TskgFavorite> box, _) {
