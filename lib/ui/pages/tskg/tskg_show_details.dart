@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 

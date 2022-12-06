@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 
-import '../controllers/tskg/tskg_favorites_cubit.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../models/tskg/tskg_show.dart';
 import '../pages/error_page.dart';

@@ -7,7 +7,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/seen_items_controller.dart';
 import '../../controllers/tskg/tskg_favorites_controller.dart';
-import '../../controllers/tskg/tskg_favorites_cubit.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';

@@ -15,6 +15,7 @@ import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../models/seen_item.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
+import '../../lists/category_list_item.dart';
 import '../../lists/home_page_vertical_list_view.dart';
 import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
@@ -31,6 +32,7 @@ class TskgHomePageListView extends HookWidget {
     
     /// контроллер последних просмотренных сериалов
     final seenItemsController = GetIt.instance<SeenItemsController>();
+    /// hook для подписки на изменения
     useValueListenable(seenItemsController.listenable);
     /// список последних просмотренных сериалов
     final seenShows = seenItemsController.findByTag(SeenItem.tskgTag)
@@ -44,6 +46,7 @@ class TskgHomePageListView extends HookWidget {
 
     /// контроллер избранных сериалов
     final favoritesController = GetIt.instance<TskgFavoritesController>();
+    /// hook для подписки на изменения
     useValueListenable(favoritesController.listenable);
     /// список избранных сериалов
     final favoriteShows = favoritesController.sorted
@@ -59,7 +62,6 @@ class TskgHomePageListView extends HookWidget {
       create: (context) => TskgNewsController(),
       child: Builder(
         builder: (context) {
-          // final tskgFavoritesController = context.watch<TskgFavoritesCubit>().state;
           final state = context.watch<TskgNewsController>().state;
 
           if (state.isLoading) {
@@ -71,7 +73,6 @@ class TskgHomePageListView extends HookWidget {
           if (seenShows.isNotEmpty) {
             showList.add(
               CategoryListItem(
-                key: const ValueKey(0),
                 title: locale.continueWatching,
                 items: seenShows,
               )
@@ -81,7 +82,6 @@ class TskgHomePageListView extends HookWidget {
           if (favoriteShows.isNotEmpty) {
             showList.add(
               CategoryListItem(
-                key: const ValueKey(1),
                 title: locale.favorites,
                 items: favoriteShows,
               )
@@ -116,7 +116,6 @@ class TskgHomePageListView extends HookWidget {
 
               showList.add(
                 CategoryListItem(
-                  key: ValueKey(10 + index),
                   title: titleText,
                   items: shows,
                 )
@@ -174,16 +173,4 @@ class TskgHomePageListView extends HookWidget {
     );
     
   }
-}
-
-class CategoryListItem {
-  final Key key;
-  final String title;
-  final List<dynamic> items;
-
-  CategoryListItem({
-    required this.key,
-    required this.title,
-    required this.items,
-  });
 }

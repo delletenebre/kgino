@@ -8,7 +8,6 @@ import 'api/tskg_api_provider.dart';
 import 'app.dart';
 import 'controllers/seen_items_controller.dart';
 import 'controllers/tskg/tskg_favorites_controller.dart';
-import 'controllers/tskg/tskg_favorites_cubit.dart';
 import 'resources/krs_storage.dart';
 
 Future<void> main() async {
