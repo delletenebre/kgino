@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/seen_items_controller.dart';
+import '../../resources/krs_locale.dart';
 import '../../utils.dart';
 
 class PlayButtonSeenInformation extends StatelessWidget {
@@ -16,6 +17,7 @@ class PlayButtonSeenInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
 
     /// контроллер просмотренных эпизодов
     final seenItemsController = GetIt.instance<SeenItemsController>();
@@ -42,7 +44,10 @@ class PlayButtonSeenInformation extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(seenEpisode.name,
+              Text(seenEpisode.name.isNotEmpty
+                ? seenEpisode.name
+                : locale.continueWatching,
+                
                 style: const TextStyle(
                   fontSize: 12.0,
                 ),
