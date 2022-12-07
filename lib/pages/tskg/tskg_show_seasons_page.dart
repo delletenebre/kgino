@@ -107,6 +107,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                       if (states.contains(MaterialState.focused)) {
                         return theme.colorScheme.onPrimary;
                       }
+                      return null;
                     }),
                     textStyle: MaterialStateProperty.resolveWith((states) {
                       return const TextStyle();

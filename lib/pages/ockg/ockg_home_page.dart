@@ -7,7 +7,6 @@ import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../ui/pages/ockg/ockg_home_page_list_view.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
-import '../../ui/pages/ockg/ockg_movie_popular.dart';
 
 class OckgHomePage extends StatelessWidget {
   const OckgHomePage({

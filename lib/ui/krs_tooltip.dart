@@ -5,7 +5,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -256,7 +255,6 @@ class KrsTooltipState extends State<KrsTooltip> with SingleTickerProviderStateMi
   static const Duration _defaultHoverShowDuration = Duration(milliseconds: 100);
   static const Duration _defaultWaitDuration = Duration.zero;
   static const bool _defaultExcludeFromSemantics = false;
-  static const bool _defaultEnableFeedback = true;
   static const TextAlign _defaultTextAlign = TextAlign.start;
 
   late double _height;
@@ -277,7 +275,6 @@ class KrsTooltipState extends State<KrsTooltip> with SingleTickerProviderStateMi
   late Duration _waitDuration;
   late bool _mouseIsConnected;
   bool _pressActivated = false;
-  late bool _enableFeedback;
   late bool _isConcealed;
   late bool _forceRemoval;
   late bool _visible;
@@ -596,7 +593,6 @@ class KrsTooltipState extends State<KrsTooltip> with SingleTickerProviderStateMi
     _waitDuration = widget.waitDuration ?? tooltipTheme.waitDuration ?? _defaultWaitDuration;
     _showDuration = widget.showDuration ?? tooltipTheme.showDuration ?? _defaultShowDuration;
     _hoverShowDuration = widget.showDuration ?? tooltipTheme.showDuration ?? _defaultHoverShowDuration;
-    _enableFeedback = widget.enableFeedback ?? tooltipTheme.enableFeedback ?? _defaultEnableFeedback;
 
     Widget result = Semantics(
       tooltip: _excludeFromSemantics

@@ -1,7 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../json_converters.dart';
-
 part 'ockg_file_meta_media.freezed.dart';
 part 'ockg_file_meta_media.g.dart';
 

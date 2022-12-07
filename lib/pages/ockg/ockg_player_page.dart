@@ -65,9 +65,6 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
         episodeId: widget.fileId,
       );
 
-      print('seenEpisode $seenEpisode');
-      print('seenEpisode widget.fileId ${widget.fileId}');
-
       if (seenEpisode != null) {
         /// ^ если эпизод уже был в просмотренных
 
