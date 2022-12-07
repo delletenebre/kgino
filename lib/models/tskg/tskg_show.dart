@@ -26,6 +26,12 @@ class TskgShow with _$TskgShow {
     @Default('') String description,
     @Default([]) List<TskgSeason> seasons,
 
+    /// озвучка
+    @Default('') String voiceActing,
+
+    /// другие озвучки
+    @Default([]) List<TskgShow> voiceActings,
+
   }) = _TskgShow;
 
 

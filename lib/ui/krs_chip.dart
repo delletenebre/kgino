@@ -27,10 +27,10 @@ class KrsChip extends StatelessWidget {
     }
 
     return Container(
-      height: dense ? 18.0 : 24.0,
+      height: dense ? 16.0 : 24.0,
       padding: EdgeInsets.symmetric(
         horizontal: 8.0,
-        vertical: dense ? 2.0 : 4.0,
+        vertical: dense ? 1.0 : 4.0,
       ),
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -42,12 +42,12 @@ class KrsChip extends StatelessWidget {
       ),
       child: IconTheme(
         data: theme.iconTheme.copyWith(
-          size: dense ? 11.0 : 12.0,
+          size: dense ? 10.0 : 12.0,
         ),
         child: DefaultTextStyle(
           style: TextStyle(
             color: foregroundColor,
-            fontSize: dense ? 11.0 : 12.0,
+            fontSize: dense ? 10.0 : 12.0,
           ),
           child: child,
         ),

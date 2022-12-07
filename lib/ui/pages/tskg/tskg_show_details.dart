@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
+import '../../krs_chip.dart';
 
 class TskgShowDetais extends StatelessWidget {
   final TskgShow show;
@@ -85,61 +86,74 @@ class TskgShowDetais extends StatelessWidget {
                 ),
 
                 /// оригинальное название фильма
-                // if (expanded && show.internationalName.isNotEmpty) Padding(
-                //   padding: const EdgeInsets.only(top: 4.0),
-                //   child: Text(show.internationalName,
-                //     style: theme.textTheme.titleMedium?.copyWith(
-                //       color: theme.colorScheme.outline,
-                //     ),
-                //     maxLines: 1,
-                //     overflow: TextOverflow.ellipsis,
-                //   ),
-                // ),
+                if (expanded && show.originalTitle.isNotEmpty) Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(show.originalTitle,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
 
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0),
+                  child: DefaultTextStyle(
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)
+                    ),
                     child: Row(
+                      children: [
+
+                        /// год выпуска, жанры (оставляем не более двух)
+                        Text([ show.years, ... show.genres.take(2) ].join(', ')),
+
+                        const SizedBox(width: 12.0),
+
+                        /// количество эпизодов (файлов), если сериал
+                        Text(locale.seasonsCount(show.seasons.length)),
+
+                        const SizedBox(width: 12.0),
+
+                        /// страны фильма (оставляем не более двух)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(show.countries.take(2).join(', ')),
+                        ),
+
+                        if (show.voiceActing.isNotEmpty) Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: KrsChip(
+                            dense: true,
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 4.0),
+                                  child: Icon(Icons.mic),
+                                ),
+                                
+                                Text(show.voiceActing),
+                              ],
+                            ),
+                          ),
+                        ),
+                        
+                      ],
+                    )
+                  ),
+                ),
+
+                /// озвучка
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
                     children: [
-
-                      /// год выпуска, жанры (оставляем не более двух)
-                      Text([ show.years, ... show.genres.take(2) ].join(', ')),
-
-                      const SizedBox(width: 12.0),
-
-                      /// количество эпизодов (файлов), если сериал
-                      Text(locale.seasonsCount(show.seasons.length)),
-
-                      const SizedBox(width: 12.0),
-
-                      /// страны фильма (оставляем не более двух)
-                      Text(show.countries.take(2).join(', ')),
                       
                     ],
                   ),
                 ),
-                
-                /// рейтинги сериала
-                // if (show.hasImdbRating || show.hasKinopoiskRating) Padding(
-                //   padding: const EdgeInsets.only(top: 8.0),
-                //   child: Row(
-                //     children: [
-                //       /// рейтинг IMDb
-                //       if (show.hasImdbRating) Padding(
-                //         padding: const EdgeInsets.only(right: 8.0),
-                //         child: MovieRating(
-                //           type: MovieRatingType.imdb,
-                //           rating: show.ratingImdbValue,
-                //         ),
-                //       ),
-
-                //       /// рейтинг КиноПоиск
-                //       if (show.hasKinopoiskRating) MovieRating(
-                //         type: MovieRatingType.kinopoisk,
-                //         rating: show.ratingKinopoiskValue,
-                //       ),
-                //     ],
-                //   ),
-                // ),
 
                 /// описание сериала
                 Padding(

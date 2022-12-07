@@ -308,6 +308,43 @@ class TskgApiProvider {
           );
         }).toList();
 
+        
+        /// текущая озвучка
+        String voiceActing = '';
+        
+        /// список доступных озвучек
+        final voiceActings = <TskgShow>[];
+        
+        /// парсим список доступных озвучек
+        final voiceActingElements = document.getElementsByClassName('btn-group btn-group-sm');
+        if (voiceActingElements.isNotEmpty) {
+          /// ^ если есть доступные озвучки
+          
+          /// парсим кнопки с озвучками
+          final items = voiceActingElements.first.children;
+          for (final item in items) {
+            if (item.attributes['disabled'] != null) {
+
+              /// обновляем текущую озвучку
+              voiceActing = item.text.trim();
+            
+            } else {
+
+              final url = item.attributes['href'] ?? '';
+              
+              /// формируем список доступных озвучек
+              voiceActings.add(
+                TskgShow(
+                  showId: TskgShow.getShowIdFromUrl(url),
+                  name: item.text,
+                )
+              );
+
+            }
+            
+          }
+        }
+
         return TskgShow(
           showId: showId,
           name: title,
@@ -317,6 +354,8 @@ class TskgApiProvider {
           genres: genres,
           countries: countries,
           seasons: seasons,
+          voiceActing: voiceActing,
+          voiceActings: voiceActings,
         );
       }
 
