@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kgino/constants.dart';
 
 import '../controllers/ockg/ockg_search_controller.dart';
 import '../controllers/tskg/tskg_search_controller.dart';
+import '../models/ockg/ockg_movie.dart';
 import '../resources/krs_locale.dart';
 import '../ui/lists/category_list_item.dart';
-import '../ui/lists/home_page_vertical_list_view.dart';
+import '../ui/lists/krs_vertical_list_view.dart';
 import '../ui/lists/krs_horizontal_list_view.dart';
 import '../ui/lists/krs_list_item_card.dart';
 
@@ -47,13 +49,13 @@ class SearchPage extends StatelessWidget {
     if (items.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 24.0),
-        child: HomePageVerticalListView(
+        child: KrsVerticalListView(
           itemCount: items.length,
           itemBuilder: (context, focusNode, index) {
             final item = items[index];
 
             return SizedBox.fromSize(
-              size: const Size.fromHeight(200.0),
+              size: const Size.fromHeight(ockgListViewHeight),
               child: KrsHorizontalListView(
                 focusNode: focusNode,
                 onItemFocused: (index) {
@@ -68,16 +70,30 @@ class SearchPage extends StatelessWidget {
                   
                   return KrsListItemCard(
                     focusNode: focusNode,
+                    posterSize: (show is OckgMovie) ? ockgPosterSize : tskgPosterSize,
                     item: show,
                     
-                    /// при выб оре элемента
+                    /// при выборе элемента
                     onTap: () {
-                      /// переходим на страницу деталей о сериале
-                      context.goNamed('tskgShowDetails',
-                        params: {
-                          'id': show.showId,
-                        },
-                      );
+
+                      if (show is OckgMovie) {
+                        /// переходим на страницу деталей о фильме
+                        context.goNamed('ockgMovieDetails',
+                          params: {
+                            'id': '${show.movieId}',
+                          },
+                        );
+
+                      } else {
+                        /// переходим на страницу деталей о сериале
+                        context.goNamed('tskgShowDetails',
+                          params: {
+                            'id': show.showId,
+                          },
+                        );
+
+                      }
+                      
 
                     },
                   );

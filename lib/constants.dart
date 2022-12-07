@@ -13,8 +13,11 @@ final userAgent = 'KGino/${Platform.operatingSystem} ${Platform.operatingSystemV
 
 /// oc.kg размер постера
 const ockgPosterSize = Size(100.0, 140.0);
+const ockgListViewHeight = 140.0 + 40.0 + 47.0;
 
 
+/// ts.kg размер постера
+const tskgPosterSize = Size(126.0, 102.0);
 /// title height
 const tskgCategoryTitleHeight = 47.0;
 /// poster + name

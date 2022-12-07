@@ -33,7 +33,7 @@ class KrsHorizontalListView extends StatefulWidget {
     this.onItemFocused,
     this.onLoadNextPage,
     this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
-    this.spacing = 32.0,
+    this.spacing = 24.0,
     this.titleText = '',
     this.scrollToLastPosition = true,
     this.requestItemIndex,
@@ -80,7 +80,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
       create: (context) => FocusableListCubit(
         controller: widget.controller,
         itemCount: widget.itemCount,
-        offset: 48.0,
+        offset: widget.padding.left,
         keyEventResult: KeyEventResult.handled,
       ),
       child: BlocBuilder<FocusableListCubit, FocusableListState>(

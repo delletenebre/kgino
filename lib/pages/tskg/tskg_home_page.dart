@@ -30,16 +30,6 @@ class TskgHomePage extends StatelessWidget {
                     show: show,
                   );
 
-                  // if (movie.showPlayButton) {
-                  //   return OckgMoviePopular(
-                  //     movie: movie,
-                  //   );
-                  // } else {
-                  //   return OckgMovieDetais(
-                  //     movie: movie,
-                  //   );
-                  // }
-                  
                 }
 
                 return const SizedBox();

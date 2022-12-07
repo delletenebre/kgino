@@ -16,7 +16,7 @@ import '../../../models/seen_item.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../lists/category_list_item.dart';
-import '../../lists/home_page_vertical_list_view.dart';
+import '../../lists/krs_vertical_list_view.dart';
 import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
@@ -125,7 +125,7 @@ class TskgHomePageListView extends HookWidget {
           }
 
           if (showList.isNotEmpty) {
-            return HomePageVerticalListView(
+            return KrsVerticalListView(
               itemCount: showList.length,
               itemBuilder: (context, focusNode, index) {
                 final showItem = showList[index];

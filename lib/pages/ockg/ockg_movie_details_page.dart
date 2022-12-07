@@ -159,29 +159,6 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                     ),
                   ),
 
-                  // if (movie.files.length > 1) SizedBox(
-                  //   height: 300,
-                  //   child: ListView.separated(
-                  //     scrollDirection: Axis.horizontal,
-                  //     itemCount: movie.files.length,
-                  //     itemBuilder: (context, index) {
-                  //       final file = movie.files[index];
-
-                  //       return InkWell(
-                  //         onTap: () {
-                  //           print(file);
-                  //         },
-                  //         child: Card(
-                  //           child: Text(file.name),
-                  //         ),
-                  //       );
-                  //     },
-                  //     separatorBuilder: (context, index) {
-                  //       return const SizedBox(width: 24.0,);
-                  //     },
-                  //   ),
-                  // )
-
                 ],
               );
             }

@@ -6,7 +6,7 @@ import 'package:kgino/constants.dart';
 import '../../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../../models/ockg/ockg_bestsellers_category.dart';
-import '../../lists/home_page_vertical_list_view.dart';
+import '../../lists/krs_vertical_list_view.dart';
 import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
@@ -24,13 +24,13 @@ class OckgHomePageListView extends StatelessWidget {
         if (state.isSuccess) {
           final categories = state.data;
 
-          return HomePageVerticalListView(
+          return KrsVerticalListView(
             itemCount: state.data.length,
             itemBuilder: (context, focusNode, index) {
               final bestsellersCategory = categories[index];
 
               return SizedBox.fromSize(
-                size: const Size.fromHeight(300 + 16.0),
+                size: const Size.fromHeight(ockgListViewHeight),
                 child: KrsHorizontalListView(
                   focusNode: focusNode,
                   onItemFocused: (index) {

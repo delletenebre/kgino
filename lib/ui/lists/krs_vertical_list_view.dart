@@ -6,21 +6,22 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 import '../../controllers/list_cubit/focusable_list_cubit.dart';
 import '../../controllers/list_cubit/focusable_list_state.dart';
 
-class HomePageVerticalListView extends StatefulWidget {
+class KrsVerticalListView extends StatefulWidget {
   final int itemCount;
-  final Widget Function(BuildContext context, FocusNode focusNode, int index) itemBuilder;
+  final Widget Function(
+    BuildContext context, FocusNode focusNode, int index) itemBuilder;
 
-  const HomePageVerticalListView({
+  const KrsVerticalListView({
     super.key,
     required this.itemCount,
     required this.itemBuilder,
   });
 
   @override
-  State<HomePageVerticalListView> createState() => _HomePageVerticalListViewState();
+  State<KrsVerticalListView> createState() => _KrsVerticalListViewState();
 }
 
-class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
+class _KrsVerticalListViewState extends State<KrsVerticalListView> {
  @override
   void initState() {
     super.initState();
@@ -67,7 +68,6 @@ class _HomePageVerticalListViewState extends State<HomePageVerticalListView> {
               child: ListView.builder(
                 clipBehavior: Clip.antiAlias,
                 controller: focusableListState.scrollController,
-                padding: const EdgeInsets.symmetric(vertical: 32.0),
                 itemCount: widget.itemCount,
 
                 /// основной контент

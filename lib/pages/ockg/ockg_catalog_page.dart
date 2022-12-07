@@ -66,7 +66,7 @@ class OckgCatalogPage extends StatelessWidget {
 
             /// список фильмов внизу страницы
             SizedBox(
-              height: 140.0 + 12.0 + 4.0 + 28.0 + 20.0,
+              height: ockgListViewHeight,
               child: BlocProvider(
                 create: (context) => OckgCatalogController(
                   genreId: genreId,
@@ -95,41 +95,10 @@ class OckgCatalogPage extends StatelessWidget {
 
                           },
 
-                          // onFocused: (focusNode) {
-                          //   /// ^ при смене фокуса на этот фильм
-                            
-                          //   // /// прокручиваем контент к текущему элементу
-                          //   // _autoScrollController.scrollToIndex(index,
-                          //   //   preferPosition: AutoScrollPosition.begin,
-                          //   //   duration: const Duration(milliseconds: 50),
-                          //   // ).then((_) {
-                          //   //   /// ^ после окончания прокрутки
-                              
-                          //   //   if (mounted) {
-                          //   //     /// ^ если виджет ещё жив
-                                
-                          //   //     /// вызываем пользовательский обработчик
-                          //   //     widget.onMovieFocused.call(movie);
-                          //   //   }
-                          //   // });
-                          // },
                         );
                       },
                     );
 
-                    //return SizedBox();
-                    
-                    // return OckgMoviesListView(
-                    //   autofocus: true,
-                    //   movies: catalog.movies,
-                    //   onMovieFocused: (movie) {
-                    //     final controller = context.read<OckgMovieDetailsController>();
-                    //     controller.getMovieById(movie.movieId);
-                    //   },
-                    //   onScrollEnd: () {
-                    //     context.read<OckgCatalogController>().fetchMovies();
-                    //   }
-                    // );
                   },
                 ),
               ),
