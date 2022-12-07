@@ -151,7 +151,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       }
     }
     
-    String subtitle = '${episode?.name}';
+    String subtitle = '${episode?.nameWithSeason}';
 
     return PlayableItem(
       id: '${episode?.id}',

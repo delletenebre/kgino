@@ -7,6 +7,8 @@ part 'tskg_episode_details.g.dart';
 
 @freezed
 class TskgEpisodeDetails with _$TskgEpisodeDetails {
+  const TskgEpisodeDetails._();
+
   const factory TskgEpisodeDetails({
     
     @Default(0) int id,
@@ -33,6 +35,16 @@ class TskgEpisodeDetails with _$TskgEpisodeDetails {
 
   factory TskgEpisodeDetails.fromJson(Map<String, Object?> json)
       => _$TskgEpisodeDetailsFromJson(json);
+
+  String get nameWithSeason {
+    final regExp = RegExp(r'^.+?(\d+?x\d+?)$');
+    
+    if (regExp.hasMatch(fullname)) {
+      return '${regExp.firstMatch(fullname)?.group(1) ?? ''} $name';
+    }
+
+    return name;
+  }
 }
 
 // @JsonSerializable()

@@ -215,7 +215,7 @@ class __$$_TskgEpisodeDetailsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TskgEpisodeDetails implements _TskgEpisodeDetails {
+class _$_TskgEpisodeDetails extends _TskgEpisodeDetails {
   const _$_TskgEpisodeDetails(
       {this.id = 0,
       this.download = '',
@@ -225,7 +225,8 @@ class _$_TskgEpisodeDetails implements _TskgEpisodeDetails {
       this.link = '',
       this.name = '',
       this.title = '',
-      required this.video});
+      required this.video})
+      : super._();
 
   factory _$_TskgEpisodeDetails.fromJson(Map<String, dynamic> json) =>
       _$$_TskgEpisodeDetailsFromJson(json);
@@ -302,7 +303,7 @@ class _$_TskgEpisodeDetails implements _TskgEpisodeDetails {
   }
 }
 
-abstract class _TskgEpisodeDetails implements TskgEpisodeDetails {
+abstract class _TskgEpisodeDetails extends TskgEpisodeDetails {
   const factory _TskgEpisodeDetails(
       {final int id,
       final String download,
@@ -313,6 +314,7 @@ abstract class _TskgEpisodeDetails implements TskgEpisodeDetails {
       final String name,
       final String title,
       required final TskgVideo video}) = _$_TskgEpisodeDetails;
+  const _TskgEpisodeDetails._() : super._();
 
   factory _TskgEpisodeDetails.fromJson(Map<String, dynamic> json) =
       _$_TskgEpisodeDetails.fromJson;

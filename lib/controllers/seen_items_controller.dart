@@ -120,7 +120,12 @@ class SeenItemsController {
   }
 
   List<SeenItem> findByTag(String tag) {
-    return _storage.values.where((item) => item.tag == tag).toList();
+    final items = _storage.values.where((item) => item.tag == tag).toList()
+      ..sort((a, b) {
+        return b.updatedAt.compareTo(a.updatedAt);
+      });
+    
+    return items;
   }
 
 }
