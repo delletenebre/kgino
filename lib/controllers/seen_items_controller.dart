@@ -5,7 +5,7 @@ import '../models/seen_item.dart';
 
 class SeenItemsController {
   /// ключ для сохранённого значения
-  static const _storageKey = 'seen_items';
+  static const storageKey = 'seen_items';
 
   /// хранилище данных
   late final Box<SeenItem> _storage;
@@ -14,13 +14,7 @@ class SeenItemsController {
   ValueListenable<Box<SeenItem>> get listenable => _storage.listenable();
 
   SeenItemsController() {
-    /// регистрируем модель для просмотренных эпизодов
-    Hive.registerAdapter(SeenItemAdapter());
-    Hive.registerAdapter(SeenEpisodeAdapter());
-
-    /// инициализируем хранилище
-    Hive.openBox<SeenItem>(_storageKey).then((box) => _storage = box);
-    
+    _storage = Hive.box<SeenItem>(SeenItemsController.storageKey);
   }
 
   /// обновляем информацию о времени просмотра эпизода

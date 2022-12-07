@@ -50,8 +50,6 @@ class OckgMovie with _$OckgMovie {
 
     @Default([]) List<OckgMovie> otherMovies,
 
-    @Default(false) bool showPlayButton,
-
   }) = _OckgMovie;
 
   factory OckgMovie.fromJson(Map<String, Object?> json)

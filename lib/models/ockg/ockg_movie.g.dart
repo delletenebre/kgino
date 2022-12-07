@@ -62,7 +62,6 @@ _$_OckgMovie _$$_OckgMovieFromJson(Map<String, dynamic> json) => _$_OckgMovie(
               ?.map((e) => OckgMovie.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      showPlayButton: json['show_play_button'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
@@ -90,5 +89,4 @@ Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
       'files': instance.files,
       'trailer': instance.trailer,
       'other_movies': instance.otherMovies,
-      'show_play_button': instance.showPlayButton,
     };

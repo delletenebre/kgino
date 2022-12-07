@@ -8,6 +8,7 @@ import 'api/tskg_api_provider.dart';
 import 'app.dart';
 import 'controllers/seen_items_controller.dart';
 import 'controllers/tskg/tskg_favorites_controller.dart';
+import 'models/seen_item.dart';
 import 'resources/krs_storage.dart';
 
 Future<void> main() async {
@@ -16,6 +17,13 @@ Future<void> main() async {
 
   /// инициализируем хранилище
   await Hive.initFlutter();
+
+  /// регистрируем модель для просмотренных эпизодов
+  Hive.registerAdapter(SeenItemAdapter());
+  Hive.registerAdapter(SeenEpisodeAdapter());
+
+  /// инициализируем хранилище
+  await Hive.openBox<SeenItem>(SeenItemsController.storageKey);
 
   /// инициализируем локальное хранилище
   final sharedStorage = await SharedPreferences.getInstance();

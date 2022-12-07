@@ -36,6 +36,10 @@ class SeenItem extends HiveObject {
   /// список просмотренных эпизодов
   @HiveField(5)
   final Map<String, SeenEpisode> episodes;
+
+  /// постер фильма
+  @HiveField(6)
+  final String posterUrl;
   
   SeenItem({
     required this.tag,
@@ -44,6 +48,7 @@ class SeenItem extends HiveObject {
     required this.updatedAt,
     required this.episodes,
     required this.subtitlesEnabled,
+    this.posterUrl = '',
   });
 
 }
