@@ -109,7 +109,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
         return _getPlayableItem();
       } : null,
 
-      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled) {
+      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled, episodeName) {
         _subtitlesEnabled = subtitlesEnabled;
 
         seenEpisodesController.updatePosition(
@@ -120,6 +120,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
           position: position,
           duration: duration,
           subtitlesEnabled: _subtitlesEnabled,
+          episodeName: episodeName,
         );
       }
     );

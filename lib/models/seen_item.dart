@@ -66,12 +66,17 @@ class SeenEpisode extends HiveObject {
   /// время обновления данных
   @HiveField(3)
   DateTime updatedAt;
+
+  /// название сериала (или фильма)
+  @HiveField(4)
+  final String name;
   
   SeenEpisode({
     required this.id,
     required this.position,
     required this.duration,
     required this.updatedAt,
+    required this.name,
   });
 
   /// просмотренная позиция в пределах от 0 до 1

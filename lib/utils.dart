@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'ui/krs_bottom_sheet_content.dart';
 
 class Utils {
   static Duration parseDuration(String time) {
@@ -44,6 +47,33 @@ class Utils {
     }
 
     return tokens.join(' ');
+  }
+
+  static Future<T?> showModal<T>({
+    required BuildContext context,
+    String titleText = '',
+    required Widget child,
+  }) {
+    return showModalBottomSheet<T>(
+      context: context,
+      constraints: const BoxConstraints(
+        minWidth: 480.0,
+        maxWidth: 480.0,
+      ),
+      isDismissible: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return KrsBottomSheetContent(
+          titleText: titleText,
+          child: child,
+        );
+      },
+    );
   }
 }
 

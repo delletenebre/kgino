@@ -9,6 +9,8 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../models/playable_item.dart';
 import '../../resources/krs_locale.dart';
+import '../../resources/krs_theme.dart';
+import '../../utils.dart';
 import '../loading_indicator.dart';
 import '../pages/try_again_message.dart';
 import 'video_player_controls_overlay.dart';
@@ -25,7 +27,13 @@ class VideoPlayerView extends StatefulWidget {
   final Future<PlayableItem> Function()? onSkipNext;
 
   /// при обновлении времени просмотра
-  final Function(String episodeId, int position, int duration, bool subtitlesEnabled) onUpdatePosition;
+  final Function(
+    String episodeId,
+    int position,
+    int duration,
+    bool subtitlesEnabled,
+    String episodeName
+  ) onUpdatePosition;
 
   const VideoPlayerView({
     super.key,
@@ -179,52 +187,66 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     
     if (_startTime > 0) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        final seekToPosition = await showGeneralDialog(
-          context: context,
-          barrierColor: Colors.black,
-          barrierDismissible: false,
-          pageBuilder: (_, __, ___) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  /// кнопка продолжить просмотр
-                  ElevatedButton(
-                    autofocus: true,
-                    onPressed: () {
-                      if (mounted) {
-                        Navigator.of(context).pop(true);
-                      }
-                    },
-                    child: Text(locale.continueWatching),
-                  ),
+        final startTime = _startTime;
 
-                  /// кнопка начать сначала
-                  ElevatedButton(
-                    onPressed: () {
-                      if (mounted) {
-                        Navigator.of(context).pop(false);
-                      }
-                    },
-                    child: Text(locale.startOver),
-                  ),
-                ],
-              )
-            );
-          },
+        _startTime = -1;
+
+        final result = await Utils.showModal<bool?>(
+          context: context,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              /// кнопка продолжить просмотр
+              SizedBox(
+                width: 320.0,
+                child: ElevatedButton(
+                  autofocus: true,
+                  style: KrsTheme.filledTonalButtonStyleOf(context),
+                  onPressed: () {
+                    if (mounted) {
+                      /// перематываем на нужную позицию и запускаем видео
+                      _playerController?.seekTo(Duration(seconds: startTime - 5))
+                        .then((_) {
+                          _playerController?.play();
+                        });
+
+                      /// закрываем диалоговое окно
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  child: Text(locale.continueWatching),
+                ),
+              ),
+
+              /// кнопка начать сначала
+              SizedBox(
+                width: 320.0,
+                child: ElevatedButton(
+                  autofocus: true,
+                  style: KrsTheme.filledTonalButtonStyleOf(context),
+                  onPressed: () {
+                    if (mounted) {
+                      /// запускаем видео
+                      _playerController?.play();
+
+                      /// закрываем диалоговое окно
+                      Navigator.pop(context, false);
+                    }
+                  },
+                  child: Text(locale.startOver),
+                ),
+              ),
+
+            ],
+          ),
         );
 
-        if (seekToPosition == null) {
-          _startTime = -1;
+        /// если при выборе нажали кнопку назад - закрываем плеер
+        if (result == null) {
           if (mounted) {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           }
-        } else {
-          if (seekToPosition == true) {
-            await _playerController?.seekTo(Duration(seconds: _startTime));
-          }
-          _startTime = -1;
-          _playerController?.play();
         }
         
       });
@@ -373,7 +395,13 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     // final percentPosition = position / duration;
 
     /// сохраняем информацию о времени просмотра эпизода
-    widget.onUpdatePosition(_playableItem.id, position, duration, _subtitlesEnabled);
+    widget.onUpdatePosition(
+      _playableItem.id,
+      position,
+      duration,
+      _subtitlesEnabled,
+      _playableItem.subtitle,
+    );
 
     /// чтобы экран не уходил в сон
     Wakelock.toggle(

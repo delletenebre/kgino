@@ -14,8 +14,10 @@ import '../../models/tskg/tskg_favorite.dart';
 import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
+import '../../ui/krs_bottom_sheet_content.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
+import '../../ui/pages/play_button_seen_information.dart';
 import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/tskg/tskg_show_details.dart';
 import '../../utils.dart';
@@ -35,8 +37,8 @@ class TskgShowDetailsPage extends StatefulWidget {
 class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
   final _scrollController = ScrollController();
   bool _isScrolling = false;
-  final _playButtonFocusNode = FocusNode();
 
+  final _playButtonFocusNode = FocusNode();
   late final void Function() _playButtonListener;
 
   @override
@@ -135,79 +137,11 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                               children: [
 
                                 /// если кнопка Смотреть в фокусе
-                                if (_playButtonFocusNode.hasFocus) ValueListenableBuilder(
-                                  valueListenable: seenItemsController.listenable,
-                                  builder: (context, box, child) {
-                                    final seenItem = seenItemsController.findItemByKey(
-                                      SeenItem.getKey(
-                                        tag: SeenItem.tskgTag,
-                                        id: show.showId,
-                                      )
-                                    );
-
-                                    /// если есть просмотренные эпизоды
-                                    if (seenItem != null) {
-                                      final seenEpisodes = seenItem.episodes.values.toList();
-                                      seenEpisodes.sort((a, b) {
-                                        return b.updatedAt.compareTo(a.updatedAt);
-                                      });
-                                      final seenEpisode = seenEpisodes.first;
-                                      final episodes = <TskgEpisode>[];
-                                      for (final season in show.seasons) {
-                                        episodes.addAll(season.episodes);
-                                      }
-                                      final episode = episodes.singleWhere((episode) {
-                                        return episode.id.toString() == seenEpisode.id;
-                                      });
-                                      final seenValue = seenEpisode.position / seenEpisode.duration;
-                                    
-                                      /// показываем информацию о последнем
-                                      /// просмотренном эпизоде
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(episode.name,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 4.0),
-
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.only(bottom: 4.0, top: 3.0),
-                                                width: 128.0,
-                                                height: 10.0,
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(12.0),
-                                                  child: LinearProgressIndicator(
-                                                    value: seenValue,
-                                                    color: theme.colorScheme.outline,
-                                                  ),
-                                                ),
-                                              ),
-
-                                              const SizedBox(width: 8.0),
-
-                                              Text('осталось ${Utils.formatDuration(Duration(seconds: seenEpisode.duration - seenEpisode.position))}',
-                                                style: TextStyle(
-                                                  fontSize: 10.0,
-                                                  color: theme.colorScheme.outline,
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
-                                          
-                                        ],
-                                      );
-                                    }
-
-                                    return const SizedBox();
-                                  },
+                                if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
+                                  itemKey: SeenItem.getKey(
+                                    tag: SeenItem.tskgTag,
+                                    id: show.showId,
+                                  ),
                                 ),
                               ],
                             ),
@@ -366,6 +300,59 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                       );
                                     }
                                   }
+                                ),
+
+                                /// кнопка выбора озвучки
+                                if (show.voiceActings.isNotEmpty) Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      Utils.showModal(
+                                        context: context,
+                                        titleText: 'Выбор аудио',
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+
+                                            SizedBox(
+                                              width: 320.0,
+                                              child: ElevatedButton.icon(
+                                                autofocus: true,
+                                                style: KrsTheme.filledTonalButtonStyleOf(context),
+                                                icon: const Icon(Icons.check),
+                                                label: Text(show.voiceActing),
+                                                onPressed: () => Navigator.pop(context),
+                                              ),
+                                            ),
+
+                                            ... show.voiceActings.map((item) {
+                                              return SizedBox(
+                                                width: 320.0,
+                                                child: ElevatedButton(
+                                                  style: KrsTheme.filledTonalButtonStyleOf(context),
+                                                  child: Text(item.name),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+
+                                                    /// переходим на страницу деталей о сериале
+                                                    context.replaceNamed('tskgShowDetails',
+                                                      params: {
+                                                        'id': item.showId,
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            }).toList(),
+
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.mic),
+                                    label: Text('Выбрать озвучку'),
+                                  ),
                                 ),
 
                               ],

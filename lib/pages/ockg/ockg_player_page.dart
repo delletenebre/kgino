@@ -101,7 +101,7 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
 
         return _getPlayableItem();
       } : null,
-      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled) {
+      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled, episodeName) {
         _subtitlesEnabled = subtitlesEnabled;
 
         seenEpisodesController.updatePosition(
@@ -112,6 +112,7 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
           position: position,
           duration: duration,
           subtitlesEnabled: _subtitlesEnabled,
+          episodeName: episodeName,
         );
       }
     );

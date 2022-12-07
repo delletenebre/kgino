@@ -70,13 +70,14 @@ class SeenEpisodeAdapter extends TypeAdapter<SeenEpisode> {
       position: fields[1] as int,
       duration: fields[2] as int,
       updatedAt: fields[3] as DateTime,
+      name: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, SeenEpisode obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -84,7 +85,9 @@ class SeenEpisodeAdapter extends TypeAdapter<SeenEpisode> {
       ..writeByte(2)
       ..write(obj.duration)
       ..writeByte(3)
-      ..write(obj.updatedAt);
+      ..write(obj.updatedAt)
+      ..writeByte(4)
+      ..write(obj.name);
   }
 
   @override

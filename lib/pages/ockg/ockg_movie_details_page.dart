@@ -6,10 +6,12 @@ import 'package:go_router/go_router.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../models/playable_item.dart';
+import '../../models/seen_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
+import '../../ui/pages/play_button_seen_information.dart';
 import '../../ui/pages/try_again_message.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 
@@ -28,6 +30,32 @@ class OckgMovieDetailsPage extends StatefulWidget {
 class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
   final _scrollController = ScrollController();
   bool _isScrolling = false;
+
+  final _playButtonFocusNode = FocusNode();
+  late final void Function() _playButtonListener;
+
+  @override
+  void initState() {
+    _playButtonListener = () {
+      if (mounted) {
+        setState(() {
+          
+        });
+      }
+    };
+    
+    _playButtonFocusNode.addListener(_playButtonListener);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _playButtonFocusNode.removeListener(_playButtonListener);
+    _playButtonFocusNode.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +90,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 72.0),
-                    height: MediaQuery.of(context).size.height - (32 * 2 + 40 + 72.0),
+                    height: MediaQuery.of(context).size.height - (128.0 + 72.0),
                     child: OckgMovieDetais(
                       movie: movie,
                       expanded: true,
@@ -84,76 +112,105 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                       return KeyEventResult.ignored;
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Row(
+                      padding: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 32.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(
+                            height: 40.0,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
 
-                          /// кнопка начала просмотра
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              autofocus: true,
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// переходим на страницу плеера фильма
-                                context.goNamed('ockgMoviePlayer',
-                                  params: {
-                                    'id': '${movie.movieId}',
-                                  },
-                                  queryParams: {
-                                    'fileIndex': '0',
-                                    'fileId': '${movie.files.first.fileId}',
-                                  },
-                                  extra: movie,
-                                );
-                              },
-                              icon: const Icon(Icons.play_arrow),
-                              label: Text(locale.play),
-                            ),
-                          ),
-
-                          /// если файлов несколько, показываем кнопку выбора
-                          /// эпизода
-                          if (movie.files.length > 1) Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// переходим на страницу выбора файла
-                                context.goNamed('ockgMovieFiles',
-                                  params: {
-                                    'id': '${movie.movieId}',
-                                  },
-                                  extra: movie,
-                                );
-                              },
-                              icon: const Icon(Icons.folder_open),
-                              label: Text(locale.selectEpisode),
-                            ),
-                          ),
-
-                          /// если есть трейлер, показываем кнопку просмотра
-                          /// трейлера
-                          if (movie.trailer != null) Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ElevatedButton.icon(
-                              style: KrsTheme.filledTonalButtonStyleOf(context),
-                              onPressed: () {
-                                /// проигрывам трейлер фильма
-                                context.push('/player',
-                                  extra: PlayableItem(
-                                    id: '%%%trailer%%%',
-                                    videoUrl: movie.trailer!.video,
-                                    title: movie.name,
-                                    subtitle: locale.trailer,
+                                /// если кнопка Смотреть в фокусе
+                                if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
+                                  itemKey: SeenItem.getKey(
+                                    tag: SeenItem.ockgTag,
+                                    id: '${movie.movieId}',
                                   ),
-                                );
-                              },
-                              icon: const Icon(Icons.videocam),
-                              label: Text(locale.trailer),
+                                ),
+                              ],
                             ),
                           ),
 
+                          const SizedBox(height: 8.0),
+                          
+                          SizedBox(
+                            height: 40.0,
+                            child: Row(
+                              children: [
+
+                                /// кнопка начала просмотра
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    focusNode: _playButtonFocusNode,
+                                    autofocus: true,
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      /// переходим на страницу плеера фильма
+                                      context.goNamed('ockgMoviePlayer',
+                                        params: {
+                                          'id': '${movie.movieId}',
+                                        },
+                                        queryParams: {
+                                          'fileIndex': '0',
+                                          'fileId': '${movie.files.first.fileId}',
+                                        },
+                                        extra: movie,
+                                      );
+                                    },
+                                    icon: const Icon(Icons.play_arrow),
+                                    label: Text(locale.play),
+                                  ),
+                                ),
+
+                                /// если файлов несколько, показываем кнопку выбора
+                                /// эпизода
+                                if (movie.files.length > 1) Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      /// переходим на страницу выбора файла
+                                      context.goNamed('ockgMovieFiles',
+                                        params: {
+                                          'id': '${movie.movieId}',
+                                        },
+                                        extra: movie,
+                                      );
+                                    },
+                                    icon: const Icon(Icons.folder_open),
+                                    label: Text(locale.selectEpisode),
+                                  ),
+                                ),
+
+                                /// если есть трейлер, показываем кнопку просмотра
+                                /// трейлера
+                                if (movie.trailer != null) Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: ElevatedButton.icon(
+                                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                                    onPressed: () {
+                                      /// проигрывам трейлер фильма
+                                      context.push('/player',
+                                        extra: PlayableItem(
+                                          id: '%%%trailer%%%',
+                                          videoUrl: movie.trailer!.video,
+                                          title: movie.name,
+                                          subtitle: locale.trailer,
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.videocam),
+                                    label: Text(locale.trailer),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

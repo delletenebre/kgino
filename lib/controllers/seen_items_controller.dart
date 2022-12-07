@@ -32,6 +32,7 @@ class SeenItemsController {
     required int position,
     required int duration,
     required bool subtitlesEnabled,
+    required String episodeName,
   }) {
 
     final key = SeenItem.getKey(
@@ -85,6 +86,7 @@ class SeenItemsController {
         position: position,
         duration: duration,
         updatedAt: DateTime.now(),
+        name: episodeName,
       );
 
       /// сохраняем запись
