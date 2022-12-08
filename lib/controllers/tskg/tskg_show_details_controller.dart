@@ -2,12 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/tskg_api_provider.dart';
+import '../../models/movie_item.dart';
 import '../../models/request_state.dart';
-import '../../models/tskg/tskg_show.dart';
 
 export '../../models/request_state.dart';
 
-class TskgShowDetailsController extends Cubit<RequestState<TskgShow>> {
+class TskgShowDetailsController extends Cubit<RequestState<TskgMovieItem>> {
 
   /// идентификатор сериала
   final String showId;
@@ -24,7 +24,7 @@ class TskgShowDetailsController extends Cubit<RequestState<TskgShow>> {
   }
 
   Future<void> getShowById(String showId, { bool showPlayButton = false }) async {
-    if (state.isSuccess && state.data.showId == showId) {
+    if (state.isSuccess && state.data.id == showId) {
       /// ^ если запрашиваемый сериал уже загружен
       
       /// ничего не делать
@@ -38,8 +38,7 @@ class TskgShowDetailsController extends Cubit<RequestState<TskgShow>> {
 
     if (!isClosed) {
       /// ^ если контроллер ещё существует
-      
-      if (show.showId.isEmpty) {
+      if (show.id.isEmpty) {
         /// ^ если данных нет
         
         emit(const RequestState.empty());

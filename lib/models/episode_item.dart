@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
@@ -5,7 +6,7 @@ part 'episode_item.freezed.dart';
 part 'episode_item.g.dart';
 
 @unfreezed
-class EpisodeItem extends HiveObject with _$EpisodeItem {
+class EpisodeItem extends HiveObject with EquatableMixin {
   EpisodeItem._();
 
   @HiveType(typeId: 6)

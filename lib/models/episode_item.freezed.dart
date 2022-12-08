@@ -272,11 +272,6 @@ class _$_EpisodeItem extends _EpisodeItem {
   @JsonKey()
   String streamUrl;
 
-  @override
-  String toString() {
-    return 'EpisodeItem(id: $id, name: $name, position: $position, duration: $duration, updatedAt: $updatedAt, seasonNumber: $seasonNumber, episodeNumber: $episodeNumber, streamUrl: $streamUrl)';
-  }
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

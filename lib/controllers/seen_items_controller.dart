@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../models/episode_item.dart';
+import '../models/movie_item.dart';
 import '../models/seen_item.dart';
 
 class SeenItemsController {
@@ -8,64 +10,51 @@ class SeenItemsController {
   static const storageKey = 'seen_items';
 
   /// хранилище данных
-  late final Box<SeenItem> _storage;
+  late final Box<MovieItem> _storage;
 
   /// слушатель изменений в хранилище
-  ValueListenable<Box<SeenItem>> get listenable => _storage.listenable();
+  ValueListenable<Box<MovieItem>> get listenable => _storage.listenable();
 
   SeenItemsController() {
-    _storage = Hive.box<SeenItem>(SeenItemsController.storageKey);
+    _storage = Hive.box<MovieItem>(SeenItemsController.storageKey);
   }
 
   /// обновляем информацию о времени просмотра эпизода
   void updatePosition({
-    required String tag,
-    required dynamic parentId,
-    required dynamic episodeId,
-    required String name,
+    required MovieItem movie,
+    required EpisodeItem episode,
+
     required int position,
-    required int duration,
     required bool subtitlesEnabled,
-    required String episodeName,
   }) {
 
-    final key = SeenItem.getKey(
-      tag: tag,
-      id: parentId.toString(),
-    );
-
     /// ищем запись просмотра сериала или фильма в БД
-    SeenItem? seenItem = _storage.get(key);
+    MovieItem? seenItem = _storage.get(movie.storageKey);
 
     if (seenItem == null) {
       /// ^ если запись не найдена в БД
-
-      /// создаём новую запись
-      seenItem = SeenItem(
-        tag: tag,
-        id: parentId.toString(),
-        name: name,
-        updatedAt: DateTime.now(),
-        subtitlesEnabled: subtitlesEnabled,
-        episodes: {},
-      );
+      
+      /// создаём запись в БД
+      seenItem = movie;
 
       /// сохраняем новую запись
-      _storage.put(key, seenItem);
+      _storage.put(seenItem.storageKey, seenItem);
 
-    } else {
-      /// ^ если запись уже существует в БД
-      
-      /// обновляем состояние субтитров
-      seenItem.subtitlesEnabled = subtitlesEnabled;
-
-      /// обновляем дату просмотра
-      seenItem.updatedAt = DateTime.now();
     }
 
-    if (seenItem.episodes.containsKey(episodeId.toString())) {
+    /// обновляем состояние субтитров
+    seenItem.subtitlesEnabled = subtitlesEnabled;
+
+    /// обновляем дату просмотра
+    seenItem.updatedAt = DateTime.now();
+
+
+    /// ^ если запись уже существует в БД
+    final seenEpisode = seenItem.episodes.indexOf(episode);
+
+    if (seenItem.episodes.containsKey(episode.id)) {
       /// ^ если запись уже существует в БД
-      final seenEpisode = seenItem.episodes[episodeId.toString()]!;
+      final seenEpisode = seenItem.episodes[episode.id]!;
       
       /// обновляем запись
       seenEpisode.position = position;

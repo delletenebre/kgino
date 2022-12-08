@@ -7,6 +7,9 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
+import '../models/episode_item.dart';
+import '../models/movie_item.dart';
+import '../models/season_item.dart';
 import '../models/tskg/tskg_episode.dart';
 import '../models/tskg/tskg_episode_details.dart';
 import '../models/tskg/tskg_season.dart';
@@ -171,7 +174,7 @@ class TskgApiProvider {
 
 
   /// получение информации о сериале
-  Future<TskgShow> getShow(String showId) async {
+  Future<TskgMovieItem> getShow(String showId) async {
 
     try {
       /// запрашиваем данные
@@ -263,7 +266,7 @@ class TskgApiProvider {
           /// формируем эпизоды сезона
           final episodes = seasonEpisodeRows.mapIndexed((episodeIndex, episodeRow) {
             /// парсим качество записи SD|HD
-            final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
+            //final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
             
             /// парсим название и id эпизода
             final episodeTitleElement = episodeRow.getElementsByClassName('text-primary').first;
@@ -290,20 +293,21 @@ class TskgApiProvider {
             }
             
             /// парсим описание эпизода (перевод, обычно)
-            final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim().replaceAll('⠀', '');
+            // final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim().replaceAll('⠀', '');
 
-            return TskgEpisode(
-              id: episodeId,
-              showId: showId,
-              name: '${seasonIndex + 1}x${episodeIndex + 1} $episodeTitle' ,
-              description: episodeDescription,
-              quality: episodeQuality,
-              duration: episodeDuration,
+            return EpisodeItem(
+              id: '$episodeId',
+              name: episodeTitle ,
+              seasonNumber: seasonIndex + 1,
+              episodeNumber: episodeIndex + 1,
+              duration: episodeDuration.inSeconds,
+              // quality: episodeQuality,
+              
             );
           }).toList();
 
-          return TskgSeason(
-            title: seasonTitle,
+          return SeasonItem(
+            name: seasonTitle,
             episodes: episodes,
           );
         }).toList();
@@ -313,7 +317,7 @@ class TskgApiProvider {
         String voiceActing = '';
         
         /// список доступных озвучек
-        final voiceActings = <TskgShow>[];
+        final voiceActings = <MovieItem>[];
         
         /// парсим список доступных озвучек
         final voiceActingElements = document.getElementsByClassName('btn-group btn-group-sm');
@@ -334,8 +338,8 @@ class TskgApiProvider {
               
               /// формируем список доступных озвучек
               voiceActings.add(
-                TskgShow(
-                  showId: TskgShow.getShowIdFromUrl(url),
+                TskgMovieItem(
+                  id: TskgShow.getShowIdFromUrl(url),
                   name: item.text,
                 )
               );
@@ -345,18 +349,23 @@ class TskgApiProvider {
           }
         }
 
-        return TskgShow(
-          showId: showId,
+        return TskgMovieItem(
+          id: showId,
           name: title,
-          originalTitle: originalTitle,
-          description: description,
-          years: years,
-          genres: genres,
-          countries: countries,
-          seasons: seasons,
-          voiceActing: voiceActing,
-          voiceActings: voiceActings,
-        );
+          // posterUrl: 'https://www.ts.kg/posters/$showId.png',
+          // updatedAt: DateTime.now(),
+
+          // originalName: originalTitle,
+          // description: description,
+          // year: years,
+          // genres: genres,
+          // countries: countries,
+
+          // seasons: seasons,
+          
+          // voiceActing: voiceActing,
+          // voiceActings: voiceActings,
+        ) as TskgMovieItem;
       }
 
     } catch (exception) {
@@ -364,7 +373,7 @@ class TskgApiProvider {
       
     }
 
-    return const TskgShow();
+    return TskgMovieItem(id: '', name: '');
   }
 
 

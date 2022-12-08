@@ -8,6 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../../controllers/seen_items_controller.dart';
 import '../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
+import '../../models/movie_item.dart';
 import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
 import '../../models/tskg/tskg_favorite.dart';
@@ -80,7 +81,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
         create: (context) => TskgShowDetailsController(
           showId: widget.showId,
         ),
-        child: BlocBuilder<TskgShowDetailsController, RequestState<TskgShow>>(
+        child: BlocBuilder<TskgShowDetailsController, RequestState<TskgMovieItem>>(
           builder: (context, state) {
             if (state.isError || state.isEmpty) {
               return TryAgainMessage(
@@ -140,7 +141,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
                                   itemKey: SeenItem.getKey(
                                     tag: SeenItem.tskgTag,
-                                    id: show.showId,
+                                    id: show.id,
                                   ),
                                 ),
                               ],
@@ -161,7 +162,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                     final seenItem = seenItemsController.findItemByKey(
                                       SeenItem.getKey(
                                         tag: SeenItem.tskgTag,
-                                        id: show.showId,
+                                        id: show.id,
                                       )
                                     );
 
@@ -177,7 +178,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                             /// переходим на страницу плеера сериала
                                             context.goNamed('tskgPlayer',
                                               params: {
-                                                'id': show.showId,    
+                                                'id': show.id,    
                                               },
                                               queryParams: {
                                                 'episodeIndex': '0',
@@ -200,7 +201,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                       final seenEpisode = seenEpisodes.first;
                                       final episodes = <TskgEpisode>[];
                                       for (final season in show.seasons) {
-                                        episodes.addAll(season.episodes);
+                                        // TODO return it
+                                        //episodes.addAll(season.episodes);
                                       }
                                       final episode = episodes.singleWhere((episode) {
                                         return episode.id.toString() == seenEpisode.id;
@@ -219,7 +221,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                               /// переходим на страницу плеера сериала
                                               context.goNamed('tskgPlayer',
                                                 params: {
-                                                  'id': show.showId,    
+                                                  'id': show.id,    
                                                 },
                                                 queryParams: {
                                                   'episodeId': seenEpisode.id,
@@ -247,7 +249,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                       /// переходим на страницу выбора эпизода
                                       context.goNamed('tskgShowSeasons',
                                         params: {
-                                          'id': show.showId,
+                                          'id': show.id,
                                         },
                                         extra: show,
                                       );
@@ -265,7 +267,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 ValueListenableBuilder(
                                   valueListenable: favoritesController.listenable,
                                   builder: (context, Box<TskgFavorite> box, _) {
-                                    if (box.containsKey(show.showId)) {
+                                    if (box.containsKey(show.id)) {
                                       /// ^ если уже добавлен в избранное
                                       
                                       /// кнопка удаления из избранного
@@ -275,7 +277,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                           style: KrsTheme.filledTonalButtonStyleOf(context),
                                           onPressed: () {
                                             /// убираем из избранного
-                                            favoritesController.remove(show.showId);
+                                            favoritesController.remove(show.id);
                                           },
                                           icon: const Icon(Icons.bookmark_remove),
                                           label: Text(locale.removeFromFavorites),
@@ -292,7 +294,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                           style: KrsTheme.filledTonalButtonStyleOf(context),
                                           onPressed: () {
                                             /// добавляем в избранное
-                                            favoritesController.add(show);
+                                            // TODO return it
+                                            //favoritesController.add(show);
                                           },
                                           icon: const Icon(Icons.bookmark_add_outlined),
                                           label: Text(locale.addToFavorites),
@@ -326,25 +329,25 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                               ),
                                             ),
 
-                                            ... show.voiceActings.map((item) {
-                                              return SizedBox(
-                                                width: 320.0,
-                                                child: ElevatedButton(
-                                                  style: KrsTheme.filledTonalButtonStyleOf(context),
-                                                  child: Text(item.name),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
+                                            // ... show.voiceActings.map((item) {
+                                            //   return SizedBox(
+                                            //     width: 320.0,
+                                            //     child: ElevatedButton(
+                                            //       style: KrsTheme.filledTonalButtonStyleOf(context),
+                                            //       child: Text(item.name),
+                                            //       onPressed: () {
+                                            //         Navigator.pop(context);
 
-                                                    /// переходим на страницу деталей о сериале
-                                                    context.replaceNamed('tskgShowDetails',
-                                                      params: {
-                                                        'id': item.showId,
-                                                      },
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            }).toList(),
+                                            //         /// переходим на страницу деталей о сериале
+                                            //         context.replaceNamed('tskgShowDetails',
+                                            //           params: {
+                                            //             'id': item.id,
+                                            //           },
+                                            //         );
+                                            //       },
+                                            //     ),
+                                            //   );
+                                            // }).toList(),
 
                                           ],
                                         ),

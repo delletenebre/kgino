@@ -20,20 +20,37 @@ Future<void> main() async {
   /// инициализируем хранилище
   await Hive.initFlutter();
 
-
+  /// регистрируем модели для просмотренных эпизодов
+  Hive.registerAdapter(MovieItemTypeAdapter());
   Hive.registerAdapter(MovieItemAdapter());
   Hive.registerAdapter(EpisodeItemAdapter());
 
   /// инициализируем хранилище
-  await Hive.openBox<MovieItem>('items');
+  await Hive.openBox<MovieItem>(SeenItemsController.storageKey);
+  //await Hive.openBox<MovieItem>('items');
+
+
+  // final ts = TskgMovieItem(
+  //   //type: MovieItemType.tskg,
+  //   id: '123',
+  //   name: '1323',
+  //   // posterUrl: '',
+  //   // updatedAt: DateTime.now(),
+  // );
+  // Hive.box<MovieItem>('items').add(
+  //   ts,
+  // );
+
+  // print(Hive.box<MovieItem>('items').values);
+  // print('after');
 
 
   /// регистрируем модель для просмотренных эпизодов
-  Hive.registerAdapter(SeenItemAdapter());
-  Hive.registerAdapter(SeenEpisodeAdapter());
+  // Hive.registerAdapter(SeenItemAdapter());
+  // Hive.registerAdapter(SeenEpisodeAdapter());
 
   /// инициализируем хранилище
-  await Hive.openBox<SeenItem>(SeenItemsController.storageKey);
+  //await Hive.openBox<MovieItem>(SeenItemsController.storageKey);
 
   /// инициализируем локальное хранилище
   final sharedStorage = await SharedPreferences.getInstance();

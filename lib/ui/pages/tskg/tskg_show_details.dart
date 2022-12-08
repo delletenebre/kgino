@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/movie_item.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../krs_chip.dart';
 
 class TskgShowDetais extends StatelessWidget {
-  final TskgShow show;
+  final TskgMovieItem show;
   final bool expanded;
 
   const TskgShowDetais({
@@ -86,9 +87,9 @@ class TskgShowDetais extends StatelessWidget {
                 ),
 
                 /// оригинальное название фильма
-                if (expanded && show.originalTitle.isNotEmpty) Padding(
+                if (expanded && show.originalName.isNotEmpty) Padding(
                   padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(show.originalTitle,
+                  child: Text(show.originalName,
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: theme.colorScheme.outline,
                     ),
@@ -108,7 +109,7 @@ class TskgShowDetais extends StatelessWidget {
                       children: [
 
                         /// год выпуска, жанры (оставляем не более двух)
-                        Text([ show.years, ... show.genres.take(2) ].join(', ')),
+                        Text([ show.year, ... show.genres.take(2) ].join(', ')),
 
                         const SizedBox(width: 12.0),
 
