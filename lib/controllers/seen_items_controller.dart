@@ -82,10 +82,10 @@ class SeenItemsController {
   MovieItem? findItemByKey(String key) => _storage.get(key);
 
   EpisodeItem? findEpisode({
-    required String key,
+    required String storageKey,
     required String episodeId,
   }) {
-    final seenItem = findItemByKey(key);
+    final seenItem = findItemByKey(storageKey);
     if (seenItem != null) {
       return seenItem.episodes.firstWhereOrNull((episode) {
         return episode.id == episodeId;

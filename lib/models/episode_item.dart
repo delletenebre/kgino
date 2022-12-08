@@ -19,7 +19,7 @@ class EpisodeItem extends HiveObject with EquatableMixin {
   @HiveField(3) final int duration;
 
   /// дата последнего просмотра
-  @HiveField(4) DateTime? updatedAt;
+  @HiveField(4) DateTime updatedAt;
 
   /// номер сезона
   @HiveField(5) final int seasonNumber;
@@ -28,7 +28,10 @@ class EpisodeItem extends HiveObject with EquatableMixin {
   @HiveField(6) final int episodeNumber;
 
   /// ссылка на проигрываемый файл
-  String streamUrl;
+  String videoFileUrl;
+
+  /// ссылка на файл субтитров
+  String subtitlesFileUrl;
 
   EpisodeItem({
     required this.id,
@@ -41,14 +44,15 @@ class EpisodeItem extends HiveObject with EquatableMixin {
     this.seasonNumber = 0,
     this.episodeNumber = 0,
 
-    this.streamUrl = '',
+    this.videoFileUrl = '',
+    this.subtitlesFileUrl = '',
     
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   @override
   List<Object> get props => [id];
 
-  
+
   /// просмотренная позиция в пределах от 0 до 1
   double get percentPosition => position / duration;
 

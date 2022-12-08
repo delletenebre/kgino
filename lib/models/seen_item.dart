@@ -1,91 +1,91 @@
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
 
-part 'seen_item.g.dart';
+// part 'seen_item.g.dart';
 
-@HiveType(typeId: 1)
-class SeenItem extends HiveObject {
-  static const tskgTag = 'tskg';
-  static const ockgTag = 'ockg';
+// @HiveType(typeId: 1)
+// class SeenItem extends HiveObject {
+//   static const tskgTag = 'tskg';
+//   static const ockgTag = 'ockg';
   
-  static String getKey({
-    required String tag,
-    required String id,
-  }) => '$tag-$id';
+//   static String getKey({
+//     required String tag,
+//     required String id,
+//   }) => '$tag-$id';
 
 
-  /// название сервиса
-  @HiveField(0)
-  final String tag;
+//   /// название сервиса
+//   @HiveField(0)
+//   final String tag;
 
-  /// идентификатор сериала (или фильма)
-  @HiveField(1)
-  final String id;
+//   /// идентификатор сериала (или фильма)
+//   @HiveField(1)
+//   final String id;
 
-  /// название сериала (или фильма)
-  @HiveField(2)
-  final String name;
+//   /// название сериала (или фильма)
+//   @HiveField(2)
+//   final String name;
 
-  /// включены или выключены субтитры
-  @HiveField(3)
-  bool subtitlesEnabled;
+//   /// включены или выключены субтитры
+//   @HiveField(3)
+//   bool subtitlesEnabled;
 
-  /// дата последнего просмотра
-  @HiveField(4)
-  DateTime updatedAt;
+//   /// дата последнего просмотра
+//   @HiveField(4)
+//   DateTime updatedAt;
 
-  /// список просмотренных эпизодов
-  @HiveField(5)
-  final Map<String, SeenEpisode> episodes;
+//   /// список просмотренных эпизодов
+//   @HiveField(5)
+//   final Map<String, SeenEpisode> episodes;
 
-  /// постер фильма
-  @HiveField(6)
-  final String posterUrl;
+//   /// постер фильма
+//   @HiveField(6)
+//   final String posterUrl;
   
-  SeenItem({
-    required this.tag,
-    required this.id,
-    required this.name,
-    required this.updatedAt,
-    required this.episodes,
-    required this.subtitlesEnabled,
-    this.posterUrl = '',
-  });
+//   SeenItem({
+//     required this.tag,
+//     required this.id,
+//     required this.name,
+//     required this.updatedAt,
+//     required this.episodes,
+//     required this.subtitlesEnabled,
+//     this.posterUrl = '',
+//   });
 
-}
+// }
 
-@HiveType(typeId: 2)
-class SeenEpisode extends HiveObject {
+// @HiveType(typeId: 2)
+// class SeenEpisode extends HiveObject {
 
-  /// идентификатор эпизода
-  @HiveField(0)
-  final String id;
+//   /// идентификатор эпизода
+//   @HiveField(0)
+//   final String id;
 
-  /// время просмотра эпизода (в секундах)
-  @HiveField(1)
-  int position;
+//   /// время просмотра эпизода (в секундах)
+//   @HiveField(1)
+//   int position;
 
-  /// продолжительность эпизода (в секундах)
-  @HiveField(2)
-  final int duration;
+//   /// продолжительность эпизода (в секундах)
+//   @HiveField(2)
+//   final int duration;
 
-  /// время обновления данных
-  @HiveField(3)
-  DateTime updatedAt;
+//   /// время обновления данных
+//   @HiveField(3)
+//   DateTime updatedAt;
 
-  /// название сериала (или фильма)
-  @HiveField(4)
-  final String name;
+//   /// название сериала (или фильма)
+//   @HiveField(4)
+//   final String name;
   
-  SeenEpisode({
-    required this.id,
-    required this.position,
-    required this.duration,
-    required this.updatedAt,
-    required this.name,
-  });
+//   SeenEpisode({
+//     required this.id,
+//     required this.position,
+//     required this.duration,
+//     required this.updatedAt,
+//     required this.name,
+//   });
 
-  /// просмотренная позиция в пределах от 0 до 1
-  /// + 0.01 чтобы не получилось деления на ноль
-  double get percentPosition => position / (duration + 0.01);
+//   /// просмотренная позиция в пределах от 0 до 1
+//   /// + 0.01 чтобы не получилось деления на ноль
+//   double get percentPosition => position / (duration + 0.01);
 
-}
+// }

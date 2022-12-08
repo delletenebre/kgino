@@ -378,14 +378,14 @@ class TskgApiProvider {
 
 
   /// получение информации об эпизоде
-  Future<TskgEpisodeDetails?> getEpisodeDetails(int episodeId) async {
+  Future<TskgEpisodeDetails?> getEpisodeDetails(String episodeId) async {
 
     try {
 
       /// запрашиваем данные
       final response = await _dio.get('/show/episode/episode.json',
         queryParameters: {
-          'episode': '$episodeId',
+          'episode': episodeId,
         },
         options: Options(
           headers: {

@@ -12,10 +12,8 @@ import '../../models/movie_item.dart';
 import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
 import '../../models/tskg/tskg_favorite.dart';
-import '../../models/tskg/tskg_show.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
-import '../../ui/krs_bottom_sheet_content.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/pages/play_button_seen_information.dart';
@@ -194,7 +192,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                     } else {
                                       /// ^ если у сериала есть просмотреные серии
                                       
-                                      final seenEpisodes = seenItem.episodes.values.toList();
+                                      final seenEpisodes = seenItem.episodes;
                                       seenEpisodes.sort((a, b) {
                                         return b.updatedAt.compareTo(a.updatedAt);
                                       });

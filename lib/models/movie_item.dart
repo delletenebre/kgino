@@ -57,7 +57,14 @@ class MovieItem extends HiveObject with EquatableMixin {
   /// страны
   final List<String> countries;
 
+  
+  /// ключ, по которому сохраняем в БД
   String get storageKey => '$type.$id';
+
+  /// количество эпизодов во всех сезонах
+  int get episodeCount => seasons.fold(0, (previousValue, season) {
+    return previousValue + season.episodes.length;
+  });
 
   MovieItem({
     required this.type,
