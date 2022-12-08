@@ -1,9 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
-import '../models/seen_item.dart';
 
 class SeenItemsController {
   /// ключ для сохранённого значения
@@ -49,61 +49,54 @@ class SeenItemsController {
     seenItem.updatedAt = DateTime.now();
 
 
-    /// ^ если запись уже существует в БД
-    final seenEpisode = seenItem.episodes.indexOf(episode);
+    late final EpisodeItem seenEpisode;
+    final seenEpisodeIndex = seenItem.episodes.indexOf(episode);
 
-    if (seenItem.episodes.containsKey(episode.id)) {
-      /// ^ если запись уже существует в БД
-      final seenEpisode = seenItem.episodes[episode.id]!;
+    if (seenEpisodeIndex > -1) {
+      /// ^ если эпизод уже существует в БД
       
-      /// обновляем запись
-      seenEpisode.position = position;
-      seenEpisode.updatedAt = DateTime.now();
+      seenEpisode = seenItem.episodes[seenEpisodeIndex];
 
     } else {
       /// ^ если запись не найдена в БД
 
       /// создаём новую запись о просмотре эпизода
-      final seenEpisode = SeenEpisode(
-        id: episodeId.toString(),
-        position: position,
-        duration: duration,
-        updatedAt: DateTime.now(),
-        name: episodeName,
-      );
+      final seenEpisode = episode;
 
       /// сохраняем запись
-      seenItem.episodes.putIfAbsent(episodeId.toString(), () => seenEpisode);
+      seenItem.episodes.add(seenEpisode);
 
     }
+
+    /// обновляем запись
+    seenEpisode.position = position;
+    seenEpisode.updatedAt = DateTime.now();
+    
+    seenEpisode.save();
 
     /// сохраняем обновления
     seenItem.save();
 
   }
 
-  SeenItem? findItemByKey(String key) => _storage.get(key);
+  MovieItem? findItemByKey(String key) => _storage.get(key);
 
-  SeenEpisode? findEpisode({
-    required String tag,
-    required dynamic itemId,
-    required dynamic episodeId,
+  EpisodeItem? findEpisode({
+    required String key,
+    required String episodeId,
   }) {
-    final seenItem = findItemByKey(
-      SeenItem.getKey(
-        tag: tag,
-        id: itemId.toString()
-      )
-    );
+    final seenItem = findItemByKey(key);
     if (seenItem != null) {
-      return seenItem.episodes[episodeId.toString()];
+      return seenItem.episodes.firstWhereOrNull((episode) {
+        return episode.id == episodeId;
+      });
     }
 
     return null;
   }
 
-  List<SeenItem> findByTag(String tag) {
-    final items = _storage.values.where((item) => item.tag == tag).toList()
+  List<MovieItem> findByType(MovieItemType type) {
+    final items = _storage.values.where((item) => item.type == type).toList()
       ..sort((a, b) {
         return b.updatedAt.compareTo(a.updatedAt);
       });

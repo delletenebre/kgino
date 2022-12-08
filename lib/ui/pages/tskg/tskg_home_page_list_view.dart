@@ -35,7 +35,7 @@ class TskgHomePageListView extends HookWidget {
     /// hook для подписки на изменения
     useValueListenable(seenItemsController.listenable);
     /// список последних просмотренных сериалов
-    final seenShows = seenItemsController.findByTag(SeenItem.tskgTag)
+    final seenShows = seenItemsController.findByType(SeenItem.tskgTag)
       .map((seenItem) {
         return TskgShow(
           showId: seenItem.id,

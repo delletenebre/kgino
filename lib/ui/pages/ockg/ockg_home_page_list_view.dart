@@ -32,7 +32,7 @@ class OckgHomePageListView extends HookWidget {
     /// hook для подписки на изменения
     useValueListenable(seenItemsController.listenable);
     /// список последних просмотренных сериалов
-    final seenMovies = seenItemsController.findByTag(SeenItem.ockgTag)
+    final seenMovies = seenItemsController.findByType(SeenItem.ockgTag)
       .map((item) {
         return OckgMovie(
           movieId: int.parse(item.id),
