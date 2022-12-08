@@ -65,8 +65,7 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
                       'id': '${widget.movie.movieId}',    
                     },
                     queryParams: {
-                      'fileIndex': '$index',
-                      'fileId': '${episode.fileId}',
+                      'episodeId': '${episode.fileId}',
                     },
                     extra: widget.movie,
                   );

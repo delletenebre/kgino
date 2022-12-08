@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/seen_items_controller.dart';
-import '../../models/ockg/ockg_file.dart';
-import '../../models/ockg/ockg_movie.dart';
-import '../../models/playable_item.dart';
-import '../../models/seen_item.dart';
+import '../../models/episode_item.dart';
+import '../../models/movie_item.dart';
 import '../../ui/video_player/video_player_view.dart';
 
 class OckgPlayerPage extends StatefulWidget {
-  final OckgMovie movie;
-  final int fileIndex;
-  final String fileId;
+  final MovieItem movie;
+  final String episodeId;
 
   const OckgPlayerPage({
     super.key,
     required this.movie,
-    this.fileIndex = 0,
-    this.fileId = '',
+    this.episodeId = '',
   });
 
   @override
@@ -25,53 +21,24 @@ class OckgPlayerPage extends StatefulWidget {
 }
 
 class _OckgPlayerPageState extends State<OckgPlayerPage> {
-  late final List<OckgFile> _episodes;
+  final _episodes = <EpisodeItem>[];
   late final int _episodeCount;
   int _currentIndex = 0;
   bool _subtitlesEnabled = false;
-  int _startTime = 0;
 
   @override
   void initState() {
-    _currentIndex = widget.fileIndex;
-
     /// все эпизоды в одном списке
-    _episodes = widget.movie.files;
-
-    /// количество эпизодов
-    _episodeCount = _episodes.length;
-
-    /// контроллер просмотренных эпизодов
-    final seenItemsController = GetIt.instance<SeenItemsController>();
-    
-    /// проверяем был ли фильм уже в просмотренных
-    final seenShow = seenItemsController.findItemByKey(
-      SeenItem.getKey(
-        tag: SeenItem.ockgTag,
-        id: widget.movie.movieId.toString(),
-      )
-    );
-
-    if (seenShow != null) {
-      /// ^ если фильм уже был в просмотренных
-      
-      /// восстонавливаем состояние субтитров (включены или выключены)
-      _subtitlesEnabled = seenShow.subtitlesEnabled;
-      
-      /// проверяем был ли эпизод в просмотренных
-      final seenEpisode = seenItemsController.findEpisode(
-        tag: SeenItem.ockgTag,
-        itemId: widget.movie.movieId,
-        episodeId: widget.fileId,
-      );
-
-      if (seenEpisode != null) {
-        /// ^ если эпизод уже был в просмотренных
-
-        /// восстанавливаем время просмотра
-        _startTime = seenEpisode.position;
-      }
+    for (final season in widget.movie.seasons) {
+      _episodes.addAll(season.episodes);
     }
+
+    /// количество эпизодов во всех сезонах
+    _episodeCount = widget.movie.episodeCount;
+
+    _currentIndex = _episodes.indexWhere((episode) {
+      return episode.id == widget.episodeId;
+    });
 
     super.initState();
   }
@@ -82,11 +49,13 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
     final seenEpisodesController = GetIt.instance<SeenItemsController>();
 
     return VideoPlayerView(
-      onInitialPlayableItem: _getPlayableItem,
+      titleText: widget.movie.name,
+      subtitlesEnabled: widget.movie.subtitlesEnabled,
+      onInitialPlayableItem: () => _getPlayableItem(true),
+
       onSkipNext: (_currentIndex + 1 < _episodeCount) ? () {
         /// переходим к следующему файлу
         setState(() {
-          _startTime = 0;
           _currentIndex++;
         });
 
@@ -95,45 +64,93 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
       onSkipPrevious: (_currentIndex > 0) ? () {
         /// переходим к предыдущему файлу
         setState(() {
-          _startTime = 0;
           _currentIndex--;
         });
 
         return _getPlayableItem();
       } : null,
-      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled, episodeName) {
+      
+      onUpdatePosition: (episode, position, subtitlesEnabled) {
         _subtitlesEnabled = subtitlesEnabled;
 
         seenEpisodesController.updatePosition(
-          tag: SeenItem.ockgTag,
-          parentId: widget.movie.movieId,
-          episodeId: episodeId,
-          name: widget.movie.name,
+          movie: widget.movie,
+          episode: episode,
           position: position,
-          duration: duration,
-          subtitlesEnabled: _subtitlesEnabled,
-          episodeName: episodeName,
+          subtitlesEnabled: subtitlesEnabled,
         );
       }
     );
   }
 
-  Future<PlayableItem> _getPlayableItem() async {
-    final currentFile = widget.movie.files[_currentIndex];
-    final videoUrl = currentFile.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/');
-    
-    String subtitle = '';
-    if (widget.movie.files.length > 1) {
-      subtitle = currentFile.name;
+  Future<EpisodeItem> _getPlayableItem([bool initial = false]) async {
+    MovieItem? seenShow;
+    EpisodeItem? seenEpisode;
+    int seasonNumber = 0;
+    int episodeNumber = 0;
+
+    if (initial) {
+      /// ^ если это первый запуск, а не перемотка
+      
+      /// находим сохранённый эпизод, если он есть
+
+      /// контроллер просмотренных эпизодов
+      final seenItemsController = GetIt.instance<SeenItemsController>();
+      
+      /// проверяем был ли сериал уже в просмотренных
+      seenShow = seenItemsController.findItemByKey(widget.movie.storageKey);
+
+      if (seenShow != null) {
+        /// ^ если сериал уже был в просмотренных
+        
+        /// восстонавливаем состояние субтитров (включены или выключены)
+        _subtitlesEnabled = seenShow.subtitlesEnabled;
+        
+        /// проверяем был ли эпизод в просмотренных
+        final seenEpisode = seenItemsController.findEpisode(
+          storageKey: widget.movie.storageKey,
+          episodeId: widget.episodeId,
+        );
+
+        // if (seenEpisode != null) {
+        //   /// ^ если эпизод уже был в просмотренных
+          
+        //   /// восстанавливаем время просмотра
+        //   _startTime = seenEpisode.position;
+        // }
+      }
+    } else {
+      for (int seasonIndex = 0; seasonIndex < widget.movie.seasons.length; seasonIndex++) {
+        final season = widget.movie.seasons[seasonIndex];
+        final episodeIndex = season.episodes.indexWhere((episode) {
+          return episode.id == widget.episodeId;
+        });
+        if (episodeIndex > -1) {
+          seasonNumber = seasonIndex + 1;
+          episodeNumber = episodeIndex + 1;
+          break;
+        }
+      }
     }
 
-    return PlayableItem(
-      id: currentFile.fileId.toString(),
-      videoUrl: videoUrl,
-      title: widget.movie.name,
-      subtitle: subtitle,
-      subtitlesEnabled: _subtitlesEnabled,
-      startTime: _startTime,
+    final currentEpisode = _episodes[_currentIndex];
+    final videoUrl = currentEpisode.videoFileUrl.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/');
+    
+    // String subtitle = '';
+    // if (widget.movie.files.length > 1) {
+    //   subtitle = currentFile.name;
+    // }
+
+    final episode = seenEpisode ?? EpisodeItem(
+      id: currentEpisode.id,
+      name: currentEpisode.name,
+      duration: currentEpisode.duration,
+      seasonNumber: seasonNumber,
+      episodeNumber: episodeNumber,
     );
+
+    episode.videoFileUrl = videoUrl;
+
+    return episode;
   }
 }

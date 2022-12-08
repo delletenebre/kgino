@@ -241,8 +241,12 @@ class OckgApiProvider {
 
       final movie = OckgMovie.fromJson(movieJson);
 
+      /// TODO add more info
       return MovieItem(
+        type: MovieItemType.ockg,
         id: movie.movieId.toString(),
+        name: movie.name,
+        posterUrl: movie.posterUrl
       );
       
     } on SocketException catch (_) {

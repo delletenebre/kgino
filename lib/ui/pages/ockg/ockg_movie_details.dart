@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/movie_item.dart';
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
@@ -8,7 +9,7 @@ import '../../krs_chip.dart';
 import '../../movie_rating.dart';
 
 class OckgMovieDetais extends StatelessWidget {
-  final OckgMovie movie;
+  final MovieItem movie;
   final bool expanded;
 
   const OckgMovieDetais({
@@ -26,10 +27,11 @@ class OckgMovieDetais extends StatelessWidget {
     /// определяем ширину постера на фоне
     final width = (size.width < 420.0) ? size.width + (size.width * 0.1) : 420.0;
 
-    final audioSixChannels = movie.files.where((file) {
-      final audios = file.metainfo.audio;
-      return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
-    }).isNotEmpty;
+    /// TODO fix it
+    // final audioSixChannels = movie.seasons.first.episodes.where((file) {
+    //   final audios = file.metainfo.audio;
+    //   return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
+    // }).isNotEmpty;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -93,9 +95,9 @@ class OckgMovieDetais extends StatelessWidget {
                 ),
 
                 /// оригинальное название фильма
-                if (expanded && movie.internationalName.isNotEmpty) Padding(
+                if (expanded && movie.originalName.isNotEmpty) Padding(
                   padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(movie.internationalName,
+                  child: Text(movie.originalName,
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: theme.colorScheme.outline,
                     ),
@@ -114,15 +116,16 @@ class OckgMovieDetais extends StatelessWidget {
 
                       const SizedBox(width: 12.0),
 
+                      /// TODO fix it
                       /// продолжительность фильма (или общая для сериала)
-                      if (movie.files.length == 1) Text(
-                        Utils.formatDuration(movie.playtimeDuration)
-                      ),
+                      // if (movie.files.length == 1) Text(
+                      //   Utils.formatDuration(movie.playtimeDuration)
+                      // ),
 
-                      /// количество эпизодов (файлов), если сериал
-                      if (movie.files.length > 1) Text(
-                        locale.episodesCount(movie.files.length)
-                      ),
+                      // /// количество эпизодов (файлов), если сериал
+                      // if (movie.files.length > 1) Text(
+                      //   locale.episodesCount(movie.files.length)
+                      // ),
 
                       const SizedBox(width: 12.0),
 
@@ -138,23 +141,24 @@ class OckgMovieDetais extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
                     children: [
+                      // TODO fix it
                       /// рейтинг IMDb
-                      if (movie.hasImdbRating) Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: MovieRating(
-                          type: MovieRatingType.imdb,
-                          rating: movie.ratingImdbValue,
-                        ),
-                      ),
+                      // if (movie.hasImdbRating) Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: MovieRating(
+                      //     type: MovieRatingType.imdb,
+                      //     rating: movie.ratingImdbValue,
+                      //   ),
+                      // ),
 
-                      /// рейтинг КиноПоиск
-                      if (movie.hasKinopoiskRating) Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: MovieRating(
-                          type: MovieRatingType.kinopoisk,
-                          rating: movie.ratingKinopoiskValue,
-                        ),
-                      ),
+                      // /// рейтинг КиноПоиск
+                      // if (movie.hasKinopoiskRating) Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: MovieRating(
+                      //     type: MovieRatingType.kinopoisk,
+                      //     rating: movie.ratingKinopoiskValue,
+                      //   ),
+                      // ),
 
                       /// качество видео
                       // Padding(
@@ -164,22 +168,23 @@ class OckgMovieDetais extends StatelessWidget {
                       //   ),
                       // ),
 
+                      /// TODO fix it
                       /// если звук 5.1
-                      if (audioSixChannels) Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: KrsChip(
-                          child: Row(
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.only(right: 4.0),
-                                child: Icon(Icons.volume_up),
-                              ),
+                      // if (audioSixChannels) Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: KrsChip(
+                      //     child: Row(
+                      //       children: const [
+                      //         Padding(
+                      //           padding: EdgeInsets.only(right: 4.0),
+                      //           child: Icon(Icons.volume_up),
+                      //         ),
                               
-                              Text('5.1')
-                            ],
-                          ),
-                        ),
-                      ),
+                      //         Text('5.1')
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
 
                       /// ограничения к просмотру
                       // if (movie.mpaa.isNotEmpty) Padding(

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../constants.dart';
 import '../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
+import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_catalog.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
@@ -49,7 +50,7 @@ class OckgCatalogPage extends StatelessWidget {
             ),
 
             Expanded(
-              child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
+              child: BlocBuilder<OckgMovieDetailsController, RequestState<MovieItem>>(
                 builder: (context, state) {
                   if (state.isSuccess) {
                     final movie = state.data;

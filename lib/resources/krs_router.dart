@@ -34,7 +34,7 @@ class KrsRouter {
             path: 'ockg/movie/:id',
             name: 'ockgMovieDetails',
             builder: (context, state) {
-              final movieId = int.tryParse(state.params['id'] ?? '') ?? 0;
+              final movieId = state.params['id'] ?? '';
               return OckgMovieDetailsPage(movieId);
             },
             routes: [
@@ -53,14 +53,12 @@ class KrsRouter {
                 path: 'player',
                 name: 'ockgMoviePlayer',
                 builder: (context, state) {
-                  final movie = state.extra as OckgMovie;
-                  final fileIndex = int.tryParse(state.queryParams['fileIndex'] ?? '0');
-                  final fileId = state.queryParams['fileId'] ?? '';
+                  final movie = state.extra as MovieItem;
+                  final fileId = state.queryParams['episodeId'] ?? '';
 
                   return OckgPlayerPage(
                     movie: movie,
-                    fileIndex: fileIndex ?? 0,
-                    fileId: fileId,
+                    episodeId: fileId,
                   );
                 },
               ),

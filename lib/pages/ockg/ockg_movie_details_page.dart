@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
+import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../models/playable_item.dart';
 import '../../models/seen_item.dart';
@@ -67,7 +68,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
         create: (context) => OckgMovieDetailsController(
           movieId: widget.movieId,
         ),
-        child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovie>>(
+        child: BlocBuilder<OckgMovieDetailsController, RequestState<MovieItem>>(
           builder: (context, state) {
             if (state.isError || state.isEmpty) {
               return TryAgainMessage(
@@ -149,11 +150,10 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                       /// переходим на страницу плеера фильма
                                       context.goNamed('ockgMoviePlayer',
                                         params: {
-                                          'id': '${movie.movieId}',
+                                          'id': movie.id,
                                         },
                                         queryParams: {
-                                          'fileIndex': '0',
-                                          'fileId': '${movie.files.first.fileId}',
+                                          'episodeId': movie.seasons.first.episodes.first.id,
                                         },
                                         extra: movie,
                                       );
@@ -165,7 +165,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
 
                                 /// если файлов несколько, показываем кнопку выбора
                                 /// эпизода
-                                if (movie.files.length > 1) Padding(
+                                if (movie.seasons.first.episodes.length > 1) Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: ElevatedButton.icon(
                                     style: KrsTheme.filledTonalButtonStyleOf(context),
@@ -173,7 +173,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                       /// переходим на страницу выбора файла
                                       context.goNamed('ockgMovieFiles',
                                         params: {
-                                          'id': '${movie.movieId}',
+                                          'id': movie.id,
                                         },
                                         extra: movie,
                                       );
@@ -185,25 +185,25 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
 
                                 /// если есть трейлер, показываем кнопку просмотра
                                 /// трейлера
-                                if (movie.trailer != null) Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: ElevatedButton.icon(
-                                    style: KrsTheme.filledTonalButtonStyleOf(context),
-                                    onPressed: () {
-                                      /// проигрывам трейлер фильма
-                                      context.push('/player',
-                                        extra: PlayableItem(
-                                          id: '%%%trailer%%%',
-                                          videoUrl: movie.trailer!.video,
-                                          title: movie.name,
-                                          subtitle: locale.trailer,
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.videocam),
-                                    label: Text(locale.trailer),
-                                  ),
-                                ),
+                                // if (movie.trailer != null) Padding(
+                                //   padding: const EdgeInsets.only(right: 8.0),
+                                //   child: ElevatedButton.icon(
+                                //     style: KrsTheme.filledTonalButtonStyleOf(context),
+                                //     onPressed: () {
+                                //       /// проигрывам трейлер фильма
+                                //       context.push('/player',
+                                //         extra: PlayableItem(
+                                //           id: '%%%trailer%%%',
+                                //           videoUrl: movie.trailer!.video,
+                                //           title: movie.name,
+                                //           subtitle: locale.trailer,
+                                //         ),
+                                //       );
+                                //     },
+                                //     icon: const Icon(Icons.videocam),
+                                //     label: Text(locale.trailer),
+                                //   ),
+                                // ),
 
                               ],
                             ),
