@@ -4,17 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../controllers/seen_items_controller.dart';
-import '../../models/seen_item.dart';
-import '../../models/tskg/tskg_episode.dart';
-import '../../models/tskg/tskg_show.dart';
+import '../../models/episode_item.dart';
+import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/pages/episode_card.dart';
-import '../../utils.dart';
 
 
 class TskgShowSeasonsPage extends StatefulWidget {
-  final TskgShow show;
+  final TskgMovieItem show;
 
   const TskgShowSeasonsPage({
     super.key,
@@ -34,7 +32,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     controller: ScrollController(),
   );
 
-  final _episodes = <TskgEpisode>[];
+  final _episodes = <EpisodeItem>[];
   late final int _episodeCount;
   int _selectedSeasonIndex = 0;
   int _selectedEpisodeIndex = 0;
@@ -137,7 +135,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                 controller: _episodesScrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
-                titleText: '${currentSeason.title}, ${locale.episodesCount(currentSeason.episodes.length)}',
+                titleText: '${currentSeason.name}, ${locale.episodesCount(currentSeason.episodes.length)}',
                 onLoadNextPage: () {
                   
                 },
@@ -152,8 +150,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   /// просмотренное время [0; 1]
                   double seenValue = 0.0;
                   final seenEpisode = seenEpisodesController.findEpisode(
-                    tag: SeenItem.tskgTag,
-                    itemId: widget.show.showId,
+                    storageKey: widget.show.storageKey,
                     episodeId: episode.id,
                   );
 
@@ -164,7 +161,8 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   return EpisodeCard(
                     focusNode: focusNode,
                     titleText: episode.name,
-                    description: '${episode.quality} ${Utils.formatDuration(episode.duration)}',
+                    // TODO return it
+                    description: '',//'${episode.quality} ${Utils.formatDuration(episode.duration)}',
 
                     /// время просмотра
                     seenValue: seenValue,
@@ -173,7 +171,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                       /// переходим на страницу плеера сериала
                       context.goNamed('tskgPlayer',
                         params: {
-                          'id': widget.show.showId,    
+                          'id': widget.show.id,    
                         },
                         queryParams: {
                           'startTime': 0.toString(),

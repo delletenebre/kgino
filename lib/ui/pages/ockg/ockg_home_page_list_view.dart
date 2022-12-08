@@ -8,6 +8,7 @@ import 'package:kgino/constants.dart';
 import '../../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../../controllers/seen_items_controller.dart';
+import '../../../models/movie_item.dart';
 import '../../../models/ockg/ockg_bestsellers_category.dart';
 import '../../../models/ockg/ockg_movie.dart';
 import '../../../models/seen_item.dart';
@@ -32,14 +33,7 @@ class OckgHomePageListView extends HookWidget {
     /// hook для подписки на изменения
     useValueListenable(seenItemsController.listenable);
     /// список последних просмотренных сериалов
-    final seenMovies = seenItemsController.findByType(SeenItem.ockgTag)
-      .map((item) {
-        return OckgMovie(
-          movieId: int.parse(item.id),
-          name: item.name,
-        );
-      })
-      .toList();
+    final seenMovies = seenItemsController.find(MovieItemType.ockg, count: 50);
 
     return BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
       builder: (context, state) {

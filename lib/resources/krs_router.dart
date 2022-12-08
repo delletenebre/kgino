@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import '../models/movie_item.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../models/tskg/tskg_show.dart';
 import '../pages/error_page.dart';
@@ -78,7 +79,7 @@ class KrsRouter {
                 path: 'seasons',
                 name: 'tskgShowSeasons',
                 builder: (context, state) {
-                  final show = state.extra as TskgShow;
+                  final show = state.extra as TskgMovieItem;
                   return TskgShowSeasonsPage(
                     show: show,
                   );
@@ -89,14 +90,12 @@ class KrsRouter {
                 path: 'player',
                 name: 'tskgPlayer',
                 builder: (context, state) {
-                  final show = state.extra as TskgShow;
-                  final episodeIndex = int.tryParse(state.queryParams['episodeIndex'] ?? '0');
+                  final show = state.extra as TskgMovieItem;
                   final episodeId = state.queryParams['episodeId'] ?? '';
 
                   return TskgPlayerPage(
                     show: show,
                     episodeId: episodeId,
-                    episodeIndex: episodeIndex ?? 0,
                   );
                 },
               ),

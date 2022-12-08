@@ -137,10 +137,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
 
                                 /// если кнопка Смотреть в фокусе
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
-                                  itemKey: SeenItem.getKey(
-                                    tag: SeenItem.tskgTag,
-                                    id: show.id,
-                                  ),
+                                  itemKey: show.storageKey,
                                 ),
                               ],
                             ),
@@ -158,10 +155,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                   valueListenable: seenItemsController.listenable,
                                   builder: (context, box, child) {
                                     final seenItem = seenItemsController.findItemByKey(
-                                      SeenItem.getKey(
-                                        tag: SeenItem.tskgTag,
-                                        id: show.id,
-                                      )
+                                      show.storageKey
                                     );
 
                                     if (seenItem == null || seenItem.episodes.isEmpty) {

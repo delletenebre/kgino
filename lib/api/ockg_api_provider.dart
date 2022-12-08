@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
 import '../constants.dart';
+import '../models/movie_item.dart';
 import '../models/ockg/ockg_catalog.dart';
 import '../models/ockg/ockg_comment.dart';
 import '../models/ockg/ockg_movie.dart';
@@ -224,7 +225,7 @@ class OckgApiProvider {
 
   
   /// информация о фильме
-  Future<OckgMovie?> getMovie(int movieId) async {
+  Future<MovieItem?> getMovie(String movieId) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getMovie',
@@ -238,7 +239,11 @@ class OckgApiProvider {
       final jsonResponse = json.decode(response.data);
       final movieJson = jsonResponse['json'][0]['response']['movie'];
 
-      return OckgMovie.fromJson(movieJson);
+      final movie = OckgMovie.fromJson(movieJson);
+
+      return MovieItem(
+        id: movie.movieId.toString(),
+      );
       
     } on SocketException catch (_) {
 

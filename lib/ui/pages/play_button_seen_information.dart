@@ -29,7 +29,7 @@ class PlayButtonSeenInformation extends StatelessWidget {
 
         /// если есть просмотренные эпизоды
         if (seenItem != null) {
-          final seenEpisodes = seenItem.episodes.values.toList();
+          final seenEpisodes = seenItem.episodes;
           seenEpisodes.sort((a, b) {
             return b.updatedAt.compareTo(a.updatedAt);
           });

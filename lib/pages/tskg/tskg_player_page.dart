@@ -26,7 +26,6 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
   late final int _episodeCount;
   int _currentIndex = 0;
   bool _subtitlesEnabled = false;
-  int _startTime = 0;
 
   @override
   void initState() {
@@ -38,34 +37,9 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     /// количество эпизодов во всех сезонах
     _episodeCount = widget.show.episodeCount;
 
-    _currentIndex = widget.episodeIndex;
-    
-
-    /// контроллер просмотренных эпизодов
-    final seenItemsController = GetIt.instance<SeenItemsController>();
-    
-    /// проверяем был ли сериал уже в просмотренных
-    final seenShow = seenItemsController.findItemByKey(widget.show.storageKey);
-    
-    if (seenShow != null) {
-      /// ^ если сериал уже был в просмотренных
-      
-      /// восстонавливаем состояние субтитров (включены или выключены)
-      _subtitlesEnabled = seenShow.subtitlesEnabled;
-      
-      /// проверяем был ли эпизод в просмотренных
-      final seenEpisode = seenItemsController.findEpisode(
-        storageKey: widget.show.storageKey,
-        episodeId: widget.episodeId,
-      );
-
-      if (seenEpisode != null) {
-        /// ^ если эпизод уже был в просмотренных
-        
-        /// восстанавливаем время просмотра
-        _startTime = seenEpisode.position;
-      }
-    }
+    _currentIndex = _episodes.indexWhere((episode) {
+      return episode.id == widget.episodeId;
+    });
 
     super.initState();
   }
@@ -76,12 +50,13 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     final seenEpisodesController = GetIt.instance<SeenItemsController>();
 
     return VideoPlayerView(
-      onInitialPlayableItem: _getPlayableItem,
+      titleText: widget.show.name,
+      subtitlesEnabled: widget.show.subtitlesEnabled,
+      onInitialPlayableItem: () => _getPlayableItem(true),
 
       onSkipNext: (_currentIndex + 1 < _episodeCount) ? () {
         /// переходим к следующему файлу
         setState(() {
-          _startTime = 0;
           _currentIndex++;
         });
 
@@ -91,25 +66,73 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       onSkipPrevious: (_currentIndex > 0) ? () {
         /// переходим к предыдущему файлу
         setState(() {
-          _startTime = 0;
           _currentIndex--;
         });
 
         return _getPlayableItem();
       } : null,
 
-      onUpdatePosition: (episodeId, position, duration, subtitlesEnabled, episodeName) {
+      onUpdatePosition: (episode, position, subtitlesEnabled) {
         _subtitlesEnabled = subtitlesEnabled;
 
         seenEpisodesController.updatePosition(
+          movie: widget.show,
+          episode: episode,
           position: position,
-          subtitlesEnabled: _subtitlesEnabled,
+          subtitlesEnabled: subtitlesEnabled,
         );
       }
     );
   }
 
-  Future<EpisodeItem> _getPlayableItem() async {
+  Future<EpisodeItem> _getPlayableItem([bool initial = false]) async {
+    MovieItem? seenShow;
+    EpisodeItem? seenEpisode;
+    int seasonNumber = 0;
+    int episodeNumber = 0;
+    if (initial) {
+      /// ^ если это первый запуск, а не перемотка
+      
+      /// находим сохранённый эпизод, если он есть
+
+      /// контроллер просмотренных эпизодов
+      final seenItemsController = GetIt.instance<SeenItemsController>();
+      
+      /// проверяем был ли сериал уже в просмотренных
+      seenShow = seenItemsController.findItemByKey(widget.show.storageKey);
+
+      if (seenShow != null) {
+        /// ^ если сериал уже был в просмотренных
+        
+        /// восстонавливаем состояние субтитров (включены или выключены)
+        _subtitlesEnabled = seenShow.subtitlesEnabled;
+        
+        /// проверяем был ли эпизод в просмотренных
+        final seenEpisode = seenItemsController.findEpisode(
+          storageKey: widget.show.storageKey,
+          episodeId: widget.episodeId,
+        );
+
+        // if (seenEpisode != null) {
+        //   /// ^ если эпизод уже был в просмотренных
+          
+        //   /// восстанавливаем время просмотра
+        //   _startTime = seenEpisode.position;
+        // }
+      }
+    } else {
+      for (int seasonIndex = 0; seasonIndex < widget.show.seasons.length; seasonIndex++) {
+        final season = widget.show.seasons[seasonIndex];
+        final episodeIndex = season.episodes.indexWhere((episode) {
+          return episode.id == widget.episodeId;
+        });
+        if (episodeIndex > -1) {
+          seasonNumber = seasonIndex + 1;
+          episodeNumber = episodeIndex + 1;
+          break;
+        }
+      }
+    }
     
     final currentEpisode = _episodes[_currentIndex];
     
@@ -134,13 +157,20 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       }
     }
     
-    String subtitle = '${episodeDetails?.nameWithSeason}';
+    //String subtitle = '${episodeDetails?.nameWithSeason}';
 
-    return EpisodeItem(
+    final episode = seenEpisode ?? EpisodeItem(
       id: '${episodeDetails?.id}',
-      videoFileUrl: videoUrl,
-      subtitlesFileUrl: subtitleUrl,
+      name: '${episodeDetails?.name}',
+      duration: episodeDetails?.duration ?? 0,
+      seasonNumber: seasonNumber,
+      episodeNumber: episodeNumber,
     );
+
+    episode.videoFileUrl = videoUrl;
+    episode.subtitlesFileUrl = subtitleUrl;
+
+    return episode;
   }
 
 }

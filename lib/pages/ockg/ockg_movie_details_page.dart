@@ -17,7 +17,7 @@ import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 
 class OckgMovieDetailsPage extends StatefulWidget {
-  final int movieId;
+  final String movieId;
 
   const OckgMovieDetailsPage(this.movieId, {
     super.key,
@@ -125,10 +125,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
 
                                 /// если кнопка Смотреть в фокусе
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
-                                  itemKey: SeenItem.getKey(
-                                    tag: SeenItem.ockgTag,
-                                    id: '${movie.movieId}',
-                                  ),
+                                  itemKey: movie.storageKey,
                                 ),
                               ],
                             ),

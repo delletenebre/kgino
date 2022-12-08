@@ -2,29 +2,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/ockg_api_provider.dart';
+import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../models/request_state.dart';
 
 export '../../models/request_state.dart';
 
-class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
+class OckgMovieDetailsController extends Cubit<RequestState<MovieItem>> {
 
   /// идентификатор фильма
-  final int movieId;
+  final String movieId;
 
   /// провайдер запросов к API
   final _api = GetIt.instance<OckgApiProvider>();
 
   OckgMovieDetailsController({
-    this.movieId = 0,
+    this.movieId = '',
   }) : super(const RequestState.loading()) {
-    if (movieId > 0) {
+    if (movieId.isNotEmpty) {
       getMovieById(movieId);
     }
   }
 
-  Future<void> getMovieById(int movieId, { bool showPlayButton = false }) async {
-    if (state.isSuccess && state.data.movieId == movieId) {
+  Future<void> getMovieById(String movieId, { bool showPlayButton = false }) async {
+    if (state.isSuccess && state.data.id == movieId) {
       /// ^ если запрашиваемый фильм уже загружен
       
       /// ничего не делать
@@ -56,16 +57,16 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
   }
 
 
-  Future<void> showPopularMovies() async {
-    // запрашиваем список популярных фильмов
-    final movies = await _api.getPopMovies();
+  // Future<void> showPopularMovies() async {
+  //   // запрашиваем список популярных фильмов
+  //   final movies = await _api.getPopMovies();
     
-    if (movies.isNotEmpty) {
-      // ^ если данные получены успешно
+  //   if (movies.isNotEmpty) {
+  //     // ^ если данные получены успешно
 
-      // запрашиваем информацию по первому фильму
-      getMovieById(movies.first.movieId, showPlayButton: true);
-    }
-  }
+  //     // запрашиваем информацию по первому фильму
+  //     getMovieById(movies.first.id, showPlayButton: true);
+  //   }
+  // }
 
 }

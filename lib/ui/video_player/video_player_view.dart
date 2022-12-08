@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../models/playable_item.dart';
+import '../../models/episode_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../utils.dart';
@@ -22,21 +22,24 @@ enum VideoPlayerState {
 }
 
 class VideoPlayerView extends StatefulWidget {
-  final Future<PlayableItem> Function() onInitialPlayableItem;
-  final Future<PlayableItem> Function()? onSkipPrevious;
-  final Future<PlayableItem> Function()? onSkipNext;
+  final String titleText;
+  final bool subtitlesEnabled;
+
+  final Future<EpisodeItem> Function() onInitialPlayableItem;
+  final Future<EpisodeItem> Function()? onSkipPrevious;
+  final Future<EpisodeItem> Function()? onSkipNext;
 
   /// при обновлении времени просмотра
   final Function(
-    String episodeId,
+    EpisodeItem episode,
     int position,
-    int duration,
     bool subtitlesEnabled,
-    String episodeName
   ) onUpdatePosition;
 
   const VideoPlayerView({
     super.key,
+    required this.titleText,
+    required this.subtitlesEnabled,
     required this.onInitialPlayableItem,
     this.onSkipPrevious,
     this.onSkipNext,
@@ -54,7 +57,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   /// контроллер видеоплеера
   VideoPlayerController? _playerController;
 
-  late PlayableItem _playableItem;
+  late EpisodeItem _playableItem;
 
   bool _isControlOverlayVisible = true;
   late final RestartableTimer _showControlsOverlayTimer;
@@ -63,7 +66,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   bool get isLoading => _pageState == VideoPlayerState.loading;
 
   /// включены или выключены субтитры
-  bool _subtitlesEnabled = false;
+  late bool _subtitlesEnabled;
 
   /// если больше, чем ноль, то спросить, нужно ли продолжить просмотр с этого
   /// момента; когда -1 - означает, что спрашивать больше не нужно, т.к. была
@@ -85,6 +88,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   @override
   void initState() {
     super.initState();
+
+    /// включены или выключены субтитры
+    _subtitlesEnabled = widget.subtitlesEnabled;
 
     /// инициализируем начальное видео
     _changeVideo(widget.onInitialPlayableItem);
@@ -141,11 +147,11 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _disposeVideoController();
 
     Future<ClosedCaptionFile>? closedCaptionFile;
-    if (_playableItem.subtitleUrl.isNotEmpty) {
-      closedCaptionFile = _loadSubtitle(_playableItem.subtitleUrl);
+    if (_playableItem.subtitlesFileUrl.isNotEmpty) {
+      closedCaptionFile = _loadSubtitle(_playableItem.subtitlesFileUrl);
     }
 
-    _playerController = VideoPlayerController.network(_playableItem.videoUrl,
+    _playerController = VideoPlayerController.network(_playableItem.videoFileUrl,
       closedCaptionFile: closedCaptionFile,
     );
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
@@ -154,8 +160,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       /// инициализируем плеер
       await _playerController!.initialize().then((_) {
         /// проверяем нужную позицию
-        if (_startTime > -1 && _playableItem.startTime > 60) {
-          _startTime = _playableItem.startTime;
+        if (_startTime > -1 && _playableItem.position > 60) {
+          _startTime = _playableItem.position;
         } else {
           /// запускаем видео
           _playerController!.play();
@@ -163,9 +169,6 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
         /// обновляем информацию о просмотре
         _playerController!.addListener(_changeVideoPositionListener);
-
-        /// включены или выключены субтитры
-        _subtitlesEnabled = _playableItem.subtitlesEnabled;
 
         /// обновляем состояние UI
         _updatePageState(VideoPlayerState.initialized);
@@ -308,8 +311,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               /// оверлей с панелью управления видео
               SafeArea(
                 child: VideoPlayerControlsOverlay(
-                  titleText: _playableItem.title,
-                  subtitleText: _playableItem.subtitle,
+                  titleText: widget.titleText,
+                  subtitleText: _playableItem.name,
                   isVisible: _isControlOverlayVisible,
                   playerController: _playerController,
                   onPlayPause: () {
@@ -395,13 +398,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     // final percentPosition = position / duration;
 
     /// сохраняем информацию о времени просмотра эпизода
-    widget.onUpdatePosition(
-      _playableItem.id,
-      position,
-      duration,
-      _subtitlesEnabled,
-      _playableItem.subtitle,
-    );
+    widget.onUpdatePosition(_playableItem,  position, _subtitlesEnabled);
 
     /// чтобы экран не уходил в сон
     Wakelock.toggle(
@@ -429,7 +426,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   }
 
   Future<void> _changeVideo(
-    Future<PlayableItem> Function() playableItemGetter
+    Future<EpisodeItem> Function() playableItemGetter
   ) async {
     /// завершаем работу текущего плеера
     _disposeVideoController();

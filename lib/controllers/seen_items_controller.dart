@@ -95,13 +95,32 @@ class SeenItemsController {
     return null;
   }
 
-  List<MovieItem> findByType(MovieItemType type) {
-    final items = _storage.values.where((item) => item.type == type).toList()
-      ..sort((a, b) {
-        return b.updatedAt.compareTo(a.updatedAt);
-      });
+  List<MovieItem> find(MovieItemType type, { int count = 0 }) {
+    List<MovieItem> items = _storage.values.where((item) {
+      return item.type == type && item.episodes.isNotEmpty;
+    }).toList();
+    
+    /// сортируем по убыванию времени последнего просмотра
+    items.sort((a, b) {
+      return b.updatedAt.compareTo(a.updatedAt);
+    });
+    
+    if (count > 0) {
+      items = items.take(count).toList();
+    }
     
     return items;
   }
+
+  // List<MovieItem> takeLast(MovieItemType type, { int count = 50 }) {
+  //   final seenShows = findByType(type)
+  //     .map((seenItem) {
+  //       return TskgShow(
+  //         showId: seenItem.id,
+  //         name: seenItem.name,
+  //       );
+  //     })
+  //     .toList();
+  // }
 
 }

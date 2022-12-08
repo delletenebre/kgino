@@ -12,6 +12,7 @@ import '../../../controllers/seen_items_controller.dart';
 import '../../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
+import '../../../models/movie_item.dart';
 import '../../../models/seen_item.dart';
 import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
@@ -35,14 +36,7 @@ class TskgHomePageListView extends HookWidget {
     /// hook для подписки на изменения
     useValueListenable(seenItemsController.listenable);
     /// список последних просмотренных сериалов
-    final seenShows = seenItemsController.findByType(SeenItem.tskgTag)
-      .map((seenItem) {
-        return TskgShow(
-          showId: seenItem.id,
-          name: seenItem.name,
-        );
-      })
-      .toList();
+    final seenShows = seenItemsController.find(MovieItemType.tskg, count: 50);
 
     /// контроллер избранных сериалов
     final favoritesController = GetIt.instance<TskgFavoritesController>();
