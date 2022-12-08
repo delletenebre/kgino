@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$MovieItem {
   /// идентификатор сайта
   @HiveField(0)
-  String get tag => throw _privateConstructorUsedError;
+  SiteType get type => throw _privateConstructorUsedError;
 
   /// идентификатор фильма или сериала
   @HiveField(1)
@@ -32,6 +32,10 @@ mixin _$MovieItem {
   @HiveField(3)
   String get posterUrl => throw _privateConstructorUsedError;
 
+  /// постер фильма или сериала
+  @HiveField(3)
+  set posterUrl(String value) => throw _privateConstructorUsedError;
+
   /// включены или выключены субтитры
   @HiveField(4)
   bool get subtitlesEnabled => throw _privateConstructorUsedError;
@@ -40,21 +44,166 @@ mixin _$MovieItem {
   @HiveField(4)
   set subtitlesEnabled(bool value) => throw _privateConstructorUsedError;
 
-  /// дата последнего просмотра
+  /// включены или выключены субтитры
   @HiveField(5)
+  bool get favorite => throw _privateConstructorUsedError;
+
+  /// включены или выключены субтитры
+  @HiveField(5)
+  set favorite(bool value) => throw _privateConstructorUsedError;
+
+  /// дата последнего просмотра
+  @HiveField(6)
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
   /// дата последнего просмотра
-  @HiveField(5)
+  @HiveField(6)
   set updatedAt(DateTime value) => throw _privateConstructorUsedError;
 
   /// список просмотренных эпизодов
-  @HiveField(6)
-  Map<String, SeenEpisode> get episodes => throw _privateConstructorUsedError;
+  @HiveField(7)
+  Map<String, EpisodeItem> get episodes => throw _privateConstructorUsedError;
 
   /// список просмотренных эпизодов
-  @HiveField(6)
-  set episodes(Map<String, SeenEpisode> value) =>
+  @HiveField(7)
+  set episodes(Map<String, EpisodeItem> value) =>
+      throw _privateConstructorUsedError;
+
+  /// оригинальное название
+  String get originalName => throw _privateConstructorUsedError;
+
+  /// описание фильма или сериала
+  String get description => throw _privateConstructorUsedError;
+
+  /// год выхода в прокат
+  String get year => throw _privateConstructorUsedError;
+
+  /// жанры
+  List<String> get genres => throw _privateConstructorUsedError;
+
+  /// страны
+  List<String> get countries => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)
+        $default, {
+    required TResult Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)
+        tskg,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        $default, {
+    TResult? Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        tskg,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        $default, {
+    TResult Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        tskg,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MovieItem value) $default, {
+    required TResult Function(TskgMovieItem value) tskg,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MovieItem value)? $default, {
+    TResult? Function(TskgMovieItem value)? tskg,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MovieItem value)? $default, {
+    TResult Function(TskgMovieItem value)? tskg,
+    required TResult orElse(),
+  }) =>
       throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -68,13 +217,19 @@ abstract class $MovieItemCopyWith<$Res> {
       _$MovieItemCopyWithImpl<$Res, MovieItem>;
   @useResult
   $Res call(
-      {@HiveField(0) String tag,
+      {@HiveField(0) SiteType type,
       @HiveField(1) String id,
       @HiveField(2) String name,
       @HiveField(3) String posterUrl,
       @HiveField(4) bool subtitlesEnabled,
-      @HiveField(5) DateTime updatedAt,
-      @HiveField(6) Map<String, SeenEpisode> episodes});
+      @HiveField(5) bool favorite,
+      @HiveField(6) DateTime updatedAt,
+      @HiveField(7) Map<String, EpisodeItem> episodes,
+      String originalName,
+      String description,
+      String year,
+      List<String> genres,
+      List<String> countries});
 }
 
 /// @nodoc
@@ -90,19 +245,25 @@ class _$MovieItemCopyWithImpl<$Res, $Val extends MovieItem>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tag = null,
+    Object? type = null,
     Object? id = null,
     Object? name = null,
     Object? posterUrl = null,
     Object? subtitlesEnabled = null,
+    Object? favorite = null,
     Object? updatedAt = null,
     Object? episodes = null,
+    Object? originalName = null,
+    Object? description = null,
+    Object? year = null,
+    Object? genres = null,
+    Object? countries = null,
   }) {
     return _then(_value.copyWith(
-      tag: null == tag
-          ? _value.tag
-          : tag // ignore: cast_nullable_to_non_nullable
-              as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SiteType,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -119,6 +280,10 @@ class _$MovieItemCopyWithImpl<$Res, $Val extends MovieItem>
           ? _value.subtitlesEnabled
           : subtitlesEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      favorite: null == favorite
+          ? _value.favorite
+          : favorite // ignore: cast_nullable_to_non_nullable
+              as bool,
       updatedAt: null == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -126,7 +291,27 @@ class _$MovieItemCopyWithImpl<$Res, $Val extends MovieItem>
       episodes: null == episodes
           ? _value.episodes
           : episodes // ignore: cast_nullable_to_non_nullable
-              as Map<String, SeenEpisode>,
+              as Map<String, EpisodeItem>,
+      originalName: null == originalName
+          ? _value.originalName
+          : originalName // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      year: null == year
+          ? _value.year
+          : year // ignore: cast_nullable_to_non_nullable
+              as String,
+      genres: null == genres
+          ? _value.genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      countries: null == countries
+          ? _value.countries
+          : countries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -139,13 +324,19 @@ abstract class _$$_MovieItemCopyWith<$Res> implements $MovieItemCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@HiveField(0) String tag,
+      {@HiveField(0) SiteType type,
       @HiveField(1) String id,
       @HiveField(2) String name,
       @HiveField(3) String posterUrl,
       @HiveField(4) bool subtitlesEnabled,
-      @HiveField(5) DateTime updatedAt,
-      @HiveField(6) Map<String, SeenEpisode> episodes});
+      @HiveField(5) bool favorite,
+      @HiveField(6) DateTime updatedAt,
+      @HiveField(7) Map<String, EpisodeItem> episodes,
+      String originalName,
+      String description,
+      String year,
+      List<String> genres,
+      List<String> countries});
 }
 
 /// @nodoc
@@ -159,19 +350,25 @@ class __$$_MovieItemCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tag = null,
+    Object? type = null,
     Object? id = null,
     Object? name = null,
     Object? posterUrl = null,
     Object? subtitlesEnabled = null,
+    Object? favorite = null,
     Object? updatedAt = null,
     Object? episodes = null,
+    Object? originalName = null,
+    Object? description = null,
+    Object? year = null,
+    Object? genres = null,
+    Object? countries = null,
   }) {
     return _then(_$_MovieItem(
-      tag: null == tag
-          ? _value.tag
-          : tag // ignore: cast_nullable_to_non_nullable
-              as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SiteType,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -188,6 +385,10 @@ class __$$_MovieItemCopyWithImpl<$Res>
           ? _value.subtitlesEnabled
           : subtitlesEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      favorite: null == favorite
+          ? _value.favorite
+          : favorite // ignore: cast_nullable_to_non_nullable
+              as bool,
       updatedAt: null == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -195,7 +396,27 @@ class __$$_MovieItemCopyWithImpl<$Res>
       episodes: null == episodes
           ? _value.episodes
           : episodes // ignore: cast_nullable_to_non_nullable
-              as Map<String, SeenEpisode>,
+              as Map<String, EpisodeItem>,
+      originalName: null == originalName
+          ? _value.originalName
+          : originalName // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      year: null == year
+          ? _value.year
+          : year // ignore: cast_nullable_to_non_nullable
+              as String,
+      genres: null == genres
+          ? _value.genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      countries: null == countries
+          ? _value.countries
+          : countries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -203,20 +424,27 @@ class __$$_MovieItemCopyWithImpl<$Res>
 /// @nodoc
 
 @HiveType(typeId: 5)
-class _$_MovieItem implements _MovieItem {
+class _$_MovieItem extends _MovieItem {
   _$_MovieItem(
-      {@HiveField(0) required this.tag,
+      {@HiveField(0) required this.type,
       @HiveField(1) required this.id,
       @HiveField(2) required this.name,
       @HiveField(3) required this.posterUrl,
       @HiveField(4) this.subtitlesEnabled = false,
-      @HiveField(5) required this.updatedAt,
-      @HiveField(6) this.episodes = const {}});
+      @HiveField(5) this.favorite = false,
+      @HiveField(6) required this.updatedAt,
+      @HiveField(7) this.episodes = const {},
+      this.originalName = '',
+      this.description = '',
+      this.year = '',
+      this.genres = const [],
+      this.countries = const []})
+      : super._();
 
   /// идентификатор сайта
   @override
   @HiveField(0)
-  final String tag;
+  final SiteType type;
 
   /// идентификатор фильма или сериала
   @override
@@ -231,7 +459,7 @@ class _$_MovieItem implements _MovieItem {
   /// постер фильма или сериала
   @override
   @HiveField(3)
-  final String posterUrl;
+  String posterUrl;
 
   /// включены или выключены субтитры
   @override
@@ -239,20 +467,51 @@ class _$_MovieItem implements _MovieItem {
   @HiveField(4)
   bool subtitlesEnabled;
 
+  /// включены или выключены субтитры
+  @override
+  @JsonKey()
+  @HiveField(5)
+  bool favorite;
+
   /// дата последнего просмотра
   @override
-  @HiveField(5)
+  @HiveField(6)
   DateTime updatedAt;
 
   /// список просмотренных эпизодов
   @override
   @JsonKey()
-  @HiveField(6)
-  Map<String, SeenEpisode> episodes;
+  @HiveField(7)
+  Map<String, EpisodeItem> episodes;
+
+  /// оригинальное название
+  @override
+  @JsonKey()
+  final String originalName;
+
+  /// описание фильма или сериала
+  @override
+  @JsonKey()
+  final String description;
+
+  /// год выхода в прокат
+  @override
+  @JsonKey()
+  final String year;
+
+  /// жанры
+  @override
+  @JsonKey()
+  final List<String> genres;
+
+  /// страны
+  @override
+  @JsonKey()
+  final List<String> countries;
 
   @override
   String toString() {
-    return 'MovieItem(tag: $tag, id: $id, name: $name, posterUrl: $posterUrl, subtitlesEnabled: $subtitlesEnabled, updatedAt: $updatedAt, episodes: $episodes)';
+    return 'MovieItem(type: $type, id: $id, name: $name, posterUrl: $posterUrl, subtitlesEnabled: $subtitlesEnabled, favorite: $favorite, updatedAt: $updatedAt, episodes: $episodes, originalName: $originalName, description: $description, year: $year, genres: $genres, countries: $countries)';
   }
 
   @JsonKey(ignore: true)
@@ -260,23 +519,215 @@ class _$_MovieItem implements _MovieItem {
   @pragma('vm:prefer-inline')
   _$$_MovieItemCopyWith<_$_MovieItem> get copyWith =>
       __$$_MovieItemCopyWithImpl<_$_MovieItem>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)
+        $default, {
+    required TResult Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)
+        tskg,
+  }) {
+    return $default(
+        type,
+        id,
+        name,
+        posterUrl,
+        subtitlesEnabled,
+        favorite,
+        updatedAt,
+        episodes,
+        originalName,
+        description,
+        year,
+        genres,
+        countries);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        $default, {
+    TResult? Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        tskg,
+  }) {
+    return $default?.call(
+        type,
+        id,
+        name,
+        posterUrl,
+        subtitlesEnabled,
+        favorite,
+        updatedAt,
+        episodes,
+        originalName,
+        description,
+        year,
+        genres,
+        countries);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        $default, {
+    TResult Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        tskg,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(
+          type,
+          id,
+          name,
+          posterUrl,
+          subtitlesEnabled,
+          favorite,
+          updatedAt,
+          episodes,
+          originalName,
+          description,
+          year,
+          genres,
+          countries);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MovieItem value) $default, {
+    required TResult Function(TskgMovieItem value) tskg,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MovieItem value)? $default, {
+    TResult? Function(TskgMovieItem value)? tskg,
+  }) {
+    return $default?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MovieItem value)? $default, {
+    TResult Function(TskgMovieItem value)? tskg,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
 }
 
-abstract class _MovieItem implements MovieItem {
+abstract class _MovieItem extends MovieItem {
   factory _MovieItem(
-      {@HiveField(0) required final String tag,
+      {@HiveField(0) required final SiteType type,
       @HiveField(1) required final String id,
       @HiveField(2) required final String name,
-      @HiveField(3) required final String posterUrl,
+      @HiveField(3) required String posterUrl,
       @HiveField(4) bool subtitlesEnabled,
-      @HiveField(5) required DateTime updatedAt,
-      @HiveField(6) Map<String, SeenEpisode> episodes}) = _$_MovieItem;
+      @HiveField(5) bool favorite,
+      @HiveField(6) required DateTime updatedAt,
+      @HiveField(7) Map<String, EpisodeItem> episodes,
+      final String originalName,
+      final String description,
+      final String year,
+      final List<String> genres,
+      final List<String> countries}) = _$_MovieItem;
+  _MovieItem._() : super._();
 
   @override
 
   /// идентификатор сайта
   @HiveField(0)
-  String get tag;
+  SiteType get type;
   @override
 
   /// идентификатор фильма или сериала
@@ -292,6 +743,10 @@ abstract class _MovieItem implements MovieItem {
   /// постер фильма или сериала
   @HiveField(3)
   String get posterUrl;
+
+  /// постер фильма или сериала
+  @HiveField(3)
+  set posterUrl(String value);
   @override
 
   /// включены или выключены субтитры
@@ -303,22 +758,51 @@ abstract class _MovieItem implements MovieItem {
   set subtitlesEnabled(bool value);
   @override
 
-  /// дата последнего просмотра
+  /// включены или выключены субтитры
   @HiveField(5)
+  bool get favorite;
+
+  /// включены или выключены субтитры
+  @HiveField(5)
+  set favorite(bool value);
+  @override
+
+  /// дата последнего просмотра
+  @HiveField(6)
   DateTime get updatedAt;
 
   /// дата последнего просмотра
-  @HiveField(5)
+  @HiveField(6)
   set updatedAt(DateTime value);
   @override
 
   /// список просмотренных эпизодов
-  @HiveField(6)
-  Map<String, SeenEpisode> get episodes;
+  @HiveField(7)
+  Map<String, EpisodeItem> get episodes;
 
   /// список просмотренных эпизодов
-  @HiveField(6)
-  set episodes(Map<String, SeenEpisode> value);
+  @HiveField(7)
+  set episodes(Map<String, EpisodeItem> value);
+  @override
+
+  /// оригинальное название
+  String get originalName;
+  @override
+
+  /// описание фильма или сериала
+  String get description;
+  @override
+
+  /// год выхода в прокат
+  String get year;
+  @override
+
+  /// жанры
+  List<String> get genres;
+  @override
+
+  /// страны
+  List<String> get countries;
   @override
   @JsonKey(ignore: true)
   _$$_MovieItemCopyWith<_$_MovieItem> get copyWith =>
@@ -326,132 +810,59 @@ abstract class _MovieItem implements MovieItem {
 }
 
 /// @nodoc
-mixin _$EpisodeItem {
-  /// идентификатор эпизода
-  @HiveField(0)
-  String get id => throw _privateConstructorUsedError;
-
-  /// название фильма или сериала
-  @HiveField(2)
-  String get name => throw _privateConstructorUsedError;
-
-  /// время просмотра эпизода (в секундах)
-  @HiveField(1)
-  int get position => throw _privateConstructorUsedError;
-
-  /// время просмотра эпизода (в секундах)
-  @HiveField(1)
-  set position(int value) => throw _privateConstructorUsedError;
-
-  /// продолжительность эпизода (в секундах)
-  @HiveField(2)
-  int get duration => throw _privateConstructorUsedError;
-
-  /// дата последнего просмотра
-  @HiveField(5)
-  DateTime get updatedAt => throw _privateConstructorUsedError;
-
-  /// дата последнего просмотра
-  @HiveField(5)
-  set updatedAt(DateTime value) => throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $EpisodeItemCopyWith<EpisodeItem> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $EpisodeItemCopyWith<$Res> {
-  factory $EpisodeItemCopyWith(
-          EpisodeItem value, $Res Function(EpisodeItem) then) =
-      _$EpisodeItemCopyWithImpl<$Res, EpisodeItem>;
-  @useResult
-  $Res call(
-      {@HiveField(0) String id,
-      @HiveField(2) String name,
-      @HiveField(1) int position,
-      @HiveField(2) int duration,
-      @HiveField(5) DateTime updatedAt});
-}
-
-/// @nodoc
-class _$EpisodeItemCopyWithImpl<$Res, $Val extends EpisodeItem>
-    implements $EpisodeItemCopyWith<$Res> {
-  _$EpisodeItemCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? position = null,
-    Object? duration = null,
-    Object? updatedAt = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      position: null == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
-              as int,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
-              as int,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$_EpisodeItemCopyWith<$Res>
-    implements $EpisodeItemCopyWith<$Res> {
-  factory _$$_EpisodeItemCopyWith(
-          _$_EpisodeItem value, $Res Function(_$_EpisodeItem) then) =
-      __$$_EpisodeItemCopyWithImpl<$Res>;
+abstract class _$$TskgMovieItemCopyWith<$Res>
+    implements $MovieItemCopyWith<$Res> {
+  factory _$$TskgMovieItemCopyWith(
+          _$TskgMovieItem value, $Res Function(_$TskgMovieItem) then) =
+      __$$TskgMovieItemCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {@HiveField(0) String id,
-      @HiveField(2) String name,
-      @HiveField(1) int position,
-      @HiveField(2) int duration,
-      @HiveField(5) DateTime updatedAt});
+      {SiteType type,
+      String id,
+      String name,
+      String posterUrl,
+      bool subtitlesEnabled,
+      bool favorite,
+      DateTime updatedAt,
+      Map<String, EpisodeItem> episodes,
+      String originalName,
+      String description,
+      String year,
+      List<String> genres,
+      List<String> countries});
 }
 
 /// @nodoc
-class __$$_EpisodeItemCopyWithImpl<$Res>
-    extends _$EpisodeItemCopyWithImpl<$Res, _$_EpisodeItem>
-    implements _$$_EpisodeItemCopyWith<$Res> {
-  __$$_EpisodeItemCopyWithImpl(
-      _$_EpisodeItem _value, $Res Function(_$_EpisodeItem) _then)
+class __$$TskgMovieItemCopyWithImpl<$Res>
+    extends _$MovieItemCopyWithImpl<$Res, _$TskgMovieItem>
+    implements _$$TskgMovieItemCopyWith<$Res> {
+  __$$TskgMovieItemCopyWithImpl(
+      _$TskgMovieItem _value, $Res Function(_$TskgMovieItem) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? type = null,
     Object? id = null,
     Object? name = null,
-    Object? position = null,
-    Object? duration = null,
+    Object? posterUrl = null,
+    Object? subtitlesEnabled = null,
+    Object? favorite = null,
     Object? updatedAt = null,
+    Object? episodes = null,
+    Object? originalName = null,
+    Object? description = null,
+    Object? year = null,
+    Object? genres = null,
+    Object? countries = null,
   }) {
-    return _then(_$_EpisodeItem(
+    return _then(_$TskgMovieItem(
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SiteType,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -460,116 +871,358 @@ class __$$_EpisodeItemCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      position: null == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
-              as int,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
-              as int,
+      posterUrl: null == posterUrl
+          ? _value.posterUrl
+          : posterUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      subtitlesEnabled: null == subtitlesEnabled
+          ? _value.subtitlesEnabled
+          : subtitlesEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      favorite: null == favorite
+          ? _value.favorite
+          : favorite // ignore: cast_nullable_to_non_nullable
+              as bool,
       updatedAt: null == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      episodes: null == episodes
+          ? _value.episodes
+          : episodes // ignore: cast_nullable_to_non_nullable
+              as Map<String, EpisodeItem>,
+      originalName: null == originalName
+          ? _value.originalName
+          : originalName // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      year: null == year
+          ? _value.year
+          : year // ignore: cast_nullable_to_non_nullable
+              as String,
+      genres: null == genres
+          ? _value.genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      countries: null == countries
+          ? _value.countries
+          : countries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
 
 /// @nodoc
 
-@HiveType(typeId: 6)
-class _$_EpisodeItem extends _EpisodeItem {
-  _$_EpisodeItem(
-      {@HiveField(0) required this.id,
-      @HiveField(2) required this.name,
-      @HiveField(1) this.position = 0,
-      @HiveField(2) required this.duration,
-      @HiveField(5) required this.updatedAt})
+class _$TskgMovieItem extends TskgMovieItem with TskgMovieItemMixin {
+  _$TskgMovieItem(
+      {this.type = SiteType.tskg,
+      required this.id,
+      required this.name,
+      required this.posterUrl,
+      required this.subtitlesEnabled,
+      required this.favorite,
+      required this.updatedAt,
+      this.episodes = const {},
+      this.originalName = '',
+      this.description = '',
+      this.year = '',
+      this.genres = const [],
+      this.countries = const []})
       : super._();
 
-  /// идентификатор эпизода
-  @override
-  @HiveField(0)
-  final String id;
-
-  /// название фильма или сериала
-  @override
-  @HiveField(2)
-  final String name;
-
-  /// время просмотра эпизода (в секундах)
   @override
   @JsonKey()
-  @HiveField(1)
-  int position;
-
-  /// продолжительность эпизода (в секундах)
+  SiteType type;
   @override
-  @HiveField(2)
-  final int duration;
-
-  /// дата последнего просмотра
+  String id;
   @override
-  @HiveField(5)
+  String name;
+  @override
+  String posterUrl;
+  @override
+  bool subtitlesEnabled;
+  @override
+  bool favorite;
+  @override
   DateTime updatedAt;
+  @override
+  @JsonKey()
+  Map<String, EpisodeItem> episodes;
+  @override
+  @JsonKey()
+  String originalName;
+  @override
+  @JsonKey()
+  String description;
+  @override
+  @JsonKey()
+  String year;
+  @override
+  @JsonKey()
+  List<String> genres;
+  @override
+  @JsonKey()
+  List<String> countries;
 
   @override
   String toString() {
-    return 'EpisodeItem(id: $id, name: $name, position: $position, duration: $duration, updatedAt: $updatedAt)';
+    return 'MovieItem.tskg(type: $type, id: $id, name: $name, posterUrl: $posterUrl, subtitlesEnabled: $subtitlesEnabled, favorite: $favorite, updatedAt: $updatedAt, episodes: $episodes, originalName: $originalName, description: $description, year: $year, genres: $genres, countries: $countries)';
   }
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EpisodeItemCopyWith<_$_EpisodeItem> get copyWith =>
-      __$$_EpisodeItemCopyWithImpl<_$_EpisodeItem>(this, _$identity);
+  _$$TskgMovieItemCopyWith<_$TskgMovieItem> get copyWith =>
+      __$$TskgMovieItemCopyWithImpl<_$TskgMovieItem>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)
+        $default, {
+    required TResult Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)
+        tskg,
+  }) {
+    return tskg(
+        type,
+        id,
+        name,
+        posterUrl,
+        subtitlesEnabled,
+        favorite,
+        updatedAt,
+        episodes,
+        originalName,
+        description,
+        year,
+        genres,
+        countries);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        $default, {
+    TResult? Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        tskg,
+  }) {
+    return tskg?.call(
+        type,
+        id,
+        name,
+        posterUrl,
+        subtitlesEnabled,
+        favorite,
+        updatedAt,
+        episodes,
+        originalName,
+        description,
+        year,
+        genres,
+        countries);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            @HiveField(0) SiteType type,
+            @HiveField(1) String id,
+            @HiveField(2) String name,
+            @HiveField(3) String posterUrl,
+            @HiveField(4) bool subtitlesEnabled,
+            @HiveField(5) bool favorite,
+            @HiveField(6) DateTime updatedAt,
+            @HiveField(7) Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        $default, {
+    TResult Function(
+            SiteType type,
+            String id,
+            String name,
+            String posterUrl,
+            bool subtitlesEnabled,
+            bool favorite,
+            DateTime updatedAt,
+            Map<String, EpisodeItem> episodes,
+            String originalName,
+            String description,
+            String year,
+            List<String> genres,
+            List<String> countries)?
+        tskg,
+    required TResult orElse(),
+  }) {
+    if (tskg != null) {
+      return tskg(
+          type,
+          id,
+          name,
+          posterUrl,
+          subtitlesEnabled,
+          favorite,
+          updatedAt,
+          episodes,
+          originalName,
+          description,
+          year,
+          genres,
+          countries);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MovieItem value) $default, {
+    required TResult Function(TskgMovieItem value) tskg,
+  }) {
+    return tskg(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MovieItem value)? $default, {
+    TResult? Function(TskgMovieItem value)? tskg,
+  }) {
+    return tskg?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MovieItem value)? $default, {
+    TResult Function(TskgMovieItem value)? tskg,
+    required TResult orElse(),
+  }) {
+    if (tskg != null) {
+      return tskg(this);
+    }
+    return orElse();
+  }
 }
 
-abstract class _EpisodeItem extends EpisodeItem {
-  factory _EpisodeItem(
-      {@HiveField(0) required final String id,
-      @HiveField(2) required final String name,
-      @HiveField(1) int position,
-      @HiveField(2) required final int duration,
-      @HiveField(5) required DateTime updatedAt}) = _$_EpisodeItem;
-  _EpisodeItem._() : super._();
+abstract class TskgMovieItem extends MovieItem implements TskgMovieItemMixin {
+  factory TskgMovieItem(
+      {SiteType type,
+      required String id,
+      required String name,
+      required String posterUrl,
+      required bool subtitlesEnabled,
+      required bool favorite,
+      required DateTime updatedAt,
+      Map<String, EpisodeItem> episodes,
+      String originalName,
+      String description,
+      String year,
+      List<String> genres,
+      List<String> countries}) = _$TskgMovieItem;
+  TskgMovieItem._() : super._();
 
   @override
-
-  /// идентификатор эпизода
-  @HiveField(0)
+  SiteType get type;
+  set type(SiteType value);
+  @override
   String get id;
+  set id(String value);
   @override
-
-  /// название фильма или сериала
-  @HiveField(2)
   String get name;
+  set name(String value);
   @override
-
-  /// время просмотра эпизода (в секундах)
-  @HiveField(1)
-  int get position;
-
-  /// время просмотра эпизода (в секундах)
-  @HiveField(1)
-  set position(int value);
+  String get posterUrl;
+  set posterUrl(String value);
   @override
-
-  /// продолжительность эпизода (в секундах)
-  @HiveField(2)
-  int get duration;
+  bool get subtitlesEnabled;
+  set subtitlesEnabled(bool value);
   @override
-
-  /// дата последнего просмотра
-  @HiveField(5)
+  bool get favorite;
+  set favorite(bool value);
+  @override
   DateTime get updatedAt;
-
-  /// дата последнего просмотра
-  @HiveField(5)
   set updatedAt(DateTime value);
   @override
+  Map<String, EpisodeItem> get episodes;
+  set episodes(Map<String, EpisodeItem> value);
+  @override
+  String get originalName;
+  set originalName(String value);
+  @override
+  String get description;
+  set description(String value);
+  @override
+  String get year;
+  set year(String value);
+  @override
+  List<String> get genres;
+  set genres(List<String> value);
+  @override
+  List<String> get countries;
+  set countries(List<String> value);
+  @override
   @JsonKey(ignore: true)
-  _$$_EpisodeItemCopyWith<_$_EpisodeItem> get copyWith =>
+  _$$TskgMovieItemCopyWith<_$TskgMovieItem> get copyWith =>
       throw _privateConstructorUsedError;
 }

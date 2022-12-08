@@ -48,7 +48,7 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovie>> {
         } else {
           /// ^ если запрос выполнен успешно
           
-          emit(RequestState.success(movie.copyWith(showPlayButton: showPlayButton)));
+          emit(RequestState.success(movie));
         
         }
       }
