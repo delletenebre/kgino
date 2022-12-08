@@ -78,7 +78,6 @@ class MovieItem extends HiveObject with EquatableMixin {
     this.genres = const [],
     this.countries = const [],
   }) : updatedAt = updatedAt ?? DateTime.now();
-
   
   @override
   List<Object> get props => [type, id];
