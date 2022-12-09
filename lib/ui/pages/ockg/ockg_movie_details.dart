@@ -2,14 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/movie_item.dart';
-import '../../../models/ockg/ockg_movie.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
-import '../../krs_chip.dart';
 import '../../movie_rating.dart';
 
 class OckgMovieDetais extends StatelessWidget {
-  final MovieItem movie;
+  final OckgMovieItem movie;
   final bool expanded;
 
   const OckgMovieDetais({
@@ -142,24 +140,24 @@ class OckgMovieDetais extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
                     children: [
-                      // TODO fix it
+                      
                       /// рейтинг IMDb
-                      // if (movie.hasImdbRating) Padding(
-                      //   padding: const EdgeInsets.only(right: 8.0),
-                      //   child: MovieRating(
-                      //     type: MovieRatingType.imdb,
-                      //     rating: movie.ratingImdbValue,
-                      //   ),
-                      // ),
+                      if (movie.hasImdbRating) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: MovieRating(
+                          type: MovieRatingType.imdb,
+                          rating: movie.ratingImdb,
+                        ),
+                      ),
 
                       // /// рейтинг КиноПоиск
-                      // if (movie.hasKinopoiskRating) Padding(
-                      //   padding: const EdgeInsets.only(right: 8.0),
-                      //   child: MovieRating(
-                      //     type: MovieRatingType.kinopoisk,
-                      //     rating: movie.ratingKinopoiskValue,
-                      //   ),
-                      // ),
+                      if (movie.hasKinopoiskRating) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: MovieRating(
+                          type: MovieRatingType.kinopoisk,
+                          rating: movie.ratingKinopoisk,
+                        ),
+                      ),
 
                       /// качество видео
                       // Padding(
