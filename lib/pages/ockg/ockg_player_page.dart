@@ -94,10 +94,15 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
       /// находим сохранённый эпизод, если он есть
 
       /// проверяем был ли эпизод в просмотренных
-      return _seenItemsController.findEpisode(
+      final episode = _seenItemsController.findEpisode(
         storageKey: _seenShow.storageKey,
         episodeId: currentEpisode.id,
       ) ?? currentEpisode;
+
+      /// обновляем ссылку на видео файл
+      episode.videoFileUrl = currentEpisode.videoFileUrl;
+
+      return episode;
 
     } else {
       /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении

@@ -43,14 +43,15 @@ class TskgHomePageListView extends HookWidget {
     /// hook для подписки на изменения
     useValueListenable(favoritesController.listenable);
     /// список избранных сериалов
-    final favoriteShows = favoritesController.sorted
-      .map((item) {
-        return TskgShow(
-          showId: item.showId,
-          name: item.name,
-        );
-      })
-      .toList();
+    /// TODO return
+    // final favoriteShows = favoritesController.sorted
+    //   .map((item) {
+    //     return TskgShow(
+    //       showId: item.showId,
+    //       name: item.name,
+    //     );
+    //   })
+    //   .toList();
 
     return BlocProvider(
       create: (context) => TskgNewsController(),
@@ -62,25 +63,26 @@ class TskgHomePageListView extends HookWidget {
             return const LoadingIndicator();
           }
 
-          final showList = <CategoryListItem>[];
+          final showList = <CategoryListItem<MovieItem>>[];
 
           if (seenShows.isNotEmpty) {
             showList.add(
-              CategoryListItem(
+              CategoryListItem<MovieItem>(
                 title: locale.continueWatching,
                 items: seenShows,
               )
             );
           }
 
-          if (favoriteShows.isNotEmpty) {
-            showList.add(
-              CategoryListItem(
-                title: locale.favorites,
-                items: favoriteShows,
-              )
-            );
-          }
+          //if (favoriteShows.isNotEmpty) {
+            // TODO return it
+            // showList.add(
+            //   CategoryListItem<MovieItem>(
+            //     title: locale.favorites,
+            //     items: favoriteShows,
+            //   )
+            // );
+          //}
 
           if (state.isSuccess) {
             final news = state.data;
@@ -91,7 +93,7 @@ class TskgHomePageListView extends HookWidget {
             /// сериалы сгруппированные по дате добавления
             final showsGroupedByDate = groupBy(
               news,
-              (item) => item.date,
+              (item) => item.updatedAt,
             );
 
             for (int index = 0; index < lastAddedDays; index++) {
@@ -109,7 +111,7 @@ class TskgHomePageListView extends HookWidget {
               final shows = showsGroupedByDate.values.elementAt(index);
 
               showList.add(
-                CategoryListItem(
+                CategoryListItem<MovieItem>(
                   title: titleText,
                   items: shows,
                 )
@@ -130,7 +132,7 @@ class TskgHomePageListView extends HookWidget {
                     focusNode: focusNode,
                     onItemFocused: (index) {
                       context.read<TskgShowDetailsController>().getShowById(
-                        showItem.items.elementAt(index).showId,
+                        showItem.items[index].id,
                       );
                     },
                     titleText: showItem.title,
@@ -147,7 +149,7 @@ class TskgHomePageListView extends HookWidget {
                           /// переходим на страницу деталей о сериале
                           context.goNamed('tskgShowDetails',
                             params: {
-                              'id': show.showId,
+                              'id': show.id,
                             },
                           );
 

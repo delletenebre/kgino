@@ -127,12 +127,10 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     /// задаём качество видео в HD или в SD
     String videoUrl = episodeDetails?.video.files.hd.url
         ?? episodeDetails?.video.files.sd.url ?? '';
-    
+
     /// субтитры
     String subtitlesUrl = episodeDetails?.video.subtitles ?? '';
     
-    //String subtitle = '${episodeDetails?.nameWithSeason}';
-
     final episode = seenEpisode ?? EpisodeItem(
       id: '${episodeDetails?.id}',
       name: '${episodeDetails?.name}',
@@ -141,8 +139,17 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       episodeNumber: episodeNumber,
     );
 
+    /// обновляем ссылку на видео файл
     episode.videoFileUrl = videoUrl;
+
+    /// обновляем ссылку на файл субтитров
     episode.subtitlesFileUrl = subtitlesUrl;
+
+    if (!initial) {
+      /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
+      /// не запрашивал продолжить просмотр или нет
+      episode.position = 0;
+    }
 
     return episode;
   }

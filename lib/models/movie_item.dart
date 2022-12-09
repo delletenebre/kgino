@@ -142,6 +142,8 @@ class TskgMovieItem extends MovieItem {
     required String name,
     List<SeasonItem> seasons = const [],
 
+    DateTime? updatedAt,
+
     String originalName = '',
     String description = '',
     String year = '',
@@ -156,6 +158,8 @@ class TskgMovieItem extends MovieItem {
     name: name,
     posterUrl: 'https://www.ts.kg/posters/$id.png',
     seasons: seasons,
+
+    updatedAt: updatedAt,
     
     originalName: originalName,
     description: description,

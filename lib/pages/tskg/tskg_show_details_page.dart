@@ -8,6 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../../controllers/seen_items_controller.dart';
 import '../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
+import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
 import '../../models/seen_item.dart';
 import '../../models/tskg/tskg_episode.dart';
@@ -173,7 +174,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                                 'id': show.id,    
                                               },
                                               queryParams: {
-                                                'episodeIndex': '0',
+                                                'episodeId': show.seasons.first.episodes.first.id,
                                               },
                                               extra: show,
                                             );
@@ -191,15 +192,13 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                         return b.updatedAt.compareTo(a.updatedAt);
                                       });
                                       final seenEpisode = seenEpisodes.first;
-                                      final episodes = <TskgEpisode>[];
+                                      final episodes = <EpisodeItem>[];
                                       for (final season in show.seasons) {
-                                        // TODO return it
-                                        //episodes.addAll(season.episodes);
+                                        episodes.addAll(season.episodes);
                                       }
                                       final episode = episodes.singleWhere((episode) {
-                                        return episode.id.toString() == seenEpisode.id;
+                                        return episode.id == seenEpisode.id;
                                       });
-                                      final episodeIndex = episodes.indexOf(episode);
 
                                       return Padding(
                                         padding: const EdgeInsets.only(right: 8.0),
@@ -217,7 +216,6 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                                 },
                                                 queryParams: {
                                                   'episodeId': seenEpisode.id,
-                                                  'episodeIndex': '$episodeIndex',
                                                 },
                                                 extra: show,
                                               );
@@ -321,25 +319,25 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                               ),
                                             ),
 
-                                            // ... show.voiceActings.map((item) {
-                                            //   return SizedBox(
-                                            //     width: 320.0,
-                                            //     child: ElevatedButton(
-                                            //       style: KrsTheme.filledTonalButtonStyleOf(context),
-                                            //       child: Text(item.name),
-                                            //       onPressed: () {
-                                            //         Navigator.pop(context);
+                                            ... show.voiceActings.map((item) {
+                                              return SizedBox(
+                                                width: 320.0,
+                                                child: ElevatedButton(
+                                                  style: KrsTheme.filledTonalButtonStyleOf(context),
+                                                  child: Text(item.name),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
 
-                                            //         /// переходим на страницу деталей о сериале
-                                            //         context.replaceNamed('tskgShowDetails',
-                                            //           params: {
-                                            //             'id': item.id,
-                                            //           },
-                                            //         );
-                                            //       },
-                                            //     ),
-                                            //   );
-                                            // }).toList(),
+                                                    /// переходим на страницу деталей о сериале
+                                                    context.replaceNamed('tskgShowDetails',
+                                                      params: {
+                                                        'id': item.id,
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            }).toList(),
 
                                           ],
                                         ),

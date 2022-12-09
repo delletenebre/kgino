@@ -10,9 +10,7 @@ import '../constants.dart';
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../models/season_item.dart';
-import '../models/tskg/tskg_episode.dart';
 import '../models/tskg/tskg_episode_details.dart';
-import '../models/tskg/tskg_season.dart';
 import '../models/tskg/tskg_show.dart';
 import '../utils.dart';
 
@@ -60,10 +58,10 @@ class TskgApiProvider {
   }
 
   /// получение списка новостей
-  Future<List<TskgShow>> getNews() async {
+  Future<List<TskgMovieItem>> getNews() async {
     
     /// список элементов
-    final items = <TskgShow>[];
+    final items = <TskgMovieItem>[];
 
     // try {
 
@@ -145,13 +143,14 @@ class TskgApiProvider {
               });
 
               items.add(
-                TskgShow(
-                  showId: TskgShow.getShowIdFromUrl(link),
-                  date: date,
+                TskgMovieItem(
+                  id: TskgShow.getShowIdFromUrl(link),
                   name: title,
-                  subtitle: subtitle,
+                  updatedAt: date,
+                  // TODO return it
+                  //subtitle: subtitle,
                   genres: genres,
-                  badges: badges.toList(),
+                  //badges: badges.toList(),
                 )
               );
 

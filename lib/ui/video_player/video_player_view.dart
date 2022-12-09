@@ -51,6 +51,9 @@ class VideoPlayerView extends StatefulWidget {
 }
 
 class _VideoPlayerViewState extends State<VideoPlayerView> {
+  /// флаг, чтобы спросить о продолжении просмотра один раз
+  bool _initialize = false;
+
   /// состояние страницы
   VideoPlayerState _pageState = VideoPlayerState.loading;
 
@@ -151,7 +154,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     );
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
     
-    try {
+    //try {
       /// инициализируем плеер
       await _playerController!.initialize().then((_) {
         /// проверяем нужную позицию
@@ -169,79 +172,83 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
       
 
-    } catch (exception) {
-      /// ^ если при загрузке видео произошла ошибка
+    // } catch (exception) {
+    //   /// ^ если при загрузке видео произошла ошибка
       
-      /// обновляем состояние UI
-      _updatePageState(VideoPlayerState.error);
-    }
+    //   /// обновляем состояние UI
+    //   _updatePageState(VideoPlayerState.error);
+    // }
   }
 
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
     
-    if (_episode != null && _episode!.position >= 60) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        final result = await Utils.showModal<bool?>(
-          context: context,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+    if (_pageState == VideoPlayerState.initialized) {
+      if (!_initialize && _episode!.position >= 60) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+          final result = await Utils.showModal<bool?>(
+            context: context,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
 
-              /// кнопка продолжить просмотр
-              SizedBox(
-                width: 320.0,
-                child: ElevatedButton(
-                  autofocus: true,
-                  style: KrsTheme.filledTonalButtonStyleOf(context),
-                  onPressed: () {
-                    if (mounted) {
-                      /// перематываем на нужную позицию и запускаем видео
-                      _playerController?.seekTo(Duration(seconds: _episode!.position - 5))
-                        .then((_) {
-                          _playerController?.play();
-                        });
+                /// кнопка продолжить просмотр
+                SizedBox(
+                  width: 320.0,
+                  child: ElevatedButton(
+                    autofocus: true,
+                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                    onPressed: () {
+                      if (mounted) {
+                        /// перематываем на нужную позицию и запускаем видео
+                        _playerController?.seekTo(Duration(seconds: _episode!.position - 5))
+                          .then((_) {
+                            _playerController?.play();
+                          });
 
-                      /// закрываем диалоговое окно
-                      Navigator.pop(context, true);
-                    }
-                  },
-                  child: Text(locale.continueWatching),
+                        /// закрываем диалоговое окно
+                        Navigator.pop(context, true);
+                      }
+                    },
+                    child: Text(locale.continueWatching),
+                  ),
                 ),
-              ),
 
-              /// кнопка начать сначала
-              SizedBox(
-                width: 320.0,
-                child: ElevatedButton(
-                  autofocus: true,
-                  style: KrsTheme.filledTonalButtonStyleOf(context),
-                  onPressed: () {
-                    if (mounted) {
-                      /// запускаем видео
-                      _playerController?.play();
+                /// кнопка начать сначала
+                SizedBox(
+                  width: 320.0,
+                  child: ElevatedButton(
+                    autofocus: true,
+                    style: KrsTheme.filledTonalButtonStyleOf(context),
+                    onPressed: () {
+                      if (mounted) {
+                        /// запускаем видео
+                        _playerController?.play();
 
-                      /// закрываем диалоговое окно
-                      Navigator.pop(context, false);
-                    }
-                  },
-                  child: Text(locale.startOver),
+                        /// закрываем диалоговое окно
+                        Navigator.pop(context, false);
+                      }
+                    },
+                    child: Text(locale.startOver),
+                  ),
                 ),
-              ),
 
-            ],
-          ),
-        );
+              ],
+            ),
+          );
 
-        /// если при выборе нажали кнопку назад - закрываем плеер
-        if (result == null) {
-          if (mounted) {
-            Navigator.pop(context);
+          /// если при выборе нажали кнопку назад - закрываем плеер
+          if (result == null) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
           }
-        }
-        
-      });
+          
+        });
+      }
+      
+      _initialize = true;
     }
 
     return Scaffold(

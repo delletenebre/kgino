@@ -174,9 +174,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                           'id': widget.show.id,    
                         },
                         queryParams: {
-                          'startTime': 0.toString(),
-                          'episodeId': episode.id.toString(),
-                          'episodeIndex': index.toString(),
+                          'episodeId': episode.id,
                         },
                         extra: widget.show,
                       );

@@ -116,16 +116,17 @@ class OckgMovieDetais extends StatelessWidget {
 
                       const SizedBox(width: 12.0),
 
-                      /// TODO fix it
                       /// продолжительность фильма (или общая для сериала)
-                      // if (movie.files.length == 1) Text(
-                      //   Utils.formatDuration(movie.playtimeDuration)
-                      // ),
+                      if (movie.seasons.first.episodes.length == 1) Text(
+                        Utils.formatDuration(Duration(
+                          seconds: movie.seasons.first.episodes.first.duration,
+                        ))
+                      ),
 
-                      // /// количество эпизодов (файлов), если сериал
-                      // if (movie.files.length > 1) Text(
-                      //   locale.episodesCount(movie.files.length)
-                      // ),
+                      /// количество эпизодов (файлов), если сериал
+                      if (movie.seasons.first.episodes.length > 1) Text(
+                        locale.episodesCount(movie.seasons.first.episodes.length)
+                      ),
 
                       const SizedBox(width: 12.0),
 

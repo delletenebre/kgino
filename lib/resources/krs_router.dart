@@ -42,7 +42,7 @@ class KrsRouter {
                 path: 'files',
                 name: 'ockgMovieFiles',
                 builder: (context, state) {
-                  final movie = state.extra as OckgMovie;
+                  final movie = state.extra as MovieItem;
                   return OckgMovieFilesPage(
                     movie: movie,
                   );

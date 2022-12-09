@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../models/ockg/ockg_movie.dart';
+import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/pages/episode_card.dart';
 
 
 class OckgMovieFilesPage extends StatefulWidget {
-  final OckgMovie movie;
+  final MovieItem movie;
 
   const OckgMovieFilesPage({
     super.key,
@@ -24,8 +24,6 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
   @override
   Widget build(BuildContext context) {
 
-    final locale = KrsLocale.of(context);
-
     return Scaffold(
       body: Center(
         child: SizedBox.fromSize(
@@ -34,9 +32,9 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
             //controller: _episodesScrollController,
             padding: const EdgeInsets.symmetric(horizontal: 48.0),
             spacing: 24.0,
-            itemCount: widget.movie.files.length,
+            itemCount: widget.movie.seasons.first.episodes.length,
             itemBuilder: (context, focusNode, index) {
-              final episode = widget.movie.files[index];
+              final episode = widget.movie.seasons.first.episodes[index];
 
               /// просмотренное время [0; 1]
               double seenValue = 0.0;
@@ -62,10 +60,10 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
                   /// переходим на страницу плеера фильма
                   context.goNamed('ockgMoviePlayer',
                     params: {
-                      'id': '${widget.movie.movieId}',    
+                      'id': widget.movie.id,    
                     },
                     queryParams: {
-                      'episodeId': '${episode.fileId}',
+                      'episodeId': episode.id,
                     },
                     extra: widget.movie,
                   );
@@ -74,86 +72,7 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
             },
           ),
         ),
-        
-        // SizedBox.fromSize(
-        //   size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
-        //   child: ListView.separated(
-        //     clipBehavior: Clip.none,
-        //     controller: _autoScrollController,
-        //     padding: const EdgeInsets.symmetric(
-        //       horizontal: 48.0,
-        //     ),
-        //     scrollDirection: Axis.horizontal,
-        //     itemCount: widget.movie.files.length,
-        //     itemBuilder: (context, index) {
-        //       final file = widget.movie.files[index];
-
-        //       return AutoScrollTag(
-        //         key: ValueKey(index), 
-        //         controller: _autoScrollController,
-        //         index: index,
-        //         child: EpisodeCard(
-        //           titleText: file.name,
-        //           onFocused: (node) {
-        //             /// ^ при смене фокуса на этот фильм
-                
-        //             /// прокручиваем контент к текущему элементу
-        //             _autoScrollController.scrollToIndex(index,
-        //               preferPosition: AutoScrollPosition.begin,
-        //               duration: KrsTheme.fastAnimationDuration,
-        //             );
-        //           },
-        //           onPressed: () {
-        //             /// переходим на страницу плеера фильма
-        //             context.goNamed('ockgMoviePlayer',
-        //               params: {
-        //                 'id': '${widget.movie.movieId}',    
-        //               },
-        //               queryParams: {
-        //                 'startTime': 0.toString(),
-        //                 'fileIndex': index.toString(),
-        //               },
-        //               extra: widget.movie,
-        //             );
-        //           },
-                  
-        //         ),
-                
-        //       );
-        //     },
-        //     separatorBuilder: (context, index) {
-        //       return const SizedBox(width: 24.0);
-        //     },
-            
-        //   ),
-        // ),
       ),
     );
   }
 }
-// OckgMovieCard(
-//   // поставить ли фокус на первый фильм в списке
-//   autofocus: (index == 0 && widget.autofocus),
-//   focusNode: widget.focusNodes?[index],
-//   // данные о фильме
-//   movie: movie,
-
-//   onMovieFocused: (movie, focusNode) {
-//     // ^ при смене фокуса на этот фильм
-    
-//     /// прокручиваем контент к текущему элементу
-//     _autoScrollController.scrollToIndex(index,
-//       preferPosition: AutoScrollPosition.begin,
-//       duration: const Duration(milliseconds: 50),
-//     ).then((_) {
-//       // ^ после окончания прокрутки
-      
-//       if (mounted) {
-//         // ^ если виджет ещё жив
-        
-//         // вызываем пользовательский обработчик
-//         widget.onMovieFocused.call(movie);
-//       }
-//     });
-//   },
-// ),
