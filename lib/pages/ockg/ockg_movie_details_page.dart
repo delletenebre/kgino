@@ -68,7 +68,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
         create: (context) => OckgMovieDetailsController(
           movieId: widget.movieId,
         ),
-        child: BlocBuilder<OckgMovieDetailsController, RequestState<MovieItem>>(
+        child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovieItem>>(
           builder: (context, state) {
             if (state.isError || state.isEmpty) {
               return TryAgainMessage(

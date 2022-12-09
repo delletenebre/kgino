@@ -50,7 +50,7 @@ class OckgCatalogPage extends StatelessWidget {
             ),
 
             Expanded(
-              child: BlocBuilder<OckgMovieDetailsController, RequestState<MovieItem>>(
+              child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovieItem>>(
                 builder: (context, state) {
                   if (state.isSuccess) {
                     final movie = state.data;

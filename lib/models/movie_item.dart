@@ -176,9 +176,12 @@ class OckgMovieItem extends MovieItem {
   
   /// рейтинг IMDb
   final double ratingImdb;
+  bool get hasImdbRating => ratingImdb > 0.0;
 
   /// рейтинг Кинопоиск
   final double ratingKinopoisk;
+  bool get hasKinopoiskRating => ratingImdb > 0.0;
+
   
   OckgMovieItem({
     required String id,

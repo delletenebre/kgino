@@ -23,7 +23,7 @@ class OckgHomePage extends StatelessWidget {
           /// детали фильма, при фокусе на каком-либо фильме
           /// или первый популярный фильм, если ничего не выбрано
           Expanded(
-            child: BlocBuilder<OckgMovieDetailsController, RequestState<MovieItem>>(
+            child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovieItem>>(
               builder: (context, state) {
                 if (state.isSuccess) {
                   final movie = state.data;
