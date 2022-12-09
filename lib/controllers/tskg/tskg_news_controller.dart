@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import '../../api/tskg_api_provider.dart';
 import '../../models/movie_item.dart';
 import '../../models/request_state.dart';
-import '../../models/tskg/tskg_show.dart';
 
 export '../../models/request_state.dart';
 

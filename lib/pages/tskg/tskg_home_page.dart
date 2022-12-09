@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/movie_item.dart';
-import '../../models/tskg/tskg_show.dart';
 import '../../ui/pages/tskg/tskg_home_page_list_view.dart';
 import '../../ui/pages/tskg/tskg_show_details.dart';
 

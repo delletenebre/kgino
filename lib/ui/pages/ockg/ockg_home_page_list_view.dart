@@ -10,8 +10,6 @@ import '../../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../../controllers/seen_items_controller.dart';
 import '../../../models/movie_item.dart';
 import '../../../models/ockg/ockg_bestsellers_category.dart';
-import '../../../models/ockg/ockg_movie.dart';
-import '../../../models/seen_item.dart';
 import '../../../resources/krs_locale.dart';
 import '../../lists/category_list_item.dart';
 import '../../lists/krs_vertical_list_view.dart';

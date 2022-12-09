@@ -5,9 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/movie_item.dart';
-import '../../models/ockg/ockg_movie.dart';
-import '../../models/playable_item.dart';
-import '../../models/seen_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';

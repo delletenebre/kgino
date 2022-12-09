@@ -10,8 +10,6 @@ import '../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
-import '../../models/seen_item.dart';
-import '../../models/tskg/tskg_episode.dart';
 import '../../models/tskg/tskg_favorite.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';

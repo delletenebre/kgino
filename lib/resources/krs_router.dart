@@ -1,8 +1,6 @@
 import 'package:go_router/go_router.dart';
 
 import '../models/movie_item.dart';
-import '../models/ockg/ockg_movie.dart';
-import '../models/tskg/tskg_show.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
