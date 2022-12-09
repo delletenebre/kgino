@@ -42,7 +42,7 @@ class OckgHomePageListView extends HookWidget {
 
         if (seenMovies.isNotEmpty) {
           categories.add(
-            CategoryListItem(
+            CategoryListItem<MovieItem>(
               title: locale.continueWatching,
               items: seenMovies,
             )
@@ -53,9 +53,16 @@ class OckgHomePageListView extends HookWidget {
         if (state.isSuccess) {
           categories.addAll(
             state.data.map((item) {
-              return CategoryListItem(
+              return CategoryListItem<MovieItem>(
                 title: item.name,
-                items: item.movies,
+                items: item.movies.map((movie) {
+                  return MovieItem(
+                    type: MovieItemType.ockg,
+                    id: '${movie.movieId}',
+                    name: movie.name,
+                    posterUrl: movie.posterUrl,
+                  );
+                }).toList(),
               );
             })
           );
@@ -71,7 +78,7 @@ class OckgHomePageListView extends HookWidget {
                   focusNode: focusNode,
                   onItemFocused: (index) {
                     context.read<OckgMovieDetailsController>().getMovieById(
-                      category.items.elementAt(index).movieId,
+                      category.items[index].id,
                     );
                   },
                   titleText: category.title,
@@ -90,7 +97,7 @@ class OckgHomePageListView extends HookWidget {
                       onTap: () {
                         /// переходим на страницу деталей о фильме
                         context.goNamed('ockgMovieDetails', params: {
-                          'id': '${movie.movieId}',
+                          'id': '${movie.id}',
                         });
 
                       },

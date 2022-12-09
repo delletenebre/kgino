@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/ockg_api_provider.dart';
+import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../models/request_state.dart';
 
 export '../../models/request_state.dart';
 
-class OckgSearchController extends Cubit<RequestState<List<OckgMovie>>> {
+class OckgSearchController extends Cubit<RequestState<List<MovieItem>>> {
 
   /// провайдер запросов к API
   final _api = GetIt.instance<OckgApiProvider>();

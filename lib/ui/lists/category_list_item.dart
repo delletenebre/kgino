@@ -1,6 +1,6 @@
-class CategoryListItem {
+class CategoryListItem<T> {
   final String title;
-  final List<dynamic> items;
+  final List<T> items;
 
   CategoryListItem({
     required this.title,

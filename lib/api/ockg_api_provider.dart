@@ -103,7 +103,7 @@ class OckgApiProvider {
 
 
   /// поиск фильмов
-  Future<List<OckgMovie>> searchMovies(String searchQuery) async {
+  Future<List<OckgMovieItem>> searchMovies(String searchQuery) async {
     // final runes = searchQuery.runes.map((r) {
     //   return '%u${r.toRadixString(16).padLeft(4, '0')}';
     // }).toList();
@@ -124,11 +124,15 @@ class OckgApiProvider {
       );
 
       final jsonResponse = json.decode(response.data);
-      final movies = jsonResponse['json'][0]['response']['movies'];
+      final moviesJson = jsonResponse['json'][0]['response']['movies'];
 
-      return movies.map<OckgMovie>((item) {
+      final movies = moviesJson.map<OckgMovie>((item) {
         return OckgMovie.fromJson(item);
-      }).toList();
+      });
+
+      return movies.map((movie) {
+        return OckgMovieItem.parse(movie);
+      });
       
     } on SocketException catch (_) {
 
@@ -225,7 +229,7 @@ class OckgApiProvider {
 
   
   /// информация о фильме
-  Future<MovieItem?> getMovie(String movieId) async {
+  Future<OckgMovieItem?> getMovie(String movieId) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getMovie',
@@ -242,12 +246,7 @@ class OckgApiProvider {
       final movie = OckgMovie.fromJson(movieJson);
 
       /// TODO add more info
-      return MovieItem(
-        type: MovieItemType.ockg,
-        id: movie.movieId.toString(),
-        name: movie.name,
-        posterUrl: movie.posterUrl
-      );
+      return OckgMovieItem.parse(movie);
       
     } on SocketException catch (_) {
 

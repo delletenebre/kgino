@@ -24,7 +24,11 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
   final _episodes = <EpisodeItem>[];
   late final int _episodeCount;
   int _currentIndex = 0;
-  bool _subtitlesEnabled = false;
+
+  /// контроллер просмотренных эпизодов
+  final _seenItemsController = GetIt.instance<SeenItemsController>();
+
+  late MovieItem _seenShow;
 
   @override
   void initState() {
@@ -40,17 +44,19 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
       return episode.id == widget.episodeId;
     });
 
+    _seenShow = _seenItemsController.findItemByKey(widget.movie.storageKey)
+        ?? widget.movie;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    /// контроллер просмотренных эпизодов
-    final seenEpisodesController = GetIt.instance<SeenItemsController>();
+    
 
     return VideoPlayerView(
-      titleText: widget.movie.name,
-      subtitlesEnabled: widget.movie.subtitlesEnabled,
+      titleText: _seenShow.name,
+      subtitlesEnabled: _seenShow.subtitlesEnabled,
       onInitialPlayableItem: () => _getPlayableItem(true),
 
       onSkipNext: (_currentIndex + 1 < _episodeCount) ? () {
@@ -71,10 +77,8 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
       } : null,
       
       onUpdatePosition: (episode, position, subtitlesEnabled) {
-        _subtitlesEnabled = subtitlesEnabled;
-
-        seenEpisodesController.updatePosition(
-          movie: widget.movie,
+        _seenItemsController.updatePosition(
+          movie: _seenShow,
           episode: episode,
           position: position,
           subtitlesEnabled: subtitlesEnabled,
@@ -84,73 +88,22 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
   }
 
   Future<EpisodeItem> _getPlayableItem([bool initial = false]) async {
-    MovieItem? seenShow;
-    EpisodeItem? seenEpisode;
-    int seasonNumber = 0;
-    int episodeNumber = 0;
+    final currentEpisode = _episodes[_currentIndex];
 
     if (initial) {
-      /// ^ если это первый запуск, а не перемотка
-      
       /// находим сохранённый эпизод, если он есть
 
-      /// контроллер просмотренных эпизодов
-      final seenItemsController = GetIt.instance<SeenItemsController>();
-      
-      /// проверяем был ли сериал уже в просмотренных
-      seenShow = seenItemsController.findItemByKey(widget.movie.storageKey);
+      /// проверяем был ли эпизод в просмотренных
+      return _seenItemsController.findEpisode(
+        storageKey: _seenShow.storageKey,
+        episodeId: currentEpisode.id,
+      ) ?? currentEpisode;
 
-      if (seenShow != null) {
-        /// ^ если сериал уже был в просмотренных
-        
-        /// восстонавливаем состояние субтитров (включены или выключены)
-        _subtitlesEnabled = seenShow.subtitlesEnabled;
-        
-        /// проверяем был ли эпизод в просмотренных
-        final seenEpisode = seenItemsController.findEpisode(
-          storageKey: widget.movie.storageKey,
-          episodeId: widget.episodeId,
-        );
-
-        // if (seenEpisode != null) {
-        //   /// ^ если эпизод уже был в просмотренных
-          
-        //   /// восстанавливаем время просмотра
-        //   _startTime = seenEpisode.position;
-        // }
-      }
     } else {
-      for (int seasonIndex = 0; seasonIndex < widget.movie.seasons.length; seasonIndex++) {
-        final season = widget.movie.seasons[seasonIndex];
-        final episodeIndex = season.episodes.indexWhere((episode) {
-          return episode.id == widget.episodeId;
-        });
-        if (episodeIndex > -1) {
-          seasonNumber = seasonIndex + 1;
-          episodeNumber = episodeIndex + 1;
-          break;
-        }
-      }
+      /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
+      /// не запрашивал продолжить просмотр или нет
+      currentEpisode.position = 0;
+      return currentEpisode;
     }
-
-    final currentEpisode = _episodes[_currentIndex];
-    final videoUrl = currentEpisode.videoFileUrl.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/');
-    
-    // String subtitle = '';
-    // if (widget.movie.files.length > 1) {
-    //   subtitle = currentFile.name;
-    // }
-
-    final episode = seenEpisode ?? EpisodeItem(
-      id: currentEpisode.id,
-      name: currentEpisode.name,
-      duration: currentEpisode.duration,
-      seasonNumber: seasonNumber,
-      episodeNumber: episodeNumber,
-    );
-
-    episode.videoFileUrl = videoUrl;
-
-    return episode;
   }
 }

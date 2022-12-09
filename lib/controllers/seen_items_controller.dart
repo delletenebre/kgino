@@ -61,7 +61,7 @@ class SeenItemsController {
       /// ^ если запись не найдена в БД
 
       /// создаём новую запись о просмотре эпизода
-      final seenEpisode = episode;
+      seenEpisode = episode;
 
       /// сохраняем запись
       seenItem.episodes.add(seenEpisode);
@@ -71,8 +71,6 @@ class SeenItemsController {
     /// обновляем запись
     seenEpisode.position = position;
     seenEpisode.updatedAt = DateTime.now();
-    
-    seenEpisode.save();
 
     /// сохраняем обновления
     seenItem.save();

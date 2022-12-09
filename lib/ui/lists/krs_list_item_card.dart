@@ -68,16 +68,17 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
     });
     
     /// получаем цветовую палитру фильма
-    widget.item.getPaletteGenerator().then((palette) {
-      if (palette.lightVibrantColor != null) {
-        if (mounted) {
-          setState(() {
-            _glowColor = palette.lightVibrantColor!.color;
-            // _dominantColor = palette.dominantColor!.color;
-          });
-        }
-      }
-    });
+    // TODO return this
+    // widget.item.getPaletteGenerator().then((palette) {
+    //   if (palette.lightVibrantColor != null) {
+    //     if (mounted) {
+    //       setState(() {
+    //         _glowColor = palette.lightVibrantColor!.color;
+    //         // _dominantColor = palette.dominantColor!.color;
+    //       });
+    //     }
+    //   }
+    // });
     
   }
 
@@ -203,13 +204,13 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
                 ),
 
                 /// описание фильма
-                if (widget.item.subtitle.isNotEmpty) Text(widget.item.subtitle,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: theme.textTheme.caption?.color?.withOpacity(0.36),
-                  ),
-                  maxLines: 1,
-                ),
+                // if (widget.item.subtitle.isNotEmpty) Text(widget.item.subtitle,
+                //   style: TextStyle(
+                //     fontSize: 12.0,
+                //     color: theme.textTheme.caption?.color?.withOpacity(0.36),
+                //   ),
+                //   maxLines: 1,
+                // ),
 
               ],
             ),

@@ -352,20 +352,17 @@ class TskgApiProvider {
         return TskgMovieItem(
           id: showId,
           name: title,
-          // posterUrl: 'https://www.ts.kg/posters/$showId.png',
-          // updatedAt: DateTime.now(),
+          seasons: seasons,
 
-          // originalName: originalTitle,
-          // description: description,
-          // year: years,
-          // genres: genres,
-          // countries: countries,
-
-          // seasons: seasons,
+          originalName: originalTitle,
+          description: description,
+          year: years,
+          genres: genres,
+          countries: countries,
           
-          // voiceActing: voiceActing,
-          // voiceActings: voiceActings,
-        ) as TskgMovieItem;
+          voiceActing: voiceActing,
+          voiceActings: voiceActings,
+        );
       }
 
     } catch (exception) {
@@ -373,7 +370,10 @@ class TskgApiProvider {
       
     }
 
-    return TskgMovieItem(id: '', name: '');
+    return TskgMovieItem(
+      id: '',
+      name: '',
+    );
   }
 
 

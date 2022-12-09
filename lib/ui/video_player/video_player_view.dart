@@ -57,7 +57,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   /// контроллер видеоплеера
   VideoPlayerController? _playerController;
 
-  late EpisodeItem _playableItem;
+  EpisodeItem? _episode;
 
   bool _isControlOverlayVisible = true;
   late final RestartableTimer _showControlsOverlayTimer;
@@ -67,11 +67,6 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
   /// включены или выключены субтитры
   late bool _subtitlesEnabled;
-
-  /// если больше, чем ноль, то спросить, нужно ли продолжить просмотр с этого
-  /// момента; когда -1 - означает, что спрашивать больше не нужно, т.к. была
-  /// первая инициализация
-  int _startTime = 0;
 
   /// обновление состояния страницы
   void _updatePageState(VideoPlayerState state) {
@@ -147,11 +142,11 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _disposeVideoController();
 
     Future<ClosedCaptionFile>? closedCaptionFile;
-    if (_playableItem.subtitlesFileUrl.isNotEmpty) {
-      closedCaptionFile = _loadSubtitle(_playableItem.subtitlesFileUrl);
+    if (_episode!.subtitlesFileUrl.isNotEmpty) {
+      closedCaptionFile = _loadSubtitle(_episode!.subtitlesFileUrl);
     }
 
-    _playerController = VideoPlayerController.network(_playableItem.videoFileUrl,
+    _playerController = VideoPlayerController.network(_episode!.videoFileUrl,
       closedCaptionFile: closedCaptionFile,
     );
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
@@ -160,9 +155,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       /// инициализируем плеер
       await _playerController!.initialize().then((_) {
         /// проверяем нужную позицию
-        if (_startTime > -1 && _playableItem.position > 60) {
-          _startTime = _playableItem.position;
-        } else {
+        if (_episode!.position < 60) {
           /// запускаем видео
           _playerController!.play();
         }
@@ -188,12 +181,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   Widget build(context) {
     final locale = KrsLocale.of(context);
     
-    if (_startTime > 0) {
+    if (_episode != null && _episode!.position >= 60) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        final startTime = _startTime;
-
-        _startTime = -1;
-
         final result = await Utils.showModal<bool?>(
           context: context,
           child: Column(
@@ -209,7 +198,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                   onPressed: () {
                     if (mounted) {
                       /// перематываем на нужную позицию и запускаем видео
-                      _playerController?.seekTo(Duration(seconds: startTime - 5))
+                      _playerController?.seekTo(Duration(seconds: _episode!.position - 5))
                         .then((_) {
                           _playerController?.play();
                         });
@@ -312,7 +301,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               SafeArea(
                 child: VideoPlayerControlsOverlay(
                   titleText: widget.titleText,
-                  subtitleText: _playableItem.name,
+                  subtitleText: _episode?.name ?? '',
                   isVisible: _isControlOverlayVisible,
                   playerController: _playerController,
                   onPlayPause: () {
@@ -398,7 +387,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     // final percentPosition = position / duration;
 
     /// сохраняем информацию о времени просмотра эпизода
-    widget.onUpdatePosition(_playableItem,  position, _subtitlesEnabled);
+    widget.onUpdatePosition(_episode!,  position, _subtitlesEnabled);
 
     /// чтобы экран не уходил в сон
     Wakelock.toggle(
@@ -432,7 +421,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _disposeVideoController();
     
     /// запрашиваем новое видео
-    _playableItem = await playableItemGetter();
+    _episode = await playableItemGetter();
     
     /// инициализируем новый плеер
     _initializeVideo();

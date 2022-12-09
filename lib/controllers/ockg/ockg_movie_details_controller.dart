@@ -8,7 +8,7 @@ import '../../models/request_state.dart';
 
 export '../../models/request_state.dart';
 
-class OckgMovieDetailsController extends Cubit<RequestState<MovieItem>> {
+class OckgMovieDetailsController extends Cubit<RequestState<OckgMovieItem>> {
 
   /// идентификатор фильма
   final String movieId;

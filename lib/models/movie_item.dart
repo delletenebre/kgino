@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 import 'episode_item.dart';
+import 'ockg/ockg_movie.dart';
 import 'season_item.dart';
 
 part 'movie_item.g.dart';
@@ -76,7 +78,7 @@ class MovieItem extends HiveObject with EquatableMixin {
     this.favorite = false,
     DateTime? updatedAt,
 
-    this.episodes = const [],
+    List<EpisodeItem>? episodes,
     this.seasons = const [],
 
     this.originalName = '',
@@ -84,7 +86,8 @@ class MovieItem extends HiveObject with EquatableMixin {
     this.year = '',
     this.genres = const [],
     this.countries = const [],
-  }) : updatedAt = updatedAt ?? DateTime.now();
+  }) : updatedAt = updatedAt ?? DateTime.now(),
+        episodes = episodes ?? List<EpisodeItem>.empty(growable: true);
   
   @override
   List<Object> get props => [type, id];
@@ -137,6 +140,14 @@ class TskgMovieItem extends MovieItem {
   TskgMovieItem({
     required String id,
     required String name,
+    List<SeasonItem> seasons = const [],
+
+    String originalName = '',
+    String description = '',
+    String year = '',
+    List<String> genres = const [],
+    List<String> countries = const [],
+    
     this.voiceActing = '',
     this.voiceActings = const [],
   }) : super(
@@ -144,10 +155,89 @@ class TskgMovieItem extends MovieItem {
     id: id,
     name: name,
     posterUrl: 'https://www.ts.kg/posters/$id.png',
+    seasons: seasons,
+    
+    originalName: originalName,
+    description: description,
+    year: year,
+    genres: genres,
+    countries: countries,
+    
   );
   
 }
 
+
+class OckgMovieItem extends MovieItem {
+  
+  /// рейтинг IMDb
+  final double ratingImdb;
+
+  /// рейтинг Кинопоиск
+  final double ratingKinopoisk;
+  
+  OckgMovieItem({
+    required String id,
+    required String name,
+    required String posterUrl,
+    required List<SeasonItem> seasons,
+
+    String originalName = '',
+    String description = '',
+    String year = '',
+    List<String> genres = const [],
+    List<String> countries = const [],
+
+    this.ratingImdb = 0.0,
+    this.ratingKinopoisk = 0.0,
+  }) : super(
+    type: MovieItemType.ockg,
+    id: id,
+    name: name,
+    posterUrl: posterUrl,
+    seasons: seasons,
+
+    originalName: originalName,
+    description: description,
+    year: year,
+    genres: genres,
+    countries: countries,
+    
+  );
+
+  factory OckgMovieItem.parse(OckgMovie movie) {
+    final seasons = [
+      SeasonItem(
+        name: '',
+        episodes: movie.files.mapIndexed((index, file) {
+          return EpisodeItem(
+            id: '${file.fileId}',
+            name: file.name,
+            videoFileUrl: file.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
+            seasonNumber: 1,
+            episodeNumber: index + 1,
+            duration: file.metainfo.playtimeSeconds,
+          );
+        }).toList(),
+      ),
+    ];
+
+    return OckgMovieItem(
+      id: '${movie.movieId}',
+      name: movie.name,
+      posterUrl: movie.posterUrl,
+      originalName: movie.internationalName,
+      description: movie.description,
+      year: movie.year,
+      genres: movie.genres,
+      countries: movie.countries,
+      ratingImdb: movie.ratingImdbValue,
+      ratingKinopoisk: movie.ratingKinopoiskValue,
+      seasons: seasons,
+    );
+  }
+  
+}
 
 
 

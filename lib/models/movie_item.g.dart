@@ -24,7 +24,7 @@ class MovieItemAdapter extends TypeAdapter<MovieItem> {
       subtitlesEnabled: fields[4] as bool,
       favorite: fields[5] as bool,
       updatedAt: fields[6] as DateTime?,
-      episodes: (fields[7] as List).cast<EpisodeItem>(),
+      episodes: (fields[7] as List?)?.cast<EpisodeItem>(),
     );
   }
 

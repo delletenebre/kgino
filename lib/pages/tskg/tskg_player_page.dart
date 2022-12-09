@@ -8,7 +8,7 @@ import '../../models/movie_item.dart';
 import '../../ui/video_player/video_player_view.dart';
 
 class TskgPlayerPage extends StatefulWidget {
-  final TskgMovieItem show;
+  final MovieItem show;
   final String episodeId;
 
   const TskgPlayerPage({
@@ -25,7 +25,11 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
   final _episodes = <EpisodeItem>[];
   late final int _episodeCount;
   int _currentIndex = 0;
-  bool _subtitlesEnabled = false;
+
+  /// контроллер просмотренных эпизодов
+  final _seenItemsController = GetIt.instance<SeenItemsController>();
+
+  late MovieItem _seenShow;
 
   @override
   void initState() {
@@ -41,6 +45,9 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       return episode.id == widget.episodeId;
     });
 
+    _seenShow = _seenItemsController.findItemByKey(widget.show.storageKey)
+        ?? widget.show;
+
     super.initState();
   }
 
@@ -50,8 +57,8 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     final seenEpisodesController = GetIt.instance<SeenItemsController>();
 
     return VideoPlayerView(
-      titleText: widget.show.name,
-      subtitlesEnabled: widget.show.subtitlesEnabled,
+      titleText: _seenShow.name,
+      subtitlesEnabled: _seenShow.subtitlesEnabled,
       onInitialPlayableItem: () => _getPlayableItem(true),
 
       onSkipNext: (_currentIndex + 1 < _episodeCount) ? () {
@@ -73,10 +80,8 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       } : null,
 
       onUpdatePosition: (episode, position, subtitlesEnabled) {
-        _subtitlesEnabled = subtitlesEnabled;
-
         seenEpisodesController.updatePosition(
-          movie: widget.show,
+          movie: _seenShow,
           episode: episode,
           position: position,
           subtitlesEnabled: subtitlesEnabled,
@@ -86,40 +91,19 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
   }
 
   Future<EpisodeItem> _getPlayableItem([bool initial = false]) async {
-    MovieItem? seenShow;
     EpisodeItem? seenEpisode;
     int seasonNumber = 0;
     int episodeNumber = 0;
+    
+    final currentEpisode = _episodes[_currentIndex];
+
     if (initial) {
-      /// ^ если это первый запуск, а не перемотка
-      
-      /// находим сохранённый эпизод, если он есть
+      /// проверяем был ли эпизод в просмотренных
+      seenEpisode = _seenItemsController.findEpisode(
+        storageKey: _seenShow.storageKey,
+        episodeId: currentEpisode.id,
+      );
 
-      /// контроллер просмотренных эпизодов
-      final seenItemsController = GetIt.instance<SeenItemsController>();
-      
-      /// проверяем был ли сериал уже в просмотренных
-      seenShow = seenItemsController.findItemByKey(widget.show.storageKey);
-
-      if (seenShow != null) {
-        /// ^ если сериал уже был в просмотренных
-        
-        /// восстонавливаем состояние субтитров (включены или выключены)
-        _subtitlesEnabled = seenShow.subtitlesEnabled;
-        
-        /// проверяем был ли эпизод в просмотренных
-        final seenEpisode = seenItemsController.findEpisode(
-          storageKey: widget.show.storageKey,
-          episodeId: widget.episodeId,
-        );
-
-        // if (seenEpisode != null) {
-        //   /// ^ если эпизод уже был в просмотренных
-          
-        //   /// восстанавливаем время просмотра
-        //   _startTime = seenEpisode.position;
-        // }
-      }
     } else {
       for (int seasonIndex = 0; seasonIndex < widget.show.seasons.length; seasonIndex++) {
         final season = widget.show.seasons[seasonIndex];
@@ -134,28 +118,18 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
       }
     }
     
-    final currentEpisode = _episodes[_currentIndex];
-    
     /// провайдер запросов к API
     final api = GetIt.instance<TskgApiProvider>();
     
     /// получаем данные эпизода
     final episodeDetails = await api.getEpisodeDetails(currentEpisode.id);
 
-    /// качество видео по умолчанию - SD
-    String videoUrl = episodeDetails?.video.files.sd.url ?? '';
+    /// задаём качество видео в HD или в SD
+    String videoUrl = episodeDetails?.video.files.hd.url
+        ?? episodeDetails?.video.files.sd.url ?? '';
     
     /// субтитры
-    String subtitleUrl = episodeDetails?.video.subtitles ?? '';
-    
-    if (episodeDetails != null) {
-      if (episodeDetails.video.files.hd.url.isNotEmpty) {
-        /// ^ если есть видео в HD качестве
-        
-        /// задаём качество видео HD
-        videoUrl = episodeDetails.video.files.hd.url;
-      }
-    }
+    String subtitlesUrl = episodeDetails?.video.subtitles ?? '';
     
     //String subtitle = '${episodeDetails?.nameWithSeason}';
 
@@ -168,7 +142,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
     );
 
     episode.videoFileUrl = videoUrl;
-    episode.subtitlesFileUrl = subtitleUrl;
+    episode.subtitlesFileUrl = subtitlesUrl;
 
     return episode;
   }
