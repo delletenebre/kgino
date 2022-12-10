@@ -5,7 +5,7 @@ import 'package:kgino/constants.dart';
 
 import '../controllers/ockg/ockg_search_controller.dart';
 import '../controllers/tskg/tskg_search_controller.dart';
-import '../models/ockg/ockg_movie.dart';
+import '../models/movie_item.dart';
 import '../resources/krs_locale.dart';
 import '../ui/lists/category_list_item.dart';
 import '../ui/lists/krs_vertical_list_view.dart';
@@ -24,7 +24,7 @@ class SearchPage extends StatelessWidget {
     final ockgSearch = context.watch<OckgSearchController>().state;
     final tskgSearch = context.watch<TskgSearchController>().state;
 
-    final items = <CategoryListItem>[];
+    final items = <CategoryListItem<MovieItem>>[];
     if (ockgSearch.isSuccess) {
       items.add(
         CategoryListItem(
@@ -42,10 +42,6 @@ class SearchPage extends StatelessWidget {
       );
     }
 
-    // if (ockgSearch.isLoading) {
-    //   return const LoadingIndicator();
-    // }
-
     if (items.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 24.0),
@@ -58,11 +54,6 @@ class SearchPage extends StatelessWidget {
               size: const Size.fromHeight(ockgListViewHeight),
               child: KrsHorizontalListView(
                 focusNode: focusNode,
-                onItemFocused: (index) {
-                  // context.read<TskgShowDetailsController>().getShowById(
-                  //   showItem.items.elementAt(index).showId,
-                  // );
-                },
                 titleText: item.title,
                 itemCount: item.items.length,
                 itemBuilder: (context, focusNode, index) {
@@ -70,30 +61,29 @@ class SearchPage extends StatelessWidget {
                   
                   return KrsListItemCard(
                     focusNode: focusNode,
-                    posterSize: (show is OckgMovie) ? ockgPosterSize : tskgPosterSize,
+                    posterSize: (show.type == MovieItemType.ockg)
+                      ? ockgPosterSize : tskgPosterSize,
                     item: show,
                     
                     /// при выборе элемента
                     onTap: () {
 
-                      if (show is OckgMovie) {
-                        /// переходим на страницу деталей о фильме
-                        context.goNamed('ockgMovieDetails',
-                          params: {
-                            'id': '${show.movieId}',
-                          },
-                        );
-
-                      } else {
-                        /// переходим на страницу деталей о сериале
-                        context.goNamed('tskgShowDetails',
-                          params: {
-                            'id': show.showId,
-                          },
-                        );
-
+                      late final String routeName;
+                      switch (show.type) {
+                        case MovieItemType.ockg:
+                          routeName = 'ockgMovieDetails';
+                          break;
+                        case MovieItemType.tskg:
+                          routeName = 'tskgShowDetails';
+                          break;
                       }
-                      
+
+                      /// переходим на страницу деталей
+                      context.goNamed(routeName,
+                        params: {
+                          'id': show.id,
+                        },
+                      );
 
                     },
                   );
@@ -104,64 +94,9 @@ class SearchPage extends StatelessWidget {
           
         )
       );
-
-      // return SingleChildScrollView(
-      //   controller: _autoScrollController,
-      //   padding: const EdgeInsets.all(32.0),
-      //   child: SizedBox(
-      //     width: double.maxFinite,
-      //     child: Wrap(
-      //       clipBehavior: Clip.none,
-      //       alignment: WrapAlignment.center,
-      //       spacing: 24.0,
-      //       runSpacing: 24.0,
-      //       // children: items.mapIndexed((index, item) {
-      //       //   if (item is OckgMovie) {
-      //       //     return AutoScrollTag(
-      //       //       key: ValueKey(index), 
-      //       //       controller: _autoScrollController,
-      //       //       index: index,
-      //       //       child: OckgMovieCard(
-      //       //         movie: item,
-      //       //         onMovieFocused: (movie, focusNode) {
-      //       //           _autoScrollController.scrollToIndex(index,
-      //       //             // preferPosition: AutoScrollPosition.begin,
-      //       //             duration: KrsTheme.fastAnimationDuration,
-      //       //           );
-      //       //         },
-      //       //       ),
-      //       //     );
-      //       //   } else {
-      //       //     return TskgShowCard(
-      //       //       show: item,
-      //       //       onTap: () {
-      //       //         /// переходим на страницу деталей о фильме
-      //       //         context.goNamed('tskgShowDetails', params: {
-      //       //           'id': item.showId,
-      //       //         });
-      //       //       },
-      //       //     );
-      //       //   }
-              
-      //       // }).toList(),
-      //     ),
-      //   ),
-      // );
     }
 
     return const SizedBox();
 
-    // return Column(
-    //   children: [
-    //     Expanded(
-    //       child: Builder(
-    //         builder: (context) {
-              
-    //         },
-    //       ),
-    //     ),
-
-    //   ],
-    // );
   }
 }

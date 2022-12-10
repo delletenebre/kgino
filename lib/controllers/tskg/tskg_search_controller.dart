@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/tskg_api_provider.dart';
+import '../../models/movie_item.dart';
 import '../../models/request_state.dart';
-import '../../models/tskg/tskg_show.dart';
 
 export '../../models/request_state.dart';
 
-class TskgSearchController extends Cubit<RequestState<List<TskgShow>>> {
+class TskgSearchController extends Cubit<RequestState<List<MovieItem>>> {
 
   /// провайдер запросов к API
   final _api = GetIt.instance<TskgApiProvider>();

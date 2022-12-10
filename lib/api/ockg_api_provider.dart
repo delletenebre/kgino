@@ -103,7 +103,7 @@ class OckgApiProvider {
 
 
   /// поиск фильмов
-  Future<List<OckgMovieItem>> searchMovies(String searchQuery) async {
+  Future<List<MovieItem>> searchMovies(String searchQuery) async {
     // final runes = searchQuery.runes.map((r) {
     //   return '%u${r.toRadixString(16).padLeft(4, '0')}';
     // }).toList();
@@ -126,13 +126,20 @@ class OckgApiProvider {
       final jsonResponse = json.decode(response.data);
       final moviesJson = jsonResponse['json'][0]['response']['movies'];
 
-      final movies = moviesJson.map<OckgMovie>((item) {
+      final Iterable<OckgMovie> movies = moviesJson.map<OckgMovie>((item) {
         return OckgMovie.fromJson(item);
       });
 
-      return movies.map((movie) {
-        return OckgMovieItem.parse(movie);
-      });
+      final List<MovieItem> a = movies.map<MovieItem>((movie) {
+        return MovieItem(
+          type: MovieItemType.ockg,
+          id: '${movie.movieId}',
+          name: movie.name,
+          posterUrl: movie.posterUrl,
+        );
+      }).toList();
+
+      return a;
       
     } on SocketException catch (_) {
 

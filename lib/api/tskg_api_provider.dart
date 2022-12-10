@@ -410,9 +410,9 @@ class TskgApiProvider {
 
 
   /// поиск сериала
-  Future<List<TskgShow>> searchShows(String searchQuery) async {
+  Future<List<MovieItem>> searchShows(String searchQuery) async {
 
-    final items = <TskgShow>[];
+    final items = <MovieItem>[];
 
     if (searchQuery.isNotEmpty) {
       /// ^ если запрос не пустой
@@ -437,10 +437,12 @@ class TskgApiProvider {
             final url = item['url'];
 
             if (url.startsWith('/show/')) {
-              items.add(TskgShow(
-                showId: TskgShow.getShowIdFromUrl(url),
-                name: name,
-              ));
+              items.add(
+                TskgMovieItem(
+                  id: TskgShow.getShowIdFromUrl(url),
+                  name: name,
+                )
+              );
             }
           }
 
