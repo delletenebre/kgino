@@ -454,7 +454,7 @@ TskgVideoFile _$TskgVideoFileFromJson(Map<String, dynamic> json) {
 mixin _$TskgVideoFile {
   int get id => throw _privateConstructorUsedError;
   String get server => throw _privateConstructorUsedError;
-  String get url => throw _privateConstructorUsedError;
+  String? get url => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -468,7 +468,7 @@ abstract class $TskgVideoFileCopyWith<$Res> {
           TskgVideoFile value, $Res Function(TskgVideoFile) then) =
       _$TskgVideoFileCopyWithImpl<$Res, TskgVideoFile>;
   @useResult
-  $Res call({int id, String server, String url});
+  $Res call({int id, String server, String? url});
 }
 
 /// @nodoc
@@ -486,7 +486,7 @@ class _$TskgVideoFileCopyWithImpl<$Res, $Val extends TskgVideoFile>
   $Res call({
     Object? id = null,
     Object? server = null,
-    Object? url = null,
+    Object? url = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -497,10 +497,10 @@ class _$TskgVideoFileCopyWithImpl<$Res, $Val extends TskgVideoFile>
           ? _value.server
           : server // ignore: cast_nullable_to_non_nullable
               as String,
-      url: null == url
+      url: freezed == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -513,7 +513,7 @@ abstract class _$$_TskgVideoFileCopyWith<$Res>
       __$$_TskgVideoFileCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String server, String url});
+  $Res call({int id, String server, String? url});
 }
 
 /// @nodoc
@@ -529,7 +529,7 @@ class __$$_TskgVideoFileCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? server = null,
-    Object? url = null,
+    Object? url = freezed,
   }) {
     return _then(_$_TskgVideoFile(
       id: null == id
@@ -540,10 +540,10 @@ class __$$_TskgVideoFileCopyWithImpl<$Res>
           ? _value.server
           : server // ignore: cast_nullable_to_non_nullable
               as String,
-      url: null == url
+      url: freezed == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -551,7 +551,7 @@ class __$$_TskgVideoFileCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_TskgVideoFile implements _TskgVideoFile {
-  const _$_TskgVideoFile({this.id = 0, this.server = '', this.url = ''});
+  const _$_TskgVideoFile({this.id = 0, this.server = '', this.url});
 
   factory _$_TskgVideoFile.fromJson(Map<String, dynamic> json) =>
       _$$_TskgVideoFileFromJson(json);
@@ -563,8 +563,7 @@ class _$_TskgVideoFile implements _TskgVideoFile {
   @JsonKey()
   final String server;
   @override
-  @JsonKey()
-  final String url;
+  final String? url;
 
   @override
   String toString() {
@@ -601,7 +600,9 @@ class _$_TskgVideoFile implements _TskgVideoFile {
 
 abstract class _TskgVideoFile implements TskgVideoFile {
   const factory _TskgVideoFile(
-      {final int id, final String server, final String url}) = _$_TskgVideoFile;
+      {final int id,
+      final String server,
+      final String? url}) = _$_TskgVideoFile;
 
   factory _TskgVideoFile.fromJson(Map<String, dynamic> json) =
       _$_TskgVideoFile.fromJson;
@@ -611,7 +612,7 @@ abstract class _TskgVideoFile implements TskgVideoFile {
   @override
   String get server;
   @override
-  String get url;
+  String? get url;
   @override
   @JsonKey(ignore: true)
   _$$_TskgVideoFileCopyWith<_$_TskgVideoFile> get copyWith =>

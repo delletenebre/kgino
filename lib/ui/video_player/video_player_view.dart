@@ -154,7 +154,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     );
     // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
     
-    //try {
+    try {
       /// инициализируем плеер
       await _playerController!.initialize().then((_) {
         /// проверяем нужную позицию
@@ -170,14 +170,12 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         _updatePageState(VideoPlayerState.initialized);
       });
 
+    } catch (exception) {
+      /// ^ если при загрузке видео произошла ошибка
       
-
-    // } catch (exception) {
-    //   /// ^ если при загрузке видео произошла ошибка
-      
-    //   /// обновляем состояние UI
-    //   _updatePageState(VideoPlayerState.error);
-    // }
+      /// обновляем состояние UI
+      _updatePageState(VideoPlayerState.error);
+    }
   }
 
   @override

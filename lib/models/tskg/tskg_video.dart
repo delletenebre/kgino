@@ -37,7 +37,7 @@ class TskgVideoFile with _$TskgVideoFile {
   const factory TskgVideoFile({
     @Default(0) int id,
     @Default('') String server,
-    @Default('') String url,
+    String? url,
 
   }) = _TskgVideoFile;
 

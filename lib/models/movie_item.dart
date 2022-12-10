@@ -1,11 +1,9 @@
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'episode_item.dart';
-import 'ockg/ockg_movie.dart';
 import 'season_item.dart';
 
 part 'movie_item.g.dart';
@@ -14,6 +12,7 @@ part 'movie_item.g.dart';
 enum MovieItemType {
   @HiveField(0) ockg,
   @HiveField(1) tskg,
+  @HiveField(2) wcam,
 }
 
 @HiveType(typeId: 11)

@@ -35,10 +35,6 @@ class TskgHomePageListView extends HookWidget {
     /// список последних просмотренных сериалов
     final seenShows = seenItemsController.find(MovieItemType.tskg, count: 50);
 
-    // /// контроллер избранных сериалов
-    // final favoritesController = GetIt.instance<TskgFavoritesController>();
-    // /// hook для подписки на изменения
-    // useValueListenable(favoritesController.listenable);
     /// список избранных сериалов
     final favoriteShows = seenItemsController.takeFavoritesOf(MovieItemType.tskg);
 

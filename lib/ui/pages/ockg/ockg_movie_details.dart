@@ -141,12 +141,11 @@ class OckgMovieDetais extends StatelessWidget {
                                 child: Icon(Icons.volume_up),
                               ),
                               
-                              Text('5.1')
+                              Text('5.1'),
                             ],
                           ),
                         ),
                       ),
-
                       
                     ],
                   ),

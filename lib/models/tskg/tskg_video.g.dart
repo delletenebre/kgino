@@ -39,7 +39,7 @@ _$_TskgVideoFile _$$_TskgVideoFileFromJson(Map<String, dynamic> json) =>
     _$_TskgVideoFile(
       id: json['id'] as int? ?? 0,
       server: json['server'] as String? ?? '',
-      url: json['url'] as String? ?? '',
+      url: json['url'] as String?,
     );
 
 Map<String, dynamic> _$$_TskgVideoFileToJson(_$_TskgVideoFile instance) =>
