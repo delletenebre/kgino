@@ -245,7 +245,6 @@ class OckgApiProvider {
 
       final movie = OckgMovie.fromJson(movieJson);
 
-      /// TODO add more info
       return OckgMovieItem.parse(movie);
       
     } on SocketException catch (_) {

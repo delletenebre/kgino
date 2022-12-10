@@ -7,7 +7,6 @@ import '../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_catalog.dart';
-import '../../models/ockg/ockg_movie.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';

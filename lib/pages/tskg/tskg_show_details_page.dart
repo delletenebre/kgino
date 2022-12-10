@@ -6,11 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/seen_items_controller.dart';
-import '../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
-import '../../models/tskg/tskg_favorite.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';

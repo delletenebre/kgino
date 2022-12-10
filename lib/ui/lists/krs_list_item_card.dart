@@ -68,17 +68,16 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
     });
     
     /// получаем цветовую палитру фильма
-    // TODO return this
-    // widget.item.getPaletteGenerator().then((palette) {
-    //   if (palette.lightVibrantColor != null) {
-    //     if (mounted) {
-    //       setState(() {
-    //         _glowColor = palette.lightVibrantColor!.color;
-    //         // _dominantColor = palette.dominantColor!.color;
-    //       });
-    //     }
-    //   }
-    // });
+    widget.item.getPaletteGenerator().then((palette) {
+      if (palette.lightVibrantColor != null) {
+        if (mounted) {
+          setState(() {
+            _glowColor = palette.lightVibrantColor!.color;
+            // _dominantColor = palette.dominantColor!.color;
+          });
+        }
+      }
+    });
     
   }
 

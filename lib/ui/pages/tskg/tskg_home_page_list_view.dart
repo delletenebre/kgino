@@ -9,7 +9,6 @@ import 'package:kgino/utils.dart';
 
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';
-import '../../../controllers/tskg/tskg_favorites_controller.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../models/movie_item.dart';
@@ -86,7 +85,7 @@ class TskgHomePageListView extends HookWidget {
             );
 
             for (int index = 0; index < lastAddedDays; index++) {
-              final date = showsGroupedByDate.keys.elementAt(index)!;
+              final date = showsGroupedByDate.keys.elementAt(index);
                 
               late final String titleText;
               if (date.isToday) {

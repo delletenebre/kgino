@@ -7,7 +7,6 @@ import 'api/ockg_api_provider.dart';
 import 'api/tskg_api_provider.dart';
 import 'app.dart';
 import 'controllers/seen_items_controller.dart';
-import 'controllers/tskg/tskg_favorites_controller.dart';
 import 'models/episode_item.dart';
 import 'models/movie_item.dart';
 import 'resources/krs_storage.dart';
@@ -51,11 +50,6 @@ Future<void> main() async {
   /// регистрируем контроллер просмотренных эпизодов как singleton
   GetIt.instance.registerSingleton<SeenItemsController>(
     SeenItemsController()
-  );
-
-  /// регистрируем контроллер избранных сериалов ts.kg как singleton
-  GetIt.instance.registerSingleton<TskgFavoritesController>(
-    TskgFavoritesController()
   );
 
   runApp(const App());
