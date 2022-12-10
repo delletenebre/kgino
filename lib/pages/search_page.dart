@@ -7,7 +7,7 @@ import '../controllers/ockg/ockg_search_controller.dart';
 import '../controllers/tskg/tskg_search_controller.dart';
 import '../models/movie_item.dart';
 import '../resources/krs_locale.dart';
-import '../ui/lists/category_list_item.dart';
+import '../models/category_list_item.dart';
 import '../ui/lists/krs_vertical_list_view.dart';
 import '../ui/lists/krs_horizontal_list_view.dart';
 import '../ui/lists/krs_list_item_card.dart';

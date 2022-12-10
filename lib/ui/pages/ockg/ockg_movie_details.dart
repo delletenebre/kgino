@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../models/movie_item.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
+import '../../krs_chip.dart';
 import '../../movie_rating.dart';
 
 class OckgMovieDetais extends StatelessWidget {
@@ -24,12 +25,6 @@ class OckgMovieDetais extends StatelessWidget {
 
     /// определяем ширину постера на фоне
     final width = (size.width < 420.0) ? size.width + (size.width * 0.1) : 420.0;
-
-    /// TODO fix it
-    // final audioSixChannels = movie.seasons.first.episodes.where((file) {
-    //   final audios = file.metainfo.audio;
-    //   return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
-    // }).isNotEmpty;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -129,7 +124,29 @@ class OckgMovieDetais extends StatelessWidget {
                       const SizedBox(width: 12.0),
 
                       /// страны фильма (оставляем не более двух)
-                      Text(movie.countries.take(2).join(', ')),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(movie.countries.take(2).join(', ')),
+                      ),
+
+                      /// если звук 5.1
+                      if (movie.hasSixChannels) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: KrsChip(
+                          dense: true,
+                          child: Row(
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.only(right: 4.0),
+                                child: Icon(Icons.volume_up),
+                              ),
+                              
+                              Text('5.1')
+                            ],
+                          ),
+                        ),
+                      ),
+
                       
                     ],
                   ),
@@ -150,7 +167,7 @@ class OckgMovieDetais extends StatelessWidget {
                         ),
                       ),
 
-                      // /// рейтинг КиноПоиск
+                      /// рейтинг КиноПоиск
                       if (movie.hasKinopoiskRating) Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: MovieRating(
@@ -164,24 +181,6 @@ class OckgMovieDetais extends StatelessWidget {
                       //   padding: const EdgeInsets.only(right: 8.0),
                       //   child: KrsChip(
                       //     child: Text(movie.quality),
-                      //   ),
-                      // ),
-
-                      /// TODO fix it
-                      /// если звук 5.1
-                      // if (audioSixChannels) Padding(
-                      //   padding: const EdgeInsets.only(right: 8.0),
-                      //   child: KrsChip(
-                      //     child: Row(
-                      //       children: const [
-                      //         Padding(
-                      //           padding: EdgeInsets.only(right: 4.0),
-                      //           child: Icon(Icons.volume_up),
-                      //         ),
-                              
-                      //         Text('5.1')
-                      //       ],
-                      //     ),
                       //   ),
                       // ),
 

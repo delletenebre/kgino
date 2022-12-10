@@ -108,6 +108,24 @@ mixin TskgMovieItemMixin {
   List<MovieItem> get voiceActings;
 }
 
+mixin WithRatings on MovieItem {
+  /// рейтинг IMDb
+  late double _ratingImdb;
+  double get ratingImdb => _ratingImdb;
+  bool get hasImdbRating => ratingImdb > 0.0;
+
+  /// рейтинг Кинопоиск
+  late double _ratingKinopoisk;
+  double get ratingKinopoisk => _ratingKinopoisk;
+  bool get hasKinopoiskRating => ratingKinopoisk > 0.0;
+}
+
+mixin WithSixChannels on MovieItem {
+  /// аудио информация о наличии звуковой дорожки 5.1
+  late bool _hasSixChannels;
+  bool get hasSixChannels => _hasSixChannels;
+}
+
 class TskgMovieItem extends MovieItem {
   
   /// текущая озвучка
@@ -151,16 +169,7 @@ class TskgMovieItem extends MovieItem {
 }
 
 
-class OckgMovieItem extends MovieItem {
-  
-  /// рейтинг IMDb
-  final double ratingImdb;
-  bool get hasImdbRating => ratingImdb > 0.0;
-
-  /// рейтинг Кинопоиск
-  final double ratingKinopoisk;
-  bool get hasKinopoiskRating => ratingImdb > 0.0;
-
+class OckgMovieItem extends MovieItem with WithRatings, WithSixChannels {
   
   OckgMovieItem({
     required String id,
@@ -174,8 +183,12 @@ class OckgMovieItem extends MovieItem {
     List<String> genres = const [],
     List<String> countries = const [],
 
-    this.ratingImdb = 0.0,
-    this.ratingKinopoisk = 0.0,
+    /// implement WithRatings
+    double ratingImdb = 0.0,
+    double ratingKinopoisk = 0.0,
+
+    /// implement WithSixChannels
+    bool hasSixAudioChannels = false,
   }) : super(
     type: MovieItemType.ockg,
     id: id,
@@ -189,150 +202,12 @@ class OckgMovieItem extends MovieItem {
     genres: genres,
     countries: countries,
     
-  );
+  ) {
+    /// implement WithRatings
+    _ratingImdb = ratingImdb;
+    _ratingKinopoisk = ratingKinopoisk;
 
-  factory OckgMovieItem.parse(OckgMovie movie) {
-    final seasons = [
-      SeasonItem(
-        name: '',
-        episodes: movie.files.mapIndexed((index, file) {
-          return EpisodeItem(
-            id: '${file.fileId}',
-            name: file.name,
-            videoFileUrl: file.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
-            seasonNumber: 1,
-            episodeNumber: index + 1,
-            duration: file.metainfo.playtimeSeconds,
-          );
-        }).toList(),
-      ),
-    ];
-
-    return OckgMovieItem(
-      id: '${movie.movieId}',
-      name: movie.name,
-      posterUrl: movie.posterUrl,
-      originalName: movie.internationalName,
-      description: movie.description,
-      year: movie.year,
-      genres: movie.genres,
-      countries: movie.countries,
-      ratingImdb: movie.ratingImdbValue,
-      ratingKinopoisk: movie.ratingKinopoiskValue,
-      seasons: seasons,
-    );
+    /// implement WithSixChannels
+    _hasSixChannels = hasSixAudioChannels;
   }
-  
 }
-
-
-
-
-
-
-// import 'package:freezed_annotation/freezed_annotation.dart';
-// import 'package:get_it/get_it.dart';
-// import 'package:hive/hive.dart';
-
-// import '../api/tskg_api_provider.dart';
-// import 'episode_item.dart';
-// import 'season_item.dart';
-
-// part 'movie_item.freezed.dart';
-// part 'movie_item.g.dart';
-
-// @HiveType(typeId: 7)
-// enum MovieItemType {
-//   @HiveField(0) ockg,
-//   @HiveField(1) tskg,
-// }
-
-// @unfreezed
-// class MovieItem extends HiveObject with _$MovieItem {
-//   @HiveType(typeId: 10, adapterName: 'MovieItemAdapter')
-//   MovieItem._();
-
-//   @HiveType(typeId: 11)
-//   factory MovieItem({
-//     /// идентификатор сайта
-//     @HiveField(0) required final MovieItemType type,
-    
-//     /// идентификатор фильма или сериала
-//     @HiveField(1) required final String id,
-
-//     /// название фильма или сериала
-//     @HiveField(2) required final String name,
-
-//     /// постер фильма или сериала
-//     @HiveField(3) required String posterUrl,
-
-//     /// включены или выключены субтитры
-//     @HiveField(4) @Default(false) bool subtitlesEnabled,
-
-//     /// включены или выключены субтитры
-//     @HiveField(5) @Default(false) bool favorite,
-
-//     /// дата последнего просмотра
-//     @HiveField(6) required DateTime updatedAt,
-
-//     /// список просмотренных эпизодов
-//     @HiveField(7) @Default({}) Map<String, EpisodeItem> episodes,
-
-//     /// список сезонов
-//     @Default([]) List<SeasonItem> seasons,
-
-//     /// оригинальное название
-//     @Default('') final String originalName,
-    
-//     /// описание фильма или сериала
-//     @Default('') final String description,
-    
-//     /// год выхода в прокат
-//     @Default('') final String year,
-
-//     /// жанры
-//     @Default([]) final List<String> genres,
-
-//     /// страны
-//     @Default([]) final List<String> countries,
-    
-//   }) = _MovieItem;
-  
-//   // @With<TskgMovieItemMixin>()
-//   // factory MovieItem.tskg({
-//   //   @Default(MovieItemType.tskg) MovieItemType type,
-//   //   required String id,
-//   //   required String name,
-//   //   required String posterUrl,
-//   //   @Default(false) bool subtitlesEnabled,
-//   //   @Default(false) bool favorite,
-//   //   required DateTime updatedAt,
-//   //   @Default({}) Map<String, EpisodeItem> episodes,
-//   //   @Default([]) List<SeasonItem> seasons,
-//   //   @Default('') String originalName,
-//   //   @Default('') String description,
-//   //   @Default('') String year,
-//   //   @Default([]) List<String> genres,
-//   //   @Default([]) List<String> countries,
-
-//   //   @Default('') String voiceActing,
-//   //   @Default([]) List<MovieItem> voiceActings,
-//   // }) = TskgMovieItem;
-
-//   factory MovieItem.empty() = EmptyMovieItem;
-
-//   // /// метод для получения ссылки на проигрываемый файл
-//   // Future<String> streamUrl() { return Future<String>(() { return ''; }); }
-  
-// }
-
-
-// // mixin TskgMovieItemMixin {
-// //   String get voiceActing;
-// //   List<MovieItem> get voiceActings;
-// // }
-
-// mixin TskgMovieItem extends MovieItem {
-//   String get voiceActing;
-//   List<MovieItem> get voiceActings;
-// }

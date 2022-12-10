@@ -47,7 +47,7 @@ class KrsChip extends StatelessWidget {
         child: DefaultTextStyle(
           style: TextStyle(
             color: foregroundColor,
-            fontSize: dense ? 10.0 : 12.0,
+            fontSize: dense ? 11.0 : 12.0,
           ),
           child: child,
         ),

@@ -1,16 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
 import '../constants.dart';
+import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../models/ockg/ockg_catalog.dart';
 import '../models/ockg/ockg_comment.dart';
 import '../models/ockg/ockg_movie.dart';
+import '../models/season_item.dart';
 
 class OckgApiProvider {
 
@@ -68,38 +71,38 @@ class OckgApiProvider {
   }
 
   
-  /// список популярных фильмов
-  Future<List<OckgMovie>> getPopMovies() async {
+  // /// список популярных фильмов
+  // Future<List<OckgMovie>> getPopMovies() async {
 
-    final formData = FormData.fromMap({
-      'action[0]': 'Video.getPopMovies',
-    });
+  //   final formData = FormData.fromMap({
+  //     'action[0]': 'Video.getPopMovies',
+  //   });
 
-    try {
+  //   try {
     
-      final response = await _dio.post('', data: formData);
+  //     final response = await _dio.post('', data: formData);
 
-      final jsonResponse = json.decode(response.data);
-      final movies = jsonResponse['json'][0]['response']['movies'];
+  //     final jsonResponse = json.decode(response.data);
+  //     final movies = jsonResponse['json'][0]['response']['movies'];
 
-      return movies.map<OckgMovie>((item) {
-        return OckgMovie.fromJson(item);
-      }).toList();
+  //     return movies.map<OckgMovie>((item) {
+  //       return OckgMovie.fromJson(item);
+  //     }).toList();
       
-    } on SocketException catch (_) {
+  //   } on SocketException catch (_) {
 
-      debugPrint('no internet connection');
+  //     debugPrint('no internet connection');
       
-      return [];
+  //     return [];
     
-    } catch (exception, stacktrace) {
+  //   } catch (exception, stacktrace) {
       
-      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
       
-      return [];
-    }
+  //     return [];
+  //   }
     
-  }
+  // }
 
 
   /// поиск фильмов
@@ -252,7 +255,44 @@ class OckgApiProvider {
 
       final movie = OckgMovie.fromJson(movieJson);
 
-      return OckgMovieItem.parse(movie);
+      final seasons = [
+        SeasonItem(
+          name: '',
+          episodes: movie.files.mapIndexed((index, file) {
+            return EpisodeItem(
+              id: '${file.fileId}',
+              name: file.name,
+              videoFileUrl: file.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
+              seasonNumber: 1,
+              episodeNumber: index + 1,
+              duration: file.metainfo.playtimeSeconds,
+            );
+          }).toList(),
+        ),
+      ];
+
+      final hasSixAudioChannels = movie.files.where((file) {
+        final audios = file.metainfo.audio;
+        return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
+      }).isNotEmpty;
+
+      return OckgMovieItem(
+        id: '${movie.movieId}',
+        name: movie.name,
+        posterUrl: movie.posterUrl,
+        originalName: movie.internationalName,
+        description: movie.description,
+        year: movie.year,
+        genres: movie.genres,
+        countries: movie.countries,
+        
+        ratingImdb: movie.ratingImdbValue,
+        ratingKinopoisk: movie.ratingKinopoiskValue,
+
+        hasSixAudioChannels: hasSixAudioChannels,
+
+        seasons: seasons,
+      );
       
     } on SocketException catch (_) {
 

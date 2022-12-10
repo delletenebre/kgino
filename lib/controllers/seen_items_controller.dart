@@ -144,15 +144,4 @@ class SeenItemsController {
     savedItem.save();
   }
 
-  // List<MovieItem> takeLast(MovieItemType type, { int count = 50 }) {
-  //   final seenShows = findByType(type)
-  //     .map((seenItem) {
-  //       return TskgShow(
-  //         showId: seenItem.id,
-  //         name: seenItem.name,
-  //       );
-  //     })
-  //     .toList();
-  // }
-
 }
