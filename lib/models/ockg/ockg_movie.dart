@@ -63,25 +63,10 @@ class OckgMovie with _$OckgMovie {
       ? '$baseUrl${covers.first.original}'
       : '$baseUrl$cover';
 
-  bool get hasImdbRating => ratingImdbValue > 0.0;
-  bool get hasKinopoiskRating => ratingKinopoiskValue > 0.0;
-
   Duration get playtimeDuration => Duration(
     seconds: files.fold(0, (previousValue, file) {
       return previousValue + file.metainfo.playtimeSeconds;
     })
   );
-
-  // Future<PaletteGenerator> getPaletteGenerator(String imageUrl) async {
-  //   return PaletteGenerator.fromImageProvider(
-  //     NetworkImage(imageUrl)
-  //   );
-  // }
-
-  Future<PaletteGenerator> getPaletteGenerator() async {
-    return PaletteGenerator.fromImageProvider(
-      NetworkImage(posterUrl)
-    );
-  }
   
 }
