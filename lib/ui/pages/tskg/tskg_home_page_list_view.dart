@@ -36,20 +36,12 @@ class TskgHomePageListView extends HookWidget {
     /// список последних просмотренных сериалов
     final seenShows = seenItemsController.find(MovieItemType.tskg, count: 50);
 
-    /// контроллер избранных сериалов
-    final favoritesController = GetIt.instance<TskgFavoritesController>();
-    /// hook для подписки на изменения
-    useValueListenable(favoritesController.listenable);
+    // /// контроллер избранных сериалов
+    // final favoritesController = GetIt.instance<TskgFavoritesController>();
+    // /// hook для подписки на изменения
+    // useValueListenable(favoritesController.listenable);
     /// список избранных сериалов
-    /// TODO return
-    // final favoriteShows = favoritesController.sorted
-    //   .map((item) {
-    //     return TskgShow(
-    //       showId: item.showId,
-    //       name: item.name,
-    //     );
-    //   })
-    //   .toList();
+    final favoriteShows = seenItemsController.takeFavoritesOf(MovieItemType.tskg);
 
     return BlocProvider(
       create: (context) => TskgNewsController(),
@@ -72,15 +64,14 @@ class TskgHomePageListView extends HookWidget {
             );
           }
 
-          //if (favoriteShows.isNotEmpty) {
-            // TODO return it
-            // showList.add(
-            //   CategoryListItem<MovieItem>(
-            //     title: locale.favorites,
-            //     items: favoriteShows,
-            //   )
-            // );
-          //}
+          if (favoriteShows.isNotEmpty) {
+            showList.add(
+              CategoryListItem<MovieItem>(
+                title: locale.favorites,
+                items: favoriteShows,
+              )
+            );
+          }
 
           if (state.isSuccess) {
             final news = state.data;

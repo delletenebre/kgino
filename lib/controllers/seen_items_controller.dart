@@ -110,6 +110,40 @@ class SeenItemsController {
     return items;
   }
 
+  /// удаляем из избранного
+  List<MovieItem> takeFavoritesOf(MovieItemType type) {
+    final favorites = _storage.values.where((item) {
+      return item.type == type && item.favorite;
+    });
+    
+    return favorites.sortedBy((element) => element.updatedAt).reversed.toList();
+  }
+
+  /// проверяем есть ли элемент в избранном
+  bool hasFavorite(MovieItem item) {
+    return _storage.get(item.storageKey)?.favorite ?? false;
+  }
+
+  /// добавляем в избранное
+  void addFavorite(MovieItem item) {
+    final savedItem = _storage.get(item.storageKey) ?? item;
+    savedItem.favorite = true;
+
+    if (savedItem.box == null) {
+      /// сохраняем значение на диск
+      _storage.put(savedItem.storageKey, savedItem);
+    } else {
+      savedItem.save();
+    }
+  }
+
+  /// удаляем из избранного
+  void removeFavorite(MovieItem item) {
+    final savedItem = _storage.get(item.storageKey)!;
+    savedItem.favorite = false;
+    savedItem.save();
+  }
+
   // List<MovieItem> takeLast(MovieItemType type, { int count = 50 }) {
   //   final seenShows = findByType(type)
   //     .map((seenItem) {

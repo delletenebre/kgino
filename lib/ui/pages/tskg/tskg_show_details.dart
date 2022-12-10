@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/movie_item.dart';
-import '../../../models/tskg/tskg_show.dart';
 import '../../../resources/krs_locale.dart';
 import '../../krs_chip.dart';
 
@@ -124,6 +123,7 @@ class TskgShowDetais extends StatelessWidget {
                           child: Text(show.countries.take(2).join(', ')),
                         ),
 
+                        /// озвучка
                         if (show.voiceActing.isNotEmpty) Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: KrsChip(
@@ -146,14 +146,15 @@ class TskgShowDetais extends StatelessWidget {
                   ),
                 ),
 
-                /// озвучка
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Row(
-                    children: [
+                
+                const Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  
+                  // child: Row(
+                  //   children: [
                       
-                    ],
-                  ),
+                  //   ],
+                  // ),
                 ),
 
                 /// описание сериала

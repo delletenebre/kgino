@@ -67,9 +67,6 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
-    /// контроллер избранных сериалов
-    final favoritesController = GetIt.instance<TskgFavoritesController>();
-
     /// контроллер просмотренных эпизодов
     final seenItemsController = GetIt.instance<SeenItemsController>();
 
@@ -253,9 +250,9 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 ),
 
                                 ValueListenableBuilder(
-                                  valueListenable: favoritesController.listenable,
-                                  builder: (context, Box<TskgFavorite> box, _) {
-                                    if (box.containsKey(show.id)) {
+                                  valueListenable: seenItemsController.listenable,
+                                  builder: (context, Box<MovieItem> box, _) {
+                                    if (seenItemsController.hasFavorite(show)) {
                                       /// ^ если уже добавлен в избранное
                                       
                                       /// кнопка удаления из избранного
@@ -265,7 +262,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                           style: KrsTheme.filledTonalButtonStyleOf(context),
                                           onPressed: () {
                                             /// убираем из избранного
-                                            favoritesController.remove(show.id);
+                                            seenItemsController.removeFavorite(show);
                                           },
                                           icon: const Icon(Icons.bookmark_remove),
                                           label: Text(locale.removeFromFavorites),
@@ -282,8 +279,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                           style: KrsTheme.filledTonalButtonStyleOf(context),
                                           onPressed: () {
                                             /// добавляем в избранное
-                                            // TODO return it
-                                            //favoritesController.add(show);
+                                            seenItemsController.addFavorite(show);
                                           },
                                           icon: const Icon(Icons.bookmark_add_outlined),
                                           label: Text(locale.addToFavorites),

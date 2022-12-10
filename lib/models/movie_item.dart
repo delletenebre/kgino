@@ -92,35 +92,6 @@ class MovieItem extends HiveObject with EquatableMixin {
   @override
   List<Object> get props => [type, id];
   
-  
-  // @With<TskgMovieItemMixin>()
-  // factory MovieItem.tskg({
-  //   @Default(MovieItemType.tskg) MovieItemType type,
-  //   required String id,
-  //   required String name,
-  //   required String posterUrl,
-  //   @Default(false) bool subtitlesEnabled,
-  //   @Default(false) bool favorite,
-  //   required DateTime updatedAt,
-  //   @Default({}) Map<String, EpisodeItem> episodes,
-  //   @Default([]) List<SeasonItem> seasons,
-  //   @Default('') String originalName,
-  //   @Default('') String description,
-  //   @Default('') String year,
-  //   @Default([]) List<String> genres,
-  //   @Default([]) List<String> countries,
-
-  //   @Default('') String voiceActing,
-  //   @Default([]) List<MovieItem> voiceActings,
-  // }) = TskgMovieItem;
-
-  // factory MovieItem.empty() = MovieItem();
-
-  
-
-  // /// метод для получения ссылки на проигрываемый файл
-  // Future<String> streamUrl() { return Future<String>(() { return ''; }); }
-  
 }
 
 
