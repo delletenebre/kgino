@@ -99,15 +99,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             text: locale.shows,
                           ),
                           Tab(
-                            text: locale.settings,
+                            text: 'Камеры',
                           ),
                           Tab(
-                            text: 'Камеры',
+                            text: locale.settings,
                           ),
                         ]
                       ),
                     ),
-                    
                   ],
                 ),
               ),
@@ -121,8 +120,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   SearchPage(),
                   OckgHomePage(),
                   TskgHomePage(),
-                  SettingsPage(),
                   WcamHomePage(),
+                  SettingsPage(),
                 ],
               ),
             ),

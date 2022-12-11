@@ -24,6 +24,7 @@ enum VideoPlayerState {
 class VideoPlayerView extends StatefulWidget {
   final String titleText;
   final bool subtitlesEnabled;
+  final isLiveStream;
 
   final Future<EpisodeItem> Function() onInitialPlayableItem;
   final Future<EpisodeItem> Function()? onSkipPrevious;
@@ -40,6 +41,7 @@ class VideoPlayerView extends StatefulWidget {
     super.key,
     required this.titleText,
     required this.subtitlesEnabled,
+    this.isLiveStream = false,
     required this.onInitialPlayableItem,
     this.onSkipPrevious,
     this.onSkipNext,
@@ -303,7 +305,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               ),
 
               /// оверлей с панелью управления видео
-              SafeArea(
+              if (!widget.isLiveStream) SafeArea(
                 child: VideoPlayerControlsOverlay(
                   titleText: widget.titleText,
                   subtitleText: _episode?.name ?? '',

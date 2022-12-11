@@ -21,6 +21,7 @@ class _WcamPlayerPageState extends State<WcamPlayerPage> {
     return VideoPlayerView(
       titleText: widget.item.name,
       subtitlesEnabled: false,
+      isLiveStream: true,
       onInitialPlayableItem: () async => widget.item,
 
       onUpdatePosition: (episode, position, subtitlesEnabled) {

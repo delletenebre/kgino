@@ -62,43 +62,46 @@ class WcamHomePage extends StatelessWidget {
           }
 
           if (categories.isNotEmpty) {
-            return KrsVerticalListView(
-              itemCount: categories.length,
-              itemBuilder: (context, focusNode, index) {
-                final category = categories[index];
+            return Padding(
+              padding: const EdgeInsets.only(top: 48.0),
+              child: KrsVerticalListView(
+                itemCount: categories.length,
+                itemBuilder: (context, focusNode, index) {
+                  final category = categories[index];
 
-                return SizedBox.fromSize(
-                  size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                  child: KrsHorizontalListView(
-                    focusNode: focusNode,
-                    onItemFocused: (index) {
-                      // context.read<WcamController>().getShowById(
-                      //   category.items[index].id,
-                      // );
-                    },
-                    titleText: category.title,
-                    itemCount: category.items.length,
-                    itemBuilder: (context, focusNode, index) {
-                      final item = category.items.elementAt(index);
-                      
-                      return KrsListItemCard(
-                        focusNode: focusNode,
-                        item: item,
+                  return SizedBox.fromSize(
+                    size: const Size.fromHeight(tskgListViewHeight + 16.0),
+                    child: KrsHorizontalListView(
+                      focusNode: focusNode,
+                      onItemFocused: (index) {
+                        // context.read<WcamController>().getShowById(
+                        //   category.items[index].id,
+                        // );
+                      },
+                      titleText: category.title,
+                      itemCount: category.items.length,
+                      itemBuilder: (context, focusNode, index) {
+                        final item = category.items.elementAt(index);
                         
-                        /// при выб оре элемента
-                        onTap: () {
-                          /// переходим на страницу деталей о сериале
-                          context.goNamed('wcamPlayer',
-                            extra: item.seasons.first.episodes.first,
-                          );
+                        return KrsListItemCard(
+                          focusNode: focusNode,
+                          item: item,
+                          
+                          /// при выб оре элемента
+                          onTap: () {
+                            /// переходим на страницу деталей о сериале
+                            context.goNamed('wcamPlayer',
+                              extra: item.seasons.first.episodes.first,
+                            );
 
-                        },
-                      );
-                    },
-                  ),
-                );
-              },
-              
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+                
+              ),
             );
           }
 
