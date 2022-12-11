@@ -9,6 +9,7 @@ import 'ockg/ockg_home_page.dart';
 import 'search_page.dart';
 import 'settings_page.dart';
 import 'tskg/tskg_home_page.dart';
+import 'wcam/wcam_home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     _tabController = TabController(
       vsync: this,
-      length: 4,
+      length: 5,
       initialIndex: 1,
     );
   }
@@ -99,7 +100,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           ),
                           Tab(
                             text: locale.settings,
-                          )
+                          ),
+                          Tab(
+                            text: 'Камеры',
+                          ),
                         ]
                       ),
                     ),
@@ -118,6 +122,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   OckgHomePage(),
                   TskgHomePage(),
                   SettingsPage(),
+                  WcamHomePage(),
                 ],
               ),
             ),

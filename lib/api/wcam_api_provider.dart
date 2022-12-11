@@ -10,9 +10,6 @@ import '../constants.dart';
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../models/season_item.dart';
-import '../models/tskg/tskg_episode_details.dart';
-import '../models/tskg/tskg_show.dart';
-import '../utils.dart';
 
 class WcamApiProvider {
 
@@ -41,7 +38,7 @@ class WcamApiProvider {
     /// список элементов
     final items = <MovieItem>[];
 
-    try {
+    // try {
 
       /// запрашиваем данные
       final response = await Dio().get('https://elcat.kg/translation');
@@ -63,7 +60,7 @@ class WcamApiProvider {
             <iframe width="560" height="315" src="//webcam.elcat.kg:5443/LiveApp/play.html?name=328712567719434766950272&autoplay=true" frameborder="0" allowfullscreen></iframe>
           */
           String streamName = '';
-          final src = element.getElementsByTagName('h2').first.attributes['src'];
+          final src = element.getElementsByTagName('iframe').first.attributes['src'];
           final uri = Uri.parse(src ?? '');
           if (uri.hasQuery) {
             streamName = uri.queryParameters['name'] ?? '';
@@ -78,9 +75,9 @@ class WcamApiProvider {
               <span></span>
             </div>
           */
-          final translation = element.getElementsByClassName('tranlation__item').first;
-          final imageSrc = translation.getElementsByTagName('img').first.attributes['src'] ?? '';
-          final name = translation.getElementsByTagName('h2').first.text;
+          final translation = element.nextElementSibling;
+          final imageSrc = translation?.getElementsByTagName('img').first.attributes['src'] ?? '';
+          final name = translation?.getElementsByTagName('h2').first.text ?? '';
 
           return MovieItem(
             type: MovieItemType.wcam,
@@ -94,7 +91,7 @@ class WcamApiProvider {
                   EpisodeItem(
                     id: '',
                     name: '',
-                    videoFileUrl: 'https://webcam.elcat.kg:5443/LiveApp/streams/$name.m3u8?token=null'
+                    videoFileUrl: 'https://webcam.elcat.kg:5443/LiveApp/streams/$streamName.m3u8?token=null'
                   ),
                 ]
               )
@@ -106,11 +103,11 @@ class WcamApiProvider {
         
 
       }
-    } catch (exception, stack) {
-      /// ^ если прозошла сетевая ошибка
+    // } catch (exception, stack) {
+    //   /// ^ если прозошла сетевая ошибка
       
-      debugPrint('exception: $exception');
-    }
+    //   debugPrint('exception: $exception');
+    // }
 
     return items;
   }

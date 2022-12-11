@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/ockg_api_provider.dart';
 import 'api/tskg_api_provider.dart';
+import 'api/wcam_api_provider.dart';
 import 'app.dart';
 import 'controllers/seen_items_controller.dart';
 import 'models/episode_item.dart';
@@ -45,6 +46,11 @@ Future<void> main() async {
   /// регистрируем провайдер запросов к REST API как singleton
   GetIt.instance.registerSingleton<TskgApiProvider>(
     TskgApiProvider()
+  );
+
+  /// регистрируем провайдер запросов к REST API как singleton
+  GetIt.instance.registerSingleton<WcamApiProvider>(
+    WcamApiProvider()
   );
 
   /// регистрируем контроллер просмотренных эпизодов как singleton

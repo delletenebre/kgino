@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
@@ -12,6 +13,7 @@ import '../pages/settings_page.dart';
 import '../pages/tskg/tskg_player_page.dart';
 import '../pages/tskg/tskg_show_details_page.dart';
 import '../pages/tskg/tskg_show_seasons_page.dart';
+import '../pages/wcam/wcam_player_page.dart';
 
 class KrsRouter {
   static final routes = GoRouter(
@@ -106,6 +108,18 @@ class KrsRouter {
               return OckgCatalogPage(
                 titleText: titleText,
                 genreId: genreId,
+              );
+            },
+          ),
+
+          GoRoute(
+            path: 'wcam',
+            name: 'wcamPlayer',
+            builder: (context, state) {
+              final item = state.extra as EpisodeItem;
+
+              return WcamPlayerPage(
+                item: item,
               );
             },
           ),
