@@ -176,6 +176,22 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
                             child: CachedNetworkImage(
                               imageUrl: widget.item.posterUrl,
                               fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.secondaryContainer,
+                                    borderRadius: BorderRadius.circular(9.0),
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.video_file_outlined,
+                                      size: 64.0,
+                                      color: _focusNode.hasFocus
+                                        ? theme.colorScheme.onSecondaryContainer
+                                        : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
+                                    ),
+                                  )
+                                );
+                              },
                             ),
                           ),
                         ),

@@ -38,7 +38,7 @@ class WcamApiProvider {
     /// список элементов
     final items = <MovieItem>[];
 
-    // try {
+    try {
 
       /// запрашиваем данные
       final response = await Dio().get('https://elcat.kg/translation');
@@ -103,13 +103,74 @@ class WcamApiProvider {
         
 
       }
-    // } catch (exception, stack) {
-    //   /// ^ если прозошла сетевая ошибка
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
       
-    //   debugPrint('exception: $exception');
-    // }
+      debugPrint('exception: $exception');
+    }
 
     return items;
+  }
+
+  Future<List<MovieItem>> getKtCameras() async {
+    return [
+      MovieItem(
+        type: MovieItemType.wcam,
+        id: '1',
+        name: 'г. Бишкек (Чуй/Советская)',
+        posterUrl: '',
+        seasons: [
+          SeasonItem(
+            name: '',
+            episodes: [
+              EpisodeItem(
+                id: '',
+                name: '',
+                videoFileUrl: 'http://213.145.131.243:80/cam1/stream.m3u8'
+              ),
+            ],
+          ),
+        ],
+      ),
+      MovieItem(
+        type: MovieItemType.wcam,
+        id: '2',
+        name: 'с. Бостери',
+        posterUrl: '',
+        seasons: [
+          SeasonItem(
+            name: '',
+            episodes: [
+              EpisodeItem(
+                id: '',
+                name: '',
+                videoFileUrl: 'http://213.145.131.243:80/cam2/stream.m3u8'
+              ),
+            ],
+          ),
+        ],
+      ),
+      MovieItem(
+        type: MovieItemType.wcam,
+        id: '3',
+        name: 'г. Ош',
+        posterUrl: '',
+        seasons: [
+          SeasonItem(
+            name: '',
+            episodes: [
+              EpisodeItem(
+                id: '',
+                name: '',
+                videoFileUrl: 'http://213.145.131.243:80/cam3/stream.m3u8'
+              ),
+            ],
+          ),
+        ],
+      ),
+      
+      
+    ];
   }
 
 }

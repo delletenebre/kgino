@@ -185,7 +185,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                                     ? theme.colorScheme.onSecondaryContainer
                                     : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
                                 ),
-                              )
+                              ),
                             ),
                           ),
                         ),

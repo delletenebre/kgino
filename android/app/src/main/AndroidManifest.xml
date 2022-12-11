@@ -23,7 +23,8 @@
         android:label="KGino"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:banner="@drawable/banner">
+        android:banner="@drawable/banner"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

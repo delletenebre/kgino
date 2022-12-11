@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../constants.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
-import '../../controllers/wcam_controller.dart';
+import '../../controllers/wcam/elcat_cameras_controller.dart';
+import '../../controllers/wcam/kt_cameras_controller.dart';
 import '../../models/category_list_item.dart';
 import '../../models/movie_item.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
@@ -19,31 +20,43 @@ class WcamHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WcamController(),
-      child: BlocBuilder<WcamController, RequestState<List<MovieItem>>>(
-        builder: (context, state) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ElcatCamerasController>(
+          create: (context) => ElcatCamerasController(),
+        ),
 
-          if (state.isLoading) {
+        BlocProvider<KtCamerasController>(
+          create: (context) => KtCamerasController(),
+        ),
+      ],
+      
+      child: Builder(
+        builder: (context) {
+
+          final elcatState = context.watch<ElcatCamerasController>().state;
+          final ktState = context.watch<KtCamerasController>().state;
+
+          if (elcatState.isLoading || ktState.isLoading) {
             return const LoadingIndicator();
           }
 
           final categories = <CategoryListItem<MovieItem>>[];
 
-          // if (seenShows.isNotEmpty) {
-          //   showList.add(
-          //     CategoryListItem<MovieItem>(
-          //       title: locale.continueWatching,
-          //       items: seenShows,
-          //     )
-          //   );
-          // }
-
-          if (state.isSuccess) {
+          if (elcatState.isSuccess) {
             categories.add(
               CategoryListItem(
                 title: 'Elcat.kg',
-                items: state.data,
+                items: elcatState.data,
+              )
+            );
+          }
+
+          if (ktState.isSuccess) {
+            categories.add(
+              CategoryListItem(
+                title: 'Кыргызтелеком',
+                items: ktState.data,
               )
             );
           }

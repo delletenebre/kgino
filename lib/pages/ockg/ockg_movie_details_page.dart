@@ -214,7 +214,9 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
               );
             }
 
-            return const LoadingIndicator();
+            return const LoadingIndicator(
+              size: 64.0,
+            );
           },
         ),
       ),

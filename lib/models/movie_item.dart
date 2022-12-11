@@ -94,9 +94,13 @@ class MovieItem extends HiveObject with EquatableMixin {
   List<Object> get props => [type, id];
 
   Future<PaletteGenerator> getPaletteGenerator() async {
-    return PaletteGenerator.fromImageProvider(
-      NetworkImage(posterUrl)
-    );
+    if (posterUrl.isNotEmpty) {
+      return PaletteGenerator.fromImageProvider(
+        NetworkImage(posterUrl)
+      );
+    }
+
+    return PaletteGenerator.fromColors([PaletteColor(Color(0xff000000), 1)]);
   }
   
 }

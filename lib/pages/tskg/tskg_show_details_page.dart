@@ -351,7 +351,9 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
               );
             }
 
-            return const LoadingIndicator();
+            return const LoadingIndicator(
+              size: 64.0,
+            );
           },
         ),
       ),
