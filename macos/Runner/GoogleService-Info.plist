@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1078901151339-g9daemofo6lmmjusrj24vjl493ts0ibe.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1078901151339-g9daemofo6lmmjusrj24vjl493ts0ibe</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBGzyZzO_dSq3ig4XghmAwkJgrXwHOlcgk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1078901151339</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>kg.delletenebre.kgino</string>
+	<key>PROJECT_ID</key>
+	<string>kgino-fa5e3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kgino-fa5e3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1078901151339:ios:d248797fcc63560d40832e</string>
+</dict>
+</plist>
