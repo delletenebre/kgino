@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../constants.dart';
+import '../../controllers/wcam/citylink_cameras_controller.dart';
 import '../../controllers/wcam/elcat_cameras_controller.dart';
 import '../../controllers/wcam/kt_cameras_controller.dart';
 import '../../controllers/wcam/saima_cameras_controller.dart';
@@ -33,6 +34,10 @@ class WcamHomePage extends StatelessWidget {
         BlocProvider<KtCamerasController>(
           create: (context) => KtCamerasController(),
         ),
+
+        BlocProvider<CitylinkCamerasController>(
+          create: (context) => CitylinkCamerasController(),
+        ),
       ],
       
       child: Builder(
@@ -41,6 +46,7 @@ class WcamHomePage extends StatelessWidget {
           final saimaState = context.watch<SaimaCamerasController>().state;
           final elcatState = context.watch<ElcatCamerasController>().state;
           final ktState = context.watch<KtCamerasController>().state;
+          final citylinkState = context.watch<CitylinkCamerasController>().state;
 
           if (elcatState.isLoading || ktState.isLoading) {
             return const LoadingIndicator();
@@ -75,6 +81,16 @@ class WcamHomePage extends StatelessWidget {
             );
           }
 
+          if (citylinkState.isSuccess) {
+            categories.add(
+              CategoryListItem(
+                title: 'Ситилинк',
+                items: citylinkState.data,
+              )
+            );
+          }
+
+
           if (categories.isNotEmpty) {
             return Padding(
               padding: const EdgeInsets.only(top: 48.0),
@@ -92,6 +108,9 @@ class WcamHomePage extends StatelessWidget {
                         //   category.items[index].id,
                         // );
                       },
+                      onLoadNextPage: category.title.startsWith('Ситилинк') ? () {
+                        context.read<CitylinkCamerasController>().fetchCameras();
+                      } : null,
                       titleText: category.title,
                       itemCount: category.items.length,
                       itemBuilder: (context, focusNode, index) {

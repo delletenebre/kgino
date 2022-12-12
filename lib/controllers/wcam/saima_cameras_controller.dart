@@ -10,6 +10,7 @@ export '../../../models/request_state.dart';
 
 class SaimaCamerasController extends Cubit<RequestState<List<MovieItem>>> {
 
+  /// провайдер запросов к API
   final _api = GetIt.instance<WcamApiProvider>();
 
   SaimaCamerasController() : super(const RequestState.loading()) {

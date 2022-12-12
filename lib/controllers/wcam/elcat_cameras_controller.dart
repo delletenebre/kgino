@@ -10,6 +10,7 @@ export '../../../models/request_state.dart';
 
 class ElcatCamerasController extends Cubit<RequestState<List<MovieItem>>> {
 
+  /// провайдер запросов к API
   final _api = GetIt.instance<WcamApiProvider>();
 
   ElcatCamerasController() : super(const RequestState.loading()) {

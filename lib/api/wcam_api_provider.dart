@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
@@ -6,6 +8,7 @@ import 'package:html/parser.dart';
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../models/season_item.dart';
+import '../models/wcam/citylink_camera.dart';
 
 class WcamApiProvider {
 
@@ -271,6 +274,99 @@ class WcamApiProvider {
       
       
     ];
+  }
+
+
+  /// получение количества доступных камер moidom.citylink.pro
+  Future<int> getCitylinkTotalCount([ String city = '' ]) async {
+
+    try {
+
+      /// запрашиваем данные
+      final response = await Dio().get('https://moidom.karelia.pro/api/',
+        queryParameters: {
+          'mode': 'getPublicCounters',
+          'city': city,
+        },
+        options: Options( 
+          responseType: ResponseType.plain,
+        )
+      );
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        
+        return int.tryParse(response.data) ?? 0;
+      }
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('exception: $exception');
+    }
+
+    return 0;
+  }
+
+  /// получение списка камер moidom.citylink.pro
+  Future<List<MovieItem>> getCitylinkCameras({
+    required int page,
+    String city = '',
+  }) async {
+
+    // try {
+
+      /// запрашиваем данные
+      final response = await Dio().get('https://moidom.citylink.pro/api/',
+      
+        queryParameters: {
+          'mode': 'getPublicCamsList',
+          'page': '$page',
+          'city': city,
+        },
+        options: Options( 
+          responseType: ResponseType.json,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        // final response = await _dio.post('', data: formData);
+
+        final jsonResponse = json.decode(response.data);
+
+        List<CitylinkCamera> cameras = jsonResponse.values.map<CitylinkCamera>((item) {
+          return CitylinkCamera.fromJson(item);
+        }).toList();
+
+        return cameras.map<MovieItem>((camera) {
+          return MovieItem(
+            type: MovieItemType.wcam,
+            id: '${camera.id}',
+            name: camera.name,
+            posterUrl: camera.img,
+            seasons: [
+              SeasonItem(
+                name: '',
+                episodes: [
+                  EpisodeItem(
+                    id: '',
+                    name: '',
+                    videoFileUrl: camera.src,
+                  ),
+                ],
+              ),
+            ],
+          );
+        }).toList();
+
+      }
+    // } catch (exception, stack) {
+    //   /// ^ если прозошла сетевая ошибка
+      
+    //   debugPrint('exception: $exception');
+    // }
+
+    return [];
   }
 
 }

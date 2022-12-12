@@ -74,6 +74,8 @@ class MovieItemTypeAdapter extends TypeAdapter<MovieItemType> {
         return MovieItemType.tskg;
       case 2:
         return MovieItemType.wcam;
+      case 3:
+        return MovieItemType.folder;
       default:
         return MovieItemType.ockg;
     }
@@ -90,6 +92,9 @@ class MovieItemTypeAdapter extends TypeAdapter<MovieItemType> {
         break;
       case MovieItemType.wcam:
         writer.writeByte(2);
+        break;
+      case MovieItemType.folder:
+        writer.writeByte(3);
         break;
     }
   }

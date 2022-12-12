@@ -73,6 +73,16 @@ class FocusableListCubit extends Cubit<FocusableListState> {
     requestFocus(index);
   }
 
+  void megaJumpTo(int index) {
+    state.listObserverController.jumpTo(
+      index: index,
+      isFixedHeight: true,
+      offset: (offset) => this.offset,
+    );
+    state.focusableIndex = index;
+    requestFocus(index);
+  }
+
   /// переход к текущему элементу без анимации
   void jumpToCurrent(int Function()? requestItemIndex) {
     if (requestItemIndex != null) {
@@ -97,7 +107,6 @@ class FocusableListCubit extends Cubit<FocusableListState> {
   }
 
   void requestFocus(int index) {
-    state.focusableIndex = index;
     focusNodeAt(index).requestFocus();
   }
 

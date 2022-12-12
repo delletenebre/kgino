@@ -47,6 +47,7 @@ class KrsHorizontalListView extends StatefulWidget {
 
 class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
   bool _needToLoadMore = false;
+  bool _awaitingToLoadMore = false;
   int _lastFocusedIndex = 0;
 
   late FocusNode _focusNode;
@@ -88,14 +89,15 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
       child: BlocBuilder<FocusableListCubit, FocusableListState>(
         builder: (context, focusableListState) {
           final listCubit = context.read<FocusableListCubit>();
-
-          if (_lastFocusedIndex != focusableListState.focusableIndex) {
+          
+          if (_awaitingToLoadMore) {
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              Future.delayed(const Duration(milliseconds: 5), () {
-                if (mounted) {
-                  listCubit.jumpTo(_lastFocusedIndex);
-                }
-              });
+              //Future.delayed(const Duration(milliseconds: 50), () {
+              if (mounted) {
+                listCubit.megaJumpTo(_lastFocusedIndex);
+                _awaitingToLoadMore = false;
+              }
+              //});
             });
           }
 
@@ -164,12 +166,15 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
 
                           onFocusChange: (hasFocus) {
                             if (hasFocus) {
-                              _lastFocusedIndex = index;
+                              if (!_awaitingToLoadMore) {
+                                _lastFocusedIndex = index;
+                              }
 
                               if (_lastFocusedIndex > widget.itemCount - 7) {
                                 if (!_needToLoadMore) {
                                   _needToLoadMore = true;
                                   widget.onLoadNextPage?.call();
+                                  _awaitingToLoadMore = true;
                                 }
                               } else {
                                 _needToLoadMore = false;
@@ -185,7 +190,7 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                                   
                                   /// вызываем пользовательский обработчик
                                   widget.onItemFocused?.call(index);
-
+                                  print('BBIIIAIBDIBASDBASBDASB index $index');
                                   
                                 }
                               });
