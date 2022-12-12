@@ -38,6 +38,7 @@ class WcamHomePage extends StatelessWidget {
         BlocProvider<CitylinkCamerasController>(
           create: (context) => CitylinkCamerasController(),
         ),
+
       ],
       
       child: Builder(
@@ -89,6 +90,20 @@ class WcamHomePage extends StatelessWidget {
               )
             );
           }
+
+          categories.add(
+            CategoryListItem(
+              title: 'Интересное',
+              items: [
+                MovieItem.webcamera(
+                  name: 'Кенийский водопой',
+                  posterUrl: '',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=6NIt6ibAD6I',
+                ),
+              ],
+            )
+          );
+          
 
 
           if (categories.isNotEmpty) {

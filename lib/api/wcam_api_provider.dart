@@ -5,22 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
-import '../models/episode_item.dart';
 import '../models/movie_item.dart';
-import '../models/season_item.dart';
 import '../models/wcam/citylink_camera.dart';
 
 class WcamApiProvider {
-
-  /// ts.kg
-  // final _elcatDio = Dio(BaseOptions(
-  //   baseUrl: 'https://www.ts.kg',
-  //   sendTimeout: requestTimeout.inMilliseconds,
-  //   receiveTimeout: requestTimeout.inMilliseconds,
-  //   headers: {
-  //     'User-Agent': userAgent,
-  //   },
-  // ));
 
   static String getTextByClassName(Document document, String className) {
     final elements = document.getElementsByClassName(className);
@@ -84,24 +72,12 @@ class WcamApiProvider {
 
             if (youtubeSrc.isNotEmpty) {
               items.add(
-                MovieItem(
-                  type: MovieItemType.wcam,
-                  id: cameraId,
+                MovieItem.webcamera(
+                  // id: cameraId,
                   name: name,
                   posterUrl: posterUrl,
-                  seasons: [
-                    SeasonItem(
-                      name: '',
-                      episodes: [
-                        EpisodeItem(
-                          id: '',
-                          name: '',
-                          videoFileUrl: youtubeSrc,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  videoFileUrl: youtubeSrc,
+                )
               );
             }
           }
@@ -186,23 +162,11 @@ class WcamApiProvider {
           final imageSrc = translation?.getElementsByTagName('img').first.attributes['src'] ?? '';
           final name = translation?.getElementsByTagName('h2').first.text ?? '';
 
-          return MovieItem(
-            type: MovieItemType.wcam,
-            id: streamName,
+          return MovieItem.webcamera(
+            // id: streamName,
             name: name,
             posterUrl: imageSrc,
-            seasons: [
-              SeasonItem(
-                name: '',
-                episodes: [
-                  EpisodeItem(
-                    id: '',
-                    name: '',
-                    videoFileUrl: 'https://webcam.elcat.kg:5443/LiveApp/streams/$streamName.m3u8?token=null'
-                  ),
-                ],
-              ),
-            ],
+            videoFileUrl: 'https://webcam.elcat.kg:5443/LiveApp/streams/$streamName.m3u8?token=null',
           );
 
         }).toList();
@@ -221,62 +185,27 @@ class WcamApiProvider {
 
   Future<List<MovieItem>> getKtCameras() async {
     return [
-      MovieItem(
-        type: MovieItemType.wcam,
-        id: '1',
+      MovieItem.webcamera(
+        // id: '1',
         name: 'г. Бишкек (Чуй/Советская)',
         posterUrl: '',
-        seasons: [
-          SeasonItem(
-            name: '',
-            episodes: [
-              EpisodeItem(
-                id: '',
-                name: '',
-                videoFileUrl: 'http://213.145.131.243:80/cam1/stream.m3u8'
-              ),
-            ],
-          ),
-        ],
+        videoFileUrl: 'http://213.145.131.243:80/cam1/stream.m3u8',
       ),
-      MovieItem(
-        type: MovieItemType.wcam,
-        id: '2',
+
+      MovieItem.webcamera(
+        // id: '2',
         name: 'с. Бостери',
         posterUrl: '',
-        seasons: [
-          SeasonItem(
-            name: '',
-            episodes: [
-              EpisodeItem(
-                id: '',
-                name: '',
-                videoFileUrl: 'http://213.145.131.243:80/cam2/stream.m3u8'
-              ),
-            ],
-          ),
-        ],
+        videoFileUrl: 'http://213.145.131.243:80/cam2/stream.m3u8',
       ),
-      MovieItem(
-        type: MovieItemType.wcam,
-        id: '3',
+
+      MovieItem.webcamera(
+        // id: '3',
         name: 'г. Ош',
         posterUrl: '',
-        seasons: [
-          SeasonItem(
-            name: '',
-            episodes: [
-              EpisodeItem(
-                id: '',
-                name: '',
-                videoFileUrl: 'http://213.145.131.243:80/cam3/stream.m3u8'
-              ),
-            ],
-          ),
-        ],
+        videoFileUrl: 'http://213.145.131.243:80/cam3/stream.m3u8',
       ),
-      
-      
+
     ];
   }
 
@@ -317,7 +246,7 @@ class WcamApiProvider {
     String city = '',
   }) async {
 
-    // try {
+    try {
 
       /// запрашиваем данные
       final response = await Dio().get('https://moidom.citylink.pro/api/',
@@ -343,32 +272,20 @@ class WcamApiProvider {
         }).toList();
 
         return cameras.map<MovieItem>((camera) {
-          return MovieItem(
-            type: MovieItemType.wcam,
-            id: '${camera.id}',
+          return MovieItem.webcamera(
+            // id: '${camera.id}',
             name: camera.name,
             posterUrl: camera.img,
-            seasons: [
-              SeasonItem(
-                name: '',
-                episodes: [
-                  EpisodeItem(
-                    id: '',
-                    name: '',
-                    videoFileUrl: camera.src,
-                  ),
-                ],
-              ),
-            ],
+            videoFileUrl: camera.src,
           );
         }).toList();
 
       }
-    // } catch (exception, stack) {
-    //   /// ^ если прозошла сетевая ошибка
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
       
-    //   debugPrint('exception: $exception');
-    // }
+      debugPrint('exception: $exception');
+    }
 
     return [];
   }

@@ -10,6 +10,8 @@ export '../../../models/request_state.dart';
 
 class CitylinkCamerasController extends Cubit<RequestState<List<MovieItem>>> {
 
+  final String city;
+
   /// провайдер запросов к API
   final _api = GetIt.instance<WcamApiProvider>();
 
@@ -22,8 +24,8 @@ class CitylinkCamerasController extends Cubit<RequestState<List<MovieItem>>> {
   /// доступное количество элементов
   int _totalCount = 0;
 
-  CitylinkCamerasController() : super(const RequestState.loading()) {
-    _api.getCitylinkTotalCount().then((totalCount) async {
+  CitylinkCamerasController([this.city = '']) : super(const RequestState.loading()) {
+    _api.getCitylinkTotalCount(city).then((totalCount) async {
       _totalCount = totalCount;
 
       if (_totalCount > 0) {
@@ -38,6 +40,7 @@ class CitylinkCamerasController extends Cubit<RequestState<List<MovieItem>>> {
     if (currentData.length < _totalCount) {
 
       final cameras = await _api.getCitylinkCameras(
+        city: city,
         page: _currentPage,
       );
       

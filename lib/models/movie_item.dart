@@ -103,6 +103,29 @@ class MovieItem extends HiveObject with EquatableMixin {
 
     return PaletteGenerator.fromColors([PaletteColor(Color(0xff000000), 1)]);
   }
+
+  factory MovieItem.webcamera({
+    required String name,
+    required String posterUrl,
+    required String videoFileUrl,
+  }) => MovieItem(
+    type: MovieItemType.wcam,
+    id: '',
+    name: name,
+    posterUrl: posterUrl,
+    seasons: [
+      SeasonItem(
+        name: '',
+        episodes: [
+          EpisodeItem(
+            id: '',
+            name: '',
+            videoFileUrl: videoFileUrl
+          ),
+        ],
+      ),
+    ],
+  );
   
 }
 
