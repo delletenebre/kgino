@@ -74,6 +74,7 @@ class SearchPage extends StatelessWidget {
                           routeName = 'ockgMovieDetails';
                           break;
                         case MovieItemType.tskg:
+                        default:
                           routeName = 'tskgShowDetails';
                           break;
                       }

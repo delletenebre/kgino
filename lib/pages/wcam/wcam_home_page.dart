@@ -97,9 +97,23 @@ class WcamHomePage extends StatelessWidget {
               items: [
                 MovieItem.webcamera(
                   name: 'Кенийский водопой',
-                  posterUrl: '',
+                  posterUrl: 'https://backend.webcamera24.com/static/image/camera/detail/mpala-watering/thumbnail/656x369/hqdefault.webp',
                   videoFileUrl: 'https://www.youtube.com/watch?v=6NIt6ibAD6I',
                 ),
+
+                MovieItem.webcamera(
+                  name: 'Ниагарский водопад',
+                  posterUrl: 'https://backend.webcamera24.com/static/image/camera/detail/niagara-falls/thumbnail/968x545/hqdefault.webp',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=kxwuFPFUZyY',
+                ),
+
+                MovieItem.webcamera(
+                  name: 'Таймс-сквер, Нью-Йорк',
+                  posterUrl: 'https://backend.webcamera24.com/static/image/camera/detail/times-square/thumbnail/968x545/hqdefault.webp',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA',
+                ),
+
+                
               ],
             )
           );
