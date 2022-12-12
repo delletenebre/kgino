@@ -25,7 +25,7 @@ enum VideoPlayerState {
 class VideoPlayerView extends StatefulWidget {
   final String titleText;
   final bool subtitlesEnabled;
-  final isLiveStream;
+  final bool isLiveStream;
 
   final Future<EpisodeItem> Function() onInitialPlayableItem;
   final Future<EpisodeItem> Function()? onSkipPrevious;
@@ -168,9 +168,16 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         initialVideoId: videoId,
         flags: YoutubePlayerFlags(
           autoPlay: true,
+          showLiveFullscreenButton: false,
+          hideControls: true,
           isLive: widget.isLiveStream,
+          forceHD: true,
         ),
       );
+      _youtubeController?.updateValue(_youtubeController!.value.copyWith(isFullScreen: true));
+
+      /// обновляем состояние UI
+      _updatePageState(VideoPlayerState.initialized);
     }
   }
 
@@ -212,26 +219,29 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
-
-    if (_youtubeController != null) {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        body: YoutubePlayerBuilder(
-          player: YoutubePlayer(
-            controller: _youtubeController!,
-          ),
-          builder: (context, player) {
-            return Column(
-              children: [
-                player,
-              ],
-            );
-          }
-        )
-      );
-    }
     
     if (_pageState == VideoPlayerState.initialized) {
+      if (_youtubeController != null) {
+        return Scaffold(
+          backgroundColor: Colors.black,
+          body: Center(
+            child: YoutubePlayer(
+              controller: _youtubeController!,
+            ),
+          ),
+          // YoutubePlayerBuilder(
+          //   player: ,
+          //   builder: (context, player) {
+          //     return Column(
+          //       children: [
+          //         player,
+          //       ],
+          //     );
+          //   }
+          // )
+        );
+      }
+
       if (!_initialize && _episode!.position >= 60) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           final result = await Utils.showModal<bool?>(
