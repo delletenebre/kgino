@@ -190,7 +190,6 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                                   
                                   /// вызываем пользовательский обработчик
                                   widget.onItemFocused?.call(index);
-                                  print('BBIIIAIBDIBASDBASBDASB index $index');
                                   
                                 }
                               });

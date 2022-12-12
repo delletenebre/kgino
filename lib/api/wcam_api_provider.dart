@@ -69,7 +69,11 @@ class WcamApiProvider {
           String posterUrl = '';
           final img = element.getElementsByTagName('img');
           if (img.isNotEmpty) {
-            posterUrl = 'https://live.saimanet.kg${img.first.attributes['src']}';
+            String imgSrc = img.first.attributes['src'] ?? '';
+            if (!imgSrc.startsWith('/')) {
+              imgSrc = '/$imgSrc';
+            }
+            posterUrl = 'https://live.saimanet.kg$imgSrc';
           }
 
           final link = element.getElementsByClassName('title').first.getElementsByTagName('a');
