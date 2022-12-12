@@ -77,15 +77,27 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
 
     return BlocProvider(
       key: ValueKey(widget.itemCount),
-      create: (context) => FocusableListCubit(
-        controller: widget.controller,
-        itemCount: widget.itemCount,
-        offset: widget.padding.left,
-        keyEventResult: KeyEventResult.handled,
-      ),
+      create: (context) {
+        return FocusableListCubit(
+          controller: widget.controller,
+          itemCount: widget.itemCount,
+          offset: widget.padding.left,
+          keyEventResult: KeyEventResult.handled,
+        );
+      },
       child: BlocBuilder<FocusableListCubit, FocusableListState>(
         builder: (context, focusableListState) {
           final listCubit = context.read<FocusableListCubit>();
+
+          if (_lastFocusedIndex != focusableListState.focusableIndex) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              Future.delayed(const Duration(milliseconds: 5), () {
+                if (mounted) {
+                  listCubit.jumpTo(_lastFocusedIndex);
+                }
+              });
+            });
+          }
 
           return Focus(
             focusNode: _focusNode,
@@ -152,6 +164,17 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
 
                           onFocusChange: (hasFocus) {
                             if (hasFocus) {
+                              _lastFocusedIndex = index;
+
+                              if (_lastFocusedIndex > widget.itemCount - 7) {
+                                if (!_needToLoadMore) {
+                                  _needToLoadMore = true;
+                                  widget.onLoadNextPage?.call();
+                                }
+                              } else {
+                                _needToLoadMore = false;
+                              }
+
                               /// при быстрой перемотке, для экономии ресурсов,
                               /// немного тормозим вызов [onItemFocused],
                               /// в котором происходит загрузка дополнительных
@@ -162,87 +185,14 @@ class _KrsHorizontalListViewState extends State<KrsHorizontalListView> {
                                   
                                   /// вызываем пользовательский обработчик
                                   widget.onItemFocused?.call(index);
+
+                                  
                                 }
                               });
                             }
                           },
                           child: widget.itemBuilder(
                             context, listCubit.focusNodeAt(index), index),
-                          // onFocusChange: (hasFocus) {
-                          //   if (hasFocus) {
-
-                          //     int currentIndex = index;
-                              
-                          //     final firstTimeFocus = !_focusNode.hasFocus;
-
-                          //     if (widget.scrollToLastPosition && firstTimeFocus) {                          
-                          //       /// ^ если фокус был только что перемещён на список
-                                
-                          //       if (widget.requestItemIndex != null) {
-                          //         _lastFocusedIndex = widget.requestItemIndex!();
-                          //       }
-                                
-                          //       /// нужно прокрутить к последнему элементу, который
-                          //       /// был в фокусе (на котором остановился
-                          //       /// пользователь)
-                          //       currentIndex = _lastFocusedIndex;
-
-                          //       try {
-                          //         /// обновляем индекс последнего элемента, на котором
-                          //         /// был фокус
-                          //         for (final focusNode in focusableListState.focusNodes[currentIndex].descendants) {
-                          //           if (focusNode.canRequestFocus) {
-                          //             focusNode.requestFocus();
-                          //           }
-                          //         }
-                          //       } catch (exception) {
-
-                          //       }
-                                
-                          //       // _itemFocusNodes[currentIndex].descendants.first.requestFocus();
-                          //     }
-                              
-                          //     if (mounted) {
-                          //       /// ^ если виджет ещё жив
-                                
-                          //       /// прокручиваем контент к текущему элементу
-                          //       _listObserverController.animateTo(
-                          //         index: currentIndex,
-                          //         isFixedHeight: true,
-                          //         offset: (offset) => 48.0,
-                          //         duration: const Duration(milliseconds: 50),
-                          //         curve: Curves.easeIn
-                          //       );
-
-                          //       /// при быстрой перемотке, для экономии ресурсов,
-                          //       /// немного тормозим вызов [onItemFocused], в котором
-                          //       /// происходит загрузка дополнительных сведений
-                          //       /// о сериале или фильме
-                          //       // Future.delayed(const Duration(milliseconds: 250), () {
-                          //       //   if (currentIndex > widget.itemCount) {
-                          //       //     currentIndex = widget.itemCount - 1;
-                          //       //   }
-                          //       //   if (mounted && getFocusNode(currentIndex).hasFocus) {
-                          //       //     /// вызываем пользовательский обработчик
-                          //       //     widget.onItemFocused?.call(currentIndex);
-                          //       //   }
-                          //       // });
-                                
-                          //       // if (currentIndex > widget.itemCount - 7) {
-                          //       //   if (!_needToLoadMore) {
-                          //       //     _needToLoadMore = true;
-                          //       //     widget.onLoadNextPage?.call();
-                          //       //   }
-                          //       // } else {
-                          //       //   _needToLoadMore = false;
-                          //       // }
-                                
-                          //       // setState(() {
-                          //       //   _lastFocusedIndex = currentIndex;
-                          //       // });
-                          //     }
-                          //   }
-                          // },
                           
                         );
                       },

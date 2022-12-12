@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -6,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kgino/constants.dart';
 
 import '../../../controllers/ockg/ockg_bestsellers_controller.dart';
+import '../../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../../controllers/seen_items_controller.dart';
 import '../../../models/movie_item.dart';
@@ -36,7 +38,7 @@ class OckgHomePageListView extends HookWidget {
     return BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
       builder: (context, state) {
 
-        final categories = <CategoryListItem>[];
+        final categories = <CategoryListItem<MovieItem>>[];
 
         if (seenMovies.isNotEmpty) {
           categories.add(
@@ -64,7 +66,23 @@ class OckgHomePageListView extends HookWidget {
               );
             })
           );
+        }
 
+        categories.add(
+          CategoryListItem<MovieItem>(
+            title: 'Жанры',
+            items: OckgCatalogController.genres.values.mapIndexed((index, name) {
+              return MovieItem(
+                type: MovieItemType.folder,
+                id: OckgCatalogController.genres.keys.elementAt(index),
+                name: name,
+                posterUrl: '',
+              );
+            }).toList(),
+          )
+        );
+
+        if (categories.isNotEmpty) {
           return KrsVerticalListView(
             itemCount: categories.length,
             itemBuilder: (context, focusNode, index) {
@@ -75,9 +93,13 @@ class OckgHomePageListView extends HookWidget {
                 child: KrsHorizontalListView(
                   focusNode: focusNode,
                   onItemFocused: (index) {
-                    context.read<OckgMovieDetailsController>().getMovieById(
-                      category.items[index].id,
-                    );
+                    /// TODO fix when empty
+                    final movie = category.items[index];
+                    if (movie.type == MovieItemType.ockg) {
+                      context.read<OckgMovieDetailsController>().getMovieById(
+                        category.items[index].id,
+                      );
+                    }
                   },
                   titleText: category.title,
                   itemCount: category.items.length,
@@ -91,12 +113,26 @@ class OckgHomePageListView extends HookWidget {
                       /// данные о фильме
                       item: movie,
 
-                      /// при выб оре элемента
+                      /// при выборе элемента
                       onTap: () {
-                        /// переходим на страницу деталей о фильме
-                        context.goNamed('ockgMovieDetails', params: {
-                          'id': '${movie.id}',
-                        });
+
+                        if (movie.type == MovieItemType.folder) {
+                          /// переходим на страницу каталога фильмов
+                          context.goNamed('ockgCatalogGenre',
+                            params: {
+                              'id': movie.id,
+                            },
+                            extra: movie,
+                          );
+                        } else {
+                          /// переходим на страницу деталей о фильме
+                          context.goNamed('ockgMovieDetails',
+                            params: {
+                              'id': movie.id,
+                            },
+                          );
+                        }
+                        
 
                       },
                     );

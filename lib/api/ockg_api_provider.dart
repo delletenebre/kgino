@@ -200,14 +200,14 @@ class OckgApiProvider {
 
   /// список фильмов из каталога
   Future<OckgCatalog> getCatalog({
-    int genreId = 0,
+    String genreId = '',
     required int offset,
     int pageSize = 15,
   }) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getCatalog',
-      if (genreId > 0) 'genre[0]': genreId,
+      if (genreId.isNotEmpty) 'genre[0]': genreId,
       'offset[0]': offset,
       'size[0]': pageSize,
     });

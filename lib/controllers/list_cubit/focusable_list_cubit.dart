@@ -97,7 +97,8 @@ class FocusableListCubit extends Cubit<FocusableListState> {
   }
 
   void requestFocus(int index) {
-    state.focusNodes[index].requestFocus();
+    state.focusableIndex = index;
+    focusNodeAt(index).requestFocus();
   }
 
   FocusNode focusNodeAt(int index) {

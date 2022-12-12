@@ -102,12 +102,11 @@ class KrsRouter {
 
           GoRoute(
             path: 'ockg/genre/:id',
+            name: 'ockgCatalogGenre',
             builder: (context, state) {
-              final titleText = state.extra! as String;
-              final genreId = int.tryParse(state.params['id'] ?? '') ?? 0;
+              final item = state.extra! as MovieItem;
               return OckgCatalogPage(
-                titleText: titleText,
-                genreId: genreId,
+                item: item,
               );
             },
           ),

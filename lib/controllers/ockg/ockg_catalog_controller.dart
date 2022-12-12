@@ -22,10 +22,10 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
   int _currentPage = 0;
 
   /// идентификатор жанра
-  final int genreId;
+  final String genreId;
 
   OckgCatalogController({
-    this.genreId = 0,
+    this.genreId = '',
   }) : super(const OckgCatalog()) {
     fetchMovies();
   }
@@ -65,5 +65,51 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
       }
     }
   }
+
+  static final Map<String, String> genres = {
+    '4': 'Комедии',
+    '13': 'Мультфильмы',
+    '6': 'Боевики',
+    '34': 'Фантастика',
+    '35': 'Триллеры',
+    '7': 'Ужасы',
+    '32': 'Детективы',
+    '17': 'Мелодрамы',
+    '12': 'Приключения',
+    '37': 'Фэнтези',
+    '2': 'Драмы',
+    '36': 'Семейные',
+    '20': 'Биографии',
+    '25': 'Аниме',
+    '23': 'Документальные',
+    '21': 'Короткомеражки',
+  }; 
+
+  // int getGenreId() {
+  //   switch (name) {
+  //     case 'Боевики':
+  //       return 6;
+  //     case 'Триллер':
+  //       return 34;
+  //     case 'Комедии':
+  //       return 4;
+  //     case 'Драма/мелодрама':
+  //       return 2;
+  //     case 'Сериалы':
+  //       return 33;
+  //     case 'Мультфильмы':
+  //       return 13;
+  //     case 'Ужасы':
+  //       return 7;
+  //     case 'Документальные':
+  //       return 23;
+  //     case 'Аниме':
+  //       return 25;
+  //     case 'Детектив':
+  //       return 32;
+  //     default:
+  //       return 1;
+  //   }
+  // }
 
 }

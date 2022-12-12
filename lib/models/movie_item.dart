@@ -13,6 +13,7 @@ enum MovieItemType {
   @HiveField(0) ockg,
   @HiveField(1) tskg,
   @HiveField(2) wcam,
+  @HiveField(3) folder,
 }
 
 @HiveType(typeId: 11)

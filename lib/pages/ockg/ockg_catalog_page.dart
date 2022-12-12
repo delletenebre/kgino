@@ -12,13 +12,11 @@ import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 class OckgCatalogPage extends StatelessWidget {
-  final String titleText;
-  final int genreId;
+  final MovieItem item;
 
   const OckgCatalogPage({
     super.key,
-    this.titleText = '',
-    this.genreId = 0,
+    required this.item,
   });
 
   @override
@@ -39,7 +37,7 @@ class OckgCatalogPage extends StatelessWidget {
               ),
               child: SizedBox(
                 height: 40.0,
-                child: Text(titleText,
+                child: Text(item.name,
                   style: TextStyle(
                     fontSize: 20.0,
                     color: theme.colorScheme.outline,
@@ -69,15 +67,29 @@ class OckgCatalogPage extends StatelessWidget {
               height: ockgListViewHeight,
               child: BlocProvider(
                 create: (context) => OckgCatalogController(
-                  genreId: genreId,
+                  genreId: item.id,
                 ),
                 child: BlocBuilder<OckgCatalogController, OckgCatalog>(
                   builder: (context, catalog) {
-                    // TODO check and fix if needed
                     return KrsHorizontalListView(
+                      onItemFocused: (index) {
+                        final ockgMovie = catalog.movies[index];
+                        context.read<OckgMovieDetailsController>().getMovieById(
+                          ockgMovie.movieId.toString(),
+                        );
+                      },
+                      onLoadNextPage: () {
+                        context.read<OckgCatalogController>().fetchMovies();
+                      },
                       itemCount: catalog.movies.length,
                       itemBuilder: (context, focusNode, index) {
-                        final movie = catalog.movies[index];
+                        final ockgMovie = catalog.movies[index];
+                        final movie = MovieItem(
+                          type: MovieItemType.ockg,
+                          id: '${ockgMovie.movieId}',
+                          name: ockgMovie.name,
+                          posterUrl: ockgMovie.posterUrl,
+                        );
 
                         return KrsListItemCard(
                           focusNode: focusNode,
@@ -86,11 +98,11 @@ class OckgCatalogPage extends StatelessWidget {
                           /// данные о фильме
                           item: movie,
 
-                          /// при выб оре элемента
+                          /// при выборе элемента
                           onTap: () {
                             /// переходим на страницу деталей о фильме
                             context.goNamed('ockgMovieDetails', params: {
-                              'id': '${movie.movieId}',
+                              'id': movie.id,
                             });
 
                           },
