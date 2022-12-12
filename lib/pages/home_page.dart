@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             text: locale.shows,
                           ),
                           Tab(
-                            text: 'Камеры',
+                            text: locale.cameras,
                           ),
                           Tab(
                             text: locale.settings,

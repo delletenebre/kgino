@@ -27,6 +27,11 @@
     "type": "text"
   },
 
+  "cameras": "Камеры",
+  "@cameras": {
+    "type": "text"
+  },
+
   "settings": "Настройки",
   "@settings": {
     "type": "text"
@@ -143,6 +148,11 @@
 
   "startOver": "Начать сначала",
   "@startOver": {
+    "type": "text"
+  },
+
+  "genres": "Жанры",
+  "@genres": {
     "type": "text"
   },
 

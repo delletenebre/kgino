@@ -27,6 +27,11 @@
     "type": "text"
   },
 
+  "cameras": "Cameras",
+  "@cameras": {
+    "type": "text"
+  },
+
   "settings": "Settings",
   "@settings": {
     "type": "text"
@@ -143,6 +148,11 @@
   
   "back": "Back",
   "@back": {
+    "type": "text"
+  },
+
+  "genres": "Genres",
+  "@genres": {
     "type": "text"
   },
 

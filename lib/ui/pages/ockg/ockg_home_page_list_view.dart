@@ -70,7 +70,7 @@ class OckgHomePageListView extends HookWidget {
 
         categories.add(
           CategoryListItem<MovieItem>(
-            title: 'Жанры',
+            title: locale.genres,
             items: OckgCatalogController.genres.values.mapIndexed((index, name) {
               return MovieItem(
                 type: MovieItemType.folder,
