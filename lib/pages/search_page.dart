@@ -44,7 +44,7 @@ class SearchPage extends StatelessWidget {
 
     if (items.isNotEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24.0),
+        padding: const EdgeInsets.symmetric(vertical: 48.0),
         child: KrsVerticalListView(
           itemCount: items.length,
           itemBuilder: (context, focusNode, index) {

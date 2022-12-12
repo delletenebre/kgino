@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../constants.dart';
-import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../controllers/wcam/elcat_cameras_controller.dart';
 import '../../controllers/wcam/kt_cameras_controller.dart';
 import '../../models/category_list_item.dart';
