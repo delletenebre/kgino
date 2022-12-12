@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../constants.dart';
 import '../../controllers/wcam/elcat_cameras_controller.dart';
 import '../../controllers/wcam/kt_cameras_controller.dart';
+import '../../controllers/wcam/saima_cameras_controller.dart';
 import '../../models/category_list_item.dart';
 import '../../models/movie_item.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
@@ -21,6 +22,10 @@ class WcamHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<SaimaCamerasController>(
+          create: (context) => SaimaCamerasController(),
+        ),
+
         BlocProvider<ElcatCamerasController>(
           create: (context) => ElcatCamerasController(),
         ),
@@ -33,6 +38,7 @@ class WcamHomePage extends StatelessWidget {
       child: Builder(
         builder: (context) {
 
+          final saimaState = context.watch<SaimaCamerasController>().state;
           final elcatState = context.watch<ElcatCamerasController>().state;
           final ktState = context.watch<KtCamerasController>().state;
 
@@ -42,10 +48,19 @@ class WcamHomePage extends StatelessWidget {
 
           final categories = <CategoryListItem<MovieItem>>[];
 
+          if (saimaState.isSuccess) {
+            categories.add(
+              CategoryListItem(
+                title: 'Saima Telecom',
+                items: saimaState.data,
+              )
+            );
+          }
+
           if (elcatState.isSuccess) {
             categories.add(
               CategoryListItem(
-                title: 'Elcat.kg',
+                title: 'ЭлКат',
                 items: elcatState.data,
               )
             );
@@ -86,7 +101,7 @@ class WcamHomePage extends StatelessWidget {
                           focusNode: focusNode,
                           item: item,
                           
-                          /// при выб оре элемента
+                          /// при выборе элемента
                           onTap: () {
                             /// переходим на страницу деталей о сериале
                             context.goNamed('wcamPlayer',

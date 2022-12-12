@@ -128,7 +128,7 @@ class TskgHomePageListView extends HookWidget {
                         focusNode: focusNode,
                         item: show,
                         
-                        /// при выб оре элемента
+                        /// при выборе элемента
                         onTap: () {
                           /// переходим на страницу деталей о сериале
                           context.goNamed('tskgShowDetails',

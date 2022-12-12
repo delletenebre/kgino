@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../models/episode_item.dart';
 import '../../resources/krs_locale.dart';
@@ -61,6 +62,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
   /// контроллер видеоплеера
   VideoPlayerController? _playerController;
+
+  YoutubePlayerController? _youtubeController;
 
   EpisodeItem? _episode;
 
@@ -127,6 +130,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     /// завершаем работу текущего плеера
     _playerController?.dispose();
+
+    _youtubeController?.dispose();
+    _youtubeController = null;
   }
 
   String getStringFromBytes(ByteData data) {
@@ -146,6 +152,29 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     /// завершаем работу текущего плеера
     _disposeVideoController();
 
+    if (_episode != null) {
+      if (_episode!.videoFileUrl.contains('youtube.com')) {
+        _initializeYoutubeVideo();
+      } else {
+        _initializeDefaultVideo();
+      }
+    }
+  }
+
+  Future<void> _initializeYoutubeVideo() async {
+    final videoId = YoutubePlayer.convertUrlToId(_episode!.videoFileUrl) ?? '';
+    if (videoId.isNotEmpty) {
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: YoutubePlayerFlags(
+          autoPlay: true,
+          isLive: widget.isLiveStream,
+        ),
+      );
+    }
+  }
+
+  Future<void> _initializeDefaultVideo() async {
     Future<ClosedCaptionFile>? closedCaptionFile;
     if (_episode!.subtitlesFileUrl.isNotEmpty) {
       closedCaptionFile = _loadSubtitle(_episode!.subtitlesFileUrl);
@@ -183,6 +212,24 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
+
+    if (_youtubeController != null) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: YoutubePlayerBuilder(
+          player: YoutubePlayer(
+            controller: _youtubeController!,
+          ),
+          builder: (context, player) {
+            return Column(
+              children: [
+                player,
+              ],
+            );
+          }
+        )
+      );
+    }
     
     if (_pageState == VideoPlayerState.initialized) {
       if (!_initialize && _episode!.position >= 60) {

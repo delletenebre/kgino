@@ -1,12 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
 
-import '../constants.dart';
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../models/season_item.dart';
@@ -32,6 +28,113 @@ class WcamApiProvider {
     return '';
   }
 
+
+  /// получение списка камер live.saimanet.kg
+  Future<List<MovieItem>> getSaimaCameras() async {
+    
+    /// список элементов
+    final items = <MovieItem>[];
+
+    try {
+
+      /// запрашиваем данные
+      final response = await Dio().get('https://live.saimanet.kg');
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        
+        /// парсим html
+        final document = parse(response.data);
+
+        /// получаем элементы списка камер
+        final elements = document.getElementsByClassName('onemaincam');
+
+        for (final element in elements) {
+          /// парсим элемент iframe
+          /*
+            <div class="onemaincam mt">
+              <div class="image">
+                  <a href="/ru/cams/2"><img src="/images/cam2.jpg"
+                                            alt=""
+                                            title=""/></a>
+                  <div class="playicon"><a href="/ru/cams/2"></a></div>
+              </div>
+              <div class="title"><a href="/ru/cams/2">Площадь Ала-Тоо</a></div>
+            </div>
+          */
+          String name = '';
+          String posterUrl = '';
+          final img = element.getElementsByTagName('img');
+          if (img.isNotEmpty) {
+            posterUrl = 'https://live.saimanet.kg${img.first.attributes['src']}';
+          }
+
+          final link = element.getElementsByClassName('title').first.getElementsByTagName('a');
+          if (link.isNotEmpty) {
+            name = link.first.text;
+            final cameraId = link.first.attributes['href'] ?? '';
+            final youtubeSrc = await getSaimaYoutueLink(cameraId);
+
+            if (youtubeSrc.isNotEmpty) {
+              items.add(
+                MovieItem(
+                  type: MovieItemType.wcam,
+                  id: cameraId,
+                  name: name,
+                  posterUrl: posterUrl,
+                  seasons: [
+                    SeasonItem(
+                      name: '',
+                      episodes: [
+                        EpisodeItem(
+                          id: '',
+                          name: '',
+                          videoFileUrl: youtubeSrc,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }
+          }
+        }
+      }
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('exception: $exception');
+    }
+
+    return items;
+  }
+
+  Future<String> getSaimaYoutueLink(String url) async {
+    try {
+
+      /// запрашиваем данные
+      final response = await Dio().get('https://live.saimanet.kg$url');
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        
+        /// парсим html
+        final document = parse(response.data);
+        final iframe = document.getElementsByTagName('iframe').first;
+        
+        return iframe.attributes['src'] ?? '';
+      }
+
+
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('exception: $exception');
+    }
+
+    return '';
+  }
+
+
   /// получение списка камер elcat.kg
   Future<List<MovieItem>> getElcatCameras() async {
     
@@ -48,9 +151,6 @@ class WcamApiProvider {
         /// парсим html
         final document = parse(response.data);
 
-        
-
-        
         /// получаем элементы списка камер
         final elements = document.getElementsByClassName('stream_hide');
 
@@ -93,9 +193,9 @@ class WcamApiProvider {
                     name: '',
                     videoFileUrl: 'https://webcam.elcat.kg:5443/LiveApp/streams/$streamName.m3u8?token=null'
                   ),
-                ]
-              )
-            ]
+                ],
+              ),
+            ],
           );
 
         }).toList();
