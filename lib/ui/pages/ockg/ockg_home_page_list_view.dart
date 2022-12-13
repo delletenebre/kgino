@@ -14,8 +14,8 @@ import '../../../models/movie_item.dart';
 import '../../../models/ockg/ockg_bestsellers_category.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../models/category_list_item.dart';
+import '../../lists/krs_horizontal_list_view_2.dart';
 import '../../lists/krs_vertical_list_view.dart';
-import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
 
@@ -90,22 +90,19 @@ class OckgHomePageListView extends HookWidget {
 
               return SizedBox.fromSize(
                 size: const Size.fromHeight(ockgListViewHeight),
-                child: KrsHorizontalListView(
+                child: KrsHorizontalListView2<MovieItem>(
                   focusNode: focusNode,
-                  onItemFocused: (index) {
+                  onItemFocused: (movie) {
                     /// TODO fix when empty
-                    final movie = category.items[index];
                     if (movie.type == MovieItemType.ockg) {
                       context.read<OckgMovieDetailsController>().getMovieById(
-                        category.items[index].id,
+                        movie.id,
                       );
                     }
                   },
                   titleText: category.title,
-                  itemCount: category.items.length,
-                  itemBuilder: (context, focusNode, index) {
-                    final movie = category.items[index];
-
+                  items: category.items,
+                  itemBuilder: (context, focusNode, index, movie) {
                     return KrsListItemCard(
                       focusNode: focusNode,
                       posterSize: ockgPosterSize,

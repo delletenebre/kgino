@@ -7,7 +7,9 @@ import '../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_catalog.dart';
+import '../../models/ockg/ockg_movie.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
+import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 
@@ -71,19 +73,17 @@ class OckgCatalogPage extends StatelessWidget {
                 ),
                 child: BlocBuilder<OckgCatalogController, OckgCatalog>(
                   builder: (context, catalog) {
-                    return KrsHorizontalListView(
-                      onItemFocused: (index) {
-                        final ockgMovie = catalog.movies[index];
+                    return KrsHorizontalListView2<OckgMovie>(
+                      onItemFocused: (item) {
                         context.read<OckgMovieDetailsController>().getMovieById(
-                          ockgMovie.movieId.toString(),
+                          item.movieId.toString(),
                         );
                       },
-                      onLoadNextPage: () {
-                        context.read<OckgCatalogController>().fetchMovies();
+                      onLoadNextPage: (page, loadedCount) async {
+                        return context.read<OckgCatalogController>().getMovies(page, loadedCount);
                       },
-                      itemCount: catalog.movies.length,
-                      itemBuilder: (context, focusNode, index) {
-                        final ockgMovie = catalog.movies[index];
+                      items: catalog.movies,
+                      itemBuilder: (context, focusNode, index, ockgMovie) {
                         final movie = MovieItem(
                           type: MovieItemType.ockg,
                           id: '${ockgMovie.movieId}',
@@ -113,6 +113,50 @@ class OckgCatalogPage extends StatelessWidget {
 
                   },
                 ),
+                // child: BlocBuilder<OckgCatalogController, OckgCatalog>(
+                //   builder: (context, catalog) {
+                //     return KrsHorizontalListView(
+                //       onItemFocused: (index) {
+                //         final ockgMovie = catalog.movies[index];
+                //         context.read<OckgMovieDetailsController>().getMovieById(
+                //           ockgMovie.movieId.toString(),
+                //         );
+                //       },
+                //       onLoadNextPage: () async {
+                //         context.read<OckgCatalogController>().fetchMovies();
+                //       },
+                //       itemCount: catalog.movies.length,
+                //       itemBuilder: (context, focusNode, index) {
+                //         final ockgMovie = catalog.movies[index];
+                //         final movie = MovieItem(
+                //           type: MovieItemType.ockg,
+                //           id: '${ockgMovie.movieId}',
+                //           name: ockgMovie.name,
+                //           posterUrl: ockgMovie.posterUrl,
+                //         );
+
+                //         return KrsListItemCard(
+                //           focusNode: focusNode,
+                //           posterSize: ockgPosterSize,
+                          
+                //           /// данные о фильме
+                //           item: movie,
+
+                //           /// при выборе элемента
+                //           onTap: () {
+                //             /// переходим на страницу деталей о фильме
+                //             context.goNamed('ockgMovieDetails', params: {
+                //               'id': movie.id,
+                //             });
+
+                //           },
+
+                //         );
+                //       },
+                //     );
+
+                //   },
+                // ),
               ),
             ),
           ],

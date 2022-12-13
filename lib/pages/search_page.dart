@@ -8,6 +8,7 @@ import '../controllers/tskg/tskg_search_controller.dart';
 import '../models/movie_item.dart';
 import '../resources/krs_locale.dart';
 import '../models/category_list_item.dart';
+import '../ui/lists/krs_horizontal_list_view_2.dart';
 import '../ui/lists/krs_vertical_list_view.dart';
 import '../ui/lists/krs_horizontal_list_view.dart';
 import '../ui/lists/krs_list_item_card.dart';
@@ -52,13 +53,11 @@ class SearchPage extends StatelessWidget {
 
             return SizedBox.fromSize(
               size: const Size.fromHeight(ockgListViewHeight),
-              child: KrsHorizontalListView(
+              child: KrsHorizontalListView2<MovieItem>(
                 focusNode: focusNode,
                 titleText: item.title,
-                itemCount: item.items.length,
-                itemBuilder: (context, focusNode, index) {
-                  final show = item.items.elementAt(index);
-                  
+                items: item.items,
+                itemBuilder: (context, focusNode, index, show) {
                   return KrsListItemCard(
                     focusNode: focusNode,
                     posterSize: (show.type == MovieItemType.ockg)

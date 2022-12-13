@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../api/wcam_api_provider.dart';
 import '../../constants.dart';
 import '../../controllers/wcam/citylink_cameras_controller.dart';
 import '../../controllers/wcam/elcat_cameras_controller.dart';
@@ -10,6 +12,7 @@ import '../../controllers/wcam/saima_cameras_controller.dart';
 import '../../models/category_list_item.dart';
 import '../../models/movie_item.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
+import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/lists/krs_vertical_list_view.dart';
 import '../../ui/loading_indicator.dart';
@@ -130,21 +133,18 @@ class WcamHomePage extends StatelessWidget {
 
                   return SizedBox.fromSize(
                     size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    child: KrsHorizontalListView(
+                    child: KrsHorizontalListView2<MovieItem>(
                       focusNode: focusNode,
-                      onItemFocused: (index) {
-                        // context.read<WcamController>().getShowById(
-                        //   category.items[index].id,
-                        // );
-                      },
-                      onLoadNextPage: category.title.startsWith('Ситилинк') ? () {
-                        context.read<CitylinkCamerasController>().fetchCameras();
+                      onLoadNextPage: category.title.startsWith('Ситилинк') ? (page, loadedCount) {
+                        final api = GetIt.instance<WcamApiProvider>();
+                        return  api.getCitylinkCameras(
+                          city: '',
+                          page: page,
+                        );
                       } : null,
+                      items: category.items,
                       titleText: category.title,
-                      itemCount: category.items.length,
-                      itemBuilder: (context, focusNode, index) {
-                        final item = category.items.elementAt(index);
-                        
+                      itemBuilder: (context, focusNode, index, item) {
                         return KrsListItemCard(
                           focusNode: focusNode,
                           item: item,

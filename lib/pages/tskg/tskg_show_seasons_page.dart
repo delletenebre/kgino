@@ -6,8 +6,10 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 import '../../controllers/seen_items_controller.dart';
 import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
+import '../../models/season_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
+import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/pages/episode_card.dart';
 
 
@@ -72,19 +74,16 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
           /// номера сезонов
           SizedBox(
             height: 40.0 + 48.0 * 2,
-            child: KrsHorizontalListView(
+            child: KrsHorizontalListView2<SeasonItem>(
               padding: const EdgeInsets.all(48.0),
               controller: _seasonsScrollController,
               spacing: 8.0,
-              onLoadNextPage: () {
-                
-              },
-              onItemFocused: (index) {
-                _checkEpisodeBySeasonIndex(index);
+              onItemFocused: (season) {
+                _checkEpisodeBySeason(season);
               },
               requestItemIndex: () => _selectedSeasonIndex,
-              itemCount: widget.show.seasons.length,
-              itemBuilder: (context, focusNode, index) {
+              items: widget.show.seasons,
+              itemBuilder: (context, focusNode, index, season) {
                 return IconButton(
                   focusNode: focusNode,
                   style: ButtonStyle(
@@ -117,7 +116,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   
                   onPressed: () {
                     /// при нажатии на номер сезона
-                    _checkEpisodeBySeasonIndex(index);
+                    _checkEpisodeBySeason(season);
                   },
                   icon: Text('${index + 1}'),
                 );
@@ -131,22 +130,17 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
           Expanded(
             child: SizedBox.fromSize(
               size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
-              child: KrsHorizontalListView(
+              child: KrsHorizontalListView2<EpisodeItem>(
                 controller: _episodesScrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
                 titleText: '${currentSeason.name}, ${locale.episodesCount(currentSeason.episodes.length)}',
-                onLoadNextPage: () {
-                  
-                },
-                onItemFocused: (index) {
-                  _checkSeasonByEpisodeIndex(index);
+                onItemFocused: (episode) {
+                  _checkSeasonByEpisode(episode);
                 },
                 requestItemIndex: () => _selectedEpisodeIndex,
-                itemCount: _episodeCount,
-                itemBuilder: (context, focusNode, index) {
-                  final episode = _episodes[index];
-
+                items: _episodes,
+                itemBuilder: (context, focusNode, index, episode) {
                   /// просмотренное время [0; 1]
                   double seenValue = 0.0;
                   final seenEpisode = seenEpisodesController.findEpisode(
@@ -189,7 +183,8 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     );
   }
 
-  void _checkSeasonByEpisodeIndex(int episodeIndex) {
+  void _checkSeasonByEpisode(EpisodeItem episode) {
+    final episodeIndex = _episodes.indexOf(episode);
     int episodesOffset = 0;
     
     for (int i = 0; i < widget.show.seasons.length; i++) {
@@ -230,7 +225,8 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
 
   }
 
-  void _checkEpisodeBySeasonIndex(int seasonIndex) {
+  void _checkEpisodeBySeason(SeasonItem season) {
+    final seasonIndex = widget.show.seasons.indexOf(season);
     int minIndex = 0;
 
     for (int i = 0; i < seasonIndex; i++) {
@@ -245,7 +241,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
     }
 
     /// максимальный индекс эпизода в нужном сезоне
-    int maxIndex = minIndex + widget.show.seasons[seasonIndex].episodes.length;
+    int maxIndex = minIndex + season.episodes.length;
 
     if (_selectedEpisodeIndex < minIndex
         || _selectedEpisodeIndex >= maxIndex) {

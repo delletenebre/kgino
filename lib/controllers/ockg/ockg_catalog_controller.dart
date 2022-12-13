@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:kgino/models/ockg/ockg_movie.dart';
 
 import '../../api/ockg_api_provider.dart';
 import '../../models/ockg/ockg_catalog.dart';
@@ -64,6 +65,29 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
         debugPrint('OckgCatalogController fetchMovies() exception: $exception');
       }
     }
+  }
+
+  Future<List<OckgMovie>> getMovies(int page, int loadedItemsLength) async {
+    try {
+
+      /// запрашиваем данные каталога
+      final catalog = await _api.getCatalog(
+        genreId: genreId,
+        offset: loadedItemsLength + (page * _pageSize),
+        pageSize: _pageSize,
+      );
+
+      if (!isClosed) {
+        /// ^ если контроллер ещё существует
+
+        return catalog.movies;
+      }
+
+    } catch (exception) {
+      debugPrint('OckgCatalogController fetchMovies() exception: $exception');
+    }
+
+    return [];
   }
 
   static final Map<String, String> genres = {
