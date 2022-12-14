@@ -106,6 +106,11 @@ class TskgHomePageListView extends HookWidget {
 
           if (showList.isNotEmpty) {
             return KrsVerticalListView(
+              onFocusChange: (hasFocus) {
+                if (!hasFocus) {
+                  context.read<TskgShowDetailsController>().clear();
+                }
+              },
               itemCount: showList.length,
               itemBuilder: (context, focusNode, index) {
                 final showItem = showList[index];

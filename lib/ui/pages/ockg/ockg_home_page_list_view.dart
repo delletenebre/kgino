@@ -84,6 +84,11 @@ class OckgHomePageListView extends HookWidget {
 
         if (categories.isNotEmpty) {
           return KrsVerticalListView(
+            onFocusChange: (hasFocus) {
+              if (!hasFocus) {
+                context.read<OckgMovieDetailsController>().clear();
+              }
+            },
             itemCount: categories.length,
             itemBuilder: (context, focusNode, index) {
               final category = categories[index];

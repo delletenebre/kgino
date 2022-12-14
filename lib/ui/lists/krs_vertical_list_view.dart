@@ -10,11 +10,13 @@ class KrsVerticalListView extends StatefulWidget {
   final int itemCount;
   final Widget Function(
     BuildContext context, FocusNode focusNode, int index) itemBuilder;
+  final void Function(bool hasFocus)? onFocusChange;
 
   const KrsVerticalListView({
     super.key,
     required this.itemCount,
     required this.itemBuilder,
+    this.onFocusChange,
   });
 
   @override
@@ -59,6 +61,8 @@ class _KrsVerticalListViewState extends State<KrsVerticalListView> {
               return KeyEventResult.ignored;
             },
             onFocusChange: (hasFocus) {
+              widget.onFocusChange?.call(hasFocus);
+
               if (hasFocus) {
                 listCubit.jumpToCurrent(null);
               }

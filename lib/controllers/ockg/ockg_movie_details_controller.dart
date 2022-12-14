@@ -55,17 +55,10 @@ class OckgMovieDetailsController extends Cubit<RequestState<OckgMovieItem>> {
     }
   }
 
-
-  // Future<void> showPopularMovies() async {
-  //   // запрашиваем список популярных фильмов
-  //   final movies = await _api.getPopMovies();
-    
-  //   if (movies.isNotEmpty) {
-  //     // ^ если данные получены успешно
-
-  //     // запрашиваем информацию по первому фильму
-  //     getMovieById(movies.first.id, showPlayButton: true);
-  //   }
-  // }
+  void clear() {
+    if (!isClosed) {
+      emit(const RequestState.empty());
+    }
+  }
 
 }

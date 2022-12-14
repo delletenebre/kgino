@@ -13,8 +13,10 @@ class KrsTabBar extends StatefulWidget implements PreferredSizeWidget {
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 4, vertical: 24.0),
     this.labelSpacing = 4.0,
     this.onTap,
-    //this.center = true,
+    this.onFocusChanged,
   });
+
+  final void Function(bool hasFocus)? onFocusChanged;
 
   /// Typically a list of two or more [Tab] widgets.
   ///
@@ -202,6 +204,8 @@ class _KrsTabBarState extends State<KrsTabBar>
     return Focus(
       skipTraversal: true,
       onFocusChange: (hasFocus) {
+        widget.onFocusChanged?.call(hasFocus);
+
         if (!_tabBarFocused && hasFocus) {
           /// ^ если до этого не было фокуса и фокус стал активен
           

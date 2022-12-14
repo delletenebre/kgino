@@ -21,6 +21,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  bool _tabBarHasFocus = false;
+
   late TabController _tabController;
 
   @override
@@ -54,78 +56,96 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             create: (context) => TskgSearchController(),
           ),
         ],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 32.0,
-                left: 32.0,
-              ),
-              child: SizedBox(
-                height: 40.0,
-                child: Row(
-                  children: [
-
-                    Text('KG',
-                      style: TextStyle(
-                        color: theme.colorScheme.outline,
-                        fontWeight: FontWeight.bold,
+        child: Builder(
+          builder: (context) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 32.0,
+                    left: 32.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Text('KG',
+                        style: TextStyle(
+                          color: theme.colorScheme.outline,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
 
-                    Text('ino',
-                      style: TextStyle(
-                        color: theme.colorScheme.outline,
+                      Text('ino',
+                        style: TextStyle(
+                          color: theme.colorScheme.outline,
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(
-                      width: 40.0,
-                    ),
-
-                    Expanded(
-                      child: KrsTabBar(
-                        controller: _tabController,
-                        tabs: [
-                          Tab(
-                            text: locale.search,
-                          ),
-                          Tab(
-                            text: locale.movies,
-                          ),
-                          Tab(
-                            text: locale.shows,
-                          ),
-                          Tab(
-                            text: locale.cameras,
-                          ),
-                          Tab(
-                            text: locale.settings,
-                          ),
-                        ]
+                      const SizedBox(
+                        width: 40.0,
                       ),
-                    ),
-                  ],
+
+                      Expanded(
+                        child: KrsTabBar(
+                          onFocusChanged: (hasFocus) {
+                            setState(() {
+                              _tabBarHasFocus = hasFocus;
+                            });
+                          },
+                          controller: _tabController,
+                          tabs: [
+                            Tab(
+                              text: locale.search,
+                            ),
+                            Tab(
+                              text: locale.movies,
+                            ),
+                            Tab(
+                              text: locale.shows,
+                            ),
+                            Tab(
+                              text: locale.cameras,
+                            ),
+                            Tab(
+                              text: locale.settings,
+                            ),
+                          ]
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
 
-            Expanded(
-              child: TabBarView(
-                clipBehavior: Clip.none,
-                controller: _tabController,
-                children: const [
-                  SearchPage(),
-                  OckgHomePage(),
-                  TskgHomePage(),
-                  WcamHomePage(),
-                  SettingsPage(),
-                ],
-              ),
-            ),
-          ],
+                Expanded(
+                  child: Stack(
+                    children: [
+                      TabBarView(
+                        clipBehavior: Clip.none,
+                        controller: _tabController,
+                        children: const [
+                          SearchPage(),
+                          OckgHomePage(),
+                          TskgHomePage(),
+                          WcamHomePage(),
+                          SettingsPage(),
+                        ],
+                      ),
+
+                      Visibility(
+                        visible: _tabBarHasFocus,
+                        child: Positioned.fill(
+                          child: ColoredBox(
+                            color: theme.scaffoldBackgroundColor.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
