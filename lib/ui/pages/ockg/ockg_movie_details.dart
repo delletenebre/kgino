@@ -60,6 +60,7 @@ class OckgMovieDetais extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: movie.posterUrl,
               fit: BoxFit.cover,
+              memCacheWidth: 840,
             ),
           ),
 

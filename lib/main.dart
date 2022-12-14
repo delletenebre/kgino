@@ -31,6 +31,7 @@ Future<void> main() async {
 
   /// инициализируем хранилище
   await Hive.openBox<MovieItem>(SeenItemsController.storageKey);
+  await Hive.openBox('settings');
 
   /// инициализируем локальное хранилище
   final sharedStorage = await SharedPreferences.getInstance();

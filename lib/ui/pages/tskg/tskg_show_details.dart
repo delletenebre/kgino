@@ -58,6 +58,7 @@ class TskgShowDetais extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: show.posterUrl,
               fit: BoxFit.cover,
+              memCacheWidth: 840,
             ),
           ),
 
