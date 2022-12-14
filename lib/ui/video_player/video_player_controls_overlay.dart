@@ -86,6 +86,7 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     if (widget.isVisible) {
@@ -128,6 +129,27 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
         child: Stack(
           children: [
             /// название видео
+            Positioned(
+              bottom: 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: AnimatedContainer(
+                duration: KrsTheme.animationDuration,
+                height: MediaQuery.of(context).size.height * 0.5,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      widget.isVisible ? theme.colorScheme.surface : Colors.transparent,
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            /// название видео
             AnimatedPositioned(
               duration: KrsTheme.animationDuration,
               top: widget.isVisible ? 48.0 : 0.0,
@@ -151,7 +173,7 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
               ),
             ),
 
-            /// ^ если видео загружается
+            /// если видео загружается
             if (isLoading) const LoadingIndicator(
               size: 64.0,
             ),
@@ -168,6 +190,7 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
               ),
             ),
 
+            /// нижняя панель
             if (!isLoading) AnimatedPositioned(
               duration: KrsTheme.animationDuration,
               bottom: widget.isVisible ? 32.0 : 0.0,

@@ -53,6 +53,7 @@ class SearchPage extends StatelessWidget {
             return SizedBox.fromSize(
               size: const Size.fromHeight(ockgListViewHeight),
               child: KrsHorizontalListView<MovieItem>(
+                key: UniqueKey(),
                 focusNode: focusNode,
                 titleText: item.title,
                 items: item.items,

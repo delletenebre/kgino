@@ -142,6 +142,7 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
                   borderRadius: const BorderRadius.all(Radius.circular(9.0)),
                   image: DecorationImage(
                     image: imageProvider,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

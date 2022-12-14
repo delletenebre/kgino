@@ -51,47 +51,39 @@ class WcamHomePage extends StatelessWidget {
           final ktState = context.watch<KtCamerasController>().state;
           final citylinkState = context.watch<CitylinkCamerasController>().state;
 
-          if (elcatState.isLoading || ktState.isLoading) {
+          if (saimaState.isLoading || elcatState.isLoading || ktState.isLoading || citylinkState.isLoading) {
             return const LoadingIndicator();
           }
 
           final categories = <CategoryListItem<MovieItem>>[];
 
-          if (saimaState.isSuccess) {
-            categories.add(
-              CategoryListItem(
-                title: 'Saima Telecom',
-                items: saimaState.data,
-              )
-            );
-          }
+          categories.add(
+            CategoryListItem(
+              title: 'Saima Telecom',
+              items: saimaState.data,
+            )
+          );
 
-          if (elcatState.isSuccess) {
-            categories.add(
-              CategoryListItem(
-                title: 'ЭлКат',
-                items: elcatState.data,
-              )
-            );
-          }
+          categories.add(
+            CategoryListItem(
+              title: 'ЭлКат',
+              items: elcatState.data,
+            )
+          );
 
-          if (ktState.isSuccess) {
-            categories.add(
-              CategoryListItem(
-                title: 'Кыргызтелеком',
-                items: ktState.data,
-              )
-            );
-          }
+          categories.add(
+            CategoryListItem(
+              title: 'Кыргызтелеком',
+              items: ktState.data,
+            )
+          );
 
-          if (citylinkState.isSuccess) {
-            categories.add(
-              CategoryListItem(
-                title: 'Ситилинк',
-                items: citylinkState.data,
-              )
-            );
-          }
+          categories.add(
+            CategoryListItem(
+              title: 'Ситилинк',
+              items: citylinkState.data,
+            )
+          );
 
           categories.add(
             CategoryListItem(
