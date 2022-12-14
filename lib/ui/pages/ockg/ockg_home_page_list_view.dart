@@ -14,7 +14,7 @@ import '../../../models/movie_item.dart';
 import '../../../models/ockg/ockg_bestsellers_category.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../models/category_list_item.dart';
-import '../../lists/krs_horizontal_list_view_2.dart';
+import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_vertical_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
@@ -90,7 +90,7 @@ class OckgHomePageListView extends HookWidget {
 
               return SizedBox.fromSize(
                 size: const Size.fromHeight(ockgListViewHeight),
-                child: KrsHorizontalListView2<MovieItem>(
+                child: KrsHorizontalListView<MovieItem>(
                   focusNode: focusNode,
                   onItemFocused: (movie) {
                     /// TODO fix when empty

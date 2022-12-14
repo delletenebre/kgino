@@ -157,20 +157,16 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
             ),
 
             /// остановить/продолжить воспроизведение
-            // if (!isLoading) Center(
-            //   child: ValueListenableBuilder(
-            //     valueListenable: widget.playerController!,
-            //     builder: (context, VideoPlayerValue video, child) {
-            //       return PlayPauseButton(
-            //         focusNode: _playButtonFocusNode,
-            //         isPlaying: video.isPlaying,
-            //         onPressed: () {
-            //           widget.onPlayPause.call();
-            //         },
-            //       );
-            //     },
-            //   ),
-            // ),
+            if (!isLoading) Center(
+              child: ValueListenableBuilder(
+                valueListenable: widget.playerController!,
+                builder: (context, VideoPlayerValue video, child) {
+                  return PlayPauseButton(
+                    isPlaying: video.isPlaying,
+                  );
+                },
+              ),
+            ),
 
             if (!isLoading) AnimatedPositioned(
               duration: KrsTheme.animationDuration,

@@ -14,7 +14,7 @@ import '../../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../../models/movie_item.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../models/category_list_item.dart';
-import '../../lists/krs_horizontal_list_view_2.dart';
+import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_vertical_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
 import '../../loading_indicator.dart';
@@ -112,7 +112,7 @@ class TskgHomePageListView extends HookWidget {
 
                 return SizedBox.fromSize(
                   size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                  child: KrsHorizontalListView2<MovieItem>(
+                  child: KrsHorizontalListView<MovieItem>(
                     focusNode: focusNode,
                     onItemFocused: (item) {
                       context.read<TskgShowDetailsController>().getShowById(

@@ -9,7 +9,6 @@ import '../../models/movie_item.dart';
 import '../../models/ockg/ockg_catalog.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
-import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/pages/ockg/ockg_movie_details.dart';
 
@@ -73,7 +72,7 @@ class OckgCatalogPage extends StatelessWidget {
                 ),
                 child: BlocBuilder<OckgCatalogController, OckgCatalog>(
                   builder: (context, catalog) {
-                    return KrsHorizontalListView2<OckgMovie>(
+                    return KrsHorizontalListView<OckgMovie>(
                       onItemFocused: (item) {
                         context.read<OckgMovieDetailsController>().getMovieById(
                           item.movieId.toString(),

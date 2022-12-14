@@ -4,7 +4,6 @@ import 'package:kgino/models/episode_item.dart';
 
 import '../../models/movie_item.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
-import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/pages/episode_card.dart';
 
 
@@ -29,7 +28,7 @@ class _OckgMovieFilesPageState extends State<OckgMovieFilesPage> {
       body: Center(
         child: SizedBox.fromSize(
           size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
-          child: KrsHorizontalListView2<EpisodeItem>(
+          child: KrsHorizontalListView<EpisodeItem>(
             padding: const EdgeInsets.symmetric(horizontal: 48.0),
             spacing: 24.0,
             items: widget.movie.seasons.first.episodes,

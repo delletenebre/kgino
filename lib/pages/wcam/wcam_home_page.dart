@@ -12,7 +12,6 @@ import '../../controllers/wcam/saima_cameras_controller.dart';
 import '../../models/category_list_item.dart';
 import '../../models/movie_item.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
-import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/lists/krs_vertical_list_view.dart';
 import '../../ui/loading_indicator.dart';
@@ -133,7 +132,7 @@ class WcamHomePage extends StatelessWidget {
 
                   return SizedBox.fromSize(
                     size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    child: KrsHorizontalListView2<MovieItem>(
+                    child: KrsHorizontalListView<MovieItem>(
                       focusNode: focusNode,
                       onLoadNextPage: category.title.startsWith('Ситилинк') ? (page, loadedCount) {
                         final api = GetIt.instance<WcamApiProvider>();

@@ -9,7 +9,6 @@ import '../../models/movie_item.dart';
 import '../../models/season_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
-import '../../ui/lists/krs_horizontal_list_view_2.dart';
 import '../../ui/pages/episode_card.dart';
 
 
@@ -74,7 +73,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
           /// номера сезонов
           SizedBox(
             height: 40.0 + 48.0 * 2,
-            child: KrsHorizontalListView2<SeasonItem>(
+            child: KrsHorizontalListView<SeasonItem>(
               padding: const EdgeInsets.all(48.0),
               controller: _seasonsScrollController,
               spacing: 8.0,
@@ -130,7 +129,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
           Expanded(
             child: SizedBox.fromSize(
               size: const Size.fromHeight(112.0 + 24.0 + 18.0 + 8.0),
-              child: KrsHorizontalListView2<EpisodeItem>(
+              child: KrsHorizontalListView<EpisodeItem>(
                 controller: _episodesScrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
