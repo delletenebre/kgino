@@ -8,27 +8,33 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final settingsBox = Hive.box('settings');
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ValueListenableBuilder(
-          valueListenable: settingsBox.listenable(keys: ['animations']),
-          builder: (context, box, child) {
-            return ListTile(
-              title: child,
-              trailing: Switch(
-                value: box.get('animations', defaultValue: false),
-                onChanged: (bool changed) {
-                  box.put('animations', changed);
-                },
-              ),
-            );
-          },
-          child: Text('Анимации'),
-        ),
-      ]
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ValueListenableBuilder(
+            valueListenable: settingsBox.listenable(keys: ['animations']),
+            builder: (context, box, child) {
+              return ListTile(
+                title: child,
+                trailing: Switch(
+                  activeColor: theme.colorScheme.primary,
+                  value: box.get('animations', defaultValue: false),
+                  onChanged: (bool changed) {
+                    box.put('animations', changed);
+                  },
+                ),
+              );
+            },
+            child: Text('Включить визуальные эффекты'),
+          ),
+        ]
+      ),
     );
   }
 }
