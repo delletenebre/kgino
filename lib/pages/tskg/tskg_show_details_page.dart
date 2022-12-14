@@ -62,7 +62,6 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     /// контроллер просмотренных эпизодов
@@ -189,34 +188,31 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                       for (final season in show.seasons) {
                                         episodes.addAll(season.episodes);
                                       }
-                                      final episode = episodes.singleWhere((episode) {
-                                        return episode.id == seenEpisode.id;
-                                      });
+                                      // final episode = episodes.singleWhere((episode) {
+                                      //   return episode.id == seenEpisode.id;
+                                      // });
 
                                       return Padding(
                                         padding: const EdgeInsets.only(right: 8.0),
-                                        // child: KrsTooltip(
-                                        //   message: '${episode.name} / ${Utils.formatDuration(Duration(seconds: seenEpisode.position))} из ${Utils.formatDuration(episode.duration)}',
-                                          child: ElevatedButton.icon(
-                                            focusNode: _playButtonFocusNode,
-                                            autofocus: true,
-                                            style: KrsTheme.filledTonalButtonStyleOf(context),
-                                            onPressed: () {
-                                              /// переходим на страницу плеера сериала
-                                              context.goNamed('tskgPlayer',
-                                                params: {
-                                                  'id': show.id,    
-                                                },
-                                                queryParams: {
-                                                  'episodeId': seenEpisode.id,
-                                                },
-                                                extra: show,
-                                              );
-                                            },
-                                            icon: const Icon(Icons.play_arrow),
-                                            label: Text(locale.play),
-                                          ),
-                                        // ),
+                                        child: ElevatedButton.icon(
+                                          focusNode: _playButtonFocusNode,
+                                          autofocus: true,
+                                          style: KrsTheme.filledTonalButtonStyleOf(context),
+                                          onPressed: () {
+                                            /// переходим на страницу плеера сериала
+                                            context.goNamed('tskgPlayer',
+                                              params: {
+                                                'id': show.id,    
+                                              },
+                                              queryParams: {
+                                                'episodeId': seenEpisode.id,
+                                              },
+                                              extra: show,
+                                            );
+                                          },
+                                          icon: const Icon(Icons.play_arrow),
+                                          label: Text(locale.play),
+                                        ),
                                       );
                                     }
                                     

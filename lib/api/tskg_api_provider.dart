@@ -147,8 +147,7 @@ class TskgApiProvider {
                   id: TskgShow.getShowIdFromUrl(link),
                   name: title,
                   updatedAt: date,
-                  // TODO return it
-                  //subtitle: subtitle,
+                  subtitle: subtitle,
                   genres: genres,
                   //badges: badges.toList(),
                 )

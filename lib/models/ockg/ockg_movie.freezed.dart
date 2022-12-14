@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ockg_movie.dart';
 
@@ -442,6 +442,7 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   List<OckgMovieCover> get covers {
+    if (_covers is EqualUnmodifiableListView) return _covers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_covers);
   }
@@ -455,6 +456,7 @@ class _$_OckgMovie extends _OckgMovie {
   @JsonKey()
   @TranslationConverter()
   List<String> get translation {
+    if (_translation is EqualUnmodifiableListView) return _translation;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_translation);
   }
@@ -470,6 +472,7 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   List<String> get genres {
+    if (_genres is EqualUnmodifiableListView) return _genres;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_genres);
   }
@@ -478,6 +481,7 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   List<String> get countries {
+    if (_countries is EqualUnmodifiableListView) return _countries;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_countries);
   }
@@ -486,6 +490,7 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   List<String> get directors {
+    if (_directors is EqualUnmodifiableListView) return _directors;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_directors);
   }
@@ -504,6 +509,7 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   List<OckgFile> get files {
+    if (_files is EqualUnmodifiableListView) return _files;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_files);
   }
@@ -514,6 +520,7 @@ class _$_OckgMovie extends _OckgMovie {
   @override
   @JsonKey()
   List<OckgMovie> get otherMovies {
+    if (_otherMovies is EqualUnmodifiableListView) return _otherMovies;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_otherMovies);
   }

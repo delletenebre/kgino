@@ -61,6 +61,8 @@ class MovieItem extends HiveObject with EquatableMixin {
   /// страны
   final List<String> countries;
 
+  /// дополнительная информация (в основном вторая строка, после названия)
+  final String subtitle;
   
   /// ключ, по которому сохраняем в БД
   String get storageKey => '$type.$id';
@@ -88,6 +90,7 @@ class MovieItem extends HiveObject with EquatableMixin {
     this.year = '',
     this.genres = const [],
     this.countries = const [],
+    this.subtitle = '',
   }) : updatedAt = updatedAt ?? DateTime.now(),
         episodes = episodes ?? List<EpisodeItem>.empty(growable: true);
   
@@ -173,6 +176,7 @@ class TskgMovieItem extends MovieItem {
     String year = '',
     List<String> genres = const [],
     List<String> countries = const [],
+    String subtitle = '',
     
     this.voiceActing = '',
     this.voiceActings = const [],
@@ -190,6 +194,7 @@ class TskgMovieItem extends MovieItem {
     year: year,
     genres: genres,
     countries: countries,
+    subtitle: subtitle,
     
   );
   

@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'tskg_show.dart';
 
@@ -289,6 +289,7 @@ class _$_TskgShow extends _TskgShow {
   @override
   @JsonKey()
   List<String> get badges {
+    if (_badges is EqualUnmodifiableListView) return _badges;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_badges);
   }
@@ -300,6 +301,7 @@ class _$_TskgShow extends _TskgShow {
   @override
   @JsonKey()
   List<String> get genres {
+    if (_genres is EqualUnmodifiableListView) return _genres;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_genres);
   }
@@ -314,6 +316,7 @@ class _$_TskgShow extends _TskgShow {
   @override
   @JsonKey()
   List<String> get countries {
+    if (_countries is EqualUnmodifiableListView) return _countries;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_countries);
   }
@@ -325,6 +328,7 @@ class _$_TskgShow extends _TskgShow {
   @override
   @JsonKey()
   List<TskgSeason> get seasons {
+    if (_seasons is EqualUnmodifiableListView) return _seasons;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_seasons);
   }
@@ -341,6 +345,7 @@ class _$_TskgShow extends _TskgShow {
   @override
   @JsonKey()
   List<TskgShow> get voiceActings {
+    if (_voiceActings is EqualUnmodifiableListView) return _voiceActings;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_voiceActings);
   }

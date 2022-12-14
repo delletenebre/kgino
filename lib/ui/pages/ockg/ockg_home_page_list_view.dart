@@ -98,7 +98,6 @@ class OckgHomePageListView extends HookWidget {
                 child: KrsHorizontalListView<MovieItem>(
                   focusNode: focusNode,
                   onItemFocused: (movie) {
-                    /// TODO fix when empty
                     if (movie.type == MovieItemType.ockg) {
                       context.read<OckgMovieDetailsController>().getMovieById(
                         movie.id,

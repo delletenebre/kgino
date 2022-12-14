@@ -4,10 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../resources/krs_theme.dart';
+import '../../models/movie_item.dart';
 
 class KrsListItemCard extends StatefulWidget {
   final FocusNode? focusNode;
-  final dynamic item;
+  final MovieItem item;
   final Size posterSize;
   final void Function(FocusNode focusNode)? onFocused;
   final bool titleEnabled;
@@ -284,14 +285,14 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
                   ),
                 ),
 
-                /// описание фильма
-                // if (widget.item.subtitle.isNotEmpty) Text(widget.item.subtitle,
-                //   style: TextStyle(
-                //     fontSize: 12.0,
-                //     color: theme.textTheme.caption?.color?.withOpacity(0.36),
-                //   ),
-                //   maxLines: 1,
-                // ),
+                /// дополнительная информация
+                if (widget.item.subtitle.isNotEmpty) Text(widget.item.subtitle,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: theme.textTheme.caption?.color?.withOpacity(0.36),
+                  ),
+                  maxLines: 1,
+                ),
 
               ],
             ),
