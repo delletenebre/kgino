@@ -52,7 +52,7 @@ class KrsHorizontalListView<T> extends StatefulWidget {
 
 class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
   /// текущая страница элементов (при динамической загрузке)
-  int _currentPage = 1;
+  int _currentPage = 0;
   /// была ли достигнута последняя страница
   bool _lastPageReached = false;
   final _items = <T>[];
@@ -73,7 +73,7 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
     );
 
     if (widget.items.isEmpty) {
-      widget.onLoadNextPage?.call(1, 0).then((items) {
+      widget.onLoadNextPage?.call(0, 0).then((items) {
         _updateListItems(items);
       });
       widget.itemsFuture?.then((items) {

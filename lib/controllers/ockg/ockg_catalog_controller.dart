@@ -8,6 +8,11 @@ import '../../models/ockg/ockg_catalog.dart';
 
 export '../../models/request_state.dart';
 
+enum OckgCatalogType {
+  genre,
+  selection,
+}
+
 class OckgCatalogController extends Cubit<OckgCatalog> {
 
   /// провайдер запросов к API
@@ -23,12 +28,15 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
   int _currentPage = 0;
 
   /// идентификатор жанра
-  final String genreId;
+  final String id;
+
+  final OckgCatalogType type;
 
   OckgCatalogController({
-    this.genreId = '',
+    this.id = '',
+    required this.type,
   }) : super(const OckgCatalog()) {
-    fetchMovies();
+    //fetchMovies();
   }
 
   Future<void> fetchMovies() async {
@@ -39,11 +47,26 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
       try {
 
         /// запрашиваем данные каталога
-        final catalog = await _api.getCatalog(
-          genreId: genreId,
-          offset: _currentCatalog.offset + (_currentPage * _pageSize),
-          pageSize: _pageSize,
-        );
+        late final OckgCatalog catalog;
+
+        switch (type) {
+          
+          case OckgCatalogType.genre:
+            catalog = await _api.getCatalog(
+              genreId: id,
+              offset: _currentCatalog.offset + (_currentPage * _pageSize),
+              pageSize: _pageSize,
+            );
+            break;
+
+          case OckgCatalogType.selection:
+            catalog = await _api.getCatalog(
+              selectionId: id,
+              offset: _currentCatalog.offset + (_currentPage * _pageSize),
+              pageSize: _pageSize,
+            );
+            break;
+        }
 
         if (!isClosed) {
           /// ^ если контроллер ещё существует
@@ -71,11 +94,26 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
     try {
 
       /// запрашиваем данные каталога
-      final catalog = await _api.getCatalog(
-        genreId: genreId,
-        offset: loadedItemsLength + (page * _pageSize),
-        pageSize: _pageSize,
-      );
+      late final OckgCatalog catalog;
+
+      switch (type) {
+        
+        case OckgCatalogType.genre:
+          catalog = await _api.getCatalog(
+            genreId: id,
+            offset: loadedItemsLength + (page * _pageSize),
+            pageSize: _pageSize,
+          );
+          break;
+
+        case OckgCatalogType.selection:
+          catalog = await _api.getCatalog(
+            selectionId: id,
+            offset: loadedItemsLength + (page * _pageSize),
+            pageSize: _pageSize,
+          );
+          break;
+      }
 
       if (!isClosed) {
         /// ^ если контроллер ещё существует
@@ -84,7 +122,7 @@ class OckgCatalogController extends Cubit<OckgCatalog> {
       }
 
     } catch (exception) {
-      debugPrint('OckgCatalogController fetchMovies() exception: $exception');
+      debugPrint('OckgCatalogController getMovies() exception: $exception');
     }
 
     return [];

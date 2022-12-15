@@ -201,6 +201,7 @@ class OckgApiProvider {
   /// список фильмов из каталога
   Future<OckgCatalog> getCatalog({
     String genreId = '',
+    String selectionId = '',
     required int offset,
     int pageSize = 15,
   }) async {
@@ -208,9 +209,12 @@ class OckgApiProvider {
     final formData = FormData.fromMap({
       'action[0]': 'Video.getCatalog',
       if (genreId.isNotEmpty) 'genre[0]': genreId,
+      if (selectionId.isNotEmpty) 'selection[0]': selectionId,
       'offset[0]': offset,
       'size[0]': pageSize,
     });
+
+    debugPrint(formData.fields.toString());
 
     try {
     
@@ -233,6 +237,56 @@ class OckgApiProvider {
       debugPrint('Exception: $exception, stacktrace: $stacktrace');
       
       return const OckgCatalog();
+    }
+
+  }
+
+  /// список подборок
+  Future<List<MovieItem>> getSelections() async {
+
+    final items = <MovieItem>[];
+
+    try {
+
+      /// <div class=\"item\" mid=\"2\" title=\" TOP-20 лучших триллеров \"> <div class=\"cover\"> <a href=\"?s=2&v=s#/catalog/selection/2/page/1\"> <img src=\"/media/images/topImages/thriller.jpg\" class=\"cover\"> </a> </div> <a class=\"title\" href=\"?s=2&v=s#/catalog/selection/2/page/1\"> TOP-20 лучших триллеров </a> <a class=\"subtitle\" href=\"?s=2&v=s#/catalog/selection/2/page/1\"> По версии нашего каталога </a> </div>
+      /// <div class=\\\"item\\\" mid=\\\"(\d+?)\\\" title=\\\"(.+?)\\\"> <div class=\\\"cover\\\"> <a href=\\\"(.+?)\\\"> <img src=\\\"(.+?)\\\" class=\\\"cover\\\"> <\/a> <\/div> <a class=\\\"title\\\" href=\\\"(.+?)\\\">(.+?)<\/a> <a class=\\\"subtitle\\\" href=\\\"(.+?)\\\"> По версии нашего каталога <\/a> <\/div>
+      final response = await _dio.get('https://oc.kg/#/selections');
+
+      final regExp = RegExp(r'<div class=\\\"item\\\" mid=\\\"(\d+?)\\\" title=\\\"(.+?)\\\"> <div class=\\\"cover\\\"> <a href=\\\"(.+?)\\\"> <img src=\\\"(.+?)\\\" class=\\\"cover\\\"> <\/a> <\/div> <a class=\\\"title\\\" href=\\\"(.+?)\\\">(.+?)<\/a> <a class=\\\"subtitle\\\" href=\\\"(.+?)\\\"> По версии нашего каталога <\/a> <\/div>');
+            
+      if (regExp.hasMatch(response.data)) {
+        final matches = regExp.allMatches(response.data);
+        for (final match in matches) {
+          final id = match.group(1) ?? '';
+          final name = match.group(2)?.trim() ?? '';
+          final posterUrl = 'https://oc.kg${match.group(4)}';
+          
+          items.add(
+            MovieItem(
+              type: MovieItemType.folder,
+              id: id,
+              name: name,
+              posterUrl: posterUrl,
+            )
+          );
+        }
+
+        
+      }
+
+      return items;
+      
+    } on SocketException catch (_) {
+
+      debugPrint('no internet connection');
+      
+      return [];
+    
+    } catch (exception, stacktrace) {
+      
+      debugPrint('Exception: $exception, stacktrace: $stacktrace');
+      
+      return [];
     }
 
   }

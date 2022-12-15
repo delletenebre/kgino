@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kgino/constants.dart';
 
+import '../../../api/ockg_api_provider.dart';
 import '../../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../../controllers/ockg/ockg_movie_details_controller.dart';
@@ -28,6 +29,9 @@ class OckgHomePageListView extends HookWidget {
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
+    /// провайдер запросов к API
+    final api = GetIt.instance<OckgApiProvider>();
+
      /// контроллер последних просмотренных сериалов
     final seenItemsController = GetIt.instance<SeenItemsController>();
     /// hook для подписки на изменения
@@ -40,6 +44,7 @@ class OckgHomePageListView extends HookWidget {
 
         final categories = <CategoryListItem<MovieItem>>[];
 
+        /// продолжить просмотр
         if (seenMovies.isNotEmpty) {
           categories.add(
             CategoryListItem<MovieItem>(
@@ -50,6 +55,7 @@ class OckgHomePageListView extends HookWidget {
         }
 
 
+        /// бестселлеры
         if (state.isSuccess) {
           categories.addAll(
             state.data.map((item) {
@@ -68,6 +74,17 @@ class OckgHomePageListView extends HookWidget {
           );
         }
 
+
+        /// подборки
+        categories.add(
+          CategoryListItem<MovieItem>(
+            title: 'Подборки',
+            itemsFuture: api.getSelections(),
+          )
+        );
+
+
+        /// категории по жанрам
         categories.add(
           CategoryListItem<MovieItem>(
             title: locale.genres,
@@ -82,42 +99,44 @@ class OckgHomePageListView extends HookWidget {
           )
         );
 
-        if (categories.isNotEmpty) {
-          return KrsVerticalListView(
-            onFocusChange: (hasFocus) {
-              if (!hasFocus) {
-                context.read<OckgMovieDetailsController>().clear();
-              }
-            },
-            itemCount: categories.length,
-            itemBuilder: (context, focusNode, index) {
-              final category = categories[index];
 
-              return SizedBox.fromSize(
-                size: const Size.fromHeight(ockgListViewHeight),
-                child: KrsHorizontalListView<MovieItem>(
-                  focusNode: focusNode,
-                  onItemFocused: (movie) {
-                    if (movie.type == MovieItemType.ockg) {
-                      context.read<OckgMovieDetailsController>().getMovieById(
-                        movie.id,
-                      );
-                    }
-                  },
-                  titleText: category.title,
-                  items: category.items,
-                  itemBuilder: (context, focusNode, index, movie) {
-                    return KrsListItemCard(
-                      focusNode: focusNode,
-                      posterSize: ockgPosterSize,
-                      
-                      /// данные о фильме
-                      item: movie,
+        return KrsVerticalListView(
+          onFocusChange: (hasFocus) {
+            if (!hasFocus) {
+              context.read<OckgMovieDetailsController>().clear();
+            }
+          },
+          itemCount: categories.length,
+          itemBuilder: (context, focusNode, index) {
+            final category = categories[index];
 
-                      /// при выборе элемента
-                      onTap: () {
+            return SizedBox.fromSize(
+              size: const Size.fromHeight(ockgListViewHeight),
+              child: KrsHorizontalListView<MovieItem>(
+                focusNode: focusNode,
+                onItemFocused: (movie) {
+                  if (movie.type == MovieItemType.ockg) {
+                    context.read<OckgMovieDetailsController>().getMovieById(
+                      movie.id,
+                    );
+                  }
+                },
+                titleText: category.title,
+                items: category.items,
+                itemsFuture: category.itemsFuture,
+                itemBuilder: (context, focusNode, index, movie) {
+                  return KrsListItemCard(
+                    focusNode: focusNode,
+                    posterSize: ockgPosterSize,
+                    
+                    /// данные о фильме
+                    item: movie,
 
-                        if (movie.type == MovieItemType.folder) {
+                    /// при выборе элемента
+                    onTap: () {
+
+                      if (movie.type == MovieItemType.folder) {
+                        if (category.title == locale.genres) {
                           /// переходим на страницу каталога фильмов
                           context.goNamed('ockgCatalogGenre',
                             params: {
@@ -126,25 +145,31 @@ class OckgHomePageListView extends HookWidget {
                             extra: movie,
                           );
                         } else {
-                          /// переходим на страницу деталей о фильме
-                          context.goNamed('ockgMovieDetails',
+                          /// переходим на страницу подборки
+                          context.goNamed('ockgCatalogSelection',
                             params: {
                               'id': movie.id,
                             },
+                            extra: movie,
                           );
                         }
-                        
+                      } else {
+                        /// переходим на страницу деталей о фильме
+                        context.goNamed('ockgMovieDetails',
+                          params: {
+                            'id': movie.id,
+                          },
+                        );
+                      }
+                      
 
-                      },
-                    );
-                  },
-                ),
-              );
-            },
-          );
-        }
-
-        return const LoadingIndicator();
+                    },
+                  );
+                },
+              ),
+            );
+          },
+        );
       }
     );
   }

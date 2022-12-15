@@ -14,10 +14,12 @@ import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 class OckgCatalogPage extends StatelessWidget {
   final MovieItem item;
+  final OckgCatalogType type;
 
   const OckgCatalogPage({
     super.key,
     required this.item,
+    required this.type,
   });
 
   @override
@@ -68,7 +70,8 @@ class OckgCatalogPage extends StatelessWidget {
               height: ockgListViewHeight,
               child: BlocProvider(
                 create: (context) => OckgCatalogController(
-                  genreId: item.id,
+                  id: item.id,
+                  type: type,
                 ),
                 child: BlocBuilder<OckgCatalogController, OckgCatalog>(
                   builder: (context, catalog) {
@@ -79,6 +82,7 @@ class OckgCatalogPage extends StatelessWidget {
                         );
                       },
                       onLoadNextPage: (page, loadedCount) async {
+                        print('HERE $page $loadedCount');
                         return context.read<OckgCatalogController>().getMovies(page, loadedCount);
                       },
                       items: catalog.movies,

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:kgino/controllers/ockg/ockg_catalog_controller.dart';
 
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
@@ -106,10 +107,25 @@ class KrsRouter {
             builder: (context, state) {
               final item = state.extra! as MovieItem;
               return OckgCatalogPage(
+                type: OckgCatalogType.genre,
                 item: item,
               );
             },
           ),
+
+          GoRoute(
+            path: 'ockg/selection/:id',
+            name: 'ockgCatalogSelection',
+            builder: (context, state) {
+              final item = state.extra! as MovieItem;
+              return OckgCatalogPage(
+                type: OckgCatalogType.selection,
+                item: item,
+              );
+            },
+          ),
+
+          
 
           GoRoute(
             path: 'wcam',
