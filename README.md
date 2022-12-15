@@ -29,6 +29,8 @@
 - [x] Продолжить просмотр с места остановки
 - [ ] Настройки для субтитров
 
+### Скриншоты
+
 ![screenshot 1](/screenshots/1.png?raw=true)
 ![screenshot 2](/screenshots/2.png?raw=true)
 ![screenshot 3](/screenshots/3.png?raw=true)
