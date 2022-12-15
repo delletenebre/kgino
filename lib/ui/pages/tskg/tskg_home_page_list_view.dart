@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:kgino/utils.dart';
 
+import '../../../api/tskg_api_provider.dart';
 import '../../../constants.dart';
 import '../../../controllers/seen_items_controller.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
@@ -27,6 +28,8 @@ class TskgHomePageListView extends HookWidget {
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
+
+    final api = GetIt.instance<TskgApiProvider>();
     
     /// контроллер последних просмотренных сериалов
     final seenItemsController = GetIt.instance<SeenItemsController>();
@@ -104,6 +107,20 @@ class TskgHomePageListView extends HookWidget {
             }
           }
 
+          showList.add(
+            CategoryListItem<MovieItem>(
+              title: 'Новые',
+              itemsFuture: api.getNew(),
+            )
+          );
+
+          showList.add(
+            CategoryListItem<MovieItem>(
+              title: 'Популярные',
+              itemsFuture: api.getPopular(),
+            )
+          );
+
           if (showList.isNotEmpty) {
             return KrsVerticalListView(
               onFocusChange: (hasFocus) {
@@ -126,6 +143,7 @@ class TskgHomePageListView extends HookWidget {
                     },
                     titleText: showItem.title,
                     items: showItem.items,
+                    itemsFuture: showItem.itemsFuture,
                     itemBuilder: (context, focusNode, index, show) {
                       
                       return KrsListItemCard(

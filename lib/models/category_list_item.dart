@@ -1,9 +1,11 @@
 class CategoryListItem<T> {
   final String title;
   final List<T> items;
+  final Future<List<T>>? itemsFuture;
 
   CategoryListItem({
     required this.title,
-    required this.items,
+    this.items = const [],
+    this.itemsFuture,
   });
 }

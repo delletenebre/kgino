@@ -6,6 +6,7 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 class KrsHorizontalListView<T> extends StatefulWidget {
   final ListObserverController? controller;
   final List<T> items;
+  final Future<List<T>>? itemsFuture;
   final Widget Function(BuildContext context, FocusNode focusNode, int index, T item) itemBuilder;
 
   /// при получении фокуса на элемент
@@ -32,6 +33,7 @@ class KrsHorizontalListView<T> extends StatefulWidget {
     super.key,
     this.controller,
     this.items = const [],
+    this.itemsFuture,
     required this.itemBuilder,
 
     this.onItemFocused,
@@ -72,6 +74,9 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
 
     if (widget.items.isEmpty) {
       widget.onLoadNextPage?.call(1, 0).then((items) {
+        _updateListItems(items);
+      });
+      widget.itemsFuture?.then((items) {
         _updateListItems(items);
       });
     } else {
@@ -118,7 +123,7 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
 
   @override
   Widget build(context) {
-    if (_items.isEmpty) {
+    if (_items.isEmpty && widget.itemsFuture != null) {
       return const LoadingIndicator();
     }
 

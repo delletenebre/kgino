@@ -63,7 +63,7 @@ class TskgApiProvider {
     /// список элементов
     final items = <TskgMovieItem>[];
 
-    // try {
+    try {
 
       /// запрашиваем данные
       final response = await _dio.get('/news');
@@ -161,11 +161,122 @@ class TskgApiProvider {
         }
 
       }
-    // } catch (exception, stack) {
-    //   /// ^ если прозошла сетевая ошибка
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
       
-    //   debugPrint('exception: $exception');
-    // }
+      debugPrint('exception: $exception');
+    }
+
+    return items;
+  }
+
+
+  /// получение списка популярных
+  Future<List<MovieItem>> getPopular() async {
+    
+    /// список элементов
+    final items = <MovieItem>[];
+
+    try {
+
+      /// запрашиваем данные
+      final response = await _dio.get('/');
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        /// парсим html
+        final document = parse(response.data);
+        
+        /// получаем элементы списка популярных
+        final elements = document.getElementById('index-top-tab')
+            ?.getElementsByClassName('show') ?? [];
+
+        for (final element in elements) {
+          // <div class="show">
+          //   <a href="/show/wednesday_rezka">
+          //     <img src="/posters/wednesday_rezka.png" srcset="/posters2/wednesday_rezka.png 2x" alt="Уэнздей (Уэнсдей)" class="poster poster-lazy" data-toggle="tooltip" data-placement="top" title="Зарубежные сериалы, Комедия">
+          //     <p class="show-title"><img class="app-shows-show-flag" src="https://www.ts.kg/img/flags/svg/4x3/us.svg" alt="США">Уэнздей (Уэнсдей)</p>
+          //   </a>
+          // </div>
+
+          /// парсим ссылку
+          final link = element.getElementsByTagName('a').first;
+          final src = link.attributes['href'] ?? '';
+          final id = TskgShow.getShowIdFromUrl(src);
+
+          /// парсим название
+          final title = link.getElementsByClassName('show-title').first.text;
+
+          items.add(
+            TskgMovieItem(
+              id: id,
+              name: title,
+            )
+          );
+
+        }
+
+      }
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('exception: $exception');
+    }
+
+    return items;
+  }
+
+  /// получение списка новых
+  Future<List<MovieItem>> getNew() async {
+    
+    /// список элементов
+    final items = <MovieItem>[];
+
+    try {
+
+      /// запрашиваем данные
+      final response = await _dio.get('/');
+
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+        /// парсим html
+        final document = parse(response.data);
+        
+        /// получаем элементы списка популярных
+        final elements = document.getElementById('index-news-poster-tab')
+            ?.getElementsByClassName('show') ?? [];
+
+        for (final element in elements) {
+          // <div class="show">
+          //   <a href="/show/wednesday_rezka">
+          //     <img src="/posters/wednesday_rezka.png" srcset="/posters2/wednesday_rezka.png 2x" alt="Уэнздей (Уэнсдей)" class="poster poster-lazy" data-toggle="tooltip" data-placement="top" title="Зарубежные сериалы, Комедия">
+          //     <p class="show-title"><img class="app-shows-show-flag" src="https://www.ts.kg/img/flags/svg/4x3/us.svg" alt="США">Уэнздей (Уэнсдей)</p>
+          //   </a>
+          // </div>
+
+          /// парсим ссылку
+          final link = element.getElementsByTagName('a').first;
+          final src = link.attributes['href'] ?? '';
+          final id = TskgShow.getShowIdFromUrl(src);
+
+          /// парсим название
+          final title = link.getElementsByClassName('show-title').first.text;
+
+          items.add(
+            TskgMovieItem(
+              id: id,
+              name: title,
+            )
+          );
+
+        }
+
+      }
+    } catch (exception, stack) {
+      /// ^ если прозошла сетевая ошибка
+      
+      debugPrint('exception: $exception');
+    }
 
     return items;
   }
