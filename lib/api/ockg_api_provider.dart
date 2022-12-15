@@ -271,10 +271,10 @@ class OckgApiProvider {
           );
         }
 
-        
       }
 
-      return items;
+      /// удаляем дубликаты
+      return items.toSet().toList();
       
     } on SocketException catch (_) {
 
