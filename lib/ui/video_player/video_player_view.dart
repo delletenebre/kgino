@@ -211,6 +211,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     } catch (exception) {
       /// ^ если при загрузке видео произошла ошибка
       
+      debugPrint('$exception');
+
       /// обновляем состояние UI
       _updatePageState(VideoPlayerState.error);
     }
@@ -229,16 +231,6 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               controller: _youtubeController!,
             ),
           ),
-          // YoutubePlayerBuilder(
-          //   player: ,
-          //   builder: (context, player) {
-          //     return Column(
-          //       children: [
-          //         player,
-          //       ],
-          //     );
-          //   }
-          // )
         );
       }
 

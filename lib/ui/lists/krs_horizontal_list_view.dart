@@ -109,7 +109,7 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
   }
 
   void _updateListItems(List<T> items) {
-    if (items.isNotEmpty) {
+    if (mounted && items.isNotEmpty) {
       /// добавляем новые элементы списка
       _items.addAll(items);
       /// добавляем список [FocusNode] для новых элементов списка
