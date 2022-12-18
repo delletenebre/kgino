@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,19 +29,35 @@ class TskgHomePageListView extends HookWidget {
 
   @override
   Widget build(context) {
+    debugPrint('build $this');
+
     final locale = KrsLocale.of(context);
 
     final api = GetIt.instance<TskgApiProvider>();
+    var old = <MovieItem>[];
     
     /// контроллер последних просмотренных сериалов
     final seenItemsController = GetIt.instance<SeenItemsController>();
+    
     /// hook для подписки на изменения
-    useValueListenable(seenItemsController.listenable);
+    //useStream(GoRouter.of(context).);
     /// список последних просмотренных сериалов
-    final seenShows = seenItemsController.find(MovieItemType.tskg, count: 50);
+    final seenShows = <MovieItem>[];
+    // final seenShows = useListenableSelector(seenItemsController.listenable, () {
+    //   return seenItemsController.find(MovieItemType.tskg, count: 50);
+    // });
 
     /// список избранных сериалов
-    final favoriteShows = seenItemsController.takeFavoritesOf(MovieItemType.tskg);
+    final favoriteShows = <MovieItem>[];
+    // final favoriteShows = useListenableSelector(seenItemsController.listenable, () {
+    //   return seenItemsController.takeFavoritesOf(MovieItemType.tskg);
+    // });
+
+    /// список новых сериалов
+    final hookNewItems = useMemoized(() => api.getNew());
+
+    /// список популярных сериалов
+    final hookPopularItems = useMemoized(() => api.getPopular());
 
     return BlocProvider(
       create: (context) => TskgNewsController(),
@@ -110,14 +128,14 @@ class TskgHomePageListView extends HookWidget {
           showList.add(
             CategoryListItem<MovieItem>(
               title: 'Новые',
-              itemsFuture: api.getNew(),
+              itemsFuture: hookNewItems,
             )
           );
-
+          
           showList.add(
             CategoryListItem<MovieItem>(
               title: 'Популярные',
-              itemsFuture: api.getPopular(),
+              itemsFuture: hookPopularItems,
             )
           );
 

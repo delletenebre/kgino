@@ -14,6 +14,8 @@ class TskgHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('build $this');
+    
     return BlocProvider(
       create: (context) => TskgShowDetailsController(),
       child: Column(

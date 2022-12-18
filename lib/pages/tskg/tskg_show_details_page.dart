@@ -62,6 +62,8 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('build $this');
+    
     final locale = KrsLocale.of(context);
 
     /// контроллер просмотренных эпизодов

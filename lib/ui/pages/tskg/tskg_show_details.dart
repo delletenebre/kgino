@@ -17,6 +17,8 @@ class TskgShowDetais extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('build $this');
+    
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
     final size = MediaQuery.of(context).size;

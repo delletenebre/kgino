@@ -60,6 +60,8 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('build $this');
+    
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
