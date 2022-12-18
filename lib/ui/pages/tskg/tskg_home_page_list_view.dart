@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -42,16 +43,15 @@ class TskgHomePageListView extends HookWidget {
     /// hook для подписки на изменения
     //useStream(GoRouter.of(context).);
     /// список последних просмотренных сериалов
-    final seenShows = <MovieItem>[];
-    // final seenShows = useListenableSelector(seenItemsController.listenable, () {
-    //   return seenItemsController.find(MovieItemType.tskg, count: 50);
-    // });
+    // final seenShows = <MovieItem>[];
+    final seenShows = useListenableSelector(seenItemsController.listenable, () {
+      return seenItemsController.find(MovieItemType.tskg, count: 50);
+    });
 
     /// список избранных сериалов
-    final favoriteShows = <MovieItem>[];
-    // final favoriteShows = useListenableSelector(seenItemsController.listenable, () {
-    //   return seenItemsController.takeFavoritesOf(MovieItemType.tskg);
-    // });
+    final List<MovieItem> favoriteShows = useListenableSelector(seenItemsController.listenable, () {
+      return seenItemsController.takeFavoritesOf(MovieItemType.tskg);
+    });
 
     /// список новых сериалов
     final hookNewItems = useMemoized(() => api.getNew());
@@ -194,3 +194,6 @@ class TskgHomePageListView extends HookWidget {
     
   }
 }
+
+
+class ConditionalNotifier<T> extends ValueNotifier<T> { final ValueListenable<T> parent; final bool Function(T value) notifyWhen;  ConditionalNotifier({ required this.parent, required this.notifyWhen, }) : super(parent.value);  @override void addListener(VoidCallback listener) { super.addListener(listener); parent.addListener(_listener); }  @override void removeListener(VoidCallback listener) { super.removeListener(listener); parent.removeListener(_listener); }  void _listener() { if (notifyWhen(parent.value)) { value = parent.value; } } }
