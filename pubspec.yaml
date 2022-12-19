@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: 'none'
 
-version: 3.0.7+307
+version: 3.0.8+308
 
 environment:
   sdk: ">=2.18.2 <3.0.0"
@@ -31,7 +31,7 @@ dependencies:
   firebase_crashlytics: ^3.0.7
   flutter_bloc: ^8.1.1
   flutter_hooks: ^0.18.5+1
-  freezed_annotation: ^2.1.0
+  freezed_annotation: ^2.2.0
   get_it: ^7.2.0
   go_router: 5.1.10
   html: ^0.15.1
