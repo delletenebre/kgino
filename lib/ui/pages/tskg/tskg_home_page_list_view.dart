@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,6 +9,7 @@ import 'package:kgino/utils.dart';
 
 import '../../../api/tskg_api_provider.dart';
 import '../../../constants.dart';
+import '../../../controllers/hooks/use_listenable_selector_condition.dart';
 import '../../../controllers/seen_items_controller.dart';
 import '../../../controllers/tskg/tskg_news_controller.dart';
 import '../../../controllers/tskg/tskg_show_details_controller.dart';
@@ -34,24 +32,37 @@ class TskgHomePageListView extends HookWidget {
 
     final locale = KrsLocale.of(context);
 
+    /// провайдер запросов к API
     final api = GetIt.instance<TskgApiProvider>();
-    var old = <MovieItem>[];
     
     /// контроллер последних просмотренных сериалов
     final seenItemsController = GetIt.instance<SeenItemsController>();
-    
-    /// hook для подписки на изменения
-    //useStream(GoRouter.of(context).);
+
     /// список последних просмотренных сериалов
-    // final seenShows = <MovieItem>[];
-    final seenShows = useListenableSelector(seenItemsController.listenable, () {
-      return seenItemsController.find(MovieItemType.tskg, count: 50);
-    });
+    final seenShows = useListenableSelectorCondition<List<MovieItem>>(
+      listenable: seenItemsController.listenable,
+      selector: () {
+        /// выбираем просмотренные сериалы из хранилища
+        return seenItemsController.find(MovieItemType.tskg, count: 50);
+      },
+      condition: (oldValue, newValue) {
+        /// обновляем виджет, если списки разные
+        return ! const ListEquality().equals(oldValue, newValue);
+      }
+    );
 
     /// список избранных сериалов
-    final List<MovieItem> favoriteShows = useListenableSelector(seenItemsController.listenable, () {
-      return seenItemsController.takeFavoritesOf(MovieItemType.tskg);
-    });
+    final favoriteShows = useListenableSelectorCondition<List<MovieItem>>(
+      listenable: seenItemsController.listenable,
+      selector: () {
+        /// выбираем избранные сериалы из хранилища
+        return seenItemsController.takeFavoritesOf(MovieItemType.tskg);
+      },
+      condition: (oldValue, newValue) {
+        /// обновляем виджет, если списки разные
+        return ! const ListEquality().equals(oldValue, newValue);
+      }
+    );
 
     /// список новых сериалов
     final hookNewItems = useMemoized(() => api.getNew());
@@ -194,6 +205,3 @@ class TskgHomePageListView extends HookWidget {
     
   }
 }
-
-
-class ConditionalNotifier<T> extends ValueNotifier<T> { final ValueListenable<T> parent; final bool Function(T value) notifyWhen;  ConditionalNotifier({ required this.parent, required this.notifyWhen, }) : super(parent.value);  @override void addListener(VoidCallback listener) { super.addListener(listener); parent.addListener(_listener); }  @override void removeListener(VoidCallback listener) { super.removeListener(listener); parent.removeListener(_listener); }  void _listener() { if (notifyWhen(parent.value)) { value = parent.value; } } }
