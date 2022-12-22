@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kgino/constants.dart';
 
 import '../../../api/ockg_api_provider.dart';
+import '../../../controllers/hooks/use_listenable_selector_condition.dart';
 import '../../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../../controllers/ockg/ockg_catalog_controller.dart';
 import '../../../controllers/ockg/ockg_movie_details_controller.dart';
@@ -18,7 +19,6 @@ import '../../../models/category_list_item.dart';
 import '../../lists/krs_horizontal_list_view.dart';
 import '../../lists/krs_vertical_list_view.dart';
 import '../../lists/krs_list_item_card.dart';
-import '../../loading_indicator.dart';
 
 class OckgHomePageListView extends HookWidget {
   const OckgHomePageListView({
@@ -32,12 +32,21 @@ class OckgHomePageListView extends HookWidget {
     /// провайдер запросов к API
     final api = GetIt.instance<OckgApiProvider>();
 
-     /// контроллер последних просмотренных сериалов
+     /// контроллер последних просмотренных фильмов
     final seenItemsController = GetIt.instance<SeenItemsController>();
-    /// hook для подписки на изменения
-    useValueListenable(seenItemsController.listenable);
-    /// список последних просмотренных сериалов
-    final seenMovies = seenItemsController.find(MovieItemType.ockg, count: 50);
+    
+    /// список последних просмотренных фильмов
+    final seenMovies = useListenableSelectorCondition<List<MovieItem>>(
+      listenable: seenItemsController.listenable,
+      selector: () {
+        /// выбираем просмотренные сериалы из хранилища
+        return seenItemsController.find(MovieItemType.ockg, count: 50);
+      },
+      condition: (oldValue, newValue) {
+        /// обновляем виджет, если списки разные
+        return ! const ListEquality().equals(oldValue, newValue);
+      }
+    );
 
     return BlocBuilder<OckgBestsellersController, RequestState<List<OckgBestsellersCategory>>>(
       builder: (context, state) {

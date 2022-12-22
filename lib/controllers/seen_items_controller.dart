@@ -94,7 +94,15 @@ class SeenItemsController {
 
   List<MovieItem> find(MovieItemType type, { int count = 0 }) {
     List<MovieItem> items = _storage.values.where((item) {
-      return item.type == type && item.episodes.isNotEmpty;
+      if (item.type == type) {
+        if (type == MovieItemType.ockg) {
+          return item.episodes.isNotEmpty && !item.episodes.first.isSeen;
+        } else {
+          return item.episodes.isNotEmpty;
+        }
+      }
+      
+      return false;
     }).toList();
     
     /// сортируем по убыванию времени последнего просмотра
