@@ -10,6 +10,7 @@ import '../../models/season_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/pages/episode_card.dart';
+import '../../utils.dart';
 
 
 class TskgShowSeasonsPage extends StatefulWidget {
@@ -156,8 +157,8 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
                   return EpisodeCard(
                     focusNode: focusNode,
                     titleText: episode.name,
-                    // TODO return it
-                    description: '',//'${episode.quality} ${Utils.formatDuration(episode.duration)}',
+                    description: '${episode.seasonNumber}x${episode.episodeNumber}',//'${episode.quality} ',
+                    duration: Duration(seconds: episode.duration),
 
                     /// время просмотра
                     seenValue: seenValue,

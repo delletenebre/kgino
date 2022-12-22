@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../resources/krs_theme.dart';
+import '../../utils.dart';
 
 class EpisodeCard extends StatefulWidget {
   final FocusNode focusNode;
@@ -14,6 +15,7 @@ class EpisodeCard extends StatefulWidget {
   final KeyEventResult Function()? onArrowLeft;
   final KeyEventResult Function()? onArrowRight;
   final double seenValue;
+  final Duration duration;
 
   const EpisodeCard({
     super.key,
@@ -27,6 +29,7 @@ class EpisodeCard extends StatefulWidget {
     this.onArrowLeft,
     this.onArrowRight,
     this.seenValue = 0.0,
+    this.duration = Duration.zero,
   });
 
   @override
@@ -240,6 +243,16 @@ class _EpisodeCardState extends State<EpisodeCard> {
                         value: widget.seenValue,
                         color: (_focusNode.hasFocus) ? null : theme.colorScheme.primary.withOpacity(0.5),
                       ),
+                    ),
+                  ),
+                ),
+
+                if (widget.duration.inMinutes > 0) Positioned(
+                  right: 4.0,
+                  top: widget.posterSize.height - (widget.seenValue > 0.0 ? 34.0 : 20.0),
+                  child: Text('${widget.duration.inMinutes} мин',
+                    style: const TextStyle(
+                      fontSize: 12.0,
                     ),
                   ),
                 ),

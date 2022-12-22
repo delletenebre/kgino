@@ -96,32 +96,3 @@ extension DateUtils on DateTime {
         yesterday.year == year;
   }
 }
-
-extension FocusNodeUtils on FocusNode {
-  FocusNode? get firstFocusableChild {
-    if (children.isNotEmpty) {
-      final child = children.first;
-      if (child.canRequestFocus) {
-        return child;
-      } else {
-        return child.firstFocusableChild;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  FocusNode? focusableChildAt(int index) {
-    if (children.length >= index) {
-      final child = children.elementAt(index);
-      if (child.canRequestFocus) {
-        return child;
-      } else {
-        return child.firstFocusableChild;
-      }
-    } else {
-      return null;
-    }
-  }
-
-}
