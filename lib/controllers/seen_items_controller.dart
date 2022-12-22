@@ -23,7 +23,6 @@ class SeenItemsController {
   void updatePosition({
     required MovieItem movie,
     required EpisodeItem episode,
-
     required int position,
     required bool subtitlesEnabled,
   }) {

@@ -133,6 +133,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 /// если кнопка Смотреть в фокусе
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
                                   itemKey: show.storageKey,
+                                  show: show,
                                 ),
                               ],
                             ),
@@ -186,13 +187,17 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                         return b.updatedAt.compareTo(a.updatedAt);
                                       });
                                       final seenEpisode = seenEpisodes.first;
-                                      final episodes = <EpisodeItem>[];
-                                      for (final season in show.seasons) {
-                                        episodes.addAll(season.episodes);
+
+                                      /// получаем список эпизодов
+                                      final episodes = show.getAllEpisodes();
+                                      
+                                      EpisodeItem playableEpisode = seenEpisode;
+                                      if (seenEpisode.isSeen) {
+                                        final seenEpisodeIndex = episodes.indexOf(seenEpisode);
+                                        if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length) {
+                                          playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
+                                        }
                                       }
-                                      // final episode = episodes.singleWhere((episode) {
-                                      //   return episode.id == seenEpisode.id;
-                                      // });
 
                                       return Padding(
                                         padding: const EdgeInsets.only(right: 8.0),
@@ -207,7 +212,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                                 'id': show.id,    
                                               },
                                               queryParams: {
-                                                'episodeId': seenEpisode.id,
+                                                'episodeId': playableEpisode.id,
                                               },
                                               extra: show,
                                             );

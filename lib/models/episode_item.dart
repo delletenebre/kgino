@@ -56,6 +56,7 @@ class EpisodeItem extends HiveObject with EquatableMixin {
   /// просмотренная позиция в пределах от 0 до 1
   double get percentPosition => position / duration;
 
-  
+  /// был ли эпизод полностью просмотрен
+  bool get isSeen => percentPosition > 0.95;
 
 }

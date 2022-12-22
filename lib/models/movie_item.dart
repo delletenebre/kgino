@@ -107,6 +107,14 @@ class MovieItem extends HiveObject with EquatableMixin {
     return PaletteGenerator.fromColors([PaletteColor(Color(0xff000000), 1)]);
   }
 
+  List<EpisodeItem> getAllEpisodes() {
+    final episodes = <EpisodeItem>[];
+    for (final season in seasons) {
+      episodes.addAll(season.episodes);
+    }
+    return episodes;
+  }
+
   factory MovieItem.webcamera({
     required String name,
     required String posterUrl,

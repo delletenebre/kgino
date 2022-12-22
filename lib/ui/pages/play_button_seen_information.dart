@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/seen_items_controller.dart';
+import '../../models/episode_item.dart';
+import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../utils.dart';
 
 class PlayButtonSeenInformation extends StatelessWidget {
   final String itemKey;
+  final MovieItem show;
 
   const PlayButtonSeenInformation({
     super.key,
     required this.itemKey,
+    required this.show,
   });
 
   @override
@@ -38,18 +42,29 @@ class PlayButtonSeenInformation extends StatelessWidget {
               return b.updatedAt.compareTo(a.updatedAt);
             });
             final seenEpisode = seenEpisodes.first;
-            final seenValue = seenEpisode.percentPosition;
 
-            final remainTime = seenEpisode.duration - seenEpisode.position;
+            final episodes = show.getAllEpisodes();
+            EpisodeItem playableEpisode = seenEpisode;
+            if (seenEpisode.isSeen) {
+              final seenEpisodeIndex = episodes.indexOf(seenEpisode);
+              if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length) {
+                playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
+              }
+            }
+
+            final seenValue = playableEpisode.percentPosition;
+
+            final remainTime = playableEpisode.duration - playableEpisode.position;
             final timeString = Utils.formatDuration(Duration(seconds: remainTime));
           
             /// показываем информацию о последнем
             /// просмотренном эпизоде
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(seenEpisode.name.isNotEmpty
-                  ? seenEpisode.name
+                Text(playableEpisode.name.isNotEmpty
+                  ? playableEpisode.name
                   : locale.continueWatching,
                   
                   style: const TextStyle(
@@ -57,36 +72,36 @@ class PlayButtonSeenInformation extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 4.0),
+                if (playableEpisode.position > 0) Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 4.0, top: 3.0),
+                        width: 128.0,
+                        height: 10.0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: LinearProgressIndicator(
+                            value: seenValue,
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ),
 
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 4.0, top: 3.0),
-                      width: 128.0,
-                      height: 10.0,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: LinearProgressIndicator(
-                          value: seenValue,
+                      const SizedBox(width: 8.0),
+
+                      Text('осталось $timeString',
+                        style: TextStyle(
+                          fontSize: 10.0,
                           color: theme.colorScheme.outline,
                         ),
                       ),
-                    ),
 
-                    const SizedBox(width: 8.0),
-
-                    Text('осталось $timeString',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: theme.colorScheme.outline,
-                      ),
-                    ),
-
-                  ],
+                    ],
+                  ),
                 ),
-                
               ],
             );
           }
