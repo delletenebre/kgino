@@ -194,7 +194,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                       EpisodeItem playableEpisode = seenEpisode;
                                       if (seenEpisode.isSeen) {
                                         final seenEpisodeIndex = episodes.indexOf(seenEpisode);
-                                        if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length) {
+                                        if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length - 1) {
                                           playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
                                         }
                                       }
