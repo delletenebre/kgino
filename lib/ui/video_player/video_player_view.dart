@@ -194,9 +194,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _playerController = VideoPlayerController.network(_episode!.videoFileUrl,
       closedCaptionFile: closedCaptionFile,
     );
-    // _playerController = VideoPlayerController.network('https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4');//(widget.videoUrl);
 
-    //try {
+    try {
       /// инициализируем плеер
       await _playerController!.initialize().then((_) {
         /// проверяем нужную позицию
@@ -212,14 +211,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         _updatePageState(VideoPlayerState.initialized);
       });
 
-    // } catch (exception) {
-    //   /// ^ если при загрузке видео произошла ошибка
+    } catch (exception) {
+      /// ^ если при загрузке видео произошла ошибка
       
-    //   debugPrint('$exception');
+      debugPrint('$exception');
 
-    //   /// обновляем состояние UI
-    //   _updatePageState(VideoPlayerState.error);
-    // }
+      /// обновляем состояние UI
+      _updatePageState(VideoPlayerState.error);
+    }
   }
 
   @override
@@ -361,7 +360,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               if (!widget.isLiveStream) SafeArea(
                 child: VideoPlayerControlsOverlay(
                   titleText: widget.titleText,
-                  subtitleText: _episode?.name ?? '',
+                  subtitleText: '${_episode!.seasonNumber}x${_episode!.episodeNumber} ${_episode!.name}',
                   isVisible: _isControlOverlayVisible,
                   playerController: _playerController,
                   onPlayPause: () {

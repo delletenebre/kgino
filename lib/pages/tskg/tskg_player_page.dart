@@ -22,7 +22,7 @@ class TskgPlayerPage extends StatefulWidget {
 }
 
 class _TskgPlayerPageState extends State<TskgPlayerPage> {
-  final _episodes = <EpisodeItem>[];
+  late final List<EpisodeItem> _episodes;
   late final int _episodeCount;
   int _currentIndex = 0;
 
@@ -34,9 +34,7 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
   @override
   void initState() {
     /// все эпизоды в одном списке
-    for (final season in widget.show.seasons) {
-      _episodes.addAll(season.episodes);
-    }
+    _episodes = widget.show.getAllEpisodes();
 
     /// количество эпизодов во всех сезонах
     _episodeCount = widget.show.episodeCount;
@@ -93,33 +91,10 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
   }
 
   Future<EpisodeItem> _getPlayableItem([bool initial = false]) async {
-    EpisodeItem? seenEpisode;
-    int seasonNumber = 0;
-    int episodeNumber = 0;
     
+    /// получаем текущий эпизод из плейлиста
     final currentEpisode = _episodes[_currentIndex];
 
-    if (initial) {
-      /// проверяем был ли эпизод в просмотренных
-      seenEpisode = _seenItemsController.findEpisode(
-        storageKey: _seenShow.storageKey,
-        episodeId: currentEpisode.id,
-      );
-
-    } else {
-      for (int seasonIndex = 0; seasonIndex < widget.show.seasons.length; seasonIndex++) {
-        final season = widget.show.seasons[seasonIndex];
-        final episodeIndex = season.episodes.indexWhere((episode) {
-          return episode.id == widget.episodeId;
-        });
-        if (episodeIndex > -1) {
-          seasonNumber = seasonIndex + 1;
-          episodeNumber = episodeIndex + 1;
-          break;
-        }
-      }
-    }
-    
     /// провайдер запросов к API
     final api = GetIt.instance<TskgApiProvider>();
     
@@ -132,28 +107,30 @@ class _TskgPlayerPageState extends State<TskgPlayerPage> {
 
     /// субтитры
     String subtitlesUrl = episodeDetails?.video.subtitles ?? '';
-    
-    final episode = seenEpisode ?? EpisodeItem(
-      id: '${episodeDetails?.id}',
-      name: '${episodeDetails?.name}',
-      duration: episodeDetails?.duration ?? 0,
-      seasonNumber: seasonNumber,
-      episodeNumber: episodeNumber,
-    );
 
     /// обновляем ссылку на видео файл
-    episode.videoFileUrl = videoUrl;
+    currentEpisode.videoFileUrl = videoUrl;
 
     /// обновляем ссылку на файл субтитров
-    episode.subtitlesFileUrl = subtitlesUrl;
+    currentEpisode.subtitlesFileUrl = subtitlesUrl;
 
-    if (!initial) {
+    if (initial) {
+      /// проверяем был ли эпизод в просмотренных
+      final seenEpisode = _seenItemsController.findEpisode(
+        storageKey: _seenShow.storageKey,
+        episodeId: currentEpisode.id,
+      );
+
+      /// восстанавливаем время просмотра, если эпизод уже был в просмотренных
+      currentEpisode.position = seenEpisode?.position ?? 0;
+      
+    } else {
       /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
       /// не запрашивал продолжить просмотр или нет
-      episode.position = 0;
+      currentEpisode.position = 0;
     }
 
-    return episode;
+    return currentEpisode;
   }
 
 }

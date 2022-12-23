@@ -10,11 +10,13 @@ import '../../utils.dart';
 class PlayButtonSeenInformation extends StatelessWidget {
   final String itemKey;
   final MovieItem movieItem;
+  final bool showEpisodeNumber;
 
   const PlayButtonSeenInformation({
     super.key,
     required this.itemKey,
     required this.movieItem,
+    this.showEpisodeNumber = true,
   });
 
   @override
@@ -50,6 +52,13 @@ class PlayButtonSeenInformation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (showEpisodeNumber) Text('${playableEpisode.seasonNumber} сезон, ${playableEpisode.episodeNumber} серия',
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
                 Text(playableEpisode.name.isNotEmpty
                   ? playableEpisode.name
                   : locale.continueWatching,

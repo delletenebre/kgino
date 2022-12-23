@@ -136,15 +136,19 @@ class MovieItem extends HiveObject with EquatableMixin {
   EpisodeItem getNextPlayableEpisode(EpisodeItem lastSeenEpisode) {
     /// получаем список эпизодов
     final episodes = getAllEpisodes();
-    
+
     EpisodeItem playableEpisode = lastSeenEpisode;
-    if (lastSeenEpisode.isSeen) {
-      final seenEpisodeIndex = episodes.indexOf(lastSeenEpisode);
-      if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length - 1) {
-        playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
+
+    final episodeIndex = episodes.indexOf(lastSeenEpisode);
+    if (episodeIndex > -1) {
+      playableEpisode = episodes.elementAt(episodeIndex);
+      playableEpisode.position = lastSeenEpisode.position;
+
+      if (playableEpisode.isSeen && episodeIndex < episodes.length - 1) {
+        playableEpisode = episodes.elementAt(episodeIndex + 1);
       }
     }
-
+    
     return playableEpisode;
   }
 

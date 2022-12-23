@@ -125,6 +125,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
                                   itemKey: movie.storageKey,
                                   movieItem: movie,
+                                  showEpisodeNumber: false,
                                 ),
                               ],
                             ),

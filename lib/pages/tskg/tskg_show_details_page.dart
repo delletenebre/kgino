@@ -97,7 +97,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 72.0),
-                    height: MediaQuery.of(context).size.height - (128.0 + 72.0),
+                    height: MediaQuery.of(context).size.height - (128.0 + 84.0),
                     child: TskgShowDetais(
                       show: show,
                       expanded: true,
@@ -125,7 +125,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: 40.0,
+                            height: 52.0,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
