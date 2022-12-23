@@ -107,6 +107,22 @@ class MovieItem extends HiveObject with EquatableMixin {
     return PaletteGenerator.fromColors([PaletteColor(Color(0xff000000), 1)]);
   }
 
+
+  /// получаем последний просмотренный эпизод
+  EpisodeItem? getLastSeenEpisode() {
+    if (episodes.isNotEmpty) {
+      episodes.sort((a, b) {
+        return b.updatedAt.compareTo(a.updatedAt);
+      });
+      
+      return episodes.first;
+    }
+
+    return null;
+  }
+
+  
+  /// список всех эпизодов в сериале
   List<EpisodeItem> getAllEpisodes() {
     final episodes = <EpisodeItem>[];
     for (final season in seasons) {
@@ -114,6 +130,24 @@ class MovieItem extends HiveObject with EquatableMixin {
     }
     return episodes;
   }
+
+
+  /// получаем эпизод, с которого необходимо продолжить просмотр
+  EpisodeItem getNextPlayableEpisode(EpisodeItem lastSeenEpisode) {
+    /// получаем список эпизодов
+    final episodes = getAllEpisodes();
+    
+    EpisodeItem playableEpisode = lastSeenEpisode;
+    if (lastSeenEpisode.isSeen) {
+      final seenEpisodeIndex = episodes.indexOf(lastSeenEpisode);
+      if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length - 1) {
+        playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
+      }
+    }
+
+    return playableEpisode;
+  }
+
 
   factory MovieItem.webcamera({
     required String name,

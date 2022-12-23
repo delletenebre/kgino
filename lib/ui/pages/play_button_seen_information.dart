@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/seen_items_controller.dart';
-import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../utils.dart';
 
 class PlayButtonSeenInformation extends StatelessWidget {
   final String itemKey;
-  final MovieItem show;
+  final MovieItem movieItem;
 
   const PlayButtonSeenInformation({
     super.key,
     required this.itemKey,
-    required this.show,
+    required this.movieItem,
   });
 
   @override
@@ -33,32 +32,20 @@ class PlayButtonSeenInformation extends StatelessWidget {
 
         /// если есть просмотренные эпизоды
         if (seenItem != null) {
-          final seenEpisodes = seenItem.episodes;
+
+          /// получаем последний просмотренный эпизод
+          final seenEpisode = seenItem.getLastSeenEpisode();
           
-          if (seenEpisodes.isNotEmpty) {
+          if (seenEpisode != null) {
             /// ^ если есть просмотренные эпизоды
             
-            seenEpisodes.sort((a, b) {
-              return b.updatedAt.compareTo(a.updatedAt);
-            });
-            final seenEpisode = seenEpisodes.first;
-
-            final episodes = show.getAllEpisodes();
-            EpisodeItem playableEpisode = seenEpisode;
-            if (seenEpisode.isSeen) {
-              final seenEpisodeIndex = episodes.indexOf(seenEpisode);
-              if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length - 1) {
-                playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
-              }
-            }
+            final playableEpisode = movieItem.getNextPlayableEpisode(seenEpisode);
 
             final seenValue = playableEpisode.percentPosition;
-
             final remainTime = playableEpisode.duration - playableEpisode.position;
-            final timeString = Utils.formatDuration(Duration(seconds: remainTime));
+            final timeString = Duration(seconds: remainTime).formatted;
           
-            /// показываем информацию о последнем
-            /// просмотренном эпизоде
+            /// показываем информацию о последнем просмотренном эпизоде
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

@@ -144,21 +144,21 @@ class _EpisodeCardState extends State<EpisodeCard> {
           
           child: SizedBox(
             width: widget.posterSize.width,
-            child: Stack(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    
-                    /// постер фильма
-                    SizedBox.fromSize(
-                      size: widget.posterSize,
-                      child: Center(
-                        child: AnimatedScale(
-                          duration: KrsTheme.fastAnimationDuration * 2,
-                          scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
-                          child: AnimatedContainer(
+                
+                /// постер фильма
+                SizedBox.fromSize(
+                  size: widget.posterSize,
+                  child: Center(
+                    child: AnimatedScale(
+                      duration: KrsTheme.fastAnimationDuration * 2,
+                      scale: (_focusNode.hasFocus && !_holded) ? 1.1 : 1.0,
+                      child: Stack(
+                        children: [
+                          AnimatedContainer(
                             duration: KrsTheme.fastAnimationDuration * 2,
                             decoration: BoxDecoration(
                               boxShadow: [
@@ -183,7 +183,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                               ),
                               child: Center(
                                 child: Icon(Icons.video_file_outlined,
-                                  size: 64.0,
+                                  size: 48.0,
                                   color: _focusNode.hasFocus
                                     ? theme.colorScheme.onSecondaryContainer
                                     : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
@@ -191,71 +191,71 @@ class _EpisodeCardState extends State<EpisodeCard> {
                               ),
                             ),
                           ),
-                        ),
+
+                          if (widget.seenValue > 0.0) Positioned(
+                            left: 0.0,
+                            right: 0.0,
+                            bottom: 12.0,
+                            child: AnimatedContainer(
+                              duration: KrsTheme.fastAnimationDuration * 2,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: LinearProgressIndicator(
+                                  value: widget.seenValue,
+                                  color: (_focusNode.hasFocus) ? null : theme.colorScheme.primary.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          if (widget.duration.inMinutes > 0) Positioned(
+                            right: 12.0,
+                            bottom: widget.seenValue > 0.0 ? 20.0 : 8.0,
+                            child: Text(widget.duration.formatted,
+                              style: const TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
+                ),
 
-                    /// название эпизода
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: AnimatedDefaultTextStyle(
-                        duration: KrsTheme.animationDuration,
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: (_focusNode.hasFocus)
-                            ? theme.textTheme.bodyMedium?.color
-                            : theme.textTheme.bodyMedium?.color?.withOpacity(0.62),
-                        ),
-                        child: Text(widget.titleText,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+                /// название эпизода
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: AnimatedDefaultTextStyle(
+                    duration: KrsTheme.animationDuration,
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: (_focusNode.hasFocus)
+                        ? theme.textTheme.bodyMedium?.color
+                        : theme.textTheme.bodyMedium?.color?.withOpacity(0.62),
                     ),
-
-                    /// описание эпизода
-                    if (widget.description.isNotEmpty) Text(widget.description,
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: (_focusNode.hasFocus)
-                            ? theme.textTheme.caption?.color
-                            : theme.textTheme.caption?.color?.withOpacity(0.36),
-                      ),
+                    child: Text(widget.titleText,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-
-                  ],
-                ),
-
-                if (widget.seenValue > 0.0) Positioned(
-                  left: 0.0,
-                  right: 0.0,
-                  top: widget.posterSize.height - 12.0,
-                  child: AnimatedContainer(
-                    duration: KrsTheme.fastAnimationDuration * 2,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: (_focusNode.hasFocus) ? 4.0 : 8.0,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: LinearProgressIndicator(
-                        value: widget.seenValue,
-                        color: (_focusNode.hasFocus) ? null : theme.colorScheme.primary.withOpacity(0.5),
-                      ),
-                    ),
                   ),
                 ),
 
-                if (widget.duration.inMinutes > 0) Positioned(
-                  right: 4.0,
-                  top: widget.posterSize.height - (widget.seenValue > 0.0 ? 34.0 : 20.0),
-                  child: Text('${widget.duration.inMinutes} мин',
-                    style: const TextStyle(
-                      fontSize: 12.0,
-                    ),
+                /// описание эпизода
+                if (widget.description.isNotEmpty) Text(widget.description,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: (_focusNode.hasFocus)
+                        ? theme.textTheme.caption?.color
+                        : theme.textTheme.caption?.color?.withOpacity(0.36),
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
+
               ],
             ),
           ),

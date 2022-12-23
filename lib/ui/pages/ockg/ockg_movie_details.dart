@@ -111,9 +111,9 @@ class OckgMovieDetais extends StatelessWidget {
 
                         /// продолжительность фильма (или общая для сериала)
                         if (movie.seasons.first.episodes.length == 1) Text(
-                          Utils.formatDuration(Duration(
+                          Duration(
                             seconds: movie.seasons.first.episodes.first.duration,
-                          ))
+                          ).formatted
                         ),
 
                         /// количество эпизодов (файлов), если сериал

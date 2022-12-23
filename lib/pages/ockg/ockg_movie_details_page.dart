@@ -124,7 +124,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                 /// если кнопка Смотреть в фокусе
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
                                   itemKey: movie.storageKey,
-                                  show: movie,
+                                  movieItem: movie,
                                 ),
                               ],
                             ),

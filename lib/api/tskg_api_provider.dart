@@ -1,19 +1,12 @@
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
-import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
 
 import '../constants.dart';
-import '../models/episode_item.dart';
 import '../models/movie_item.dart';
-import '../models/season_item.dart';
 import '../models/tskg/tskg_episode_details.dart';
 import '../models/tskg/tskg_show.dart';
-import '../utils.dart';
 import 'tskg_api_isolates.dart';
 
 

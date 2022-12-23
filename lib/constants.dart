@@ -1,6 +1,8 @@
 import 'dart:io' show Platform;
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
+
 /// время ожидания ответа от сервера
 const requestTimeout = Duration(seconds: 10);
 
@@ -8,7 +10,7 @@ const requestTimeout = Duration(seconds: 10);
 const cacheMaxAge = Duration(minutes: 1);
 
 /// заголовок User-Agent
-final userAgent = 'KGino/${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
+final userAgent = 'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
 
 
 /// oc.kg размер постера

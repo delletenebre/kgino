@@ -133,7 +133,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                 /// если кнопка Смотреть в фокусе
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
                                   itemKey: show.storageKey,
-                                  show: show,
+                                  movieItem: show,
                                 ),
                               ],
                             ),
@@ -182,22 +182,11 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                     } else {
                                       /// ^ если у сериала есть просмотреные серии
                                       
-                                      final seenEpisodes = seenItem.episodes;
-                                      seenEpisodes.sort((a, b) {
-                                        return b.updatedAt.compareTo(a.updatedAt);
-                                      });
-                                      final seenEpisode = seenEpisodes.first;
+                                      /// получаем последний просмотренный эпизод
+                                      final seenEpisode = seenItem.getLastSeenEpisode()!;
 
-                                      /// получаем список эпизодов
-                                      final episodes = show.getAllEpisodes();
-                                      
-                                      EpisodeItem playableEpisode = seenEpisode;
-                                      if (seenEpisode.isSeen) {
-                                        final seenEpisodeIndex = episodes.indexOf(seenEpisode);
-                                        if (seenEpisodeIndex > -1 && seenEpisodeIndex < episodes.length - 1) {
-                                          playableEpisode = episodes.elementAt(seenEpisodeIndex + 1);
-                                        }
-                                      }
+                                      /// получаем эпизод, с которого нужно продолжить просмотр
+                                      final playableEpisode = show.getNextPlayableEpisode(seenEpisode);
 
                                       return Padding(
                                         padding: const EdgeInsets.only(right: 8.0),
