@@ -26,6 +26,7 @@ dependencies:
   dio: ^4.0.6
   dio_http_cache_lts: ^0.4.1
   equatable: ^2.0.5
+  extended_image: ^6.3.4
   firebase_analytics: ^10.0.7
   firebase_core: ^2.4.0
   firebase_crashlytics: ^3.0.7

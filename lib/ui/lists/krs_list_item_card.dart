@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -70,16 +71,16 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
     });
     
     /// получаем цветовую палитру фильма
-    widget.item.getPaletteGenerator().then((palette) {
-      if (palette.lightVibrantColor != null) {
-        if (mounted) {
-          setState(() {
-            _glowColor = palette.lightVibrantColor!.color;
-            // _dominantColor = palette.dominantColor!.color;
-          });
-        }
-      }
-    });
+    // widget.item.getPaletteGenerator().then((palette) {
+    //   if (palette.lightVibrantColor != null) {
+    //     if (mounted) {
+    //       setState(() {
+    //         _glowColor = palette.lightVibrantColor!.color;
+    //         // _dominantColor = palette.dominantColor!.color;
+    //       });
+    //     }
+    //   }
+    // });
     
   }
 
@@ -133,37 +134,46 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
               borderRadius: BorderRadius.circular(9.0),
               color: theme.scaffoldBackgroundColor,
             ),
-            child: CachedNetworkImage(
-              imageUrl: widget.item.posterUrl,
-              memCacheWidth: widget.posterSize.width.toInt(),
-              memCacheHeight: widget.posterSize.height.toInt(),
-              fit: BoxFit.cover,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(9.0)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(9.0),
-                  ),
-                  child: Center(
-                    child: Icon(Icons.video_file_outlined,
-                      size: 64.0,
-                      color: _focusNode.hasFocus
-                        ? theme.colorScheme.onSecondaryContainer
-                        : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
-                    ),
-                  )
-                );
-              },
+            child: ExtendedImage.network(
+              widget.item.posterUrl,
+              width: widget.posterSize.width,
+              height: widget.posterSize.height,
+              fit: BoxFit.fill,
+              cache: true,
+              shape: BoxShape.rectangle,
+              borderRadius: const BorderRadius.all(Radius.circular(9.0)),
             ),
+            // child: CachedNetworkImage(
+            //   imageUrl: widget.item.posterUrl,
+            //   memCacheWidth: widget.posterSize.width.toInt(),
+            //   memCacheHeight: widget.posterSize.height.toInt(),
+            //   fit: BoxFit.cover,
+            //   imageBuilder: (context, imageProvider) => Container(
+            //     decoration: BoxDecoration(
+            //       borderRadius: const BorderRadius.all(Radius.circular(9.0)),
+            //       image: DecorationImage(
+            //         image: imageProvider,
+            //         fit: BoxFit.cover,
+            //       ),
+            //     ),
+            //   ),
+            //   errorWidget: (context, url, error) {
+            //     return Container(
+            //       decoration: BoxDecoration(
+            //         color: theme.colorScheme.secondaryContainer,
+            //         borderRadius: BorderRadius.circular(9.0),
+            //       ),
+            //       child: Center(
+            //         child: Icon(Icons.video_file_outlined,
+            //           size: 64.0,
+            //           color: _focusNode.hasFocus
+            //             ? theme.colorScheme.onSecondaryContainer
+            //             : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
+            //         ),
+            //       )
+            //     );
+            //   },
+            // ),
           ),
         ),
       );

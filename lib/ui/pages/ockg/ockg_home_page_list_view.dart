@@ -119,8 +119,8 @@ class OckgHomePageListView extends HookWidget {
           itemBuilder: (context, focusNode, index) {
             final category = categories[index];
 
-            return SizedBox.fromSize(
-              size: const Size.fromHeight(ockgListViewHeight),
+            return SizedBox(
+              height: ockgListViewHeight,
               child: KrsHorizontalListView<MovieItem>(
                 focusNode: focusNode,
                 onItemFocused: (movie) {

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/movie_item.dart';
@@ -40,26 +41,47 @@ class TskgShowDetais extends StatelessWidget {
 
             width: width,
 
-            child: ShaderMask(
-              blendMode: BlendMode.dstOut,
-              shaderCallback: (rect) {
-                return const RadialGradient(
-                  center: Alignment.topRight,
-                  radius: 1.05,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black,
-                  ],
-                  stops: [0.25, 1.0],
-                ).createShader(rect);
-              },
+            // child: ShaderMask(
+            //   blendMode: BlendMode.dstOut,
+            //   shaderCallback: (rect) {
+            //     return const RadialGradient(
+            //       center: Alignment.topRight,
+            //       radius: 1.05,
+            //       colors: [
+            //         Colors.transparent,
+            //         Colors.black,
+            //       ],
+            //       stops: [0.25, 1.0],
+            //     ).createShader(rect);
+            //   },
 
-              /// постер сериала
-              child: CachedNetworkImage(
-                imageUrl: show.posterUrl,
-                fit: BoxFit.cover,
-                memCacheWidth: 420,
-              ),
+            //   /// постер сериала
+            //   child: CachedNetworkImage(
+            //     imageUrl: show.posterUrl,
+            //     fit: BoxFit.cover,
+            //     memCacheWidth: 420,
+            //   ),
+            // ),
+            child: ExtendedImage.network(
+              show.posterUrl,
+              width: 420,
+              fit: BoxFit.cover,
+              cache: true,
+              colorBlendMode: BlendMode.dstOut,
+              afterPaintImage: (canvas, rect, image, paint) {
+                final paint = Paint()
+                  ..shader = const RadialGradient(
+                    center: Alignment.topRight,
+                    radius: 1.05,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black,
+                    ],
+                    stops: [0.25, 1.0],
+                  ).createShader(rect);
+                  
+                canvas.drawCircle(Offset(size.width, 0), 420.0, paint);
+              },
             ),
 
           ),

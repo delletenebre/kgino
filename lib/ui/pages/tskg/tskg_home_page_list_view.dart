@@ -114,7 +114,7 @@ class TskgHomePageListView extends HookWidget {
 
             for (int index = 0; index < lastAddedDays; index++) {
               final date = showsGroupedByDate.keys.elementAt(index);
-                
+              
               late final String titleText;
               if (date.isToday) {
                 titleText = locale.addedDate('today');
