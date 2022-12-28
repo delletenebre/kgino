@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
@@ -36,11 +35,18 @@ class TskgShowDetais extends StatelessWidget {
           /// постер фильма
           Positioned(
             /// отступ вверх, на размер навигационной панели
-            top: -72.0 - 74.0,
-            right: -12.0,
+            top: -72.0 - 178.0,
+            right: -28.0,
+            left: -28.0,
 
-            width: width,
-
+            /// постер сериала
+            child: ExtendedImage.network(
+              show.posterUrl,
+              fit: BoxFit.fill,
+              cache: true,
+              colorBlendMode: BlendMode.dstOut,
+              color: theme.scaffoldBackgroundColor.withOpacity(0.95),
+            ),
             // child: ShaderMask(
             //   blendMode: BlendMode.dstOut,
             //   shaderCallback: (rect) {
@@ -51,38 +57,9 @@ class TskgShowDetais extends StatelessWidget {
             //         Colors.transparent,
             //         Colors.black,
             //       ],
-            //       stops: [0.25, 1.0],
+            //       //stops: [0.25, 1.0],
             //     ).createShader(rect);
             //   },
-
-            //   /// постер сериала
-            //   child: CachedNetworkImage(
-            //     imageUrl: show.posterUrl,
-            //     fit: BoxFit.cover,
-            //     memCacheWidth: 420,
-            //   ),
-            // ),
-            child: ExtendedImage.network(
-              show.posterUrl,
-              width: 420,
-              fit: BoxFit.cover,
-              cache: true,
-              colorBlendMode: BlendMode.dstOut,
-              afterPaintImage: (canvas, rect, image, paint) {
-                final paint = Paint()
-                  ..shader = const RadialGradient(
-                    center: Alignment.topRight,
-                    radius: 1.05,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black,
-                    ],
-                    stops: [0.25, 1.0],
-                  ).createShader(rect);
-                  
-                canvas.drawCircle(Offset(size.width, 0), 420.0, paint);
-              },
-            ),
 
           ),
 

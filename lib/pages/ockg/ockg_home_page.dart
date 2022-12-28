@@ -24,14 +24,14 @@ class OckgHomePage extends StatelessWidget {
           Expanded(
             child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovieItem>>(
               builder: (context, state) {
-                // if (state.isSuccess) {
-                //   final movie = state.data;
+                if (state.isSuccess) {
+                  final movie = state.data;
 
-                //   return OckgMovieDetais(
-                //     movie: movie,
-                //   );
+                  return OckgMovieDetais(
+                    movie: movie,
+                  );
                   
-                // }
+                }
 
                 return const SizedBox();
               }

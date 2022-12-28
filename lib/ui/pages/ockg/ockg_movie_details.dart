@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/movie_item.dart';
@@ -35,32 +36,41 @@ class OckgMovieDetais extends StatelessWidget {
           /// постер фильма
           Positioned(
             /// отступ вверх, на размер навигационной панели
-            top: -72.0,
-            right: 0.0,
+            top: -72.0 - 400,
+            left: 0,
+            right: 0,
 
-            width: width,
+            child: ExtendedImage.network(
+              movie.posterUrl,
+              fit: BoxFit.fill,
+              cache: true,
+              colorBlendMode: BlendMode.dstOut,
+              color: theme.scaffoldBackgroundColor.withOpacity(0.95),
+            ),
 
-            child: ShaderMask(
-                blendMode: BlendMode.dstOut,
-                shaderCallback: (rect) {
-                  return const RadialGradient(
-                    center: Alignment.topRight,
-                    radius: 1.0,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black,
-                    ],
-                    stops: [0.25, 1.0],
-                  ).createShader(rect);
-                },
+            // width: width,
 
-                /// постер фильма
-                child: CachedNetworkImage(
-                  imageUrl: movie.posterUrl,
-                  fit: BoxFit.cover,
-                  memCacheWidth: 420,
-                ),
-              ),
+            // child: ShaderMask(
+            //     blendMode: BlendMode.dstOut,
+            //     shaderCallback: (rect) {
+            //       return const RadialGradient(
+            //         center: Alignment.topRight,
+            //         radius: 1.0,
+            //         colors: [
+            //           Colors.transparent,
+            //           Colors.black,
+            //         ],
+            //         stops: [0.25, 1.0],
+            //       ).createShader(rect);
+            //     },
+
+            //     /// постер фильма
+            //     child: CachedNetworkImage(
+            //       imageUrl: movie.posterUrl,
+            //       fit: BoxFit.cover,
+            //       memCacheWidth: 420,
+            //     ),
+            //   ),
             
 
           ),
