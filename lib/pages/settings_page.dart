@@ -12,29 +12,48 @@ class SettingsPage extends StatelessWidget {
 
     final settingsBox = Hive.box('settings');
 
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ValueListenableBuilder(
-            valueListenable: settingsBox.listenable(keys: ['animations']),
-            builder: (context, box, child) {
-              return ListTile(
-                title: child,
-                trailing: Switch(
-                  activeColor: theme.colorScheme.primary,
-                  value: box.get('animations', defaultValue: false),
-                  onChanged: (bool changed) {
-                    box.put('animations', changed);
-                  },
-                ),
-              );
-            },
-            child: Text('Включить визуальные эффекты'),
-          ),
-        ]
-      ),
+    return Scaffold(
+      body:  Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder(
+              valueListenable: settingsBox.listenable(keys: ['animations']),
+              builder: (context, box, child) {
+                return ListTile(
+                  title: child,
+                  trailing: Switch(
+                    activeColor: theme.colorScheme.primary,
+                    value: box.get('animations', defaultValue: true),
+                    onChanged: (bool changed) {
+                      box.put('animations', changed);
+                    },
+                  ),
+                );
+              },
+              child: Text('Включить визуальные эффекты'),
+            ),
+
+            ValueListenableBuilder(
+              valueListenable: settingsBox.listenable(keys: ['enableCategoryCameras']),
+              builder: (context, box, child) {
+                return ListTile(
+                  title: child,
+                  trailing: Switch(
+                    activeColor: theme.colorScheme.primary,
+                    value: box.get('enableCategoryCameras', defaultValue: true),
+                    onChanged: (bool changed) {
+                      box.put('enableCategoryCameras', changed);
+                    },
+                  ),
+                );
+              },
+              child: Text('Отображать раздел Камеры'),
+            ),
+          ]
+        ),
+      )
     );
   }
 }

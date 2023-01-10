@@ -31,6 +31,14 @@ class KrsRouter {
           return const HomePage();
         },
         routes: [
+          /// страница настроек
+          GoRoute(
+            path: 'settings',
+            builder: (context, state) {
+              return const SettingsPage();
+            },
+          ),
+
           GoRoute(
             path: 'ockg/movie/:id',
             name: 'ockgMovieDetails',
@@ -143,12 +151,7 @@ class KrsRouter {
       ),
 
       
-      GoRoute(
-        path: '/settings',
-        builder: (context, state) {
-          return const SettingsPage();
-        },
-      ),
+      
 
       GoRoute(
         path: '/search',

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../controllers/ockg/ockg_search_controller.dart';
 import '../controllers/tskg/tskg_search_controller.dart';
@@ -7,7 +9,6 @@ import '../resources/krs_locale.dart';
 import '../ui/navigation_bar/krs_tab_bar.dart';
 import 'ockg/ockg_home_page.dart';
 import 'search_page.dart';
-import 'settings_page.dart';
 import 'tskg/tskg_home_page.dart';
 import 'wcam/wcam_home_page.dart';
 
@@ -20,24 +21,20 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _tabBarHasFocus = false;
 
-  late TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      vsync: this,
-      length: 5,
-      initialIndex: 1,
-    );
+    
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -45,7 +42,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
-    
+
+    final settingsBox = Hive.box('settings');
+
     return Scaffold(
       body: MultiBlocProvider(
         providers: [
@@ -56,8 +55,39 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             create: (context) => TskgSearchController(),
           ),
         ],
-        child: Builder(
-          builder: (context) {
+        child: ValueListenableBuilder(
+          valueListenable: settingsBox.listenable(
+            keys: ['enableCategoryCameras']
+          ),
+          builder: (context, box, child) {
+            final camerasEnabled = settingsBox.get('enableCategoryCameras',
+              defaultValue: true
+            );
+
+            final tabs = [
+              Tab(
+                text: locale.search,
+              ),
+              Tab(
+                text: locale.movies,
+              ),
+              Tab(
+                text: locale.shows,
+              ),
+              if (camerasEnabled) Tab(
+                text: locale.cameras,
+              ),
+            ];
+
+            if (_tabController?.length != tabs.length) {
+              _tabController?.dispose();
+              _tabController = TabController(
+                vsync: this,
+                length: tabs.length,
+                initialIndex: _tabController == null ? 1 : tabs.length - 1,
+              );
+            }
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -66,6 +96,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   padding: const EdgeInsets.only(
                     top: 32.0,
                     left: 32.0,
+                    right: 32.0,
                   ),
                   child: Row(
                     children: [
@@ -94,24 +125,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             });
                           },
                           controller: _tabController,
-                          tabs: [
-                            Tab(
-                              text: locale.search,
-                            ),
-                            Tab(
-                              text: locale.movies,
-                            ),
-                            Tab(
-                              text: locale.shows,
-                            ),
-                            Tab(
-                              text: locale.cameras,
-                            ),
-                            Tab(
-                              text: locale.settings,
-                            ),
-                          ]
+                          tabs: tabs,
                         ),
+                      ),
+
+                      /// кнопка входа в настройки
+                      IconButton(
+                        tooltip: locale.settings,
+                        onPressed: () {
+                          /// переходим на страницу настроек
+                          context.go('/settings');
+                        },
+                        icon: const Icon(Icons.settings),
                       ),
                     ],
                   ),
@@ -123,12 +148,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       TabBarView(
                         clipBehavior: Clip.none,
                         controller: _tabController,
-                        children: const [
-                          SearchPage(),
-                          OckgHomePage(),
-                          TskgHomePage(),
-                          WcamHomePage(),
-                          SettingsPage(),
+                        children: [
+                          const SearchPage(),
+                          const OckgHomePage(),
+                          const TskgHomePage(),
+                          if (camerasEnabled) const WcamHomePage(),
                         ],
                       ),
 

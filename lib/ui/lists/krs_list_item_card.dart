@@ -97,7 +97,9 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final settingsBox = Hive.box('settings');
-    final animationsEnabled = settingsBox.get('animations', defaultValue: false);
+
+    /// включены ли в настройках визуальные эффекты
+    final animationsEnabled = settingsBox.get('animations', defaultValue: true);
   
     /// получаем цвет свечения
     _glowColor ??= theme.colorScheme.primary;
