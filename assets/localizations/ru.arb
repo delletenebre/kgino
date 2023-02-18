@@ -105,7 +105,7 @@
     }
   },
 
-  "episodesCount": "{count, plural, =0{{count} эпизодов} =1{{count} эпизод} few{{count} эпизода} many{{count} эпизодов} other{{count} эпизодов}",
+  "episodesCount": "{count, plural, zero{{count} эпизодов} one{{count} эпизод} few{{count} эпизода} many{{count} эпизодов} other{{count} эпизодов} }",
   "@episodesCount": {
     "description": "количество эпизодов",
     "placeholders": {
@@ -115,9 +115,9 @@
     }
   },
 
-  "seasonsCount": "{count, plural, =0{{count} сезонов} =1{{count} сезон} few{{count} сезона} many{{count} сезонов} other{{count} сезонов}",
+  "seasonsCount": "{count, plural, zero{{count} сезонов} one{{count} сезон} few{{count} сезона} many{{count} сезонов} other{{count} сезонов} }",
   "@seasonsCount": {
-    "description": "количество эпизодов",
+    "description": "количество сезонов",
     "placeholders": {
       "count": {
         

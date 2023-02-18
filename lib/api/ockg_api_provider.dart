@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
+// import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
@@ -20,20 +20,20 @@ class OckgApiProvider {
   /// cinema online
   final _dio = Dio(BaseOptions(
     baseUrl: 'https://oc.kg/api.php?format=json',
-    sendTimeout: requestTimeout.inMilliseconds,
-    receiveTimeout: requestTimeout.inMilliseconds,
+    sendTimeout: requestTimeout,
+    receiveTimeout: requestTimeout,
   ));
 
   OckgApiProvider() {
-    _dio.interceptors.add(
-      DioCacheManager(
-        CacheConfig(
-          baseUrl: _dio.options.baseUrl,
-          defaultMaxAge: cacheMaxAge,
-          defaultMaxStale: cacheMaxAge,
-        )
-      ).interceptor
-    );
+    // _dio.interceptors.add(
+    //   DioCacheManager(
+    //     CacheConfig(
+    //       baseUrl: _dio.options.baseUrl,
+    //       defaultMaxAge: cacheMaxAge,
+    //       defaultMaxStale: cacheMaxAge,
+    //     )
+    //   ).interceptor
+    // );
   }
 
 

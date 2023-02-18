@@ -89,24 +89,36 @@ class WcamHomePage extends StatelessWidget {
             CategoryListItem(
               title: 'Интересное',
               items: [
+
                 MovieItem.webcamera(
                   name: 'Кенийский водопой',
-                  posterUrl: 'https://backend.webcamera24.com/static/image/camera/detail/mpala-watering/thumbnail/656x369/hqdefault.webp',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=6NIt6ibAD6I',
+                  posterUrl: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=KyQAB-TKOVA',
                 ),
 
                 MovieItem.webcamera(
-                  name: 'Ниагарский водопад',
-                  posterUrl: 'https://backend.webcamera24.com/static/image/camera/detail/niagara-falls/thumbnail/968x545/hqdefault.webp',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=kxwuFPFUZyY',
+                  name: 'Африканские животные',
+                  posterUrl: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=O8xVFhgEv6Q',
+                ),
+
+                MovieItem.webcamera(
+                  name: 'Сафари камера',
+                  posterUrl: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=QkWGGhtTA4k',
+                ),
+
+                MovieItem.webcamera(
+                  name: 'Парк слонов',
+                  posterUrl: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
+                  videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4',
                 ),
 
                 MovieItem.webcamera(
                   name: 'Таймс-сквер, Нью-Йорк',
-                  posterUrl: 'https://backend.webcamera24.com/static/image/camera/detail/times-square/thumbnail/968x545/hqdefault.webp',
+                  posterUrl: 'https://i.ytimg.com/vi/1-iS7LArMPA/hqdefault_live.jpg',
                   videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA',
                 ),
-
                 
               ],
             )

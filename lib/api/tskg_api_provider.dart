@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
+// import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 
@@ -16,24 +16,32 @@ class TskgApiProvider {
   /// ts.kg
   final _dio = Dio(BaseOptions(
     baseUrl: 'https://www.ts.kg',
-    sendTimeout: requestTimeout.inMilliseconds,
-    receiveTimeout: requestTimeout.inMilliseconds,
+    sendTimeout: requestTimeout,
+    receiveTimeout: requestTimeout,
     headers: {
       'User-Agent': userAgent,
     },
   ));
 
   TskgApiProvider() {
-    _dio.interceptors.add(
-      DioCacheManager(
-        CacheConfig(
-          baseUrl: _dio.options.baseUrl,
-          defaultMaxAge: cacheMaxAge,
-          defaultMaxStale: cacheMaxAge,
-        )
-      ).interceptor
-    );
+    if (kDebugMode) {
+      /// ^ если режим отладки
+
+      /// добавляем перехватчик, для логов запросов
+      //_dio.interceptors.add(dioLoggerInterceptor);
+
+    }
+    // _dio.interceptors.add(
+    //   DioCacheManager(
+    //     CacheConfig(
+    //       baseUrl: _dio.options.baseUrl,
+    //       defaultMaxAge: cacheMaxAge,
+    //       defaultMaxStale: cacheMaxAge,
+    //     )
+    //   ).interceptor
+    // );
   }
+
 
   /// формируем полную ссылку на постер сериала по id
   String getPosterUrlById(String showId) {
@@ -199,7 +207,7 @@ class TskgApiProvider {
       try {
 
         /// запрашиваем данные
-        final response = await _dio.get('/show/search/$searchQuery',
+        final response = await _dio.get('/shows/search/$searchQuery',
           options: Options(
             headers: {
               'x-requested-with': 'XMLHttpRequest',
