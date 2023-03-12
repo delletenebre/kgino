@@ -51,7 +51,11 @@ class WcamHomePage extends StatelessWidget {
           final ktState = context.watch<KtCamerasController>().state;
           final citylinkState = context.watch<CitylinkCamerasController>().state;
 
-          if (saimaState.isLoading || elcatState.isLoading || ktState.isLoading || citylinkState.isLoading) {
+          if (saimaState.isLoading
+            || elcatState.isLoading 
+            || ktState.isLoading 
+            // || citylinkState.isLoading
+          ) {
             return const LoadingIndicator();
           }
 
@@ -78,12 +82,12 @@ class WcamHomePage extends StatelessWidget {
             )
           );
 
-          categories.add(
-            CategoryListItem(
-              title: 'Ситилинк',
-              items: citylinkState.data,
-            )
-          );
+          // categories.add(
+          //   CategoryListItem(
+          //     title: 'Ситилинк',
+          //     items: citylinkState.data,
+          //   )
+          // );
 
           categories.add(
             CategoryListItem(
