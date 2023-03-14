@@ -24,12 +24,8 @@ class TskgApiProvider {
   ));
 
   TskgApiProvider() {
-    if (kDebugMode) {
-      /// ^ если режим отладки
-
-      /// добавляем перехватчик, для логов запросов
-      _dio.interceptors.add(LogInterceptor());
-    }
+    /// добавляем перехватчик, для логов запросов
+    _dio.interceptors.add(LogInterceptor());
   }
 
 
