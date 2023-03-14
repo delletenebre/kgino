@@ -83,7 +83,6 @@ class OckgHomePageListView extends HookWidget {
           );
         }
 
-
         /// подборки
         categories.add(
           CategoryListItem<MovieItem>(
@@ -91,7 +90,6 @@ class OckgHomePageListView extends HookWidget {
             itemsFuture: api.getSelections(),
           )
         );
-
 
         /// категории по жанрам
         categories.add(
@@ -119,63 +117,61 @@ class OckgHomePageListView extends HookWidget {
           itemBuilder: (context, focusNode, index) {
             final category = categories[index];
 
-            return SizedBox(
+            return KrsHorizontalListView<MovieItem>(
               height: ockgListViewHeight,
-              child: KrsHorizontalListView<MovieItem>(
-                focusNode: focusNode,
-                onItemFocused: (movie) {
-                  if (movie.type == MovieItemType.ockg) {
-                    context.read<OckgMovieDetailsController>().getMovieById(
-                      movie.id,
-                    );
-                  }
-                },
-                titleText: category.title,
-                items: category.items,
-                itemsFuture: category.itemsFuture,
-                itemBuilder: (context, focusNode, index, movie) {
-                  return KrsListItemCard(
-                    focusNode: focusNode,
-                    posterSize: ockgPosterSize,
-                    
-                    /// данные о фильме
-                    item: movie,
+              focusNode: focusNode,
+              onItemFocused: (movie) {
+                if (movie.type == MovieItemType.ockg) {
+                  context.read<OckgMovieDetailsController>().getMovieById(
+                    movie.id,
+                  );
+                }
+              },
+              titleText: category.title,
+              items: category.items,
+              itemsFuture: category.itemsFuture,
+              itemBuilder: (context, focusNode, index, movie) {
+                return KrsListItemCard(
+                  focusNode: focusNode,
+                  posterSize: ockgPosterSize,
+                  
+                  /// данные о фильме
+                  item: movie,
 
-                    /// при выборе элемента
-                    onTap: () {
+                  /// при выборе элемента
+                  onTap: () {
 
-                      if (movie.type == MovieItemType.folder) {
-                        if (category.title == locale.genres) {
-                          /// переходим на страницу каталога фильмов
-                          context.goNamed('ockgCatalogGenre',
-                            params: {
-                              'id': movie.id,
-                            },
-                            extra: movie,
-                          );
-                        } else {
-                          /// переходим на страницу подборки
-                          context.goNamed('ockgCatalogSelection',
-                            params: {
-                              'id': movie.id,
-                            },
-                            extra: movie,
-                          );
-                        }
-                      } else {
-                        /// переходим на страницу деталей о фильме
-                        context.goNamed('ockgMovieDetails',
+                    if (movie.type == MovieItemType.folder) {
+                      if (category.title == locale.genres) {
+                        /// переходим на страницу каталога фильмов
+                        context.goNamed('ockgCatalogGenre',
                           params: {
                             'id': movie.id,
                           },
+                          extra: movie,
+                        );
+                      } else {
+                        /// переходим на страницу подборки
+                        context.goNamed('ockgCatalogSelection',
+                          params: {
+                            'id': movie.id,
+                          },
+                          extra: movie,
                         );
                       }
-                      
+                    } else {
+                      /// переходим на страницу деталей о фильме
+                      context.goNamed('ockgMovieDetails',
+                        params: {
+                          'id': movie.id,
+                        },
+                      );
+                    }
+                    
 
-                    },
-                  );
-                },
-              ),
+                  },
+                );
+              },
             );
           },
         );

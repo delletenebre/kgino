@@ -28,6 +28,9 @@ class KrsHorizontalListView<T> extends StatefulWidget {
 
   final EdgeInsets padding;
   final double spacing;
+
+  /// высота виджета
+  final double height;
   
   const KrsHorizontalListView({
     super.key,
@@ -44,6 +47,7 @@ class KrsHorizontalListView<T> extends StatefulWidget {
     this.titleText = '',
     this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
     this.spacing = 24.0,
+    this.height = 100,
   });
 
   @override
@@ -83,7 +87,6 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
       /// изначальные элементы списка
       _updateListItems(widget.items);
     }
-    
 
     _focusNode = widget.focusNode ?? FocusNode();
 
@@ -123,118 +126,125 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
 
   @override
   Widget build(context) {
-    if (_items.isEmpty && widget.itemsFuture != null) {
-      return const LoadingIndicator();
-    }
+    
 
-    return Focus(
-      focusNode: _focusNode,
-      onKey: (node, event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-          // if (_awaitingToLoadMore) {
-          //   return KeyEventResult.handled;
-          // }
-          return goPrevious();
-        }
+    return SizedBox(
+      height: widget.height,
+      child: Focus(
+        focusNode: _focusNode,
+        onKey: (node, event) {
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+            // if (_awaitingToLoadMore) {
+            //   return KeyEventResult.handled;
+            // }
+            return goPrevious();
+          }
 
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-          // if (_awaitingToLoadMore) {
-          //   return KeyEventResult.handled;
-          // }
-          return goNext();
-        }
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+            // if (_awaitingToLoadMore) {
+            //   return KeyEventResult.handled;
+            // }
+            return goNext();
+          }
 
-        return KeyEventResult.ignored;
-      },
-      onFocusChange: (hasFocus) {
-        if (hasFocus) {
-          jumpToCurrent(widget.requestItemIndex);
-        }
-      },
-      skipTraversal: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.titleText.isNotEmpty) Padding(
-            padding: const EdgeInsets.only(
-              left: 32.0,
-              right: 32.0,
-              bottom: 24.0,
-            ),
-            child: Text(widget.titleText,
-              style: const TextStyle(
-                fontSize: 16.0,
+          return KeyEventResult.ignored;
+        },
+        onFocusChange: (hasFocus) {
+          if (hasFocus) {
+            jumpToCurrent(widget.requestItemIndex);
+          }
+        },
+        skipTraversal: true,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.titleText.isNotEmpty) Padding(
+              padding: const EdgeInsets.only(
+                left: 32.0,
+                right: 32.0,
+                bottom: 24.0,
+              ),
+              child: Text(widget.titleText,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                ),
               ),
             ),
-          ),
-          
-          Expanded(
-            // child: RawScrollbar(
-            //   //thumbColor: theme.colorScheme.primary.withOpacity(0.5),
-            //   controller: _listObserverController.controller,
-            //   thickness: 2.0,
-            //   radius: const Radius.circular(2.0),
-            //   thumbVisibility: true,
-            child: ListViewObserver(
-              controller: _listObserverController,
-              child: ListView.separated(
-                clipBehavior: Clip.none,
-                controller: _listObserverController.controller,
-                padding: widget.padding,
-                scrollDirection: Axis.horizontal,
-                itemCount: _items.length,
-                
-                /// разделитель
-                separatorBuilder: (context, index) {
-                  return SizedBox(width: widget.spacing);
-                },
+            
+            Expanded(
+              // child: RawScrollbar(
+              //   //thumbColor: theme.colorScheme.primary.withOpacity(0.5),
+              //   controller: _listObserverController.controller,
+              //   thickness: 2.0,
+              //   radius: const Radius.circular(2.0),
+              //   thumbVisibility: true,
+              child: Builder(
+                builder: (context) {
+                  if (_items.isEmpty && widget.itemsFuture != null) {
+                    return const LoadingIndicator();
+                  }
 
-                /// основной контент
-                itemBuilder: (context, index) {
-                  return Focus(
-                    canRequestFocus: false,
-                    skipTraversal: true,
+                  return ListViewObserver(
+                    controller: _listObserverController,
+                    child: ListView.separated(
+                      clipBehavior: Clip.none,
+                      controller: _listObserverController.controller,
+                      padding: widget.padding,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _items.length,
+                      
+                      /// разделитель
+                      separatorBuilder: (context, index) {
+                        return SizedBox(width: widget.spacing);
+                      },
 
-                    onFocusChange: (hasFocus) async {
-                      if (hasFocus) {
-                        if (!_lastPageReached && index > _items.length - 7) {
-                          final items = await widget.onLoadNextPage?.call(_currentPage++, _items.length) ?? [];
-                          _updateListItems(items);
-                          if (items.isEmpty) {
-                            _lastPageReached = true;
-                          }
-                        }
-                        
-                        /// при быстрой перемотке, для экономии ресурсов,
-                        /// немного тормозим вызов [onItemFocused],
-                        /// в котором происходит загрузка дополнительных
-                        /// сведений о сериале или фильме
-                        Future.delayed(const Duration(milliseconds: 100), () {
-                          if (mounted && _currentFocusableIndex == index) {
-                            /// ^ если виджет ещё жив
-                            
-                            /// вызываем пользовательский обработчик
-                            widget.onItemFocused?.call(_items[index]);
-                            
-                          }
-                        });
-                      }
-                    },
-                    child: widget.itemBuilder(
-                      context, focusNodeAt(index), index, _items[index]),
-                    
+                      /// основной контент
+                      itemBuilder: (context, index) {
+                        return Focus(
+                          canRequestFocus: false,
+                          skipTraversal: true,
+
+                          onFocusChange: (hasFocus) async {
+                            if (hasFocus) {
+                              if (!_lastPageReached && index > _items.length - 7) {
+                                final items = await widget.onLoadNextPage?.call(_currentPage++, _items.length) ?? [];
+                                _updateListItems(items);
+                                if (items.isEmpty) {
+                                  _lastPageReached = true;
+                                }
+                              }
+                              
+                              /// при быстрой перемотке, для экономии ресурсов,
+                              /// немного тормозим вызов [onItemFocused],
+                              /// в котором происходит загрузка дополнительных
+                              /// сведений о сериале или фильме
+                              Future.delayed(const Duration(milliseconds: 100), () {
+                                if (mounted && _currentFocusableIndex == index) {
+                                  /// ^ если виджет ещё жив
+                                  
+                                  /// вызываем пользовательский обработчик
+                                  widget.onItemFocused?.call(_items[index]);
+                                  
+                                }
+                              });
+                            }
+                          },
+                          child: widget.itemBuilder(
+                            context, focusNodeAt(index), index, _items[index]),
+                          
+                        );
+                      },
+                    ),
                   );
                 },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
-
 
 
   /// переходим к предыдущему элементу
@@ -296,6 +306,5 @@ class _KrsHorizontalListViewState<T> extends State<KrsHorizontalListView<T>> {
   FocusNode focusNodeAt(int index) {
     return _focusNodes[index];
   }
-
 
 }

@@ -149,9 +149,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         clipBehavior: Clip.none,
                         controller: _tabController,
                         children: [
+                          /// страница поиска
                           const SearchPage(),
+
+                          /// страница фильмов
                           const OckgHomePage(),
+
+                          /// страница сериалов
                           const TskgHomePage(),
+
+                          /// страница веб-камер
                           if (camerasEnabled) const WcamHomePage(),
                         ],
                       ),

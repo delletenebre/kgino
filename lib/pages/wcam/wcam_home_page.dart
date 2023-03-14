@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,166 +17,131 @@ import '../../ui/lists/krs_list_item_card.dart';
 import '../../ui/lists/krs_vertical_list_view.dart';
 import '../../ui/loading_indicator.dart';
 
-class WcamHomePage extends StatelessWidget {
+class WcamHomePage extends HookWidget {
   const WcamHomePage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<SaimaCamerasController>(
-          create: (context) => SaimaCamerasController(),
-        ),
+    final api = GetIt.instance<WcamApiProvider>();
 
-        BlocProvider<ElcatCamerasController>(
-          create: (context) => ElcatCamerasController(),
-        ),
+    /// список новых сериалов
+    final asyncSaimaItems = useMemoized(() => api.getSaimaCameras());
 
-        BlocProvider<KtCamerasController>(
-          create: (context) => KtCamerasController(),
-        ),
+    /// список новых сериалов
+    final asyncElcatItems = useMemoized(() => api.getElcatCameras());
 
-        BlocProvider<CitylinkCamerasController>(
-          create: (context) => CitylinkCamerasController(),
-        ),
+    /// список новых сериалов
+    final asyncKtItems = useMemoized(() => api.getKtCameras());
 
-      ],
-      
-      child: Builder(
-        builder: (context) {
+    final categories = <CategoryListItem<MovieItem>>[];
 
-          final saimaState = context.watch<SaimaCamerasController>().state;
-          final elcatState = context.watch<ElcatCamerasController>().state;
-          final ktState = context.watch<KtCamerasController>().state;
-          final citylinkState = context.watch<CitylinkCamerasController>().state;
+    categories.add(
+      CategoryListItem(
+        title: 'Saima Telecom',
+        itemsFuture: asyncSaimaItems,
+      )
+    );
 
-          if (saimaState.isLoading
-            || elcatState.isLoading 
-            || ktState.isLoading 
-            // || citylinkState.isLoading
-          ) {
-            return const LoadingIndicator();
-          }
+    categories.add(
+      CategoryListItem(
+        title: 'ЭлКат',
+        itemsFuture: asyncElcatItems,
+      )
+    );
 
-          final categories = <CategoryListItem<MovieItem>>[];
+    categories.add(
+      CategoryListItem(
+        title: 'Кыргызтелеком',
+        itemsFuture: asyncKtItems,
+      )
+    );
 
-          categories.add(
-            CategoryListItem(
-              title: 'Saima Telecom',
-              items: saimaState.data,
-            )
-          );
+    // categories.add(
+    //   CategoryListItem(
+    //     title: 'Ситилинк',
+    //     items: citylinkState.data,
+    //   )
+    // );
 
-          categories.add(
-            CategoryListItem(
-              title: 'ЭлКат',
-              items: elcatState.data,
-            )
-          );
+    categories.add(
+      CategoryListItem(
+        title: 'Интересное',
+        items: [
 
-          categories.add(
-            CategoryListItem(
-              title: 'Кыргызтелеком',
-              items: ktState.data,
-            )
-          );
+          MovieItem.webcamera(
+            name: 'Кенийский водопой',
+            posterUrl: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
+            videoFileUrl: 'https://www.youtube.com/watch?v=KyQAB-TKOVA',
+          ),
 
-          // categories.add(
-          //   CategoryListItem(
-          //     title: 'Ситилинк',
-          //     items: citylinkState.data,
-          //   )
-          // );
+          MovieItem.webcamera(
+            name: 'Африканские животные',
+            posterUrl: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
+            videoFileUrl: 'https://www.youtube.com/watch?v=O8xVFhgEv6Q',
+          ),
 
-          categories.add(
-            CategoryListItem(
-              title: 'Интересное',
-              items: [
+          MovieItem.webcamera(
+            name: 'Сафари камера',
+            posterUrl: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
+            videoFileUrl: 'https://www.youtube.com/watch?v=QkWGGhtTA4k',
+          ),
 
-                MovieItem.webcamera(
-                  name: 'Кенийский водопой',
-                  posterUrl: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=KyQAB-TKOVA',
-                ),
+          MovieItem.webcamera(
+            name: 'Парк слонов',
+            posterUrl: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
+            videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4',
+          ),
 
-                MovieItem.webcamera(
-                  name: 'Африканские животные',
-                  posterUrl: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=O8xVFhgEv6Q',
-                ),
-
-                MovieItem.webcamera(
-                  name: 'Сафари камера',
-                  posterUrl: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=QkWGGhtTA4k',
-                ),
-
-                MovieItem.webcamera(
-                  name: 'Парк слонов',
-                  posterUrl: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4',
-                ),
-
-                MovieItem.webcamera(
-                  name: 'Таймс-сквер, Нью-Йорк',
-                  posterUrl: 'https://i.ytimg.com/vi/1-iS7LArMPA/hqdefault_live.jpg',
-                  videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA',
-                ),
-                
-              ],
-            )
-          );
+          MovieItem.webcamera(
+            name: 'Таймс-сквер, Нью-Йорк',
+            posterUrl: 'https://i.ytimg.com/vi/1-iS7LArMPA/hqdefault_live.jpg',
+            videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA',
+          ),
           
+        ],
+      )
+    );
+    
+    return Padding(
+      padding: const EdgeInsets.only(top: 48.0),
+      child: KrsVerticalListView(
+        itemCount: categories.length,
+        itemBuilder: (context, focusNode, index) {
+          final category = categories[index];
 
-
-          if (categories.isNotEmpty) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 48.0),
-              child: KrsVerticalListView(
-                itemCount: categories.length,
-                itemBuilder: (context, focusNode, index) {
-                  final category = categories[index];
-
-                  return SizedBox.fromSize(
-                    size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                    child: KrsHorizontalListView<MovieItem>(
-                      focusNode: focusNode,
-                      onLoadNextPage: category.title.startsWith('Ситилинк') ? (page, loadedCount) {
-                        final api = GetIt.instance<WcamApiProvider>();
-                        return  api.getCitylinkCameras(
-                          city: '',
-                          page: page,
-                        );
-                      } : null,
-                      items: category.items,
-                      titleText: category.title,
-                      itemBuilder: (context, focusNode, index, item) {
-                        return KrsListItemCard(
-                          focusNode: focusNode,
-                          item: item,
-                          
-                          /// при выборе элемента
-                          onTap: () {
-                            /// переходим на страницу деталей о сериале
-                            context.goNamed('wcamPlayer',
-                              extra: item.seasons.first.episodes.first,
-                            );
-
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
+          return KrsHorizontalListView<MovieItem>(
+            focusNode: focusNode,
+            height: tskgListViewHeight + 16.0,
+            onLoadNextPage: category.title.startsWith('Ситилинк') ? (page, loadedCount) {
+              final api = GetIt.instance<WcamApiProvider>();
+              return  api.getCitylinkCameras(
+                city: '',
+                page: page,
+              );
+            } : null,
+            items: category.items,
+            itemsFuture: category.itemsFuture,
+            titleText: category.title,
+            itemBuilder: (context, focusNode, index, item) {
+              return KrsListItemCard(
+                focusNode: focusNode,
+                item: item,
                 
-              ),
-            );
-          }
+                /// при выборе элемента
+                onTap: () {
+                  /// переходим на страницу деталей о сериале
+                  context.goNamed('wcamPlayer',
+                    extra: item.seasons.first.episodes.first,
+                  );
 
-          return const LoadingIndicator();
+                },
+              );
+            },
+          );
         },
+        
       ),
     );
   }

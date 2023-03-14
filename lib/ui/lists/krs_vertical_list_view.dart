@@ -34,7 +34,6 @@ class _KrsVerticalListViewState extends State<KrsVerticalListView> {
     super.dispose();
   }
   
-
   @override
   Widget build(context) {
     

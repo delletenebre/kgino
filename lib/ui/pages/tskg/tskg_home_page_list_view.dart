@@ -65,10 +65,10 @@ class TskgHomePageListView extends HookWidget {
     );
 
     /// список новых сериалов
-    final hookNewItems = useMemoized(() => api.getNew());
+    final asyncNewItems = useMemoized(() => api.getNew());
 
     /// список популярных сериалов
-    final hookPopularItems = useMemoized(() => api.getPopular());
+    final asyncPopularItems = useMemoized(() => api.getPopular());
 
     return BlocProvider(
       create: (context) => TskgNewsController(),
@@ -139,66 +139,62 @@ class TskgHomePageListView extends HookWidget {
           showList.add(
             CategoryListItem<MovieItem>(
               title: 'Новые',
-              itemsFuture: hookNewItems,
+              itemsFuture: asyncNewItems,
             )
           );
           
           showList.add(
             CategoryListItem<MovieItem>(
               title: 'Популярные',
-              itemsFuture: hookPopularItems,
+              itemsFuture: asyncPopularItems,
             )
           );
 
-          if (showList.isNotEmpty) {
-            return KrsVerticalListView(
-              onFocusChange: (hasFocus) {
-                if (!hasFocus) {
-                  context.read<TskgShowDetailsController>().clear();
-                }
-              },
-              itemCount: showList.length,
-              itemBuilder: (context, focusNode, index) {
-                final showItem = showList[index];
+          
+          return KrsVerticalListView(
+            onFocusChange: (hasFocus) {
+              if (!hasFocus) {
+                context.read<TskgShowDetailsController>().clear();
+              }
+            },
+            itemCount: showList.length,
+            itemBuilder: (context, focusNode, index) {
+              final showItem = showList[index];
 
-                return SizedBox.fromSize(
-                  size: const Size.fromHeight(tskgListViewHeight + 16.0),
-                  child: KrsHorizontalListView<MovieItem>(
+              return KrsHorizontalListView<MovieItem>(
+                height: tskgListViewHeight + 16.0,
+                focusNode: focusNode,
+                onItemFocused: (item) {
+                  context.read<TskgShowDetailsController>().getShowById(
+                    item.id,
+                  );
+                },
+                titleText: showItem.title,
+                items: showItem.items,
+                itemsFuture: showItem.itemsFuture,
+                itemBuilder: (context, focusNode, index, show) {
+                  
+                  return KrsListItemCard(
                     focusNode: focusNode,
-                    onItemFocused: (item) {
-                      context.read<TskgShowDetailsController>().getShowById(
-                        item.id,
-                      );
-                    },
-                    titleText: showItem.title,
-                    items: showItem.items,
-                    itemsFuture: showItem.itemsFuture,
-                    itemBuilder: (context, focusNode, index, show) {
-                      
-                      return KrsListItemCard(
-                        focusNode: focusNode,
-                        item: show,
-                        
-                        /// при выборе элемента
-                        onTap: () {
-                          /// переходим на страницу деталей о сериале
-                          context.goNamed('tskgShowDetails',
-                            params: {
-                              'id': show.id,
-                            },
-                          );
-
+                    item: show,
+                    
+                    /// при выборе элемента
+                    onTap: () {
+                      /// переходим на страницу деталей о сериале
+                      context.goNamed('tskgShowDetails',
+                        params: {
+                          'id': show.id,
                         },
                       );
-                    },
-                  ),
-                );
-              },
-              
-            );
-          }
 
-          return const LoadingIndicator();
+                    },
+                  );
+                },
+              );
+            },
+            
+          );
+          
         },
       ),
     );
