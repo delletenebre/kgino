@@ -1,14 +1,55 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
+import '../constants.dart';
 import '../models/movie_item.dart';
 import '../models/wcam/citylink_camera.dart';
 
 class WcamApiProvider {
+
+  /// ts.kg
+  final _dio = Dio(BaseOptions(
+    sendTimeout: requestTimeout,
+    receiveTimeout: requestTimeout,
+  ));
+
+  WcamApiProvider() {
+    if (kDebugMode) {
+      /// ^ если режим отладки
+
+      /// добавляем перехватчик, для логов запросов
+      _dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (RequestOptions options, handler) {
+            print("┌------------------------------------------------------------------------------");
+            print('| [DIO] Request: ${options.method} ${options.uri}');
+            print('| ${options.data.toString()}');
+            print('| Headers:');
+            options.headers.forEach((key, value) {
+              print('|\t$key: $value');
+            });
+            print("├------------------------------------------------------------------------------");
+            handler.next(options); //continue
+          },
+          onResponse: (Response response, handler) async {
+            print("| [DIO] Response [code ${response.statusCode}]: ${response.data.toString()}");
+            print("└------------------------------------------------------------------------------");
+            handler.next(response);
+            // return response; // continue
+          },
+          onError: (DioError error, handler) async {
+            print("| [DIO] Error: ${error.error}: ${error.response.toString()}");
+            print("└------------------------------------------------------------------------------");
+            handler.next(error); //continue
+          }
+        )
+      );
+    }
+  }
 
   static String getTextByClassName(Document document, String className) {
     final elements = document.getElementsByClassName(className);
@@ -29,7 +70,7 @@ class WcamApiProvider {
     try {
 
       /// запрашиваем данные
-      final response = await Dio().get('https://live.saimanet.kg');
+      final response = await _dio.get('https://live.saimanet.kg');
 
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
@@ -96,7 +137,7 @@ class WcamApiProvider {
     try {
 
       /// запрашиваем данные
-      final response = await Dio().get('https://live.saimanet.kg$url');
+      final response = await _dio.get('https://live.saimanet.kg$url');
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
         
@@ -127,7 +168,7 @@ class WcamApiProvider {
     try {
 
       /// запрашиваем данные
-      final response = await Dio().get('https://elcat.kg/translation');
+      final response = await _dio.get('https://elcat.kg/translation');
 
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
@@ -216,7 +257,7 @@ class WcamApiProvider {
     try {
 
       /// запрашиваем данные
-      final response = await Dio().get('https://moidom.karelia.pro/api/',
+      final response = await _dio.get('https://moidom.karelia.pro/api/',
         queryParameters: {
           'mode': 'getPublicCounters',
           'city': city,
@@ -249,7 +290,7 @@ class WcamApiProvider {
     try {
 
       /// запрашиваем данные
-      final response = await Dio().get('https://moidom.citylink.pro/api/',
+      final response = await _dio.get('https://moidom.citylink.pro/api/',
       
         queryParameters: {
           'mode': 'getPublicCamsList',

@@ -15,16 +15,16 @@ import '../models/ockg/ockg_comment.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../models/season_item.dart';
 
-class OckgApiProvider {
+class FlmxApiProvider {
 
   /// cinema online
   final _dio = Dio(BaseOptions(
-    baseUrl: 'https://oc.kg/api.php?format=json',
+    baseUrl: 'http://filmixapp.cyou/api/v2',
     sendTimeout: requestTimeout,
     receiveTimeout: requestTimeout,
   ));
 
-  OckgApiProvider() {
+  FlmxApiProvider() {
     if (kDebugMode) {
       /// ^ если режим отладки
 
