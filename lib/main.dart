@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -48,7 +46,6 @@ Future<void> main() async {
   /// информация об устройстве
   final deviceInfo = DeviceInfoPlugin();
   final androidDeviceInfo = await deviceInfo.androidInfo;
-  log(androidDeviceInfo.toString());
   GetIt.instance.registerSingleton<DeviceDetails>(
     DeviceDetails(
       id: androidDeviceInfo.id,

@@ -143,49 +143,48 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
                           child: Row(
                             children: [
 
-                              // /// кнопка начала просмотра
-                              // Padding(
-                              //   padding: const EdgeInsets.only(right: 8.0),
-                              //   child: ElevatedButton.icon(
-                              //     focusNode: _playButtonFocusNode,
-                              //     autofocus: true,
-                              //     style: KrsTheme.filledTonalButtonStyleOf(context),
-                              //     onPressed: () {
-                              //       /// переходим на страницу плеера фильма
-                              //       context.goNamed('flmxPlayer',
-                              //         params: {
-                              //           'id': movieItem.id,
-                              //         },
-                              //         queryParams: {
-                              //           'episodeId': movieItem.seasons.first.episodes.first.id,
-                              //         },
-                              //         extra: movieItem,
-                              //       );
-                              //     },
-                              //     icon: const Icon(Icons.play_arrow),
-                              //     label: Text(locale.play),
-                              //   ),
-                              // ),
+                              /// кнопка начала просмотра
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: ElevatedButton.icon(
+                                  focusNode: _playButtonFocusNode,
+                                  autofocus: true,
+                                  style: KrsTheme.filledTonalButtonStyleOf(context),
+                                  onPressed: () {
+                                    /// переходим на страницу плеера фильма
+                                    context.goNamed('flmxPlayer',
+                                      params: {
+                                        'id': movieItem.id,
+                                      },
+                                      queryParams: {
+                                        'episodeId': movieItem.seasons.first.episodes.first.id,
+                                      },
+                                      extra: movieItem,
+                                    );
+                                  },
+                                  icon: const Icon(Icons.play_arrow),
+                                  label: Text(locale.play),
+                                ),
+                              ),
 
-                              // /// если файлов несколько, показываем кнопку выбора
-                              // /// эпизода
-                              // if (movieItem.seasons.first.episodes.length > 1) Padding(
-                              //   padding: const EdgeInsets.only(right: 8.0),
-                              //   child: ElevatedButton.icon(
-                              //     style: KrsTheme.filledTonalButtonStyleOf(context),
-                              //     onPressed: () {
-                              //       /// переходим на страницу выбора файла
-                              //       context.goNamed('flmxFiles',
-                              //         params: {
-                              //           'id': movieItem.id,
-                              //         },
-                              //         extra: movieItem,
-                              //       );
-                              //     },
-                              //     icon: const Icon(Icons.folder_open),
-                              //     label: Text(locale.selectEpisode),
-                              //   ),
-                              // ),
+                              /// если файлов несколько, показываем кнопку выбора
+                              /// эпизода
+                              if (movieItem.seasons.first.episodes.length > 1) Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: FilledButton.tonalIcon(
+                                  onPressed: () {
+                                    /// переходим на страницу выбора файла
+                                    context.goNamed('flmxFiles',
+                                      params: {
+                                        'id': movieItem.id,
+                                      },
+                                      extra: movieItem,
+                                    );
+                                  },
+                                  icon: const Icon(Icons.folder_open),
+                                  label: Text(locale.selectEpisode),
+                                ),
+                              ),
 
                               /// если есть трейлер, показываем кнопку просмотра
                               /// трейлера

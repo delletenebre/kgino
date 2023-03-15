@@ -1,7 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:kgino/models/episode_item.dart';
 
 import '../json_converters.dart';
 import '../movie_item.dart';
+import '../season_item.dart';
 import 'flmx_player_links.dart';
 
 part 'flmx_item.freezed.dart';
@@ -44,13 +46,30 @@ class FlmxItem with _$FlmxItem {
       => _$FlmxItemFromJson(json);
 
   MovieItem toMovieItem() {
+    /// сезоны
+    List<SeasonItem> seasons = [];
+
     String voiceActing = '';
     List<String> voiceActingIds = [];
 
     if (playerLinks.movie.isNotEmpty) {
       voiceActing = playerLinks.movie.first.translation;
       voiceActingIds = playerLinks.movie.map((e) => e.translation).toList();
+
+      seasons = [
+        SeasonItem(
+          name: '',
+          episodes: [
+            EpisodeItem(
+              id: playerLinks.movie.first.link,
+              name: '',
+            ),
+          ]
+        )
+      ];
     }
+
+    
 
     return MovieItem(
       type: MovieItemType.flmx,
@@ -70,6 +89,8 @@ class FlmxItem with _$FlmxItem {
 
       voiceActing: voiceActing,
       voiceActingIds: voiceActingIds,
+
+      seasons: seasons,
     );
   }
   
