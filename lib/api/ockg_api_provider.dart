@@ -14,6 +14,7 @@ import '../models/ockg/ockg_catalog.dart';
 import '../models/ockg/ockg_comment.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../models/season_item.dart';
+import 'logs_interceptor.dart';
 
 class OckgApiProvider {
 
@@ -26,7 +27,7 @@ class OckgApiProvider {
 
   OckgApiProvider() {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogInterceptor());
+    _dio.interceptors.add(LogsInterceptor());
   }
 
 

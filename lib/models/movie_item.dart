@@ -14,6 +14,7 @@ enum MovieItemType {
   @HiveField(1) tskg,
   @HiveField(2) wcam,
   @HiveField(3) folder,
+  @HiveField(4) flmx,
 }
 
 @HiveType(typeId: 11)

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../controllers/flmx/flmx_search_controller.dart';
 import '../../../controllers/ockg/ockg_search_controller.dart';
 import '../../../controllers/tskg/tskg_search_controller.dart';
 import '../../../resources/krs_locale.dart';
@@ -136,11 +137,13 @@ class _ButtonSearchFieldState extends State<ButtonSearchField> {
                   onChanged: (searchQuery) {
                     context.read<OckgSearchController>().searchMovies(searchQuery);
                     context.read<TskgSearchController>().searchShows(searchQuery);
+                    context.read<FlmxSearchController>().search(searchQuery);
                   },
 
                   onSubmitted: (searchQuery) {
                     context.read<OckgSearchController>().searchMovies(searchQuery);
                     context.read<TskgSearchController>().searchShows(searchQuery);
+                    context.read<FlmxSearchController>().search(searchQuery);
                   },
 
                   style: const TextStyle(

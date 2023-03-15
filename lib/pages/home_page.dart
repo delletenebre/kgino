@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../controllers/flmx/flmx_search_controller.dart';
 import '../controllers/ockg/ockg_search_controller.dart';
 import '../controllers/tskg/tskg_search_controller.dart';
 import '../resources/krs_locale.dart';
@@ -53,6 +54,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           BlocProvider<TskgSearchController>(
             create: (context) => TskgSearchController(),
+          ),
+          BlocProvider<FlmxSearchController>(
+            create: (context) => FlmxSearchController(),
           ),
         ],
         child: ValueListenableBuilder(

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-class LogInterceptor extends InterceptorsWrapper {
+class LogsInterceptor extends InterceptorsWrapper {
 
   @override
   void onRequest(RequestOptions options, handler) {

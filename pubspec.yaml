@@ -23,9 +23,8 @@ dependencies:
   audio_video_progress_bar: ^0.11.0
   cached_network_image: ^3.2.3
   collection: ^1.16.0
-  dio: ^5.0.0
-  #dio_http_cache_lts: ^0.4.1
-  # dio_logger: ^4.0.8+8
+  device_info_plus: ^8.1.0
+  dio: ^5.0.2
   equatable: ^2.0.5
   extended_image: ^6.3.4
   firebase_analytics: ^10.0.7

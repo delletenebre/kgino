@@ -8,6 +8,7 @@ import 'package:html/parser.dart';
 import '../constants.dart';
 import '../models/movie_item.dart';
 import '../models/wcam/citylink_camera.dart';
+import 'logs_interceptor.dart';
 
 class WcamApiProvider {
 
@@ -19,7 +20,7 @@ class WcamApiProvider {
 
   WcamApiProvider() {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogInterceptor());
+    _dio.interceptors.add(LogsInterceptor());
   }
 
   static String getTextByClassName(Document document, String className) {

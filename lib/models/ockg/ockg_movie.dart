@@ -1,6 +1,4 @@
-import 'package:flutter/painting.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import '../json_converters.dart';
 import 'ockg_file.dart';

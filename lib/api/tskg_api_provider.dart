@@ -7,6 +7,7 @@ import '../constants.dart';
 import '../models/movie_item.dart';
 import '../models/tskg/tskg_episode_details.dart';
 import '../models/tskg/tskg_show.dart';
+import 'logs_interceptor.dart';
 import 'tskg_api_isolates.dart';
 
 
@@ -25,7 +26,7 @@ class TskgApiProvider {
 
   TskgApiProvider() {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogInterceptor());
+    _dio.interceptors.add(LogsInterceptor());
   }
 
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kgino/constants.dart';
 
+import '../controllers/flmx/flmx_search_controller.dart';
 import '../controllers/ockg/ockg_search_controller.dart';
 import '../controllers/tskg/tskg_search_controller.dart';
 import '../models/movie_item.dart';
@@ -23,6 +24,7 @@ class SearchPage extends StatelessWidget {
 
     final ockgSearch = context.watch<OckgSearchController>().state;
     final tskgSearch = context.watch<TskgSearchController>().state;
+    final flmxSearch = context.watch<FlmxSearchController>().state;
 
     final items = <CategoryListItem<MovieItem>>[];
     if (ockgSearch.isSuccess) {
@@ -38,6 +40,14 @@ class SearchPage extends StatelessWidget {
         CategoryListItem(
           title: locale.shows,
           items: tskgSearch.data,
+        )
+      );
+    }
+    if (flmxSearch.isSuccess) {
+      items.add(
+        CategoryListItem(
+          title: 'Filmix',
+          items: flmxSearch.asData.data,
         )
       );
     }
@@ -61,7 +71,10 @@ class SearchPage extends StatelessWidget {
                   return KrsListItemCard(
                     focusNode: focusNode,
                     posterSize: (show.type == MovieItemType.ockg)
-                      ? ockgPosterSize : tskgPosterSize,
+                      ? ockgPosterSize
+                      : (show.type == MovieItemType.flmx)
+                      ? ockgPosterSize
+                      : tskgPosterSize,
                     item: show,
                     
                     /// при выборе элемента
@@ -72,6 +85,11 @@ class SearchPage extends StatelessWidget {
                         case MovieItemType.ockg:
                           routeName = 'ockgMovieDetails';
                           break;
+
+                        case MovieItemType.flmx:
+                          routeName = 'flmxDetails';
+                          break;
+
                         case MovieItemType.tskg:
                         default:
                           routeName = 'tskgShowDetails';

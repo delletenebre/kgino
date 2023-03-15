@@ -4,6 +4,7 @@ import 'package:kgino/controllers/ockg/ockg_catalog_controller.dart';
 import '../models/episode_item.dart';
 import '../models/movie_item.dart';
 import '../pages/error_page.dart';
+import '../pages/flmx/flmx_details_page.dart';
 import '../pages/home_page.dart';
 import '../pages/ockg/ockg_catalog_page.dart';
 import '../pages/ockg/ockg_movie_details_page.dart';
@@ -146,6 +147,44 @@ class KrsRouter {
               );
             },
           ),
+
+
+          /// filmix
+          GoRoute(
+            path: 'flmx/:id',
+            name: 'flmxDetails',
+            builder: (context, state) {
+              final id = state.params['id'] ?? '';
+              return FlmxDetailsPage(id);
+            },
+            // routes: [
+            //   GoRoute(
+            //     path: 'files',
+            //     name: 'ockgMovieFiles',
+            //     builder: (context, state) {
+            //       final movie = state.extra as MovieItem;
+            //       return OckgMovieFilesPage(
+            //         movie: movie,
+            //       );
+            //     },
+            //   ),
+
+            //   GoRoute(
+            //     path: 'player',
+            //     name: 'ockgMoviePlayer',
+            //     builder: (context, state) {
+            //       final movie = state.extra as MovieItem;
+            //       final fileId = state.queryParams['episodeId'] ?? '';
+
+            //       return OckgPlayerPage(
+            //         movie: movie,
+            //         episodeId: fileId,
+            //       );
+            //     },
+            //   ),
+            // ]
+          ),
+
 
         ],
       ),
