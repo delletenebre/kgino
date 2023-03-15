@@ -28,7 +28,9 @@ _$_FlmxItem _$$_FlmxItemFromJson(Map<String, dynamic> json) => _$_FlmxItem(
           : DateTime.parse(json['date_atom'] as String),
       favorited: json['favorited'] as bool? ?? false,
       watchLater: json['watch_later'] as bool? ?? false,
-      shortStory: json['short_story'] as String? ?? '',
+      shortStory: json['short_story'] == null
+          ? ''
+          : const HtmlRemoveConverter().fromJson(json['short_story'] as String),
       rip: json['rip'] as String? ?? '',
       quality: json['quality'] as String? ?? '',
       categories: (json['categories'] as List<dynamic>?)
@@ -68,7 +70,7 @@ Map<String, dynamic> _$$_FlmxItemToJson(_$_FlmxItem instance) =>
       'date_atom': instance.dateAtom?.toIso8601String(),
       'favorited': instance.favorited,
       'watch_later': instance.watchLater,
-      'short_story': instance.shortStory,
+      'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
       'rip': instance.rip,
       'quality': instance.quality,
       'categories': instance.categories,

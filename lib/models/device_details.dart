@@ -8,6 +8,7 @@ class DeviceDetails with _$DeviceDetails {
     @Default('') final String id,
     @Default('') final String name,
     @Default('') final String vendor,
+    @Default('') final String osVersion,
 
   }) = _DeviceDetails;
   

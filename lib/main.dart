@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -49,11 +50,13 @@ Future<void> main() async {
   /// информация об устройстве
   final deviceInfo = DeviceInfoPlugin();
   final androidDeviceInfo = await deviceInfo.androidInfo;
+  log(androidDeviceInfo.toString());
   GetIt.instance.registerSingleton<DeviceDetails>(
     DeviceDetails(
       id: androidDeviceInfo.id,
       name: androidDeviceInfo.model,
-      vendor: androidDeviceInfo.manufacturer,
+      vendor: androidDeviceInfo.brand,
+      osVersion: androidDeviceInfo.version.release,
     )
   );
 

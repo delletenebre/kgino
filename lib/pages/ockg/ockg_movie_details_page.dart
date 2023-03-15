@@ -9,9 +9,9 @@ import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
+import '../../ui/pages/movie_details_view.dart';
 import '../../ui/pages/play_button_seen_information.dart';
 import '../../ui/pages/try_again_message.dart';
-import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 
 class OckgMovieDetailsPage extends StatefulWidget {
@@ -76,7 +76,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
             }
             
             if (state.isSuccess) {
-              final movie = state.data;
+              final movieItem = state.data;
               return KrsScrollView(
                 scrollController: _scrollController,
                 onStartScroll: (scrollMetrics) {
@@ -89,8 +89,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                   Container(
                     margin: const EdgeInsets.only(top: 72.0),
                     height: MediaQuery.of(context).size.height - (128.0 + 72.0),
-                    child: OckgMovieDetais(
-                      movie: movie,
+                    child: MovieDetaisView(movieItem,
                       expanded: true,
                     ),
                   ),
@@ -123,8 +122,8 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
 
                                 /// если кнопка Смотреть в фокусе
                                 if (_playButtonFocusNode.hasFocus) PlayButtonSeenInformation(
-                                  itemKey: movie.storageKey,
-                                  movieItem: movie,
+                                  itemKey: movieItem.storageKey,
+                                  movieItem: movieItem,
                                   showEpisodeNumber: false,
                                 ),
                               ],
@@ -149,12 +148,12 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                       /// переходим на страницу плеера фильма
                                       context.goNamed('ockgMoviePlayer',
                                         params: {
-                                          'id': movie.id,
+                                          'id': movieItem.id,
                                         },
                                         queryParams: {
-                                          'episodeId': movie.seasons.first.episodes.first.id,
+                                          'episodeId': movieItem.seasons.first.episodes.first.id,
                                         },
-                                        extra: movie,
+                                        extra: movieItem,
                                       );
                                     },
                                     icon: const Icon(Icons.play_arrow),
@@ -164,7 +163,7 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
 
                                 /// если файлов несколько, показываем кнопку выбора
                                 /// эпизода
-                                if (movie.seasons.first.episodes.length > 1) Padding(
+                                if (movieItem.seasons.first.episodes.length > 1) Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: ElevatedButton.icon(
                                     style: KrsTheme.filledTonalButtonStyleOf(context),
@@ -172,9 +171,9 @@ class _OckgMovieDetailsPageState extends State<OckgMovieDetailsPage> {
                                       /// переходим на страницу выбора файла
                                       context.goNamed('ockgMovieFiles',
                                         params: {
-                                          'id': movie.id,
+                                          'id': movieItem.id,
                                         },
-                                        extra: movie,
+                                        extra: movieItem,
                                       );
                                     },
                                     icon: const Icon(Icons.folder_open),

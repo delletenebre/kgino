@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../json_converters.dart';
+import '../movie_item.dart';
 
 part 'flmx_item.freezed.dart';
 part 'flmx_item.g.dart';
@@ -23,7 +24,7 @@ class FlmxItem with _$FlmxItem {
     DateTime? dateAtom,
     @Default(false) bool favorited,
     @Default(false) bool watchLater,
-    @Default('') String shortStory,
+    @HtmlRemoveConverter() @Default('') String shortStory,
     @Default('') String rip,
     @Default('') String quality,
     @Default([]) List<String> categories,
@@ -38,5 +39,24 @@ class FlmxItem with _$FlmxItem {
 
   factory FlmxItem.fromJson(Map<String, Object?> json)
       => _$FlmxItemFromJson(json);
+
+  MovieItem toMovieItem() {
+    return MovieItem(
+      type: MovieItemType.flmx,
+      id: id.toString(),
+      name: title,
+      originalName: originalTitle,
+      posterUrl: poster,
+      description: shortStory,
+      year: year.toString(),
+      genres: categories,
+      countries: countries,
+
+      ratingImdb: imdbRating,
+      ratingKinopoisk: kpRating,
+
+      duration: Duration(minutes: duration),
+    );
+  }
   
 }

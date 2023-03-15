@@ -19,6 +19,7 @@ mixin _$DeviceDetails {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get vendor => throw _privateConstructorUsedError;
+  String get osVersion => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $DeviceDetailsCopyWith<DeviceDetails> get copyWith =>
@@ -31,7 +32,7 @@ abstract class $DeviceDetailsCopyWith<$Res> {
           DeviceDetails value, $Res Function(DeviceDetails) then) =
       _$DeviceDetailsCopyWithImpl<$Res, DeviceDetails>;
   @useResult
-  $Res call({String id, String name, String vendor});
+  $Res call({String id, String name, String vendor, String osVersion});
 }
 
 /// @nodoc
@@ -50,6 +51,7 @@ class _$DeviceDetailsCopyWithImpl<$Res, $Val extends DeviceDetails>
     Object? id = null,
     Object? name = null,
     Object? vendor = null,
+    Object? osVersion = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -64,6 +66,10 @@ class _$DeviceDetailsCopyWithImpl<$Res, $Val extends DeviceDetails>
           ? _value.vendor
           : vendor // ignore: cast_nullable_to_non_nullable
               as String,
+      osVersion: null == osVersion
+          ? _value.osVersion
+          : osVersion // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -76,7 +82,7 @@ abstract class _$$_DeviceDetailsCopyWith<$Res>
       __$$_DeviceDetailsCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String vendor});
+  $Res call({String id, String name, String vendor, String osVersion});
 }
 
 /// @nodoc
@@ -93,6 +99,7 @@ class __$$_DeviceDetailsCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? vendor = null,
+    Object? osVersion = null,
   }) {
     return _then(_$_DeviceDetails(
       id: null == id
@@ -107,6 +114,10 @@ class __$$_DeviceDetailsCopyWithImpl<$Res>
           ? _value.vendor
           : vendor // ignore: cast_nullable_to_non_nullable
               as String,
+      osVersion: null == osVersion
+          ? _value.osVersion
+          : osVersion // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -114,7 +125,8 @@ class __$$_DeviceDetailsCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_DeviceDetails implements _DeviceDetails {
-  _$_DeviceDetails({this.id = '', this.name = '', this.vendor = ''});
+  _$_DeviceDetails(
+      {this.id = '', this.name = '', this.vendor = '', this.osVersion = ''});
 
   @override
   @JsonKey()
@@ -125,10 +137,13 @@ class _$_DeviceDetails implements _DeviceDetails {
   @override
   @JsonKey()
   final String vendor;
+  @override
+  @JsonKey()
+  final String osVersion;
 
   @override
   String toString() {
-    return 'DeviceDetails(id: $id, name: $name, vendor: $vendor)';
+    return 'DeviceDetails(id: $id, name: $name, vendor: $vendor, osVersion: $osVersion)';
   }
 
   @JsonKey(ignore: true)
@@ -142,7 +157,8 @@ abstract class _DeviceDetails implements DeviceDetails {
   factory _DeviceDetails(
       {final String id,
       final String name,
-      final String vendor}) = _$_DeviceDetails;
+      final String vendor,
+      final String osVersion}) = _$_DeviceDetails;
 
   @override
   String get id;
@@ -150,6 +166,8 @@ abstract class _DeviceDetails implements DeviceDetails {
   String get name;
   @override
   String get vendor;
+  @override
+  String get osVersion;
   @override
   @JsonKey(ignore: true)
   _$$_DeviceDetailsCopyWith<_$_DeviceDetails> get copyWith =>

@@ -10,7 +10,7 @@ import '../../models/ockg/ockg_catalog.dart';
 import '../../models/ockg/ockg_movie.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/lists/krs_list_item_card.dart';
-import '../../ui/pages/ockg/ockg_movie_details.dart';
+import '../../ui/pages/movie_details_view.dart';
 
 class OckgCatalogPage extends StatelessWidget {
   final MovieItem item;
@@ -53,11 +53,9 @@ class OckgCatalogPage extends StatelessWidget {
               child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovieItem>>(
                 builder: (context, state) {
                   if (state.isSuccess) {
-                    final movie = state.data;
+                    final movieItem = state.data;
 
-                    return OckgMovieDetais(
-                      movie: movie,
-                    );
+                    return MovieDetaisView(movieItem);
                   }
 
                   return const SizedBox();

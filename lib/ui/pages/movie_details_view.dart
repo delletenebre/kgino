@@ -1,19 +1,18 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/flmx/flmx_item.dart';
+import '../../../models/movie_item.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
-import '../../movie_rating.dart';
+import '../movie_rating.dart';
 
-class FlmxDetais extends StatelessWidget {
-  final FlmxItem flmxItem;
+class MovieDetaisView extends StatelessWidget {
+  final MovieItem movieItem;
   final bool expanded;
 
-  const FlmxDetais({
+  const MovieDetaisView(this.movieItem, {
     super.key,
-    required this.flmxItem,
-    this.expanded = true,
+    this.expanded = false,
   });
 
   @override
@@ -39,7 +38,7 @@ class FlmxDetais extends StatelessWidget {
             right: 0,
 
             child: ExtendedImage.network(
-              flmxItem.poster,
+              movieItem.posterUrl,
               fit: BoxFit.fill,
               cache: true,
               colorBlendMode: BlendMode.dstOut,
@@ -64,16 +63,16 @@ class FlmxDetais extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// название фильма
-                  Text(flmxItem.title,
+                  Text(movieItem.name,
                     style: theme.textTheme.titleLarge,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
 
                   /// оригинальное название фильма
-                  if (expanded && flmxItem.originalTitle.isNotEmpty) Padding(
+                  if (expanded && movieItem.originalName.isNotEmpty) Padding(
                     padding: const EdgeInsets.only(top: 4.0),
-                    child: Text(flmxItem.originalTitle,
+                    child: Text(movieItem.originalName,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: theme.colorScheme.outline,
                       ),
@@ -88,16 +87,12 @@ class FlmxDetais extends StatelessWidget {
                       children: [
 
                         /// год выпуска, жанры (оставляем не более двух)
-                        Text([ flmxItem.year, ... flmxItem.categories.take(2) ].join(', ')),
+                        Text([ movieItem.year, ... movieItem.genres.take(2) ].join(', ')),
 
                         const SizedBox(width: 12.0),
 
                         // /// продолжительность фильма (или общая для сериала)
-                        Text(
-                          Duration(
-                            minutes: flmxItem.duration,
-                          ).formatted
-                        ),
+                        Text(movieItem.duration.formatted),
                         // if (flmxItem.seasons.first.episodes.length == 1) Text(
                         //   Duration(
                         //     seconds: movie.seasons.first.episodes.first.duration,
@@ -114,7 +109,7 @@ class FlmxDetais extends StatelessWidget {
                         /// страны фильма (оставляем не более двух)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: Text(flmxItem.countries.take(2).join(', ')),
+                          child: Text(movieItem.countries.take(2).join(', ')),
                         ),
 
                         /// если звук 5.1
@@ -146,20 +141,20 @@ class FlmxDetais extends StatelessWidget {
                       children: [
                         
                         /// рейтинг IMDb
-                        if (flmxItem.imdbRating > 0.0) Padding(
+                        if (movieItem.hasImdbRating) Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: MovieRating(
                             type: MovieRatingType.imdb,
-                            rating: flmxItem.imdbRating,
+                            rating: movieItem.ratingImdb,
                           ),
                         ),
 
                         /// рейтинг КиноПоиск
-                        if (flmxItem.kpRating > 0.0) Padding(
+                        if (movieItem.hasKinopoiskRating) Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: MovieRating(
                             type: MovieRatingType.kinopoisk,
-                            rating: flmxItem.kpRating,
+                            rating: movieItem.ratingKinopoisk,
                           ),
                         ),
 
@@ -185,7 +180,7 @@ class FlmxDetais extends StatelessWidget {
                   /// описание фильма
                   Padding(
                     padding: const EdgeInsets.only(top: 12.0),
-                    child: Text(flmxItem.shortStory,
+                    child: Text(movieItem.description,
                       maxLines: expanded ? 10 : 3,
                       overflow: TextOverflow.ellipsis,
                     ),

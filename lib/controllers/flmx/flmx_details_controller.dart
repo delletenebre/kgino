@@ -3,12 +3,11 @@ import 'package:get_it/get_it.dart';
 
 import '../../api/flmx_api_provider.dart';
 import '../../models/api_response.dart';
-import '../../models/flmx/flmx_item.dart';
 import '../../models/movie_item.dart';
 
 export '../../models/request_state.dart';
 
-class FlmxDetailsController extends Cubit<ApiResponse<FlmxItem>> {
+class FlmxDetailsController extends Cubit<ApiResponse<MovieItem>> {
   final String id;
 
   /// провайдер запросов к API

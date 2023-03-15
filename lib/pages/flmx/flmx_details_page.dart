@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../controllers/flmx/flmx_details_controller.dart';
-import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/api_response.dart';
-import '../../models/flmx/flmx_item.dart';
 import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
-import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
-import '../../ui/pages/flmx/flmx_movie_details.dart';
-import '../../ui/pages/play_button_seen_information.dart';
+import '../../ui/pages/movie_details_view.dart';
 import '../../ui/pages/try_again_message.dart';
-import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 
 class FlmxDetailsPage extends StatefulWidget {
@@ -67,7 +60,7 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
     return Scaffold(
       body: BlocProvider(
         create: (context) => FlmxDetailsController(widget.id)..fetchDetails(),
-        child: BlocBuilder<FlmxDetailsController, ApiResponse<FlmxItem>>(
+        child: BlocBuilder<FlmxDetailsController, ApiResponse<MovieItem>>(
           builder: (context, state) {
 
             if (state.isLoading) {
@@ -82,7 +75,7 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
               );
             }
 
-            final flmxItem = state.asData.data;
+            final movieItem = state.asData.data;
 
             return KrsScrollView(
               scrollController: _scrollController,
@@ -96,8 +89,7 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
                 Container(
                   margin: const EdgeInsets.only(top: 72.0),
                   height: MediaQuery.of(context).size.height - (128.0 + 72.0),
-                  child: FlmxDetais(
-                    flmxItem: flmxItem,
+                  child: MovieDetaisView(movieItem,
                     expanded: true,
                   ),
                 ),

@@ -5,8 +5,8 @@ import 'package:kgino/constants.dart';
 import '../../controllers/ockg/ockg_bestsellers_controller.dart';
 import '../../controllers/ockg/ockg_movie_details_controller.dart';
 import '../../models/movie_item.dart';
+import '../../ui/pages/movie_details_view.dart';
 import '../../ui/pages/ockg/ockg_home_page_list_view.dart';
-import '../../ui/pages/ockg/ockg_movie_details.dart';
 
 class OckgHomePage extends StatelessWidget {
   const OckgHomePage({
@@ -25,11 +25,9 @@ class OckgHomePage extends StatelessWidget {
             child: BlocBuilder<OckgMovieDetailsController, RequestState<OckgMovieItem>>(
               builder: (context, state) {
                 if (state.isSuccess) {
-                  final movie = state.data;
+                  final movieItem = state.data;
 
-                  return OckgMovieDetais(
-                    movie: movie,
-                  );
+                  return MovieDetaisView(movieItem);
                   
                 }
 

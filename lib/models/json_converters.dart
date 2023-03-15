@@ -24,7 +24,10 @@ class HtmlRemoveConverter implements JsonConverter<String, String> {
   const HtmlRemoveConverter();
 
   @override
-  String fromJson(String json) => json.replaceAll('<br>', '\n');
+  String fromJson(String json) => json
+    .replaceAll('<br>', '\n')
+    .replaceAll('<br />', '\n')
+    .replaceAll('  ', ' ');
 
   @override
   String toJson(String object) => object;

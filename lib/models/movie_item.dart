@@ -73,6 +73,18 @@ class MovieItem extends HiveObject with EquatableMixin {
     return previousValue + season.episodes.length;
   });
 
+  /// рейтинг IMDb
+  final double ratingImdb;
+  bool get hasImdbRating => ratingImdb > 0.0;
+
+  /// рейтинг Кинопоиск
+  final double ratingKinopoisk;
+  bool get hasKinopoiskRating => ratingKinopoisk > 0.0;
+
+
+  /// продолжительность
+  final Duration duration;
+
   MovieItem({
     required this.type,
     required this.id,
@@ -92,6 +104,12 @@ class MovieItem extends HiveObject with EquatableMixin {
     this.genres = const [],
     this.countries = const [],
     this.subtitle = '',
+
+    this.ratingImdb = 0.0,
+    this.ratingKinopoisk = 0.0,
+
+    this.duration = Duration.zero,
+    
   }) : updatedAt = updatedAt ?? DateTime.now(),
         episodes = episodes ?? List<EpisodeItem>.empty(growable: true);
   
@@ -179,22 +197,9 @@ class MovieItem extends HiveObject with EquatableMixin {
   
 }
 
-
 mixin TskgMovieItemMixin {
   String get voiceActing;
   List<MovieItem> get voiceActings;
-}
-
-mixin WithRatings on MovieItem {
-  /// рейтинг IMDb
-  late double _ratingImdb;
-  double get ratingImdb => _ratingImdb;
-  bool get hasImdbRating => ratingImdb > 0.0;
-
-  /// рейтинг Кинопоиск
-  late double _ratingKinopoisk;
-  double get ratingKinopoisk => _ratingKinopoisk;
-  bool get hasKinopoiskRating => ratingKinopoisk > 0.0;
 }
 
 mixin WithSixChannels on MovieItem {
@@ -248,7 +253,7 @@ class TskgMovieItem extends MovieItem {
 }
 
 
-class OckgMovieItem extends MovieItem with WithRatings, WithSixChannels {
+class OckgMovieItem extends MovieItem with WithSixChannels {
   
   OckgMovieItem({
     required String id,
@@ -280,12 +285,11 @@ class OckgMovieItem extends MovieItem with WithRatings, WithSixChannels {
     year: year,
     genres: genres,
     countries: countries,
+
+    ratingImdb: ratingImdb,
+    ratingKinopoisk: ratingKinopoisk,
     
   ) {
-    /// implement WithRatings
-    _ratingImdb = ratingImdb;
-    _ratingKinopoisk = ratingKinopoisk;
-
     /// implement WithSixChannels
     _hasSixChannels = hasSixAudioChannels;
   }

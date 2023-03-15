@@ -36,6 +36,7 @@ mixin _$FlmxItem {
   DateTime? get dateAtom => throw _privateConstructorUsedError;
   bool get favorited => throw _privateConstructorUsedError;
   bool get watchLater => throw _privateConstructorUsedError;
+  @HtmlRemoveConverter()
   String get shortStory => throw _privateConstructorUsedError;
   String get rip => throw _privateConstructorUsedError;
   String get quality => throw _privateConstructorUsedError;
@@ -71,7 +72,7 @@ abstract class $FlmxItemCopyWith<$Res> {
       DateTime? dateAtom,
       bool favorited,
       bool watchLater,
-      String shortStory,
+      @HtmlRemoveConverter() String shortStory,
       String rip,
       String quality,
       List<String> categories,
@@ -220,7 +221,7 @@ abstract class _$$_FlmxItemCopyWith<$Res> implements $FlmxItemCopyWith<$Res> {
       DateTime? dateAtom,
       bool favorited,
       bool watchLater,
-      String shortStory,
+      @HtmlRemoveConverter() String shortStory,
       String rip,
       String quality,
       List<String> categories,
@@ -364,7 +365,7 @@ class _$_FlmxItem extends _FlmxItem {
       this.dateAtom,
       this.favorited = false,
       this.watchLater = false,
-      this.shortStory = '',
+      @HtmlRemoveConverter() this.shortStory = '',
       this.rip = '',
       this.quality = '',
       final List<String> categories = const [],
@@ -421,6 +422,7 @@ class _$_FlmxItem extends _FlmxItem {
   final bool watchLater;
   @override
   @JsonKey()
+  @HtmlRemoveConverter()
   final String shortStory;
   @override
   @JsonKey()
@@ -569,7 +571,7 @@ abstract class _FlmxItem extends FlmxItem {
       final DateTime? dateAtom,
       final bool favorited,
       final bool watchLater,
-      final String shortStory,
+      @HtmlRemoveConverter() final String shortStory,
       final String rip,
       final String quality,
       final List<String> categories,
@@ -610,6 +612,7 @@ abstract class _FlmxItem extends FlmxItem {
   @override
   bool get watchLater;
   @override
+  @HtmlRemoveConverter()
   String get shortStory;
   @override
   String get rip;
