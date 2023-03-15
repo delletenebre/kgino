@@ -34,13 +34,13 @@ class LogsInterceptor extends InterceptorsWrapper {
   }
 
   @override
-  onError(DioError error, handler) async {
+  onError(DioError err, handler) async {
     if (kDebugMode) {
       /// ^ если режим отладки
-      print("| [DIO] Error: ${error.error}: ${error.response.toString()}");
+      print("| [DIO] Error: ${err.error}: ${err.response.toString()}");
       print("└------------------------------------------------------------------------------");
     }
 
-    handler.next(error);
+    handler.next(err);
   }
 }

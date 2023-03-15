@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import '../../../models/movie_item.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../utils.dart';
+import '../krs_chip.dart';
 import '../movie_rating.dart';
 
 class MovieDetaisView extends StatelessWidget {
   final MovieItem movieItem;
   final bool expanded;
+  final Offset posterOffset;
 
   const MovieDetaisView(this.movieItem, {
     super.key,
     this.expanded = false,
+    this.posterOffset = Offset.zero,
   });
 
   @override
@@ -20,9 +23,6 @@ class MovieDetaisView extends StatelessWidget {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
     final size = MediaQuery.of(context).size;
-
-    /// определяем ширину постера на фоне
-    final width = (size.width < 420.0) ? size.width : 420.0;
 
     return RepaintBoundary(
       child: Stack(
@@ -33,9 +33,9 @@ class MovieDetaisView extends StatelessWidget {
           /// постер фильма
           Positioned(
             /// отступ вверх, на размер навигационной панели
-            top: -72.0 - 400,
-            left: 0,
-            right: 0,
+            top: -72.0 + posterOffset.dy,
+            left: posterOffset.dx,
+            right: posterOffset.dx,
 
             child: ExtendedImage.network(
               movieItem.posterUrl,
@@ -83,54 +83,75 @@ class MovieDetaisView extends StatelessWidget {
 
                   Padding(
                     padding: const EdgeInsets.only(top: 4.0),
+                      child: DefaultTextStyle(
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)
+                      ),
                       child: Row(
-                      children: [
+                        children: [
 
-                        /// год выпуска, жанры (оставляем не более двух)
-                        Text([ movieItem.year, ... movieItem.genres.take(2) ].join(', ')),
+                          /// год выпуска, жанры (оставляем не более двух)
+                          Text([ movieItem.year, ... movieItem.genres.take(2) ].join(', ')),
 
-                        const SizedBox(width: 12.0),
+                          const SizedBox(width: 12.0),
 
-                        // /// продолжительность фильма (или общая для сериала)
-                        Text(movieItem.duration.formatted),
-                        // if (flmxItem.seasons.first.episodes.length == 1) Text(
-                        //   Duration(
-                        //     seconds: movie.seasons.first.episodes.first.duration,
-                        //   ).formatted
-                        // ),
+                          /// продолжительность фильма (или общая для сериала)
+                          if (movieItem.seasons.first.episodes.length == 1) Text(
+                            movieItem.duration.formatted
+                          ),
 
-                        /// количество эпизодов (файлов), если сериал
-                        // if (movie.seasons.first.episodes.length > 1) Text(
-                        //   locale.episodesCount(movie.seasons.first.episodes.length)
-                        // ),
+                          /// количество эпизодов (файлов), если сериал
+                          if (movieItem.seasons.first.episodes.length > 1) Text(
+                            locale.episodesCount(movieItem.seasons.first.episodes.length)
+                          ),
 
-                        const SizedBox(width: 12.0),
+                          const SizedBox(width: 12.0),
 
-                        /// страны фильма (оставляем не более двух)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Text(movieItem.countries.take(2).join(', ')),
-                        ),
+                          /// страны фильма (оставляем не более двух)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(movieItem.countries.take(2).join(', ')),
+                          ),
 
-                        /// если звук 5.1
-                        // if (movie.hasSixChannels) Padding(
-                        //   padding: const EdgeInsets.only(right: 8.0),
-                        //   child: KrsChip(
-                        //     dense: true,
-                        //     child: Row(
-                        //       children: const [
-                        //         Padding(
-                        //           padding: EdgeInsets.only(right: 4.0),
-                        //           child: Icon(Icons.volume_up),
-                        //         ),
-                                
-                        //         Text('5.1'),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-                        
-                      ],
+                          /// озвучка
+                          if (movieItem.voiceActing.isNotEmpty) Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: KrsChip(
+                              dense: true,
+                              child: Row(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 4.0),
+                                    child: Icon(Icons.mic),
+                                  ),
+                                  
+                                  Text(movieItem.voiceActing),
+                                ],
+                              ),
+                            ),
+                          ),
+                          
+                          /// если звук 5.1
+                          // if (movie.hasSixChannels) Padding(
+                          //   padding: const EdgeInsets.only(right: 8.0),
+                          //   child: KrsChip(
+                          //     dense: true,
+                          //     child: Row(
+                          //       children: const [
+                          //         Padding(
+                          //           padding: EdgeInsets.only(right: 4.0),
+                          //           child: Icon(Icons.volume_up),
+                          //         ),
+                                  
+                          //         Text('5.1'),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                          
+                        ],
+                      ),
                     ),
                   ),
                   

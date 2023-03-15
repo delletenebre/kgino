@@ -301,7 +301,7 @@ class _KrsListItemCardState extends State<KrsListItemCard> {
                 if (widget.item.subtitle.isNotEmpty) Text(widget.item.subtitle,
                   style: TextStyle(
                     fontSize: 12.0,
-                    color: theme.textTheme.caption?.color?.withOpacity(0.36),
+                    color: theme.colorScheme.outline.withOpacity(0.36),
                   ),
                   maxLines: 1,
                 ),

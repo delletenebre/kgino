@@ -79,21 +79,21 @@ Future<List<TskgMovieItem>> newsIsolate(String html) async {
         final genres = (tagA.attributes['title'] ?? '').split(', ');
         // debugPrint('genres: $genres');
 
-        /// значки (badges)
-        final badges = listItem.getElementsByClassName('label').map((badge) {
+        // /// значки (badges)
+        // final badges = listItem.getElementsByClassName('label').map((badge) {
           
-          if (badge.text.isEmpty) {
-            /// ^ если значок в виде иконки
-            return badge.firstChild?.attributes['title'] ?? '';
+        //   if (badge.text.isEmpty) {
+        //     /// ^ если значок в виде иконки
+        //     return badge.firstChild?.attributes['title'] ?? '';
 
-          } else {
-            /// ^ если значок подписан
+        //   } else {
+        //     /// ^ если значок подписан
             
-            return badge.text;
+        //     return badge.text;
             
-          }
+        //   }
 
-        });
+        // });
 
         items.add(
           TskgMovieItem(

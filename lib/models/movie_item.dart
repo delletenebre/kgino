@@ -85,6 +85,15 @@ class MovieItem extends HiveObject with EquatableMixin {
   /// продолжительность
   final Duration duration;
 
+  /// текущая озвучка
+  final String voiceActing;
+  /// список доступных озвучек
+  final List<MovieItem> voiceActings;
+
+  /// аудио информация о наличии звуковой дорожки 5.1
+  final bool hasSixChannels;
+
+
   MovieItem({
     required this.type,
     required this.id,
@@ -109,7 +118,12 @@ class MovieItem extends HiveObject with EquatableMixin {
     this.ratingKinopoisk = 0.0,
 
     this.duration = Duration.zero,
-    
+
+    this.voiceActing = '',
+    this.voiceActings = const [],
+
+    this.hasSixChannels = false,
+
   }) : updatedAt = updatedAt ?? DateTime.now(),
         episodes = episodes ?? List<EpisodeItem>.empty(growable: true);
   
@@ -123,7 +137,7 @@ class MovieItem extends HiveObject with EquatableMixin {
       );
     }
 
-    return PaletteGenerator.fromColors([PaletteColor(Color(0xff000000), 1)]);
+    return PaletteGenerator.fromColors([PaletteColor(const Color(0xff000000), 1)]);
   }
 
 
@@ -197,25 +211,7 @@ class MovieItem extends HiveObject with EquatableMixin {
   
 }
 
-mixin TskgMovieItemMixin {
-  String get voiceActing;
-  List<MovieItem> get voiceActings;
-}
-
-mixin WithSixChannels on MovieItem {
-  /// аудио информация о наличии звуковой дорожки 5.1
-  late bool _hasSixChannels;
-  bool get hasSixChannels => _hasSixChannels;
-}
-
 class TskgMovieItem extends MovieItem {
-  
-  /// текущая озвучка
-  final String voiceActing;
-
-  /// список доступных озвучек
-  final List<MovieItem> voiceActings;
-  
   TskgMovieItem({
     required String id,
     required String name,
@@ -230,8 +226,8 @@ class TskgMovieItem extends MovieItem {
     List<String> countries = const [],
     String subtitle = '',
     
-    this.voiceActing = '',
-    this.voiceActings = const [],
+    super.voiceActing,
+    super.voiceActings,
   }) : super(
     type: MovieItemType.tskg,
     id: id,
@@ -253,7 +249,7 @@ class TskgMovieItem extends MovieItem {
 }
 
 
-class OckgMovieItem extends MovieItem with WithSixChannels {
+class OckgMovieItem extends MovieItem {
   
   OckgMovieItem({
     required String id,
@@ -288,9 +284,11 @@ class OckgMovieItem extends MovieItem with WithSixChannels {
 
     ratingImdb: ratingImdb,
     ratingKinopoisk: ratingKinopoisk,
-    
-  ) {
-    /// implement WithSixChannels
-    _hasSixChannels = hasSixAudioChannels;
-  }
+
+    duration: seasons.first.episodes.length == 1
+      ? Duration(seconds: seasons.first.episodes.first.duration)
+      : Duration.zero,
+
+    hasSixChannels: hasSixAudioChannels,
+  );
 }

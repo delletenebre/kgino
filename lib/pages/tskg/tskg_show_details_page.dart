@@ -7,15 +7,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/seen_items_controller.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
-import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/loading_indicator.dart';
+import '../../ui/pages/movie_details_view.dart';
 import '../../ui/pages/play_button_seen_information.dart';
 import '../../ui/pages/try_again_message.dart';
-import '../../ui/pages/tskg/tskg_show_details.dart';
 import '../../utils.dart';
 
 
@@ -98,9 +97,9 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                   Container(
                     margin: const EdgeInsets.only(top: 72.0),
                     height: MediaQuery.of(context).size.height - (128.0 + 84.0),
-                    child: TskgShowDetais(
-                      show: show,
+                    child: MovieDetaisView(show,
                       expanded: true,
+                      posterOffset: const Offset(-28.0, -178),
                     ),
                   ),
 
@@ -328,7 +327,7 @@ class _TskgShowDetailsPageState extends State<TskgShowDetailsPage> {
                                       );
                                     },
                                     icon: const Icon(Icons.mic),
-                                    label: Text('Выбрать озвучку'),
+                                    label: const Text('Выбрать озвучку'),
                                   ),
                                 ),
 

@@ -27,7 +27,9 @@ class OckgHomePage extends StatelessWidget {
                 if (state.isSuccess) {
                   final movieItem = state.data;
 
-                  return MovieDetaisView(movieItem);
+                  return MovieDetaisView(movieItem,
+                    posterOffset: const Offset(0.0, -400),
+                  );
                   
                 }
 

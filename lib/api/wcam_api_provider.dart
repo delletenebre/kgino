@@ -96,7 +96,7 @@ class WcamApiProvider {
           }
         }
       }
-    } catch (exception, stack) {
+    } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
       debugPrint('exception: $exception');
@@ -121,7 +121,7 @@ class WcamApiProvider {
       }
 
 
-    } catch (exception, stack) {
+    } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
       debugPrint('exception: $exception');
@@ -187,7 +187,7 @@ class WcamApiProvider {
         
 
       }
-    } catch (exception, stack) {
+    } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
       debugPrint('exception: $exception');
@@ -244,7 +244,7 @@ class WcamApiProvider {
         
         return int.tryParse(response.data) ?? 0;
       }
-    } catch (exception, stack) {
+    } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
       debugPrint('exception: $exception');
@@ -294,7 +294,7 @@ class WcamApiProvider {
         }).toList();
 
       }
-    } catch (exception, stack) {
+    } catch (exception) {
       /// ^ если прозошла сетевая ошибка
       
       debugPrint('exception: $exception');

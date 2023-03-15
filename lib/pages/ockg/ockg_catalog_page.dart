@@ -55,7 +55,9 @@ class OckgCatalogPage extends StatelessWidget {
                   if (state.isSuccess) {
                     final movieItem = state.data;
 
-                    return MovieDetaisView(movieItem);
+                    return MovieDetaisView(movieItem,
+                      posterOffset: const Offset(0.0, -400),
+                    );
                   }
 
                   return const SizedBox();
@@ -80,7 +82,6 @@ class OckgCatalogPage extends StatelessWidget {
                         );
                       },
                       onLoadNextPage: (page, loadedCount) async {
-                        print('HERE $page $loadedCount');
                         return context.read<OckgCatalogController>().getMovies(page, loadedCount);
                       },
                       items: catalog.movies,

@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants.dart';
 import '../../controllers/tskg/tskg_show_details_controller.dart';
 import '../../models/movie_item.dart';
+import '../../ui/pages/movie_details_view.dart';
 import '../../ui/pages/tskg/tskg_home_page_list_view.dart';
-import '../../ui/pages/tskg/tskg_show_details.dart';
 
 class TskgHomePage extends StatelessWidget {
   const TskgHomePage({
@@ -28,8 +28,8 @@ class TskgHomePage extends StatelessWidget {
                 if (state.isSuccess) {
                   final show = state.data;
 
-                  return TskgShowDetais(
-                    show: show,
+                  return MovieDetaisView(show,
+                    posterOffset: const Offset(-28.0, -178),
                   );
 
                 }

@@ -91,6 +91,7 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
                   height: MediaQuery.of(context).size.height - (128.0 + 72.0),
                   child: MovieDetaisView(movieItem,
                     expanded: true,
+                    posterOffset: const Offset(0.0, -400),
                   ),
                 ),
 

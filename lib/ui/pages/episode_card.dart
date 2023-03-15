@@ -249,8 +249,8 @@ class _EpisodeCardState extends State<EpisodeCard> {
                   style: TextStyle(
                     fontSize: 12.0,
                     color: (_focusNode.hasFocus)
-                        ? theme.textTheme.caption?.color
-                        : theme.textTheme.caption?.color?.withOpacity(0.36),
+                        ? theme.colorScheme.outline
+                        : theme.colorScheme.outline.withOpacity(0.36),
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

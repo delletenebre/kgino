@@ -10,7 +10,6 @@ import '../../models/season_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/lists/krs_horizontal_list_view.dart';
 import '../../ui/pages/episode_card.dart';
-import '../../utils.dart';
 
 
 class TskgShowSeasonsPage extends StatefulWidget {
