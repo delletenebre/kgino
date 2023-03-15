@@ -50,11 +50,51 @@ class FlmxItem with _$FlmxItem {
     List<SeasonItem> seasons = [];
 
     String voiceActing = '';
-    List<String> voiceActingIds = [];
+    List<MovieItem> voiceActings = [];
+    List<String> voiceActingsvoiceActingIds = [];
 
     if (playerLinks.movie.isNotEmpty) {
+      if (playerLinks.movie.length > 1) {
+        /// ^ если есть разные озвучки
+      
+        voiceActings = playerLinks.movie.map((movie) {
+          final seasons = [
+            SeasonItem(
+              name: '',
+              episodes: [
+                EpisodeItem(
+                  id: movie.link,
+                  name: '',
+                ),
+              ]
+            )
+          ];
+          
+          return MovieItem(
+            type: MovieItemType.flmx,
+            id: id.toString(),
+            name: title,
+            originalName: originalTitle,
+            posterUrl: poster,
+            description: shortStory,
+            year: year.toString(),
+            genres: categories,
+            countries: countries,
+
+            ratingImdb: imdbRating,
+            ratingKinopoisk: kpRating,
+
+            duration: Duration(minutes: duration),
+
+            voiceActing: movie.translation,
+            voiceActings: voiceActings,
+
+            seasons: seasons,
+          );
+        }).toList();
+      }
+
       voiceActing = playerLinks.movie.first.translation;
-      voiceActingIds = playerLinks.movie.map((e) => e.translation).toList();
 
       seasons = [
         SeasonItem(
@@ -68,8 +108,6 @@ class FlmxItem with _$FlmxItem {
         )
       ];
     }
-
-    
 
     return MovieItem(
       type: MovieItemType.flmx,
@@ -88,7 +126,7 @@ class FlmxItem with _$FlmxItem {
       duration: Duration(minutes: duration),
 
       voiceActing: voiceActing,
-      voiceActingIds: voiceActingIds,
+      voiceActings: voiceActings,
 
       seasons: seasons,
     );

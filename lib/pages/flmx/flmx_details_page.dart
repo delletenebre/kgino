@@ -1,10 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../controllers/flmx/flmx_details_controller.dart';
+import '../../controllers/seen_items_controller.dart';
 import '../../models/api_response.dart';
+import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
@@ -62,6 +66,9 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
 
     final locale = KrsLocale.of(context);
 
+    /// контроллер просмотренных эпизодов
+    final seenItemsController = GetIt.instance<SeenItemsController>();
+
     return Scaffold(
       body: BlocProvider(
         create: (context) => FlmxDetailsController(widget.id)..fetchDetails(),
@@ -80,7 +87,17 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
               );
             }
 
-            final movieItem = state.asData.data;
+            MovieItem movieItem = state.asData.data;
+            /// находим фильм в просмотренных
+            final seenEpisode = seenItemsController.findOrCreate(movieItem);
+
+            if (seenEpisode.voiceActings.length > 1) {
+              /// выдёргиваем информацию об озвучке
+              movieItem.voiceActing = seenEpisode.voiceActing;
+              movieItem.seasons = (seenEpisode.voiceActings.firstWhereOrNull((movie) {
+                return movie.voiceActing == seenEpisode.voiceActing;
+              }) ?? movieItem).seasons;
+            }
 
             return KrsScrollView(
               scrollController: _scrollController,
@@ -209,7 +226,7 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
                               // ),
 
                               /// кнопка выбора озвучки
-                              if (movieItem.voiceActingIds.isNotEmpty) Padding(
+                              if (movieItem.voiceActings.isNotEmpty) Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
                                 child: FilledButton.tonalIcon(
                                   onPressed: () {
@@ -229,20 +246,23 @@ class _FlmxDetailsPageState extends State<FlmxDetailsPage> {
                                             ),
                                           ),
 
-                                          ... movieItem.voiceActingIds.where((voiceActingId) {
-                                            return voiceActingId != movieItem.voiceActing;
-                                          }).map((voiceActing) {
+                                          ... movieItem.voiceActings.where((movie) {
+                                            return movie.voiceActing != movieItem.voiceActing;
+                                          }).map((movie) {
                                             return FilledButton.tonal(
-                                              child: Text(voiceActing),
+                                              child: Text(movie.voiceActing),
                                               onPressed: () {
+                                                seenEpisode.voiceActing = movie.voiceActing;
+                                                seenEpisode.save();
+                                                
                                                 Navigator.pop(context);
 
-                                                // /// переходим на страницу деталей о сериале
-                                                // context.replaceNamed('tskgShowDetails',
-                                                //   params: {
-                                                //     'id': item.id,
-                                                //   },
-                                                // );
+                                                /// переходим на страницу деталей о сериале
+                                                context.replaceNamed('flmxDetails',
+                                                  params: {
+                                                    'id': seenEpisode.id,
+                                                  },
+                                                );
                                               },
                                             );
                                           }).toList(),

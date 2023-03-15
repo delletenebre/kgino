@@ -25,13 +25,14 @@ class MovieItemAdapter extends TypeAdapter<MovieItem> {
       favorite: fields[5] as bool,
       updatedAt: fields[6] as DateTime?,
       episodes: (fields[7] as List?)?.cast<EpisodeItem>(),
+      voiceActing: fields[8] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, MovieItem obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class MovieItemAdapter extends TypeAdapter<MovieItem> {
       ..writeByte(6)
       ..write(obj.updatedAt)
       ..writeByte(7)
-      ..write(obj.episodes);
+      ..write(obj.episodes)
+      ..writeByte(8)
+      ..write(obj.voiceActing);
   }
 
   @override

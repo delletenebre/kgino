@@ -44,6 +44,9 @@ class MovieItem extends HiveObject with EquatableMixin {
   /// список просмотренных эпизодов
   @HiveField(7) List<EpisodeItem> episodes;
 
+  /// текущая озвучка
+  @HiveField(8) String voiceActing;
+
   /// список сезонов
   List<SeasonItem> seasons;
 
@@ -81,15 +84,11 @@ class MovieItem extends HiveObject with EquatableMixin {
   final double ratingKinopoisk;
   bool get hasKinopoiskRating => ratingKinopoisk > 0.0;
 
-
   /// продолжительность
   final Duration duration;
 
-  /// текущая озвучка
-  final String voiceActing;
   /// список доступных озвучек
   final List<MovieItem> voiceActings;
-  final List<String> voiceActingIds;
 
   /// аудио информация о наличии звуковой дорожки 5.1
   final bool hasSixChannels;
@@ -122,8 +121,6 @@ class MovieItem extends HiveObject with EquatableMixin {
 
     this.voiceActing = '',
     this.voiceActings = const [],
-    this.voiceActingIds = const [],
-    
 
     this.hasSixChannels = false,
 

@@ -78,6 +78,23 @@ class SeenItemsController {
 
   MovieItem? findItemByKey(String key) => _storage.get(key);
 
+  MovieItem findOrCreate(MovieItem movieItem) {
+    /// ищем запись просмотра сериала или фильма в БД
+    MovieItem? seenItem = _storage.get(movieItem.storageKey);
+
+    if (seenItem == null) {
+      /// ^ если запись не найдена в БД
+      
+      /// создаём запись в БД
+      seenItem = movieItem;
+
+      /// сохраняем новую запись
+      _storage.put(seenItem.storageKey, seenItem);
+    }
+
+    return seenItem;
+  }
+
   EpisodeItem? findEpisode({
     required String storageKey,
     required String episodeId,
