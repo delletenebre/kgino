@@ -29,6 +29,7 @@ class Utils {
         minWidth: 480.0,
         maxWidth: 480.0,
       ),
+      isScrollControlled: true,
       isDismissible: false,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -36,10 +37,16 @@ class Utils {
           topRight: Radius.circular(24.0),
         ),
       ),
-      builder: (BuildContext context) {
-        return KrsBottomSheetContent(
-          titleText: titleText,
-          child: child,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.4,
+          minChildSize: 0.2,
+          maxChildSize: 0.75,
+          expand: false,
+          builder: (_, controller) => KrsBottomSheetContent(
+            titleText: titleText,
+            child: child,
+          ),
         );
       },
     );

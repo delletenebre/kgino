@@ -6,22 +6,28 @@ import '../../models/episode_item.dart';
 import '../../models/movie_item.dart';
 import '../../ui/video_player/video_player_view.dart';
 
-class OckgPlayerPage extends StatefulWidget {
-  final MovieItem movie;
+class PlayerPage extends StatefulWidget {
+  final MovieItem movieItem;
   final String episodeId;
+  final Future<EpisodeItem> Function(
+    bool initial,
+    EpisodeItem currentEpisode,
+    String seenShowStorageKey,
+  ) getPlayableItem;
 
-  const OckgPlayerPage({
+  const PlayerPage({
     super.key,
-    required this.movie,
+    required this.movieItem,
+    required this.getPlayableItem,
     this.episodeId = '',
   });
 
   @override
-  State<OckgPlayerPage> createState() => _OckgPlayerPageState();
+  State<PlayerPage> createState() => _PlayerPageState();
 }
 
-class _OckgPlayerPageState extends State<OckgPlayerPage> {
-  final _episodes = <EpisodeItem>[];
+class _PlayerPageState extends State<PlayerPage> {
+  late final List<EpisodeItem> _episodes;
   late final int _episodeCount;
   int _currentIndex = 0;
 
@@ -33,31 +39,31 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
   @override
   void initState() {
     /// все эпизоды в одном списке
-    for (final season in widget.movie.seasons) {
-      _episodes.addAll(season.episodes);
-    }
+    _episodes = widget.movieItem.getAllEpisodes();
 
     /// количество эпизодов во всех сезонах
-    _episodeCount = widget.movie.episodeCount;
+    _episodeCount = widget.movieItem.episodeCount;
 
     _currentIndex = _episodes.indexWhere((episode) {
       return episode.id == widget.episodeId;
     });
 
-    _seenShow = _seenItemsController.findItemByKey(widget.movie.storageKey)
-        ?? widget.movie;
+    _seenShow = _seenItemsController.findItemByKey(widget.movieItem.storageKey)
+        ?? widget.movieItem;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    
-
     return VideoPlayerView(
       titleText: _seenShow.name,
       subtitlesEnabled: _seenShow.subtitlesEnabled,
-      onInitialPlayableItem: () => _getPlayableItem(true),
+      onInitialPlayableItem: () => widget.getPlayableItem(
+        true,
+        _episodes[_currentIndex],
+        _seenShow.storageKey,
+      ),
 
       onSkipNext: (_currentIndex + 1 < _episodeCount) ? () {
         /// переходим к следующему файлу
@@ -65,17 +71,26 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
           _currentIndex++;
         });
 
-        return _getPlayableItem();
+        return widget.getPlayableItem(
+          false,
+          _episodes[_currentIndex],
+          _seenShow.storageKey,
+        );
       } : null,
+
       onSkipPrevious: (_currentIndex > 0) ? () {
         /// переходим к предыдущему файлу
         setState(() {
           _currentIndex--;
         });
 
-        return _getPlayableItem();
+        return widget.getPlayableItem(
+          false,
+          _episodes[_currentIndex],
+          _seenShow.storageKey,
+        );
       } : null,
-      
+
       onUpdatePosition: (episode, position, subtitlesEnabled) {
         _seenItemsController.updatePosition(
           movie: _seenShow,
@@ -85,30 +100,5 @@ class _OckgPlayerPageState extends State<OckgPlayerPage> {
         );
       }
     );
-  }
-
-  Future<EpisodeItem> _getPlayableItem([bool initial = false]) async {
-    final currentEpisode = _episodes[_currentIndex];
-
-    if (initial) {
-      /// находим сохранённый эпизод, если он есть
-
-      /// проверяем был ли эпизод в просмотренных
-      final episode = _seenItemsController.findEpisode(
-        storageKey: _seenShow.storageKey,
-        episodeId: currentEpisode.id,
-      ) ?? currentEpisode;
-
-      /// обновляем ссылку на видео файл
-      episode.videoFileUrl = currentEpisode.videoFileUrl;
-
-      return episode;
-
-    } else {
-      /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
-      /// не запрашивал продолжить просмотр или нет
-      currentEpisode.position = 0;
-      return currentEpisode;
-    }
   }
 }

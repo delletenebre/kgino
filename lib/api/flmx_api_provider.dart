@@ -66,7 +66,7 @@ class FlmxApiProvider {
         'story': searchQuery
       }),
       decoder: (json) {
-        return json.map<FlmxItem>((item) {
+        return json.map<MovieItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();
       },

@@ -18,7 +18,7 @@ class KrsBottomSheetContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        // mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (titleText.isNotEmpty) Padding(
@@ -31,7 +31,9 @@ class KrsBottomSheetContent extends StatelessWidget {
             ),
           ),
           
-          child,
+          Expanded(
+            child: child,
+          ),
         ],
       ),
     );

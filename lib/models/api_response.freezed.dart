@@ -18,7 +18,6 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ApiResponse<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() idle,
     required TResult Function(T data) data,
     required TResult Function() loading,
     required TResult Function() empty,
@@ -27,7 +26,6 @@ mixin _$ApiResponse<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
     TResult? Function(T data)? data,
     TResult? Function()? loading,
     TResult? Function()? empty,
@@ -36,7 +34,6 @@ mixin _$ApiResponse<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
     TResult Function(T data)? data,
     TResult Function()? loading,
     TResult Function()? empty,
@@ -46,7 +43,6 @@ mixin _$ApiResponse<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ApiResponseIdle<T> value) idle,
     required TResult Function(ApiResponseData<T> value) data,
     required TResult Function(ApiResponseLoading<T> value) loading,
     required TResult Function(ApiResponseEmpty<T> value) empty,
@@ -55,7 +51,6 @@ mixin _$ApiResponse<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ApiResponseIdle<T> value)? idle,
     TResult? Function(ApiResponseData<T> value)? data,
     TResult? Function(ApiResponseLoading<T> value)? loading,
     TResult? Function(ApiResponseEmpty<T> value)? empty,
@@ -64,7 +59,6 @@ mixin _$ApiResponse<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ApiResponseIdle<T> value)? idle,
     TResult Function(ApiResponseData<T> value)? data,
     TResult Function(ApiResponseLoading<T> value)? loading,
     TResult Function(ApiResponseEmpty<T> value)? empty,
@@ -90,127 +84,6 @@ class _$ApiResponseCopyWithImpl<T, $Res, $Val extends ApiResponse<T>>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-}
-
-/// @nodoc
-abstract class _$$ApiResponseIdleCopyWith<T, $Res> {
-  factory _$$ApiResponseIdleCopyWith(_$ApiResponseIdle<T> value,
-          $Res Function(_$ApiResponseIdle<T>) then) =
-      __$$ApiResponseIdleCopyWithImpl<T, $Res>;
-}
-
-/// @nodoc
-class __$$ApiResponseIdleCopyWithImpl<T, $Res>
-    extends _$ApiResponseCopyWithImpl<T, $Res, _$ApiResponseIdle<T>>
-    implements _$$ApiResponseIdleCopyWith<T, $Res> {
-  __$$ApiResponseIdleCopyWithImpl(
-      _$ApiResponseIdle<T> _value, $Res Function(_$ApiResponseIdle<T>) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$ApiResponseIdle<T> extends ApiResponseIdle<T> {
-  _$ApiResponseIdle() : super._();
-
-  @override
-  String toString() {
-    return 'ApiResponse<$T>.idle()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ApiResponseIdle<T>);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() idle,
-    required TResult Function(T data) data,
-    required TResult Function() loading,
-    required TResult Function() empty,
-    required TResult Function(String message, Map<String, String> errors) error,
-  }) {
-    return idle();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
-    TResult? Function(T data)? data,
-    TResult? Function()? loading,
-    TResult? Function()? empty,
-    TResult? Function(String message, Map<String, String> errors)? error,
-  }) {
-    return idle?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
-    TResult Function(T data)? data,
-    TResult Function()? loading,
-    TResult Function()? empty,
-    TResult Function(String message, Map<String, String> errors)? error,
-    required TResult orElse(),
-  }) {
-    if (idle != null) {
-      return idle();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ApiResponseIdle<T> value) idle,
-    required TResult Function(ApiResponseData<T> value) data,
-    required TResult Function(ApiResponseLoading<T> value) loading,
-    required TResult Function(ApiResponseEmpty<T> value) empty,
-    required TResult Function(ApiResponseError<T> value) error,
-  }) {
-    return idle(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ApiResponseIdle<T> value)? idle,
-    TResult? Function(ApiResponseData<T> value)? data,
-    TResult? Function(ApiResponseLoading<T> value)? loading,
-    TResult? Function(ApiResponseEmpty<T> value)? empty,
-    TResult? Function(ApiResponseError<T> value)? error,
-  }) {
-    return idle?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ApiResponseIdle<T> value)? idle,
-    TResult Function(ApiResponseData<T> value)? data,
-    TResult Function(ApiResponseLoading<T> value)? loading,
-    TResult Function(ApiResponseEmpty<T> value)? empty,
-    TResult Function(ApiResponseError<T> value)? error,
-    required TResult orElse(),
-  }) {
-    if (idle != null) {
-      return idle(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ApiResponseIdle<T> extends ApiResponse<T> {
-  factory ApiResponseIdle() = _$ApiResponseIdle<T>;
-  ApiResponseIdle._() : super._();
 }
 
 /// @nodoc
@@ -279,7 +152,6 @@ class _$ApiResponseData<T> extends ApiResponseData<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() idle,
     required TResult Function(T data) data,
     required TResult Function() loading,
     required TResult Function() empty,
@@ -291,7 +163,6 @@ class _$ApiResponseData<T> extends ApiResponseData<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
     TResult? Function(T data)? data,
     TResult? Function()? loading,
     TResult? Function()? empty,
@@ -303,7 +174,6 @@ class _$ApiResponseData<T> extends ApiResponseData<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
     TResult Function(T data)? data,
     TResult Function()? loading,
     TResult Function()? empty,
@@ -319,7 +189,6 @@ class _$ApiResponseData<T> extends ApiResponseData<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ApiResponseIdle<T> value) idle,
     required TResult Function(ApiResponseData<T> value) data,
     required TResult Function(ApiResponseLoading<T> value) loading,
     required TResult Function(ApiResponseEmpty<T> value) empty,
@@ -331,7 +200,6 @@ class _$ApiResponseData<T> extends ApiResponseData<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ApiResponseIdle<T> value)? idle,
     TResult? Function(ApiResponseData<T> value)? data,
     TResult? Function(ApiResponseLoading<T> value)? loading,
     TResult? Function(ApiResponseEmpty<T> value)? empty,
@@ -343,7 +211,6 @@ class _$ApiResponseData<T> extends ApiResponseData<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ApiResponseIdle<T> value)? idle,
     TResult Function(ApiResponseData<T> value)? data,
     TResult Function(ApiResponseLoading<T> value)? loading,
     TResult Function(ApiResponseEmpty<T> value)? empty,
@@ -405,7 +272,6 @@ class _$ApiResponseLoading<T> extends ApiResponseLoading<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() idle,
     required TResult Function(T data) data,
     required TResult Function() loading,
     required TResult Function() empty,
@@ -417,7 +283,6 @@ class _$ApiResponseLoading<T> extends ApiResponseLoading<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
     TResult? Function(T data)? data,
     TResult? Function()? loading,
     TResult? Function()? empty,
@@ -429,7 +294,6 @@ class _$ApiResponseLoading<T> extends ApiResponseLoading<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
     TResult Function(T data)? data,
     TResult Function()? loading,
     TResult Function()? empty,
@@ -445,7 +309,6 @@ class _$ApiResponseLoading<T> extends ApiResponseLoading<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ApiResponseIdle<T> value) idle,
     required TResult Function(ApiResponseData<T> value) data,
     required TResult Function(ApiResponseLoading<T> value) loading,
     required TResult Function(ApiResponseEmpty<T> value) empty,
@@ -457,7 +320,6 @@ class _$ApiResponseLoading<T> extends ApiResponseLoading<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ApiResponseIdle<T> value)? idle,
     TResult? Function(ApiResponseData<T> value)? data,
     TResult? Function(ApiResponseLoading<T> value)? loading,
     TResult? Function(ApiResponseEmpty<T> value)? empty,
@@ -469,7 +331,6 @@ class _$ApiResponseLoading<T> extends ApiResponseLoading<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ApiResponseIdle<T> value)? idle,
     TResult Function(ApiResponseData<T> value)? data,
     TResult Function(ApiResponseLoading<T> value)? loading,
     TResult Function(ApiResponseEmpty<T> value)? empty,
@@ -526,7 +387,6 @@ class _$ApiResponseEmpty<T> extends ApiResponseEmpty<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() idle,
     required TResult Function(T data) data,
     required TResult Function() loading,
     required TResult Function() empty,
@@ -538,7 +398,6 @@ class _$ApiResponseEmpty<T> extends ApiResponseEmpty<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
     TResult? Function(T data)? data,
     TResult? Function()? loading,
     TResult? Function()? empty,
@@ -550,7 +409,6 @@ class _$ApiResponseEmpty<T> extends ApiResponseEmpty<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
     TResult Function(T data)? data,
     TResult Function()? loading,
     TResult Function()? empty,
@@ -566,7 +424,6 @@ class _$ApiResponseEmpty<T> extends ApiResponseEmpty<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ApiResponseIdle<T> value) idle,
     required TResult Function(ApiResponseData<T> value) data,
     required TResult Function(ApiResponseLoading<T> value) loading,
     required TResult Function(ApiResponseEmpty<T> value) empty,
@@ -578,7 +435,6 @@ class _$ApiResponseEmpty<T> extends ApiResponseEmpty<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ApiResponseIdle<T> value)? idle,
     TResult? Function(ApiResponseData<T> value)? data,
     TResult? Function(ApiResponseLoading<T> value)? loading,
     TResult? Function(ApiResponseEmpty<T> value)? empty,
@@ -590,7 +446,6 @@ class _$ApiResponseEmpty<T> extends ApiResponseEmpty<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ApiResponseIdle<T> value)? idle,
     TResult Function(ApiResponseData<T> value)? data,
     TResult Function(ApiResponseLoading<T> value)? loading,
     TResult Function(ApiResponseEmpty<T> value)? empty,
@@ -693,7 +548,6 @@ class _$ApiResponseError<T> extends ApiResponseError<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() idle,
     required TResult Function(T data) data,
     required TResult Function() loading,
     required TResult Function() empty,
@@ -705,7 +559,6 @@ class _$ApiResponseError<T> extends ApiResponseError<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
     TResult? Function(T data)? data,
     TResult? Function()? loading,
     TResult? Function()? empty,
@@ -717,7 +570,6 @@ class _$ApiResponseError<T> extends ApiResponseError<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
     TResult Function(T data)? data,
     TResult Function()? loading,
     TResult Function()? empty,
@@ -733,7 +585,6 @@ class _$ApiResponseError<T> extends ApiResponseError<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ApiResponseIdle<T> value) idle,
     required TResult Function(ApiResponseData<T> value) data,
     required TResult Function(ApiResponseLoading<T> value) loading,
     required TResult Function(ApiResponseEmpty<T> value) empty,
@@ -745,7 +596,6 @@ class _$ApiResponseError<T> extends ApiResponseError<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ApiResponseIdle<T> value)? idle,
     TResult? Function(ApiResponseData<T> value)? data,
     TResult? Function(ApiResponseLoading<T> value)? loading,
     TResult? Function(ApiResponseEmpty<T> value)? empty,
@@ -757,7 +607,6 @@ class _$ApiResponseError<T> extends ApiResponseError<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ApiResponseIdle<T> value)? idle,
     TResult Function(ApiResponseData<T> value)? data,
     TResult Function(ApiResponseLoading<T> value)? loading,
     TResult Function(ApiResponseEmpty<T> value)? empty,

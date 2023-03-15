@@ -89,6 +89,7 @@ class MovieItem extends HiveObject with EquatableMixin {
   final String voiceActing;
   /// список доступных озвучек
   final List<MovieItem> voiceActings;
+  final List<String> voiceActingIds;
 
   /// аудио информация о наличии звуковой дорожки 5.1
   final bool hasSixChannels;
@@ -121,6 +122,8 @@ class MovieItem extends HiveObject with EquatableMixin {
 
     this.voiceActing = '',
     this.voiceActings = const [],
+    this.voiceActingIds = const [],
+    
 
     this.hasSixChannels = false,
 

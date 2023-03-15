@@ -6,8 +6,6 @@ part 'api_response.freezed.dart';
 class ApiResponse<T> with _$ApiResponse<T> {
   ApiResponse._();
 
-  factory ApiResponse.idle() = ApiResponseIdle;
-
   factory ApiResponse.data(T data) = ApiResponseData<T>;
 
   // factory ApiResponse.verified(T data) = ApiResponseVerified<T>;
@@ -24,9 +22,7 @@ class ApiResponse<T> with _$ApiResponse<T> {
   ApiResponseError get asError => this as ApiResponseError;
   ApiResponseData<T> get asData => this as ApiResponseData<T>;
 
-  bool get isIdle => this is ApiResponseIdle;
   bool get isSuccess => this is ApiResponseData;
-  // bool get isVerified => this is ApiResponseVerified;
   bool get isLoading => this is ApiResponseLoading;
   bool get isEmpty => this is ApiResponseEmpty;
   bool get isError => this is ApiResponseError;

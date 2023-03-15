@@ -48,6 +48,7 @@ mixin _$FlmxItem {
   double get kpRating => throw _privateConstructorUsedError;
   @DoubleConverter()
   double get imdbRating => throw _privateConstructorUsedError;
+  FlmxPlayerLinks get playerLinks => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -80,7 +81,10 @@ abstract class $FlmxItemCopyWith<$Res> {
       List<String> directors,
       List<String> countries,
       @DoubleConverter() double kpRating,
-      @DoubleConverter() double imdbRating});
+      @DoubleConverter() double imdbRating,
+      FlmxPlayerLinks playerLinks});
+
+  $FlmxPlayerLinksCopyWith<$Res> get playerLinks;
 }
 
 /// @nodoc
@@ -116,6 +120,7 @@ class _$FlmxItemCopyWithImpl<$Res, $Val extends FlmxItem>
     Object? countries = null,
     Object? kpRating = null,
     Object? imdbRating = null,
+    Object? playerLinks = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -198,7 +203,19 @@ class _$FlmxItemCopyWithImpl<$Res, $Val extends FlmxItem>
           ? _value.imdbRating
           : imdbRating // ignore: cast_nullable_to_non_nullable
               as double,
+      playerLinks: null == playerLinks
+          ? _value.playerLinks
+          : playerLinks // ignore: cast_nullable_to_non_nullable
+              as FlmxPlayerLinks,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $FlmxPlayerLinksCopyWith<$Res> get playerLinks {
+    return $FlmxPlayerLinksCopyWith<$Res>(_value.playerLinks, (value) {
+      return _then(_value.copyWith(playerLinks: value) as $Val);
+    });
   }
 }
 
@@ -229,7 +246,11 @@ abstract class _$$_FlmxItemCopyWith<$Res> implements $FlmxItemCopyWith<$Res> {
       List<String> directors,
       List<String> countries,
       @DoubleConverter() double kpRating,
-      @DoubleConverter() double imdbRating});
+      @DoubleConverter() double imdbRating,
+      FlmxPlayerLinks playerLinks});
+
+  @override
+  $FlmxPlayerLinksCopyWith<$Res> get playerLinks;
 }
 
 /// @nodoc
@@ -263,6 +284,7 @@ class __$$_FlmxItemCopyWithImpl<$Res>
     Object? countries = null,
     Object? kpRating = null,
     Object? imdbRating = null,
+    Object? playerLinks = null,
   }) {
     return _then(_$_FlmxItem(
       id: null == id
@@ -345,6 +367,10 @@ class __$$_FlmxItemCopyWithImpl<$Res>
           ? _value.imdbRating
           : imdbRating // ignore: cast_nullable_to_non_nullable
               as double,
+      playerLinks: null == playerLinks
+          ? _value.playerLinks
+          : playerLinks // ignore: cast_nullable_to_non_nullable
+              as FlmxPlayerLinks,
     ));
   }
 }
@@ -373,7 +399,8 @@ class _$_FlmxItem extends _FlmxItem {
       final List<String> directors = const [],
       final List<String> countries = const [],
       @DoubleConverter() this.kpRating = 0.0,
-      @DoubleConverter() this.imdbRating = 0.0})
+      @DoubleConverter() this.imdbRating = 0.0,
+      this.playerLinks = const FlmxPlayerLinks()})
       : _categories = categories,
         _actors = actors,
         _directors = directors,
@@ -474,10 +501,13 @@ class _$_FlmxItem extends _FlmxItem {
   @JsonKey()
   @DoubleConverter()
   final double imdbRating;
+  @override
+  @JsonKey()
+  final FlmxPlayerLinks playerLinks;
 
   @override
   String toString() {
-    return 'FlmxItem(id: $id, section: $section, year: $year, yearEnd: $yearEnd, duration: $duration, poster: $poster, title: $title, originalTitle: $originalTitle, dateAtom: $dateAtom, favorited: $favorited, watchLater: $watchLater, shortStory: $shortStory, rip: $rip, quality: $quality, categories: $categories, actors: $actors, directors: $directors, countries: $countries, kpRating: $kpRating, imdbRating: $imdbRating)';
+    return 'FlmxItem(id: $id, section: $section, year: $year, yearEnd: $yearEnd, duration: $duration, poster: $poster, title: $title, originalTitle: $originalTitle, dateAtom: $dateAtom, favorited: $favorited, watchLater: $watchLater, shortStory: $shortStory, rip: $rip, quality: $quality, categories: $categories, actors: $actors, directors: $directors, countries: $countries, kpRating: $kpRating, imdbRating: $imdbRating, playerLinks: $playerLinks)';
   }
 
   @override
@@ -515,7 +545,9 @@ class _$_FlmxItem extends _FlmxItem {
             (identical(other.kpRating, kpRating) ||
                 other.kpRating == kpRating) &&
             (identical(other.imdbRating, imdbRating) ||
-                other.imdbRating == imdbRating));
+                other.imdbRating == imdbRating) &&
+            (identical(other.playerLinks, playerLinks) ||
+                other.playerLinks == playerLinks));
   }
 
   @JsonKey(ignore: true)
@@ -541,7 +573,8 @@ class _$_FlmxItem extends _FlmxItem {
         const DeepCollectionEquality().hash(_directors),
         const DeepCollectionEquality().hash(_countries),
         kpRating,
-        imdbRating
+        imdbRating,
+        playerLinks
       ]);
 
   @JsonKey(ignore: true)
@@ -579,7 +612,8 @@ abstract class _FlmxItem extends FlmxItem {
       final List<String> directors,
       final List<String> countries,
       @DoubleConverter() final double kpRating,
-      @DoubleConverter() final double imdbRating}) = _$_FlmxItem;
+      @DoubleConverter() final double imdbRating,
+      final FlmxPlayerLinks playerLinks}) = _$_FlmxItem;
   const _FlmxItem._() : super._();
 
   factory _FlmxItem.fromJson(Map<String, dynamic> json) = _$_FlmxItem.fromJson;
@@ -632,6 +666,8 @@ abstract class _FlmxItem extends FlmxItem {
   @override
   @DoubleConverter()
   double get imdbRating;
+  @override
+  FlmxPlayerLinks get playerLinks;
   @override
   @JsonKey(ignore: true)
   _$$_FlmxItemCopyWith<_$_FlmxItem> get copyWith =>

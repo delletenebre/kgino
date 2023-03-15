@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../json_converters.dart';
 import '../movie_item.dart';
+import 'flmx_player_links.dart';
 
 part 'flmx_item.freezed.dart';
 part 'flmx_item.g.dart';
@@ -34,6 +35,8 @@ class FlmxItem with _$FlmxItem {
 
     @DoubleConverter() @Default(0.0) double kpRating,
     @DoubleConverter() @Default(0.0) double imdbRating,
+
+    @Default(FlmxPlayerLinks()) FlmxPlayerLinks playerLinks,
     
   }) = _FlmxItem;
 
@@ -41,6 +44,14 @@ class FlmxItem with _$FlmxItem {
       => _$FlmxItemFromJson(json);
 
   MovieItem toMovieItem() {
+    String voiceActing = '';
+    List<String> voiceActingIds = [];
+
+    if (playerLinks.movie.isNotEmpty) {
+      voiceActing = playerLinks.movie.first.translation;
+      voiceActingIds = playerLinks.movie.map((e) => e.translation).toList();
+    }
+
     return MovieItem(
       type: MovieItemType.flmx,
       id: id.toString(),
@@ -56,6 +67,9 @@ class FlmxItem with _$FlmxItem {
       ratingKinopoisk: kpRating,
 
       duration: Duration(minutes: duration),
+
+      voiceActing: voiceActing,
+      voiceActingIds: voiceActingIds,
     );
   }
   

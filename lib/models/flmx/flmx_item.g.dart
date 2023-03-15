@@ -55,6 +55,10 @@ _$_FlmxItem _$$_FlmxItemFromJson(Map<String, dynamic> json) => _$_FlmxItem(
       imdbRating: json['imdb_rating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['imdb_rating']),
+      playerLinks: json['player_links'] == null
+          ? const FlmxPlayerLinks()
+          : FlmxPlayerLinks.fromJson(
+              json['player_links'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$_FlmxItemToJson(_$_FlmxItem instance) =>
@@ -79,4 +83,5 @@ Map<String, dynamic> _$$_FlmxItemToJson(_$_FlmxItem instance) =>
       'countries': instance.countries,
       'kp_rating': const DoubleConverter().toJson(instance.kpRating),
       'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
+      'player_links': instance.playerLinks,
     };
