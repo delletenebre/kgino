@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -5,10 +6,15 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../controllers/tabs_cubit.dart';
+import '../pages/cameras_page.dart';
+import '../pages/error_page.dart';
 import '../pages/home_page.dart';
+import '../pages/movies_page.dart';
+import '../pages/search_page.dart';
+import '../pages/shows_page.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
-import 'navigation_bar/button_search_field.dart';
+import 'navigation_bar/krs_tab_bar_search_button.dart';
 import 'navigation_bar/krs_tab_bar_button.dart';
 
 class ScaffoldWithNavigationBar extends HookWidget {
@@ -48,8 +54,6 @@ class ScaffoldWithNavigationBar extends HookWidget {
     //   ),
     // ];
 
-    final duration = KrsTheme.animationDuration;
-
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -67,7 +71,7 @@ class ScaffoldWithNavigationBar extends HookWidget {
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 32.0,
+                vertical: 24.0,
               ),
               child: Opacity(
                 opacity: focused.value ? 1.0 : 0.62,
@@ -78,15 +82,15 @@ class ScaffoldWithNavigationBar extends HookWidget {
                       children: [
                         
                         AnimatedOpacity(
-                          duration: Duration(milliseconds: tabsCubit.state == 0 ? 150 : 250),
+                          duration: KrsTheme.animationDuration,
                           opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
                           child: AnimatedContainer(
-                            duration: KrsTheme.animationDurationLong,
+                            duration: KrsTheme.animationDuration,
                             margin: EdgeInsetsDirectional.only(
-                              start: tabsCubit.state == 0 ? 0 : 32.0,
+                              start: tabsCubit.state == 0 ? 0 : 24.0,
                               end: 32.0,
                             ),
-                            width: tabsCubit.state == 0 ? 0 : 48.0,
+                            width: tabsCubit.state == 0 ? 0 : 58.0,
                             
                             child: RichText(
                               overflow: TextOverflow.fade,
@@ -103,7 +107,15 @@ class ScaffoldWithNavigationBar extends HookWidget {
                                   TextSpan(
                                     text: 'ino',
                                     style: TextStyle(
-                                      color: theme.colorScheme.outline,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+
+                                  TextSpan(
+                                    text: '    4.1.2',
+                                    style: TextStyle(
+                                      fontSize: 6.0,
+                                      fontWeight: FontWeight.normal,
                                     ),
                                   ),
                                 ],
@@ -120,43 +132,26 @@ class ScaffoldWithNavigationBar extends HookWidget {
                               Expanded(
                                 child: Row(
                                   children: [
-                                    ButtonSearchField(
-                                      focusNode: tabsCubit.focusNodes[0],
-                                      selected: tabsCubit.state == 0,
-                                      active: focused.value,
-                                      onFocusChange: (hasFocus) {
-                                        if (hasFocus) {
-                                          tabsCubit.updateSelected(0);
-                                        }
-                                        if (focused.value && hasFocus) {
-                                          // _controller?.animateTo(index);
-                                          // widget.onTap?.call(index);
-                                        }
-                                        
-                                      },
-                                      onPressed: () {
-                                        // _controller?.animateTo(index);
-                                        // widget.onTap?.call(index);
-                                      },
+                                    KrsTabBarSearchButton(
+                                      index: 0,
+                                      onPressed: () {}, 
                                     ),
                                     
                                     KrsTabBarButton(
                                       index: 1,
-                                      onPressed: () {  },
+                                      onPressed: () {},
                                       label: Text(locale.movies),
                                     ),
 
                                     KrsTabBarButton(
                                       index: 2,
-                                      onPressed: () {  },
+                                      onPressed: () {},
                                       label: Text(locale.shows),
                                     ),
 
                                     KrsTabBarButton(
                                       index: 3,
-                                      onPressed: () {
-
-                                      },
+                                      onPressed: () {},
                                       label: Text(locale.cameras),
                                     ),
                                   ],
@@ -188,7 +183,28 @@ class ScaffoldWithNavigationBar extends HookWidget {
           Expanded(
             child: Stack(
               children: [
-                HomePage(),
+
+                BlocProvider(
+                  create: (_) => tabsCubit,
+                  child: BlocBuilder<TabsCubit, int>(
+                    builder: (context, selectedIndex) {
+                      switch (selectedIndex) {
+                        case 0:
+                          return const SearchPage();
+                        case 1:
+                          return const MoviesPage();
+                        case 2:
+                          return const ShowsPage();
+                        case 3:
+                          return const CamerasPage();
+                          
+                        default:
+                          return const ErrorPage();
+                      }
+                    },
+                  ),
+                ),
+                      
 
                 // Visibility(
                 //   visible: _tabBarHasFocus,

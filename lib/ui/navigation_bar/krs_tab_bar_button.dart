@@ -51,30 +51,6 @@ class KrsTabBarButton extends StatelessWidget {
 
         return null;
       }),
-
-      foregroundColor: MaterialStateProperty.resolveWith((states) {
-        // if (active) {
-        //   if (selected) {
-        //     return theme.colorScheme.onPrimary;
-        //   } else {
-        //     theme.colorScheme.onSecondaryContainer;
-        //   }
-        // } else {
-        //   theme.colorScheme.onSecondaryContainer.withOpacity(0.12);
-        // }
-        
-        return null;
-      }),
-
-      // overlayColor: MaterialStateProperty.all(Colors.transparent),
-
-      // textStyle: MaterialStateProperty.resolveWith((states) {
-      //   return const TextStyle(
-      //     fontSize: 14.0,
-      //     fontWeight: FontWeight.w500,
-      //   );
-      // }),
-      
     );
 
     if (icon != null) {
