@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:jiffy/jiffy.dart';
 
 import 'controllers/locale_controller.dart';
 import 'controllers/theme_controller.dart';
@@ -38,6 +39,9 @@ class App extends StatelessWidget {
 
           /// текущий язык приложения
           final locale = context.watch<LocaleController>().state;
+          WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+            Jiffy.locale(locale);
+          });
 
           return Shortcuts(
             shortcuts: {

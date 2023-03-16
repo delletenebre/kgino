@@ -18,7 +18,6 @@ class KrsLocale {
 
   /// язык по умолчанию
   static String get defaultLocale {
-    return 'ru';
     final systemLocale = Intl.systemLocale.substring(0, 2);
 
     /// Проверяем есть ли в списке системный язык...

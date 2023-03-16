@@ -14,10 +14,7 @@ class ThemeController extends Cubit<ThemeMode> {
   ThemeController() : super(ThemeMode.system) {
     /// считываем значение с диска
     final themeMode = _storage.read(_prefsKey);
-    changeByString(themeMode);
-  }
 
-  void changeByString(String themeMode) {
     switch (themeMode) {
       case 'ThemeMode.system':
         emit(ThemeMode.system);
@@ -26,7 +23,6 @@ class ThemeController extends Cubit<ThemeMode> {
         emit(ThemeMode.dark);
         break;
       case 'ThemeMode.light':
-      default:
         emit(ThemeMode.light);
         break;
     }

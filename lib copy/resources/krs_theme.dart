@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 class KrsTheme {
 
-  /// ширина навигационной панели
-  static const navigationMenuWidth = 260.0;
-
   /// тип прокрутки содержимого
   static const scrollPhysics = BouncingScrollPhysics(
     parent: AlwaysScrollableScrollPhysics(),
@@ -15,7 +12,9 @@ class KrsTheme {
 
   /// длительность анимаций
   static const animationDuration = Duration(milliseconds: 250);
-  static const animationDurationLong = Duration(milliseconds: 350);
+
+  /// длительность быстрых анимаций
+  static const fastAnimationDuration = Duration(milliseconds: 60);
 
   /// длительность показа уведомлений
   static const snackBarDuration = Duration(seconds: 5);
@@ -25,59 +24,19 @@ class KrsTheme {
     final theme = Theme.of(context);
     
     return ElevatedButton.styleFrom(
-      minimumSize: const Size(0.0, 46.0),
       foregroundColor: theme.colorScheme.onPrimary,
       backgroundColor: theme.colorScheme.primary,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
     ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
   }
 
   static ButtonStyle filledTonalButtonStyleOf (BuildContext context) {
     return ElevatedButton.styleFrom(
-      minimumSize: const Size(0.0, 46.0),
       foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
     ).copyWith(
       elevation: ButtonStyleButton.allOrNull(0.0)
     );
   }
-
-  /// стиль [ElevatedButton] для кнопок удаления
-  static ButtonStyle dangerButtonStyleOf(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return ElevatedButton.styleFrom(
-      foregroundColor: theme.colorScheme.onError,
-      backgroundColor: theme.colorScheme.error,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
-    ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
-  }
-
-  /// стиль [ElevatedButton] для кнопок удаления
-  static ButtonStyle textButtonStyleOf(BuildContext context) {
-    // final theme = Theme.of(context);
-    
-    return ElevatedButton.styleFrom(
-      minimumSize: const Size(0.0, 46.0),
-      // foregroundColor: theme.colorScheme.onError,
-      backgroundColor: Colors.transparent,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
-    ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
-  }
-
-  /// отступы обычные
-  static const md = 24.0;
-  static const paddingMd = EdgeInsets.all(md);
-  
 
   /// главный цвет
   static const seedColor = Color(0xff1a5dea);
@@ -100,6 +59,7 @@ class KrsTheme {
     brightness: Brightness.light,
     useMaterial3: true,
     fontFamily: 'Golos UI',
+    visualDensity: VisualDensity.adaptivePlatformDensity,
 
     colorScheme: colorScheme['light']!.copyWith(
       primary: seedColor,
@@ -123,6 +83,7 @@ class KrsTheme {
     brightness: Brightness.dark,
     useMaterial3: true,
     fontFamily: 'Golos UI',
+    visualDensity: VisualDensity.adaptivePlatformDensity,
 
     colorScheme: colorScheme['dark']!.copyWith(
       //primary: seedColor,

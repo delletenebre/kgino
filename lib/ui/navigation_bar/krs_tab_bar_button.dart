@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+import '../../controllers/tabs_cubit.dart';
 
 class KrsTabBarButton extends StatelessWidget {
-  final Widget? icon;
-  final FocusNode focusNode;
-  final String labelText;
-  final Function(bool) onFocusChange;
+  final int index;
   final VoidCallback? onPressed;
+  final Widget? icon;
+  final Widget label;
   final bool selected;
-  final bool active;
 
   const KrsTabBarButton({
     super.key,
-    this.icon,
-    required this.focusNode,
-    required this.labelText,
-    required this.onFocusChange,
+    required this.index,
     required this.onPressed,
-    required this.selected,
-    required this.active,
+    this.icon,
+    required this.label,
+    this.selected = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final label = Text(labelText);
+    final tabsCubit = GetIt.instance<TabsCubit>();
 
-    final styleOpacity = active ? 1.0 : 0.62;
+    final selected = tabsCubit.state == index;
+    final focusNode = tabsCubit.focusNodes[index];
+    void onFocusChange(hasFocus) {
+      if (hasFocus) {
+        tabsCubit.updateSelected(index);
+      }
+    }
+
     final buttonStyle = ButtonStyle(
       padding: MaterialStateProperty.all(
         const EdgeInsets.symmetric(
@@ -35,39 +41,39 @@ class KrsTabBarButton extends StatelessWidget {
       ),
       
       backgroundColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.focused)) {
+          return theme.colorScheme.primary.withOpacity(0.24);
+        }
+        
         if (selected) {
-          if (active) {
-            return theme.colorScheme.primary;
-          } else {
-            return theme.colorScheme.primary.withOpacity(0.12);
-          }
+          return theme.colorScheme.primary.withOpacity(0.12);
         }
 
-        return Colors.transparent;
+        return null;
       }),
 
       foregroundColor: MaterialStateProperty.resolveWith((states) {
-        if (active) {
-          if (selected) {
-            return theme.colorScheme.onPrimary;
-          } else {
-            theme.colorScheme.onSecondaryContainer;
-          }
-        } else {
-          theme.colorScheme.onSecondaryContainer.withOpacity(0.12);
-        }
+        // if (active) {
+        //   if (selected) {
+        //     return theme.colorScheme.onPrimary;
+        //   } else {
+        //     theme.colorScheme.onSecondaryContainer;
+        //   }
+        // } else {
+        //   theme.colorScheme.onSecondaryContainer.withOpacity(0.12);
+        // }
         
-        return theme.colorScheme.onSecondaryContainer.withOpacity(styleOpacity);
+        return null;
       }),
 
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
+      // overlayColor: MaterialStateProperty.all(Colors.transparent),
 
-      textStyle: MaterialStateProperty.resolveWith((states) {
-        return const TextStyle(
-          fontSize: 14.0,
-          fontWeight: FontWeight.w500,
-        );
-      }),
+      // textStyle: MaterialStateProperty.resolveWith((states) {
+      //   return const TextStyle(
+      //     fontSize: 14.0,
+      //     fontWeight: FontWeight.w500,
+      //   );
+      // }),
       
     );
 
@@ -77,8 +83,8 @@ class KrsTabBarButton extends StatelessWidget {
       return TextButton.icon(
         focusNode: focusNode,
         onFocusChange: onFocusChange,
-        onPressed: onPressed,
         style: buttonStyle,
+        onPressed: onPressed,
         icon: icon!,
         label: label,
       );
@@ -89,8 +95,8 @@ class KrsTabBarButton extends StatelessWidget {
       return TextButton(
         focusNode: focusNode,
         onFocusChange: onFocusChange,
-        onPressed: onPressed,
         style: buttonStyle,
+        onPressed: onPressed,
         child: label,
       );
 
