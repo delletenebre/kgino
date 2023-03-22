@@ -24,14 +24,18 @@ class MoviesPage extends HookWidget {
           titleText: 'Выберите сервис',
           itemsFuture: Future.delayed(Duration.zero, () {
             return [
+              /// ссылка на filmix
               {
                 'name': 'Filmix',
                 'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
               },
+
+              /// ссылка на oc.kg
               {
                 'name': 'OC.KG',
                 'imageUrl': 'https://oc.kg/templates/mobile/img/logooc_winter.png',
-              }
+              },
+              
             ];
           }),
           itemBuilder: (context, focusNode, index, item) {
