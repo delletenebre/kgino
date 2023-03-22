@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../ui/lists/horizontal_list_view.dart';
+import '../ui/lists/movie_list_tile.dart';
+import '../ui/lists/vertical_list_view.dart';
+
 class MoviesPage extends StatelessWidget {
   const MoviesPage({
     super.key,
@@ -43,9 +47,26 @@ class MoviesPage extends StatelessWidget {
         ),
 
         Expanded(
-          child: const ColoredBox(
-            color: Colors.green,
-            child: Placeholder(),
+          child: VerticalListView(
+            itemCount: 2,
+            itemBuilder: (context, focusNode, index) {
+              return HorizontalListView(
+                focusNode: focusNode,
+                titleText: 'Gjcktlrbs',
+                itemsFuture: Future.delayed(Duration(seconds: 1), () {
+                  return [100, 200, 5, 7, 8, 10,100, 200, 5, 7, 8, 10,100, 200, 5, 7, 8, 10,100, 200, 5, 7, 8, 10];
+                }),
+                itemBuilder: (context, focusNode, index, item) {
+                  return MovieListTile(
+                    focusNode: focusNode,
+                    onTap: () {
+                      
+                    },
+                  );
+                },
+                
+              );
+            },
           ),
         ),
       ],

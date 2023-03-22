@@ -222,17 +222,3 @@ class ScaffoldWithNavigationBar extends HookWidget {
     );
   }
 }
-
-// class KrsNavigationRailDestination extends NavigationRailDestination {
-  
-//   KrsNavigationRailDestination({
-//     required super.icon,
-//     required super.label,
-//     super.selectedIcon,
-//     super.padding,
-//     this.routeName = '',
-//   });
-
-//   final String routeName;
-
-// }
