@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/tabs_cubit.dart';
+import '../../resources/krs_theme.dart';
 
-class KrsTabBarButton extends StatelessWidget {
+class KrsTabBarButton extends HookWidget {
   final int index;
   final VoidCallback? onPressed;
   final Widget? icon;
@@ -23,6 +25,8 @@ class KrsTabBarButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final focusState = useState(false);
+
     final tabsCubit = GetIt.instance<TabsCubit>();
 
     final selected = tabsCubit.state == index;
@@ -31,51 +35,48 @@ class KrsTabBarButton extends StatelessWidget {
       if (hasFocus) {
         tabsCubit.updateSelected(index);
       }
+
+      focusState.value = hasFocus;
     }
 
-    final buttonStyle = ButtonStyle(
-      padding: MaterialStateProperty.all(
-        const EdgeInsets.symmetric(
-          horizontal: 24.0,
-        )
-      ),
-      
-      backgroundColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.focused)) {
-          return theme.colorScheme.primary.withOpacity(0.24);
-        }
-        
-        if (selected) {
-          return theme.colorScheme.primary.withOpacity(0.12);
-        }
+    Color? backgroundColor;
+    if (focusState.value) {
+      backgroundColor = theme.colorScheme.primary.withOpacity(0.24);
+    } else if (selected) {
+      backgroundColor = theme.colorScheme.primary.withOpacity(0.12);
+    }
 
-        return null;
-      }),
+
+    return Focus(
+      focusNode: focusNode,
+      onFocusChange: onFocusChange,
+      child: AnimatedContainer(
+        height: 40.0,
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0),
+        duration: KrsTheme.animationDuration,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32.0),
+          color: backgroundColor,
+        ),
+        child: Row(
+          children: [
+            if (icon != null) Padding(
+              padding: const EdgeInsetsDirectional.only(end: 12.0),
+              child: icon,
+            ),
+            
+            DefaultTextStyle(
+              style: TextStyle(
+                fontSize: 16.0,
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w500,
+              ),
+              child: label,
+            ),
+          ],
+        ),
+      ),
     );
 
-    if (icon != null) {
-      /// ^ если нужно отобразить иконку
-      
-      return TextButton.icon(
-        focusNode: focusNode,
-        onFocusChange: onFocusChange,
-        style: buttonStyle,
-        onPressed: onPressed,
-        icon: icon!,
-        label: label,
-      );
-
-    } else {
-      /// ^ если иконка не нужна
-
-      return TextButton(
-        focusNode: focusNode,
-        onFocusChange: onFocusChange,
-        style: buttonStyle,
-        onPressed: onPressed,
-        child: label,
-      );
-
-    }
   }
 }

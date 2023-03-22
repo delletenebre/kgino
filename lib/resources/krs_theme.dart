@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class KrsTheme {
 
-  /// ширина навигационной панели
-  static const navigationMenuWidth = 260.0;
+  /// высота контейнера с информацией о фильме
+  static const movieDetailsHeight = 220.0;
 
   /// тип прокрутки содержимого
   static const scrollPhysics = BouncingScrollPhysics(

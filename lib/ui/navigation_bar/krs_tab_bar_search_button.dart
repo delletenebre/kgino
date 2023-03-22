@@ -87,24 +87,16 @@ class KrsTabBarSearchButton extends HookWidget {
                 )
               );
             },
-            child: !selected ? Text(locale.search) : TextField(
+            child: !selected ? Text(locale.search, style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w500,
+              )) : TextField(
               focusNode: textFieldFocusNode,
               textInputAction: TextInputAction.search,
 
-              // onChanged: (searchQuery) {
-              //   context.read<OckgSearchController>().searchMovies(searchQuery);
-              //   context.read<TskgSearchController>().searchShows(searchQuery);
-              //   context.read<FlmxSearchController>().search(searchQuery);
-              // },
-
-              // onSubmitted: (searchQuery) {
-              //   context.read<OckgSearchController>().searchMovies(searchQuery);
-              //   context.read<TskgSearchController>().searchShows(searchQuery);
-              //   context.read<FlmxSearchController>().search(searchQuery);
-              // },
-
               style: const TextStyle(
                 fontSize: 14.0,
+                fontWeight: FontWeight.w500,
               ),
 
               decoration: InputDecoration(
@@ -116,12 +108,12 @@ class KrsTabBarSearchButton extends HookWidget {
                 ),
                 isCollapsed: true,
                 contentPadding: const EdgeInsets.only(top: 8.0),
-                // filled: true,
 
                 hintText: locale.searchHint,
                 hintStyle: TextStyle(
                   fontSize: 14.0,
                   color: theme.colorScheme.outline,
+                  fontWeight: FontWeight.w500,
                 ),
 
                 border: InputBorder.none,

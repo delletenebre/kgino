@@ -1,32 +1,35 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 import '../../../resources/krs_theme.dart';
 
-class MovieListTile extends StatefulWidget {
+class KrsListTile extends StatefulWidget {
   final FocusNode? focusNode;
-  // final MovieItem item;
   final Size posterSize;
   final void Function(FocusNode focusNode)? onFocused;
-  final bool titleEnabled;
   final void Function() onTap;
 
-  const MovieListTile({
+  final String title;
+  final String imageUrl;
+
+  const KrsListTile({
     super.key,
     this.focusNode,
-    // required this.item,
-    this.posterSize = const Size(126.0, 102.0),
+    this.posterSize = const Size(100.0, 140.0),
     this.onFocused,
-    this.titleEnabled = true,
     required this.onTap,
+
+    this.title = '',
+    this.imageUrl = '',
+
   });
 
   @override
-  State<MovieListTile> createState() => _MovieListTileState();
+  State<KrsListTile> createState() => _KrsListTileState();
 }
 
-class _MovieListTileState extends State<MovieListTile> {
+class _KrsListTileState extends State<KrsListTile> {
   bool _holded = false;
   Color? _glowColor;
   Color? _dominantColor;
@@ -93,85 +96,73 @@ class _MovieListTileState extends State<MovieListTile> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // final settingsBox = Hive.box('settings');
-
-    /// включены ли в настройках визуальные эффекты
-    // final animationsEnabled = settingsBox.get('animations', defaultValue: true);
   
     /// получаем цвет свечения
     _glowColor ??= theme.colorScheme.primary;
 
     _dominantColor ??= theme.colorScheme.surface;
 
-    final child = AnimatedScale(
+    // final child = AnimatedScale(
+    //   duration: KrsTheme.animationDuration,
+    //   scale: (_focusNode.hasFocus && !_holded) ? 1.15 : 1.0,
+    //   child: AnimatedContainer(
+    //     duration: KrsTheme.animationDuration,
+    //     width: widget.posterSize.width,
+    //     height: widget.posterSize.height,
+    //     decoration: BoxDecoration(
+    //       boxShadow: [
+    //         if (_focusNode.hasFocus) BoxShadow(
+    //           color: _glowColor!.withOpacity(0.62),
+    //           blurRadius: 20.0,
+    //           spreadRadius: 4.0
+    //         ),
+    //       ],
+    //       borderRadius: BorderRadius.circular(12.0),
+    //       border: _focusNode.hasFocus
+    //         ? Border.all(
+    //             color: theme.colorScheme.onPrimaryContainer,
+    //             width: 3.0,
+    //           )
+    //         : null
+    //     ),
+    //     child: Container(
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(9.0),
+    //         color: theme.scaffoldBackgroundColor,
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+    final child = AnimatedContainer(
       duration: KrsTheme.animationDuration,
-      scale: (_focusNode.hasFocus && !_holded) ? 1.15 : 1.0,
-      child: AnimatedContainer(
-        duration: KrsTheme.animationDuration,
-        width: widget.posterSize.width,
-        height: widget.posterSize.height,
-        decoration: BoxDecoration(
-          boxShadow: [
-            if (_focusNode.hasFocus) BoxShadow(
-              color: _glowColor!.withOpacity(0.62),
-              blurRadius: 20.0,
-              spreadRadius: 4.0
-            ),
-          ],
-          borderRadius: BorderRadius.circular(12.0),
-          border: _focusNode.hasFocus
-            ? Border.all(
-                color: theme.colorScheme.onPrimaryContainer,
-                width: 3.0,
-              )
-            : null
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9.0),
-            color: theme.scaffoldBackgroundColor,
+      width: widget.posterSize.width,
+      height: widget.posterSize.height,
+      decoration: BoxDecoration(
+        boxShadow: [
+          if (_focusNode.hasFocus) BoxShadow(
+            color: _glowColor!.withOpacity(0.62),
+            blurRadius: 20.0,
+            spreadRadius: 4.0
           ),
-          
-// ExtendedImage.network(
-//             widget.item.posterUrl,
-//             width: widget.posterSize.width,
-//             height: widget.posterSize.height,
-//             fit: BoxFit.fill,
-//             cache: true,
-//             shape: BoxShape.rectangle,
-//             borderRadius: const BorderRadius.all(Radius.circular(9.0)),
-//           ),
-          // child: CachedNetworkImage(
-          //   imageUrl: widget.item.posterUrl,
-          //   memCacheWidth: widget.posterSize.width.toInt(),
-          //   memCacheHeight: widget.posterSize.height.toInt(),
-          //   fit: BoxFit.cover,
-          //   imageBuilder: (context, imageProvider) => Container(
-          //     decoration: BoxDecoration(
-          //       borderRadius: const BorderRadius.all(Radius.circular(9.0)),
-          //       image: DecorationImage(
-          //         image: imageProvider,
-          //         fit: BoxFit.cover,
-          //       ),
-          //     ),
-          //   ),
-          //   errorWidget: (context, url, error) {
-          //     return Container(
-          //       decoration: BoxDecoration(
-          //         color: theme.colorScheme.secondaryContainer,
-          //         borderRadius: BorderRadius.circular(9.0),
-          //       ),
-          //       child: Center(
-          //         child: Icon(Icons.video_file_outlined,
-          //           size: 64.0,
-          //           color: _focusNode.hasFocus
-          //             ? theme.colorScheme.onSecondaryContainer
-          //             : theme.colorScheme.onSecondaryContainer.withOpacity(0.36),
-          //         ),
-          //       )
-          //     );
-          //   },
-          // ),
+        ],
+        borderRadius: BorderRadius.circular(12.0),
+        border: _focusNode.hasFocus
+          ? Border.all(
+              color: theme.colorScheme.onPrimaryContainer,
+              width: 3.0,
+            )
+          : null
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(9.0),
+          color: theme.scaffoldBackgroundColor,
+          image: DecorationImage(
+            image: widget.imageUrl.endsWith('.svg')
+              ? Svg(widget.imageUrl, source: SvgSource.network) as ImageProvider<Object>
+              : NetworkImage(widget.imageUrl),
+          ),
         ),
       ),
     );
@@ -187,10 +178,11 @@ class _MovieListTileState extends State<MovieListTile> {
           const SingleActivator(
             LogicalKeyboardKey.select, includeRepeats: false): onTap,
         },
+
         child: Focus(
           focusNode: _focusNode,
           onFocusChange: (hasFocus) {
-            /// при получении фокуса на сериале
+            /// при получении фокуса
             setState(() {
               
             });
@@ -200,9 +192,6 @@ class _MovieListTileState extends State<MovieListTile> {
             if (_selectKeysMap.contains(event.logicalKey)) {
               /// ^ если была нажата клавиша выбора элемента
               _updateHoldedState(event is KeyDownEvent);
-              // if (event is KeyUpEvent) {
-              //   onTap();
-              // }
             } else {
               _updateHoldedState(false);
             }
@@ -225,7 +214,7 @@ class _MovieListTileState extends State<MovieListTile> {
                 ),
 
                 /// название сериала
-                if (widget.titleEnabled) Padding(
+                if (widget.title.isNotEmpty) Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: AnimatedDefaultTextStyle(
                     duration: KrsTheme.animationDuration,
@@ -235,7 +224,7 @@ class _MovieListTileState extends State<MovieListTile> {
                         ? theme.textTheme.bodyMedium?.color
                         : theme.textTheme.bodyMedium?.color?.withOpacity(0.62)
                     ),
-                    child: Text('widget.item.name',
+                    child: Text(widget.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

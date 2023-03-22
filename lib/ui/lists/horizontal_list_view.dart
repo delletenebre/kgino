@@ -24,6 +24,8 @@ class HorizontalListView<T> extends HookWidget {
   /// название списка
   final String titleText;
 
+  final double spacing;
+
   const HorizontalListView({
     super.key,
     this.itemsFuture,
@@ -34,6 +36,8 @@ class HorizontalListView<T> extends HookWidget {
     this.focusNode,
 
     this.titleText = '',
+
+    this.spacing = 24.0,
   });
 
   @override
@@ -49,26 +53,29 @@ class HorizontalListView<T> extends HookWidget {
     /// текущий элемент, на котором фокус
     final currentFocusableIndex = useState(0);
 
-    /// контроллер прокрутки списка
-    late final ListObserverController _listObserverController;
-
     final asyncItems = useMemoized(() => itemsFuture);
     final snapshot = useFuture(asyncItems);
 
     if (!snapshot.hasData && !snapshot.hasError) {
-      return LinearProgressIndicator();
+      return const LinearProgressIndicator();
     }
 
     final items = snapshot.data!;
     final itemCount = items.length;
 
     return SizedBox(
-      height: 200,
+      height: 220,
       child: BlocProvider(
         key: ValueKey(itemCount),
         create: (context) => FocusableListCubit(
           itemCount: itemCount,
+
+          /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
+          /// фокус не переходил на следующий список, ставим handled
+          keyEventResult: KeyEventResult.handled,
+
         ),
+
         child: BlocBuilder<FocusableListCubit, FocusableListState>(
           builder: (context, focusableListState) {
             final listCubit = context.read<FocusableListCubit>();
@@ -117,11 +124,17 @@ class HorizontalListView<T> extends HookWidget {
                   Expanded(
                     child: ListViewObserver(
                       controller: focusableListState.listObserverController,
-                      child: ListView.builder(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         scrollDirection: Axis.horizontal,
                         clipBehavior: Clip.antiAlias,
                         controller: focusableListState.scrollController,
                         itemCount: itemCount,
+
+                        /// разделитель
+                        separatorBuilder: (context, index) {
+                          return SizedBox(width: spacing);
+                        },
 
                         /// основной контент
                         itemBuilder: (context, index) {
@@ -130,7 +143,6 @@ class HorizontalListView<T> extends HookWidget {
                             skipTraversal: true,
 
                             onFocusChange: (hasFocus) async {
-                              print('onFocusChange $index');
                               if (hasFocus) {
                                 if (!_lastPageReached && index > items.length - 7) {
                                   final items = await onLoadNextPage?.call(currentPage.value++, itemCount) ?? [];
