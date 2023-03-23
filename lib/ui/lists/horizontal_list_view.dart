@@ -64,7 +64,7 @@ class HorizontalListView<T> extends HookWidget {
     final itemCount = items.length;
 
     return SizedBox(
-      height: 220,
+      height: 230,
       child: BlocProvider(
         key: ValueKey(itemCount),
         create: (context) => FocusableListCubit(

@@ -30,6 +30,7 @@ dependencies:
   go_router: ^6.2.0
   json_annotation: ^4.8.0
   intl: ^0.17.0
+  palette_generator: ^0.3.3+2
   scrollview_observer: ^1.10.1
   shared_preferences: ^2.0.18
   # async: ^2.9.0
@@ -57,7 +58,6 @@ dependencies:
   # json_annotation: ^4.7.0
   # package_info_plus: ^3.0.2
   # palette_generator: ^0.3.3+2
-  # scrollview_observer: ^1.9.0
   # shared_preferences: ^2.0.17
   # # speech_to_text: ^6.1.0
   # uuid: ^3.0.7

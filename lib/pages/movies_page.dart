@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../resources/krs_theme.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/krs_list_tile.dart';
-import '../ui/lists/movie_list_tile.dart';
 import '../ui/lists/vertical_list_view.dart';
 
 class MoviesPage extends HookWidget {
@@ -35,7 +33,7 @@ class MoviesPage extends HookWidget {
                 'name': 'OC.KG',
                 'imageUrl': 'https://oc.kg/templates/mobile/img/logooc_winter.png',
               },
-              
+
             ];
           }),
           itemBuilder: (context, focusNode, index, item) {
@@ -48,6 +46,7 @@ class MoviesPage extends HookWidget {
                 
               },
               title: item['name']!,
+              subtitle: 'ajdnasn dans jdnasdnaskn an d',
               imageUrl: item['imageUrl']!,
             );
           },
