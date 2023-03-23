@@ -17,7 +17,7 @@ class MovieItemAdapter extends TypeAdapter<MovieItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return MovieItem(
-      type: fields[0] as MovieItemType,
+      type: fields[0] as ServiceName,
       id: fields[1] as String,
       name: fields[2] as String,
       posterUrl: fields[3] as String,
@@ -64,44 +64,44 @@ class MovieItemAdapter extends TypeAdapter<MovieItem> {
           typeId == other.typeId;
 }
 
-class MovieItemTypeAdapter extends TypeAdapter<MovieItemType> {
+class MovieItemTypeAdapter extends TypeAdapter<ServiceName> {
   @override
   final int typeId = 7;
 
   @override
-  MovieItemType read(BinaryReader reader) {
+  ServiceName read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return MovieItemType.ockg;
+        return ServiceName.ockg;
       case 1:
-        return MovieItemType.tskg;
+        return ServiceName.tskg;
       case 2:
-        return MovieItemType.wcam;
+        return ServiceName.wcam;
       case 3:
-        return MovieItemType.folder;
+        return ServiceName.folder;
       case 4:
-        return MovieItemType.flmx;
+        return ServiceName.flmx;
       default:
-        return MovieItemType.ockg;
+        return ServiceName.ockg;
     }
   }
 
   @override
-  void write(BinaryWriter writer, MovieItemType obj) {
+  void write(BinaryWriter writer, ServiceName obj) {
     switch (obj) {
-      case MovieItemType.ockg:
+      case ServiceName.ockg:
         writer.writeByte(0);
         break;
-      case MovieItemType.tskg:
+      case ServiceName.tskg:
         writer.writeByte(1);
         break;
-      case MovieItemType.wcam:
+      case ServiceName.wcam:
         writer.writeByte(2);
         break;
-      case MovieItemType.folder:
+      case ServiceName.folder:
         writer.writeByte(3);
         break;
-      case MovieItemType.flmx:
+      case ServiceName.flmx:
         writer.writeByte(4);
         break;
     }

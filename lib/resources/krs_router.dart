@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../pages/error_page.dart';
+import '../pages/flmx/flmx_home_page.dart';
 import '../pages/home_page.dart';
+import '../pages/oc.kg/ockg_home_page.dart';
 import '../ui/scaffold_with_navigation_bar.dart';
 
 
@@ -42,32 +42,77 @@ class KrsRouter {
 
     errorBuilder: (context, state) => const ErrorPage(),
 
-    routes: <RouteBase>[
-      ShellRoute(
-        navigatorKey: mainNavigatorKey,
-        builder: (context, state, child) {
-          return ScaffoldWithNavigationBar(
-            child: child
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) {
+          return const ScaffoldWithNavigationBar(
+            child: HomePage(),
           );
         },
-        routes: <RouteBase>[
-          /// стартовая страница
+
+        routes: [
           GoRoute(
-            path: '/',
+            path: 'flmx',
+            name: 'flmxHome',
             builder: (context, state) {
-              // final authState = context.read<AuthenticationBloc>().state;
-
-              // /// страница сводной информации для агента
-              // if (authState.isAgent) {
-              //   return const AgentDashboardPage();
-              // }
-
-              return const HomePage();
+              return const FlmxHomePage();
             },
+            routes: [
+            ],
           ),
-          
-        ],
+
+          GoRoute(
+            path: 'ockg',
+            name: 'ockgHome',
+            builder: (context, state) {
+              return const OckgHomePage();
+            },
+            routes: [
+            ],
+          ),
+        ]
       ),
+      // ShellRoute(
+      //   navigatorKey: mainNavigatorKey,
+      //   builder: (context, state, child) {
+      //     return ScaffoldWithNavigationBar(
+      //       child: child
+      //     );
+      //   },
+      //   routes: [
+      //     /// стартовая страница
+      //     GoRoute(
+      //       path: '/',
+      //       builder: (context, state) {
+      //         return const HomePage();
+      //       },
+
+      //       routes: [
+      //         GoRoute(
+      //           path: 'flmx',
+      //           name: 'flmxHome',
+      //           builder: (context, state) {
+      //             return const FlmxHomePage();
+      //           },
+      //           routes: [
+      //           ],
+      //         ),
+
+      //         GoRoute(
+      //           path: 'ockg',
+      //           name: 'ockgHome',
+      //           builder: (context, state) {
+      //             return const OckgHomePage();
+      //           },
+      //           routes: [
+      //           ],
+      //         ),
+      //       ]
+      //     ),
+          
+      //   ],
+      // ),
     ],
   );
 }

@@ -87,7 +87,7 @@ class OckgCatalogPage extends StatelessWidget {
                       items: catalog.movies,
                       itemBuilder: (context, focusNode, index, ockgMovie) {
                         final movie = MovieItem(
-                          type: MovieItemType.ockg,
+                          type: ServiceName.ockg,
                           id: '${ockgMovie.movieId}',
                           name: ockgMovie.name,
                           posterUrl: ockgMovie.posterUrl,

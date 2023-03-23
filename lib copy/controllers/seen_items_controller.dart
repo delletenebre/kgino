@@ -109,10 +109,10 @@ class SeenItemsController {
     return null;
   }
 
-  List<MovieItem> find(MovieItemType type, { int count = 0 }) {
+  List<MovieItem> find(ServiceName type, { int count = 0 }) {
     List<MovieItem> items = _storage.values.where((item) {
       if (item.type == type) {
-        if (type == MovieItemType.ockg) {
+        if (type == ServiceName.ockg) {
           return item.episodes.isNotEmpty && !item.episodes.first.isSeen;
         } else {
           return item.episodes.isNotEmpty;
@@ -135,7 +135,7 @@ class SeenItemsController {
   }
 
   /// удаляем из избранного
-  List<MovieItem> takeFavoritesOf(MovieItemType type) {
+  List<MovieItem> takeFavoritesOf(ServiceName type) {
     final favorites = _storage.values.where((item) {
       return item.type == type && item.favorite;
     });

@@ -9,19 +9,24 @@ import 'season_item.dart';
 part 'movie_item.g.dart';
 
 @HiveType(typeId: 7)
-enum MovieItemType {
-  @HiveField(0) ockg,
-  @HiveField(1) tskg,
-  @HiveField(2) wcam,
-  @HiveField(3) folder,
-  @HiveField(4) flmx,
+enum ServiceName {
+  ockg,
+  tskg,
+  wcam,
+  flmx,
+}
+
+enum ItemType {
+  movie,
+  show,
+  folder,
 }
 
 @HiveType(typeId: 11)
 class MovieItem extends HiveObject with EquatableMixin {
   
   /// идентификатор сайта
-  @HiveField(0) final MovieItemType type;
+  @HiveField(0) final ServiceName type;
   
   /// идентификатор фильма или сериала
   @HiveField(1) final String id;
@@ -191,7 +196,7 @@ class MovieItem extends HiveObject with EquatableMixin {
     required String posterUrl,
     required String videoFileUrl,
   }) => MovieItem(
-    type: MovieItemType.wcam,
+    type: ServiceName.wcam,
     id: '',
     name: name,
     posterUrl: posterUrl,
@@ -229,7 +234,7 @@ class TskgMovieItem extends MovieItem {
     super.voiceActing,
     super.voiceActings,
   }) : super(
-    type: MovieItemType.tskg,
+    type: ServiceName.tskg,
     id: id,
     name: name,
     posterUrl: 'https://www.ts.kg/posters/$id.png',
@@ -270,7 +275,7 @@ class OckgMovieItem extends MovieItem {
     /// implement WithSixChannels
     bool hasSixAudioChannels = false,
   }) : super(
-    type: MovieItemType.ockg,
+    type: ServiceName.ockg,
     id: id,
     name: name,
     posterUrl: posterUrl,

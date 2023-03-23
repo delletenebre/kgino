@@ -71,7 +71,7 @@ class FlmxItem with _$FlmxItem {
           ];
           
           return MovieItem(
-            type: MovieItemType.flmx,
+            type: ServiceName.flmx,
             id: id.toString(),
             name: title,
             originalName: originalTitle,
@@ -110,7 +110,7 @@ class FlmxItem with _$FlmxItem {
     }
 
     return MovieItem(
-      type: MovieItemType.flmx,
+      type: ServiceName.flmx,
       id: id.toString(),
       name: title,
       originalName: originalTitle,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/krs_list_tile.dart';
@@ -26,12 +27,14 @@ class MoviesPage extends HookWidget {
               {
                 'name': 'Filmix',
                 'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
+                'route': '/flmx',
               },
 
               /// ссылка на oc.kg
               {
                 'name': 'OC.KG',
                 'imageUrl': 'https://oc.kg/templates/mobile/img/logooc_winter.png',
+                'route': '/ockg',
               },
 
             ];
@@ -43,7 +46,7 @@ class MoviesPage extends HookWidget {
                 
               },
               onTap: () {
-                
+                context.go(item['route']!);
               },
               title: item['name']!,
               subtitle: 'ajdnasn dans jdnasdnaskn an d',

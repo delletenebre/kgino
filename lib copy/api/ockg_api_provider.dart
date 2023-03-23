@@ -129,7 +129,7 @@ class OckgApiProvider {
 
       final List<MovieItem> a = movies.map<MovieItem>((movie) {
         return MovieItem(
-          type: MovieItemType.ockg,
+          type: ServiceName.ockg,
           id: '${movie.movieId}',
           name: movie.name,
           posterUrl: movie.posterUrl,
@@ -257,7 +257,7 @@ class OckgApiProvider {
           
           items.add(
             MovieItem(
-              type: MovieItemType.folder,
+              type: ServiceName.folder,
               id: id,
               name: name,
               posterUrl: posterUrl,

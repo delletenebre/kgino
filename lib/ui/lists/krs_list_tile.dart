@@ -41,24 +41,7 @@ class KrsListTile extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    bool _holded = false;
-
-    /// обработчик выбора элемента
-    void onTap() {
-
-      /// вызывам пользовательский обработчик выбора элемента
-      onTap.call();
-      
-    }
-
-    // TODO fix it or remove
-    // void _updateHoldedState(bool state) {
-    //   if (_holded != state) {
-    //     setState(() {
-    //       _holded = state;
-    //     });
-    //   }
-    // }
+    
 
     final _focusNode = focusNode ?? useFocusNode();
     useEffect(() {
@@ -92,43 +75,9 @@ class KrsListTile extends HookWidget {
     });
 
     final focusState = useState(false);
-  
-    // final child = AnimatedScale(
-    //   duration: KrsTheme.animationDuration,
-    //   scale: (_focusNode.hasFocus && !_holded) ? 1.15 : 1.0,
-    //   child: AnimatedContainer(
-    //     duration: KrsTheme.animationDuration,
-    //     width: widget.posterSize.width,
-    //     height: widget.posterSize.height,
-    //     decoration: BoxDecoration(
-    //       boxShadow: [
-    //         if (_focusNode.hasFocus) BoxShadow(
-    //           color: _glowColor!.withOpacity(0.62),
-    //           blurRadius: 20.0,
-    //           spreadRadius: 4.0
-    //         ),
-    //       ],
-    //       borderRadius: BorderRadius.circular(12.0),
-    //       border: _focusNode.hasFocus
-    //         ? Border.all(
-    //             color: theme.colorScheme.onPrimaryContainer,
-    //             width: 3.0,
-    //           )
-    //         : null
-    //     ),
-    //     child: Container(
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.circular(9.0),
-    //         color: theme.scaffoldBackgroundColor,
-    //       ),
-    //     ),
-    //   ),
-    // );
 
     return GestureDetector(
-      onTap: () {
-        onTap();
-      },
+      onTap: onTap,
       child: CallbackShortcuts(
         bindings: {
           const SingleActivator(

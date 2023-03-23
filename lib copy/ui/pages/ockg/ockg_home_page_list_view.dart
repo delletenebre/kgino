@@ -40,7 +40,7 @@ class OckgHomePageListView extends HookWidget {
       listenable: seenItemsController.listenable,
       selector: () {
         /// выбираем просмотренные сериалы из хранилища
-        return seenItemsController.find(MovieItemType.ockg, count: 50);
+        return seenItemsController.find(ServiceName.ockg, count: 50);
       },
       condition: (oldValue, newValue) {
         /// обновляем виджет, если списки разные
@@ -72,7 +72,7 @@ class OckgHomePageListView extends HookWidget {
                 title: item.name,
                 items: item.movies.map((movie) {
                   return MovieItem(
-                    type: MovieItemType.ockg,
+                    type: ServiceName.ockg,
                     id: '${movie.movieId}',
                     name: movie.name,
                     posterUrl: movie.posterUrl,
@@ -97,7 +97,7 @@ class OckgHomePageListView extends HookWidget {
             title: locale.genres,
             items: OckgCatalogController.genres.values.mapIndexed((index, name) {
               return MovieItem(
-                type: MovieItemType.folder,
+                type: ServiceName.folder,
                 id: OckgCatalogController.genres.keys.elementAt(index),
                 name: name,
                 posterUrl: '',
@@ -121,7 +121,7 @@ class OckgHomePageListView extends HookWidget {
               height: ockgListViewHeight,
               focusNode: focusNode,
               onItemFocused: (movie) {
-                if (movie.type == MovieItemType.ockg) {
+                if (movie.type == ServiceName.ockg) {
                   context.read<OckgMovieDetailsController>().getMovieById(
                     movie.id,
                   );
@@ -141,7 +141,7 @@ class OckgHomePageListView extends HookWidget {
                   /// при выборе элемента
                   onTap: () {
 
-                    if (movie.type == MovieItemType.folder) {
+                    if (movie.type == ServiceName.folder) {
                       if (category.title == locale.genres) {
                         /// переходим на страницу каталога фильмов
                         context.goNamed('ockgCatalogGenre',

@@ -43,7 +43,7 @@ class TskgHomePageListView extends HookWidget {
       listenable: seenItemsController.listenable,
       selector: () {
         /// выбираем просмотренные сериалы из хранилища
-        return seenItemsController.find(MovieItemType.tskg, count: 50);
+        return seenItemsController.find(ServiceName.tskg, count: 50);
       },
       condition: (oldValue, newValue) {
         /// обновляем виджет, если списки разные
@@ -56,7 +56,7 @@ class TskgHomePageListView extends HookWidget {
       listenable: seenItemsController.listenable,
       selector: () {
         /// выбираем избранные сериалы из хранилища
-        return seenItemsController.takeFavoritesOf(MovieItemType.tskg);
+        return seenItemsController.takeFavoritesOf(ServiceName.tskg);
       },
       condition: (oldValue, newValue) {
         /// обновляем виджет, если списки разные

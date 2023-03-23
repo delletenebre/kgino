@@ -70,9 +70,9 @@ class SearchPage extends StatelessWidget {
                 itemBuilder: (context, focusNode, index, show) {
                   return KrsListItemCard(
                     focusNode: focusNode,
-                    posterSize: (show.type == MovieItemType.ockg)
+                    posterSize: (show.type == ServiceName.ockg)
                       ? ockgPosterSize
-                      : (show.type == MovieItemType.flmx)
+                      : (show.type == ServiceName.flmx)
                       ? ockgPosterSize
                       : tskgPosterSize,
                     item: show,
@@ -82,15 +82,15 @@ class SearchPage extends StatelessWidget {
 
                       late final String routeName;
                       switch (show.type) {
-                        case MovieItemType.ockg:
+                        case ServiceName.ockg:
                           routeName = 'ockgMovieDetails';
                           break;
 
-                        case MovieItemType.flmx:
+                        case ServiceName.flmx:
                           routeName = 'flmxDetails';
                           break;
 
-                        case MovieItemType.tskg:
+                        case ServiceName.tskg:
                         default:
                           routeName = 'tskgShowDetails';
                           break;

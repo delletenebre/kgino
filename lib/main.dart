@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:kgino/controllers/tabs_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'controllers/tabs_cubit.dart';
 import 'resources/krs_storage.dart';
 
 Future<void> main() async {

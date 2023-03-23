@@ -1,19 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 
 import '../controllers/tabs_cubit.dart';
-import '../pages/cameras_page.dart';
-import '../pages/error_page.dart';
-import '../pages/home_page.dart';
-import '../pages/movies_page.dart';
-import '../pages/search_page.dart';
-import '../pages/shows_page.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
+import 'app_logo.dart';
 import 'navigation_bar/krs_tab_bar_search_button.dart';
 import 'navigation_bar/krs_tab_bar_button.dart';
 
@@ -27,32 +20,12 @@ class ScaffoldWithNavigationBar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    
     final locale = KrsLocale.of(context);
 
     final focused = useState(false);
     
     final tabsCubit = GetIt.instance<TabsCubit>();
-
-    // final destinations = [
-    //   NavigationTitle(
-    //     label: Text(locale.users),
-    //   ),
-
-    //   NavigationLink(
-    //     icon: const Icon(Icons.business),
-    //     selectedIcon: const Icon(Icons.business),
-    //     label: Text(locale.insuranceCompanies),
-    //     route: '/insuranceCompanies',
-    //   ),
-
-    //   NavigationLink(
-    //     icon: const Icon(Icons.people_outline),
-    //     selectedIcon: const Icon(Icons.people),
-    //     label: Text(locale.listOfUsers),
-    //     route: '/users',
-    //   ),
-    // ];
 
     return Scaffold(
       body: Column(
@@ -92,35 +65,7 @@ class ScaffoldWithNavigationBar extends HookWidget {
                             ),
                             width: tabsCubit.state == 0 ? 0 : 58.0,
                             
-                            child: RichText(
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                              softWrap: false,
-                              text: TextSpan(
-                                text: 'KG',
-                                style: TextStyle(
-                                  color: theme.colorScheme.outline,
-                                  fontWeight: FontWeight.bold,
-                                ),
-
-                                children: [
-                                  TextSpan(
-                                    text: 'ino',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-
-                                  TextSpan(
-                                    text: '    4.1.2',
-                                    style: TextStyle(
-                                      fontSize: 6.0,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            child: const AppLogo(),
 
                           ),
 
@@ -181,41 +126,23 @@ class ScaffoldWithNavigationBar extends HookWidget {
           ),
           
           Expanded(
-            child: Stack(
-              children: [
+            child: child
+            // Stack(
+            //   children: [
 
-                BlocProvider(
-                  create: (_) => tabsCubit,
-                  child: BlocBuilder<TabsCubit, int>(
-                    builder: (context, selectedIndex) {
-                      switch (selectedIndex) {
-                        case 0:
-                          return const SearchPage();
-                        case 1:
-                          return const MoviesPage();
-                        case 2:
-                          return const ShowsPage();
-                        case 3:
-                          return const CamerasPage();
-                          
-                        default:
-                          return const ErrorPage();
-                      }
-                    },
-                  ),
-                ),
+            //     child,
                       
 
-                // Visibility(
-                //   visible: _tabBarHasFocus,
-                //   child: Positioned.fill(
-                //     child: ColoredBox(
-                //       color: theme.scaffoldBackgroundColor.withOpacity(0.5),
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
+            //     // Visibility(
+            //     //   visible: _tabBarHasFocus,
+            //     //   child: Positioned.fill(
+            //     //     child: ColoredBox(
+            //     //       color: theme.scaffoldBackgroundColor.withOpacity(0.5),
+            //     //     ),
+            //     //   ),
+            //     // ),
+            //   ],
+            // ),
           ),
         ],
       ),
