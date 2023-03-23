@@ -59,7 +59,7 @@ class KrsItemDetails extends StatelessWidget {
                 children: [
 
                   /// год выпуска, жанры (оставляем не более двух)
-                  Text([ kginoItem.year, ... kginoItem.genres.take(2) ].join(', ')),
+                  Text([ kginoItem.year, ...kginoItem.genres.take(2) ].join(', ')),
 
                   const SizedBox(width: 12.0),
 
@@ -69,7 +69,7 @@ class KrsItemDetails extends StatelessWidget {
                   ),
 
                   /// количество эпизодов (файлов), если сериал
-                  if (kginoItem.seasons.first.episodes.length > 1) Text(
+                  if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.first.episodes.length > 1) Text(
                     locale.episodesCount(kginoItem.seasons.first.episodes.length)
                   ),
 

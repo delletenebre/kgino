@@ -84,4 +84,21 @@ class FlmxApiProvider {
     );
   }
 
+
+  /// список фильмов
+  Future<ApiResponse<List<KginoItem>>> getCatalog() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/catalog', queryParameters: {
+        'orderby': 'date',
+        'orderdir': 'desc',
+        ... _queryParams,
+      }),
+      decoder: (json) {
+        return json.map<KginoItem>((item) {
+          return FlmxItem.fromJson(item).toMovieItem();
+        }).toList();
+      },
+    );
+  }
+
 }
