@@ -86,11 +86,12 @@ class FlmxApiProvider {
 
 
   /// список фильмов
-  Future<ApiResponse<List<KginoItem>>> getCatalog() async {
+  Future<ApiResponse<List<KginoItem>>> getLatestMovies() async {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/catalog', queryParameters: {
         'orderby': 'date',
         'orderdir': 'desc',
+        'filter': 's0-s14',
         ... _queryParams,
       }),
       decoder: (json) {

@@ -69,7 +69,7 @@ class HorizontalListView<T> extends HookWidget {
         key: ValueKey(itemCount),
         create: (context) => FocusableListCubit(
           itemCount: itemCount,
-
+          offset: 24.0,
           /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
           /// фокус не переходил на следующий список, ставим handled
           keyEventResult: KeyEventResult.handled,
@@ -110,8 +110,8 @@ class HorizontalListView<T> extends HookWidget {
                 children: [
                   if (titleText.isNotEmpty) Padding(
                     padding: const EdgeInsetsDirectional.only(
-                      start: 32.0,
-                      end: 32.0,
+                      start: 24.0,
+                      end: 24.0,
                       bottom: 24.0,
                     ),
                     child: Text(titleText,
@@ -127,7 +127,7 @@ class HorizontalListView<T> extends HookWidget {
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         scrollDirection: Axis.horizontal,
-                        clipBehavior: Clip.antiAlias,
+                        clipBehavior: Clip.none,
                         controller: focusableListState.scrollController,
                         itemCount: itemCount,
 

@@ -7,7 +7,7 @@ import '../../models/kgino_item.dart';
 import '../../ui/app_header.dart';
 import '../../ui/krs_item_details.dart';
 import '../../ui/lists/horizontal_list_view.dart';
-import '../../ui/lists/movie_list_tile.dart';
+import '../../ui/lists/kgino_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
 class FlmxHomePage extends HookWidget {
@@ -21,7 +21,7 @@ class FlmxHomePage extends HookWidget {
     final api = GetIt.instance<FlmxApiProvider>();
 
     /// список последний добавлений
-    final asyncLatest = useMemoized(() => api.getCatalog());
+    final asyncLatest = useMemoized(() => api.getLatestMovies());
 
     return Scaffold(
       body: Column(
@@ -60,7 +60,7 @@ class FlmxHomePage extends HookWidget {
                     return [];
                   }),
                   itemBuilder: (context, focusNode, index, item) {
-                    return MovieListTile(
+                    return KginoListTile(
                       focusNode: focusNode,
                       onFocused: (focusNode) {
                         
@@ -68,6 +68,7 @@ class FlmxHomePage extends HookWidget {
                       onTap: () {
                         
                       },
+                      item: item,
                     );
                   },
                   

@@ -66,8 +66,16 @@ class KrsListTile extends HookWidget {
           NetworkImage(imageUrl)
         );
 
-        if (palette.dominantColor != null) {
-          glowColor.value = palette.dominantColor!.color;
+        // if (palette.colors.isNotEmpty) {
+        //   glowColor.value = palette.colors.first;
+        // }
+
+        // if (palette.lightVibrantColor != null) {
+        //   glowColor.value = palette.lightVibrantColor!.color;
+        // }
+
+        if (palette.vibrantColor != null) {
+          glowColor.value = palette.vibrantColor!.color;
         }
 
       }

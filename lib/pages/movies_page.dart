@@ -49,7 +49,6 @@ class MoviesPage extends HookWidget {
                 context.go(item['route']!);
               },
               title: item['name']!,
-              subtitle: 'ajdnasn dans jdnasdnaskn an d',
               imageUrl: item['imageUrl']!,
             );
           },
