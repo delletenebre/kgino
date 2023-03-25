@@ -260,75 +260,63 @@ class OckgApiProvider {
 
   
   /// информация о фильме
-  Future<KginoItem?> getMovie(String movieId) async {
+  Future<ApiResponse<KginoItem>> getMovieDetails(String movieId) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getMovie',
       'movie_id[0]': movieId,
     });
 
-    try {
-    
-      final response = await _dio.post('', data: formData);
+    return ApiRequest<KginoItem>().call(
+      request: _dio.post('', data: formData),
+      decoder: (response) async {
+        final json = jsonDecode(response);
+        final movieJson = json['json'][0]['response']['movie'];
 
-      final jsonResponse = json.decode(response.data);
-      final movieJson = jsonResponse['json'][0]['response']['movie'];
+        final movie = OckgMovie.fromJson(movieJson);
 
-      final movie = OckgMovie.fromJson(movieJson);
+        final seasons = [
+          SeasonItem(
+            name: '',
+            episodes: movie.files.mapIndexed((index, file) {
+              return EpisodeItem(
+                id: '${file.fileId}',
+                name: file.name,
+                videoFileUrl: file.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
+                seasonNumber: 1,
+                episodeNumber: index + 1,
+                duration: file.metainfo.playtimeSeconds,
+                updatedAt: DateTime.now(),
+              );
+            }).toList(),
+          ),
+        ];
 
-      final seasons = [
-        SeasonItem(
-          name: '',
-          episodes: movie.files.mapIndexed((index, file) {
-            return EpisodeItem(
-              id: '${file.fileId}',
-              name: file.name,
-              videoFileUrl: file.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
-              seasonNumber: 1,
-              episodeNumber: index + 1,
-              duration: file.metainfo.playtimeSeconds,
-              updatedAt: DateTime.now(),
-            );
-          }).toList(),
-        ),
-      ];
+        final hasSixAudioChannels = movie.files.where((file) {
+          final audios = file.metainfo.audio;
+          return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
+        }).isNotEmpty;
 
-      final hasSixAudioChannels = movie.files.where((file) {
-        final audios = file.metainfo.audio;
-        return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
-      }).isNotEmpty;
+        return KginoItem(
+          provider: KginoProvider.ockg.name,
+          id: '${movie.movieId}',
+          name: movie.name,
+          posterUrl: movie.posterUrl,
+          originalName: movie.internationalName,
+          description: movie.description,
+          year: movie.year,
+          genres: movie.genres,
+          countries: movie.countries,
+          
+          imdbRating: movie.ratingImdbValue,
+          kinopoiskRating: movie.ratingKinopoiskValue,
 
-      return KginoItem(
-        provider: KginoProvider.ockg.name,
-        id: '${movie.movieId}',
-        name: movie.name,
-        posterUrl: movie.posterUrl,
-        originalName: movie.internationalName,
-        description: movie.description,
-        year: movie.year,
-        genres: movie.genres,
-        countries: movie.countries,
-        
-        imdbRating: movie.ratingImdbValue,
-        kinopoiskRating: movie.ratingKinopoiskValue,
+          //hasSixAudioChannels: hasSixAudioChannels,
 
-        //hasSixAudioChannels: hasSixAudioChannels,
-
-        seasons: seasons,
-      );
-      
-    } on SocketException catch (_) {
-
-      debugPrint('no internet connection');
-      
-      return null;
-    
-    } catch (exception, stacktrace) {
-      
-      debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-      return null;
-    }
+          seasons: seasons,
+        );
+      },
+    );
 
   }
 

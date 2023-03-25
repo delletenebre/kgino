@@ -46,7 +46,6 @@ mixin _$OckgMovie {
   @DoubleConverter()
   double get ratingKinopoiskValue => throw _privateConstructorUsedError;
   List<OckgFile> get files => throw _privateConstructorUsedError;
-  OckgTrailer? get trailer => throw _privateConstructorUsedError;
   List<OckgMovie> get otherMovies => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -80,10 +79,7 @@ abstract class $OckgMovieCopyWith<$Res> {
       @DoubleConverter() double ratingImdbValue,
       @DoubleConverter() double ratingKinopoiskValue,
       List<OckgFile> files,
-      OckgTrailer? trailer,
       List<OckgMovie> otherMovies});
-
-  $OckgTrailerCopyWith<$Res>? get trailer;
 }
 
 /// @nodoc
@@ -118,7 +114,6 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
     Object? ratingImdbValue = null,
     Object? ratingKinopoiskValue = null,
     Object? files = null,
-    Object? trailer = freezed,
     Object? otherMovies = null,
   }) {
     return _then(_value.copyWith(
@@ -198,27 +193,11 @@ class _$OckgMovieCopyWithImpl<$Res, $Val extends OckgMovie>
           ? _value.files
           : files // ignore: cast_nullable_to_non_nullable
               as List<OckgFile>,
-      trailer: freezed == trailer
-          ? _value.trailer
-          : trailer // ignore: cast_nullable_to_non_nullable
-              as OckgTrailer?,
       otherMovies: null == otherMovies
           ? _value.otherMovies
           : otherMovies // ignore: cast_nullable_to_non_nullable
               as List<OckgMovie>,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $OckgTrailerCopyWith<$Res>? get trailer {
-    if (_value.trailer == null) {
-      return null;
-    }
-
-    return $OckgTrailerCopyWith<$Res>(_value.trailer!, (value) {
-      return _then(_value.copyWith(trailer: value) as $Val);
-    });
   }
 }
 
@@ -249,11 +228,7 @@ abstract class _$$_OckgMovieCopyWith<$Res> implements $OckgMovieCopyWith<$Res> {
       @DoubleConverter() double ratingImdbValue,
       @DoubleConverter() double ratingKinopoiskValue,
       List<OckgFile> files,
-      OckgTrailer? trailer,
       List<OckgMovie> otherMovies});
-
-  @override
-  $OckgTrailerCopyWith<$Res>? get trailer;
 }
 
 /// @nodoc
@@ -286,7 +261,6 @@ class __$$_OckgMovieCopyWithImpl<$Res>
     Object? ratingImdbValue = null,
     Object? ratingKinopoiskValue = null,
     Object? files = null,
-    Object? trailer = freezed,
     Object? otherMovies = null,
   }) {
     return _then(_$_OckgMovie(
@@ -366,10 +340,6 @@ class __$$_OckgMovieCopyWithImpl<$Res>
           ? _value._files
           : files // ignore: cast_nullable_to_non_nullable
               as List<OckgFile>,
-      trailer: freezed == trailer
-          ? _value.trailer
-          : trailer // ignore: cast_nullable_to_non_nullable
-              as OckgTrailer?,
       otherMovies: null == otherMovies
           ? _value._otherMovies
           : otherMovies // ignore: cast_nullable_to_non_nullable
@@ -402,7 +372,6 @@ class _$_OckgMovie extends _OckgMovie {
       @DoubleConverter() this.ratingImdbValue = 0.0,
       @DoubleConverter() this.ratingKinopoiskValue = 0.0,
       final List<OckgFile> files = const [],
-      this.trailer,
       final List<OckgMovie> otherMovies = const []})
       : _covers = covers,
         _translation = translation,
@@ -514,8 +483,6 @@ class _$_OckgMovie extends _OckgMovie {
     return EqualUnmodifiableListView(_files);
   }
 
-  @override
-  final OckgTrailer? trailer;
   final List<OckgMovie> _otherMovies;
   @override
   @JsonKey()
@@ -527,7 +494,7 @@ class _$_OckgMovie extends _OckgMovie {
 
   @override
   String toString() {
-    return 'OckgMovie(movieId: $movieId, name: $name, subtitle: $subtitle, internationalName: $internationalName, year: $year, cover: $cover, mpaa: $mpaa, covers: $covers, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue, files: $files, trailer: $trailer, otherMovies: $otherMovies)';
+    return 'OckgMovie(movieId: $movieId, name: $name, subtitle: $subtitle, internationalName: $internationalName, year: $year, cover: $cover, mpaa: $mpaa, covers: $covers, description: $description, translation: $translation, quality: $quality, createdAt: $createdAt, updatedAt: $updatedAt, genres: $genres, countries: $countries, directors: $directors, ratingImdbValue: $ratingImdbValue, ratingKinopoiskValue: $ratingKinopoiskValue, files: $files, otherMovies: $otherMovies)';
   }
 
   @override
@@ -564,7 +531,6 @@ class _$_OckgMovie extends _OckgMovie {
             (identical(other.ratingKinopoiskValue, ratingKinopoiskValue) ||
                 other.ratingKinopoiskValue == ratingKinopoiskValue) &&
             const DeepCollectionEquality().equals(other._files, _files) &&
-            (identical(other.trailer, trailer) || other.trailer == trailer) &&
             const DeepCollectionEquality()
                 .equals(other._otherMovies, _otherMovies));
   }
@@ -592,7 +558,6 @@ class _$_OckgMovie extends _OckgMovie {
         ratingImdbValue,
         ratingKinopoiskValue,
         const DeepCollectionEquality().hash(_files),
-        trailer,
         const DeepCollectionEquality().hash(_otherMovies)
       ]);
 
@@ -631,7 +596,6 @@ abstract class _OckgMovie extends OckgMovie {
       @DoubleConverter() final double ratingImdbValue,
       @DoubleConverter() final double ratingKinopoiskValue,
       final List<OckgFile> files,
-      final OckgTrailer? trailer,
       final List<OckgMovie> otherMovies}) = _$_OckgMovie;
   const _OckgMovie._() : super._();
 
@@ -682,8 +646,6 @@ abstract class _OckgMovie extends OckgMovie {
   double get ratingKinopoiskValue;
   @override
   List<OckgFile> get files;
-  @override
-  OckgTrailer? get trailer;
   @override
   List<OckgMovie> get otherMovies;
   @override

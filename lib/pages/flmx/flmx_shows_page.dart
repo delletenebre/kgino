@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/flmx_api_provider.dart';
+import '../../controllers/kgino_item_details_cubit.dart';
+import '../../models/api_response.dart';
 import '../../models/category_list_item.dart';
 import '../../models/kgino_item.dart';
+import '../../resources/krs_locale.dart';
 import '../../ui/app_header.dart';
 import '../../ui/krs_item_details.dart';
 import '../../ui/lists/horizontal_list_view.dart';
@@ -18,7 +22,12 @@ class FlmxShowsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = KrsLocale.of(context);
 
+    /// контроллер расширенной информации о фильме
+    final detailsCubit = KginoItemDetailsCubit();
+
+    /// провайдер запросов к API
     final api = GetIt.instance<FlmxApiProvider>();
 
     /// список последний добавлений
@@ -30,12 +39,12 @@ class FlmxShowsPage extends HookWidget {
     final categories = [
 
       CategoryListItem(
-        title: 'Новые',
+        title: locale.latest,
         apiResponse: asyncLatest,
       ),
 
       CategoryListItem(
-        title: 'Популярное',
+        title: locale.popular,
         apiResponse: asyncPopular,
       ),
 
@@ -49,12 +58,12 @@ class FlmxShowsPage extends HookWidget {
             child: Text('Filmix / Сериалы'),
           ),
 
-          KrsItemDetails(
-            kginoItem: KginoItem(
-              provider: KginoProvider.flmx.name,
-              id: '',
-              name: 'ansd a ndnasdnas d',
-              posterUrl: '',
+          BlocProvider<KginoItemDetailsCubit>(
+            create: (context) => detailsCubit,
+            child: BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
+              builder:(context, state) {
+                return KrsItemDetails(state);
+              },
             ),
           ),
 
@@ -72,7 +81,7 @@ class FlmxShowsPage extends HookWidget {
                     return KginoListTile(
                       focusNode: focusNode,
                       onFocused: (focusNode) {
-                        
+                        detailsCubit.fetch(api.getMovieDetails(item.id));
                       },
                       onTap: () {
                         

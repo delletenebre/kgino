@@ -152,28 +152,16 @@ class TskgApiProvider {
 
 
   /// получение информации о сериале
-  Future<KginoItem> getShow(String showId) async {
-    try {
-      /// запрашиваем данные
-      final response = await _dio.get(getShowUrlById(showId));
-
-      if (response.statusCode == 200) {
-        /// ^ если запрос выполнен успешно
-        
-        final html = response.data.toString();  
+  Future<ApiResponse<KginoItem>> getShowDetails(String showId, {
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<KginoItem>().call(
+      request: _dio.get(getShowUrlById(showId), cancelToken: cancelToken),
+      decoder: (response) async {
+        final html = response.toString();  
 
         return await compute(showIsolate, html);
-      }
-
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
-      
-      debugPrint('exception: $exception');
-    }
-
-    return KginoItem(
-      id: '',
-      name: '', posterUrl: '', provider: '',
+      },
     );
   }
 

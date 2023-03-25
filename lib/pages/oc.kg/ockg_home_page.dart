@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/ockg_api_provider.dart';
+import '../../controllers/kgino_item_details_cubit.dart';
+import '../../models/api_response.dart';
 import '../../models/category_list_item.dart';
 import '../../models/kgino_item.dart';
+import '../../resources/krs_locale.dart';
+import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/krs_item_details.dart';
 import '../../ui/lists/horizontal_list_view.dart';
@@ -18,7 +23,13 @@ class OckgHomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = KrsLocale.of(context);
+
+    /// провайдер запросов к API
     final api = GetIt.instance<OckgApiProvider>();
+
+    /// контроллер расширенной информации о фильме
+    final detailsCubit = KginoItemDetailsCubit();
     
     /// последние добавления
     final asyncLatest = useMemoized(() => api.getLatestMovies());
@@ -29,12 +40,12 @@ class OckgHomePage extends HookWidget {
     final categories = [
 
       CategoryListItem(
-        title: 'Новые',
+        title: locale.latest,
         apiResponse: asyncLatest,
       ),
 
       CategoryListItem(
-        title: 'Популярное',
+        title: locale.popular,
         apiResponse: asyncPopular,
       ),
 
@@ -48,12 +59,13 @@ class OckgHomePage extends HookWidget {
             child: Text('Online Cinema'),
           ),
 
-          KrsItemDetails(
-            kginoItem: KginoItem(
-              provider: KginoProvider.flmx.name,
-              id: '',
-              name: 'ansd a ndnasdnas d',
-              posterUrl: '',
+          BlocProvider<KginoItemDetailsCubit>(
+            create: (context) => detailsCubit,
+            child: BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
+              builder:(context, state) {
+                print('builded');
+                return KrsItemDetails(state);
+              },
             ),
           ),
 
@@ -71,7 +83,7 @@ class OckgHomePage extends HookWidget {
                     return KginoListTile(
                       focusNode: focusNode,
                       onFocused: (focusNode) {
-                        
+                        detailsCubit.fetch(api.getMovieDetails(item.id));
                       },
                       onTap: () {
                         

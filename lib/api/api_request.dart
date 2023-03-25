@@ -9,7 +9,7 @@ class ApiRequest<T> {
   /// обновить пользователя
   Future<ApiResponse<T>> call({
     required Future<Response<dynamic>> request,
-    required Future<T> Function(dynamic json) decoder
+    required Future<T> Function(dynamic json) decoder,
   }) async {
     try {
     

@@ -141,6 +141,17 @@
   },
 
 
+  "latest": "New",
+  "@latest": {
+    "type": "text"
+  },
+
+  "popular": "Popular",
+  "@popular": {
+    "type": "text"
+  },
+
+
   "cancel": "Cancel",
   "@cancel": {
     "type": "text"

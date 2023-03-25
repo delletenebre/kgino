@@ -157,6 +157,17 @@
   },
 
 
+  "latest": "Новое",
+  "@latest": {
+    "type": "text"
+  },
+
+  "popular": "Популярное",
+  "@popular": {
+    "type": "text"
+  },
+
+
   "cancel": "Отмена",
   "@cancel": {
     "type": "text"

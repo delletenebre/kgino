@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kgino/extensions/duration.dart';
 
+import '../models/api_response.dart';
 import '../models/kgino_item.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 
 class KrsItemDetails extends StatelessWidget {
-  final KginoItem kginoItem;
+  final ApiResponse<KginoItem> state;
   final bool expanded;
 
-  const KrsItemDetails({
+  const KrsItemDetails(this.state, {
     super.key,
-    required this.kginoItem,
     this.expanded = false,
   });
 
@@ -19,6 +19,25 @@ class KrsItemDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
+
+
+    if (state.isLoading) {
+      return const SizedBox(
+        height: KrsTheme.movieDetailsHeight,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (state.isEmpty || state.isError) {
+      return const SizedBox(
+        height: KrsTheme.movieDetailsHeight,
+      );
+    }
+    
+    /// детали фильма или сериала
+    final kginoItem = state.asData.data;
 
     return Container(
       padding: const EdgeInsets.symmetric(

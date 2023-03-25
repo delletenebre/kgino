@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'api_response.freezed.dart';
@@ -7,8 +8,6 @@ class ApiResponse<T> with _$ApiResponse<T> {
   ApiResponse._();
 
   factory ApiResponse.data(T data) = ApiResponseData<T>;
-
-  // factory ApiResponse.verified(T data) = ApiResponseVerified<T>;
 
   factory ApiResponse.loading() = ApiResponseLoading;
 

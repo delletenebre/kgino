@@ -73,7 +73,7 @@ class FlmxApiProvider {
   }
 
   /// детали фильма или сериала  
-  Future<ApiResponse<KginoItem>> getDetails(String id) async {
+  Future<ApiResponse<KginoItem>> getMovieDetails(String id) async {
     return ApiRequest<KginoItem>().call(
       request: _dio.get('/post/$id', queryParameters: {
         ..._queryParams,

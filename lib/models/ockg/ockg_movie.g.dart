@@ -55,9 +55,6 @@ _$_OckgMovie _$$_OckgMovieFromJson(Map<String, dynamic> json) => _$_OckgMovie(
               ?.map((e) => OckgFile.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      trailer: json['trailer'] == null
-          ? null
-          : OckgTrailer.fromJson(json['trailer'] as Map<String, dynamic>),
       otherMovies: (json['other_movies'] as List<dynamic>?)
               ?.map((e) => OckgMovie.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -87,6 +84,5 @@ Map<String, dynamic> _$$_OckgMovieToJson(_$_OckgMovie instance) =>
       'rating_kinopoisk_value':
           const DoubleConverter().toJson(instance.ratingKinopoiskValue),
       'files': instance.files,
-      'trailer': instance.trailer,
       'other_movies': instance.otherMovies,
     };

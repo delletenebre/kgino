@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../json_converters.dart';
 import 'ockg_file.dart';
 import 'ockg_movie_cover.dart';
-import 'ockg_trailer.dart';
 
 part 'ockg_movie.freezed.dart';
 part 'ockg_movie.g.dart';
@@ -43,8 +42,6 @@ class OckgMovie with _$OckgMovie {
     @DoubleConverter() @Default(0.0) double ratingKinopoiskValue,
 
     @Default([]) List<OckgFile> files,
-
-    OckgTrailer? trailer,
 
     @Default([]) List<OckgMovie> otherMovies,
 
