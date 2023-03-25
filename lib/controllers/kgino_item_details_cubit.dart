@@ -10,14 +10,16 @@ class KginoItemDetailsCubit extends Cubit<ApiResponse<KginoItem>> {
   /// идентификатор контроля выполнения запросов
   CancelToken? _cancelToken;
   CancelToken? get cancelToken => _cancelToken;
-  set cancelToken(CancelToken? cancelToken) {
+
+  KginoItemDetailsCubit() : super(ApiResponse.empty());
+
+  /// обновляем идентификатор контроля выполнения запросов
+  void updateCancelToken() {
     /// завершаем выполнение предыдущего запроса
     _cancelToken?.cancel();
 
-    _cancelToken = cancelToken;
+    _cancelToken = CancelToken();
   }
-
-  KginoItemDetailsCubit() : super(ApiResponse.empty());
 
   Future<void> fetch(Future<ApiResponse<KginoItem>> request) async {
     if (!isClosed) {

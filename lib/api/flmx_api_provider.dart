@@ -73,11 +73,16 @@ class FlmxApiProvider {
   }
 
   /// детали фильма или сериала  
-  Future<ApiResponse<KginoItem>> getMovieDetails(String id) async {
+  Future<ApiResponse<KginoItem>> getMovieDetails(String id, {
+    CancelToken? cancelToken,
+  }) async {
     return ApiRequest<KginoItem>().call(
-      request: _dio.get('/post/$id', queryParameters: {
-        ..._queryParams,
-      }),
+      request: _dio.get('/post/$id',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
       decoder: (json) async {
         return FlmxItem.fromJson(json).toMovieItem();
       },

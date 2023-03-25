@@ -85,7 +85,7 @@ class TskgHomePage extends HookWidget {
                             onFocused: (focusNode) {
                               final detailsCubit = context.read<KginoItemDetailsCubit>();
                               /// обновляем идентификатор контроля выполнения запросов
-                              detailsCubit.cancelToken = CancelToken();
+                              detailsCubit.updateCancelToken();
                               detailsCubit.fetch(
                                 api.getShowDetails(item.id,
                                   cancelToken: detailsCubit.cancelToken,

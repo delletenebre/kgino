@@ -51,50 +51,62 @@ class FlmxShowsPage extends HookWidget {
     ];
 
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AppHeader(
-            child: Text('Filmix / Сериалы'),
-          ),
+      body: BlocProvider<KginoItemDetailsCubit>(
+        create: (context) => detailsCubit,
+        child: Builder(
+          builder: (context) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const AppHeader(
+                  child: Text('Filmix / Сериалы'),
+                ),
 
-          BlocProvider<KginoItemDetailsCubit>(
-            create: (context) => detailsCubit,
-            child: BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
-              builder:(context, state) {
-                return KrsItemDetails(state);
-              },
-            ),
-          ),
-
-          Expanded(
-            child: VerticalListView(
-              itemCount: categories.length,
-              itemBuilder: (context, focusNode, index) {
-                final category = categories[index];
-
-                return HorizontalListView<KginoItem>(
-                  focusNode: focusNode,
-                  titleText: category.title,
-                  itemsFuture: category.itemsFuture,
-                  itemBuilder: (context, focusNode, index, item) {
-                    return KginoListTile(
-                      focusNode: focusNode,
-                      onFocused: (focusNode) {
-                        detailsCubit.fetch(api.getMovieDetails(item.id));
-                      },
-                      onTap: () {
-                        
-                      },
-                      item: item,
-                    );
+                BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
+                  builder: (context, state) {
+                    return KrsItemDetails(state);
                   },
-                  
-                );
-              },
-            ),
-          ),
-        ],
+                ),
+
+                Expanded(
+                  child: VerticalListView(
+                    itemCount: categories.length,
+                    itemBuilder: (context, focusNode, index) {
+                      final category = categories[index];
+
+                      return HorizontalListView<KginoItem>(
+                        focusNode: focusNode,
+                        titleText: category.title,
+                        itemsFuture: category.itemsFuture,
+                        itemBuilder: (context, focusNode, index, item) {
+                          return KginoListTile(
+                            focusNode: focusNode,
+                            onFocused: (focusNode) {
+                              final detailsCubit = context.read<KginoItemDetailsCubit>();
+                              /// обновляем идентификатор контроля выполнения запросов
+                              detailsCubit.updateCancelToken();
+
+                              detailsCubit.fetch(
+                                api.getMovieDetails(item.id,
+                                  cancelToken: detailsCubit.cancelToken,
+                                ),
+                              );
+                            },
+                            onTap: () {
+                              
+                            },
+                            item: item,
+                          );
+                        },
+                        
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

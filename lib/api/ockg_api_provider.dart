@@ -260,7 +260,9 @@ class OckgApiProvider {
 
   
   /// информация о фильме
-  Future<ApiResponse<KginoItem>> getMovieDetails(String movieId) async {
+  Future<ApiResponse<KginoItem>> getMovieDetails(String movieId, {
+    CancelToken? cancelToken,
+  }) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getMovie',
@@ -268,7 +270,7 @@ class OckgApiProvider {
     });
 
     return ApiRequest<KginoItem>().call(
-      request: _dio.post('', data: formData),
+      request: _dio.post('', data: formData, cancelToken: cancelToken),
       decoder: (response) async {
         final json = jsonDecode(response);
         final movieJson = json['json'][0]['response']['movie'];
