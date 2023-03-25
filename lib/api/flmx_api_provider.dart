@@ -64,7 +64,7 @@ class FlmxApiProvider {
         ..._queryParams,
         'story': searchQuery
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<KginoItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();
@@ -78,7 +78,7 @@ class FlmxApiProvider {
       request: _dio.get('/post/$id', queryParameters: {
         ..._queryParams,
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return FlmxItem.fromJson(json).toMovieItem();
       },
     );
@@ -94,7 +94,7 @@ class FlmxApiProvider {
         'orderdir': 'desc',
         'filter': 's0-s14',
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<KginoItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();
@@ -109,7 +109,7 @@ class FlmxApiProvider {
         ..._queryParams,
         'filter': 's0-s14',
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<KginoItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();
@@ -127,7 +127,7 @@ class FlmxApiProvider {
         'orderdir': 'desc',
         'filter': 's7-s93',
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<KginoItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();
@@ -142,7 +142,7 @@ class FlmxApiProvider {
         ..._queryParams,
         'filter': 's7-s93',
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<KginoItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();

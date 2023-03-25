@@ -9,13 +9,13 @@ class ApiRequest<T> {
   /// обновить пользователя
   Future<ApiResponse<T>> call({
     required Future<Response<dynamic>> request,
-    required T Function(dynamic json) decoder
+    required Future<T> Function(dynamic json) decoder
   }) async {
     try {
     
       final response = await request;
 
-      final data = decoder(response.data);
+      final data = await decoder(response.data);
       if (response.data is List && response.data.isEmpty) {
         return ApiResponse.empty();
       }

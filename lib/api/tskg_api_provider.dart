@@ -5,9 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 
+import '../models/api_response.dart';
 import '../models/kgino_item.dart';
 import '../models/tskg/tskg_episode_details.dart';
 import '../models/tskg/tskg_show.dart';
+import 'api_request.dart';
 import 'logs_interceptor.dart';
 import 'tskg_api_isolates.dart';
 
@@ -76,53 +78,77 @@ class TskgApiProvider {
   }
 
 
-  /// получение списка популярных
-  Future<List<KginoItem>> getPopular() async {
-    try {
-
-      /// запрашиваем данные
-      final response = await _dio.get('/');
-
-      if (response.statusCode == 200) {
-        /// ^ если запрос выполнен успешно
-        
-        final html = response.data.toString();  
-
-        return await compute(popularSectionIsolate, html);
-
-      }
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
-      
-      debugPrint('exception: $exception');
-    }
-
-    return [];
-  }
-
-  /// получение списка новых
-  Future<List<KginoItem>> getNew() async {
-    try {
-
-      /// запрашиваем данные
-      final response = await _dio.get('/');
-
-      if (response.statusCode == 200) {
-        /// ^ если запрос выполнен успешно
-        
-        final html = response.data.toString();  
+  /// список новых
+  Future<ApiResponse<List<KginoItem>>> getLatestShows() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/'),
+      decoder: (response) async {
+        final html = response.toString();  
 
         return await compute(newSectionIsolate, html);
-
-      }
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
-      
-      debugPrint('exception: $exception');
-    }
-
-    return [];
+      },
+    );
+    
   }
+
+  /// список популярных
+  Future<ApiResponse<List<KginoItem>>> getPopularShows() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/'),
+      decoder: (response) async {
+        final html = response.toString();  
+
+        return await compute(popularSectionIsolate, html);
+      },
+    );
+    
+  }
+
+  // /// получение списка популярных
+  // Future<List<KginoItem>> getPopular() async {
+  //   try {
+
+  //     /// запрашиваем данные
+  //     final response = await _dio.get('/');
+
+  //     if (response.statusCode == 200) {
+  //       /// ^ если запрос выполнен успешно
+        
+        
+
+  //     }
+  //   } catch (exception) {
+  //     /// ^ если прозошла сетевая ошибка
+      
+  //     debugPrint('exception: $exception');
+  //   }
+
+  //   return [];
+  // }
+
+  // /// получение списка новых
+  // Future<List<KginoItem>> getNew() async {
+  //   try {
+
+  //     /// запрашиваем данные
+  //     final response = await _dio.get('/');
+
+  //     if (response.statusCode == 200) {
+  //       /// ^ если запрос выполнен успешно
+        
+  //       final html = response.data.toString();  
+
+  //       return await compute(newSectionIsolate, html);
+
+  //     }
+  //   } catch (exception) {
+  //     /// ^ если прозошла сетевая ошибка
+      
+  //     debugPrint('exception: $exception');
+  //   }
+
+  //   return [];
+  // }
 
 
   /// получение информации о сериале

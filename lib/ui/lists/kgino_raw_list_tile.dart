@@ -56,8 +56,8 @@ class KginoRawListTile extends HookWidget {
     // final dominantColor = useState(theme.colorScheme.surface);
 
     useMemoized(() async {
-      if (!imageUrl.endsWith('.svg')) {
-        /// ^ если изображение не векторное
+      if (imageUrl.isNotEmpty && !imageUrl.endsWith('.svg')) {
+        /// ^ если изображение есть и оно не векторное
 
         /// получаем цветовую палитру фильма
         final palette = await PaletteGenerator.fromImageProvider(

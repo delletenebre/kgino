@@ -129,7 +129,7 @@ Future<List<KginoItem>> popularSectionIsolate(String html) async {
   
   /// получаем элементы списка популярных
   final elements = document.getElementById('index-top-tab')
-      ?.getElementsByClassName('show') ?? [];
+      ?.getElementsByClassName('app-shows-item-full') ?? [];
 
   for (final element in elements) {
     // <div class="show">
@@ -145,14 +145,14 @@ Future<List<KginoItem>> popularSectionIsolate(String html) async {
     final id = TskgShow.getShowIdFromUrl(src);
 
     /// парсим название
-    final title = link.getElementsByClassName('show-title').first.text;
+    final title = element.getElementsByClassName('app-shows-card-title').first.text;
 
     items.add(
       KginoItem(
         provider: KginoProvider.tskg.name,
         id: id,
         name: title,
-        posterUrl: '',
+        posterUrl: 'https://www.ts.kg/posters/$id.png',
       )
     );
 
@@ -191,14 +191,14 @@ List<KginoItem> newSectionIsolate(String html) {
     final id = TskgShow.getShowIdFromUrl(src);
 
     /// парсим название
-    final title = link.getElementsByClassName('app-shows-card-title').first.text;
+    final title = element.getElementsByClassName('app-shows-card-title').first.text;
 
     items.add(
       KginoItem(
         provider: KginoProvider.tskg.name,
         id: id,
         name: title,
-        posterUrl: '',
+        posterUrl: 'https://www.ts.kg/posters/$id.png',
       )
     );
 

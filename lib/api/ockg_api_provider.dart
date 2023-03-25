@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-// import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
-import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
 import '../models/api_response.dart';
 import '../models/episode_item.dart';
@@ -32,58 +30,67 @@ class OckgApiProvider {
   }
 
 
-  /// список бестселлеров по категориям
-  Future<ApiResponse<List<OckgBestsellersCategory>>> getBestsellers() async {
+  /// список новых
+  Future<ApiResponse<List<KginoItem>>> getLatestMovies() async {
     final formData = FormData.fromMap({
-      'action[0]': 'Video.getBestsellers',
+      'action[0]': 'Video.getCatalog',
+      'offset[0]': 0,
+      'size[0]': 50,
+      'order[0]': 0,
     });
 
-    return ApiRequest<List<OckgBestsellersCategory>>().call(
+    return ApiRequest<List<KginoItem>>().call(
       request: _dio.post('', data: formData),
-      decoder: (json) {
-        final bestsellers = json['json'][0]['response']['bestsellers'];
+      decoder: (response) async {
+        final json = jsonDecode(response);
+        final movies = json['json'][0]['response']['movies'];
 
-        return bestsellers.map<OckgBestsellersCategory>((item) {
-          return OckgBestsellersCategory.fromJson(item);
+        return movies.map<KginoItem>((item) {
+          final movie = OckgMovie.fromJson(item);
+          
+          return KginoItem(
+            provider: KginoProvider.ockg.name,
+            id: '${movie.movieId}',
+            name: movie.name,
+            posterUrl: movie.posterUrl,
+          );
+          
         }).toList();
       },
     );
     
   }
 
-  
-  // /// список популярных фильмов
-  // Future<List<OckgMovie>> getPopMovies() async {
+  /// список популярных
+  Future<ApiResponse<List<KginoItem>>> getPopularMovies() async {
+    final formData = FormData.fromMap({
+      'action[0]': 'Video.getCatalog',
+      'offset[0]': 0,
+      'size[0]': 50,
+      'order[0]': 8,
+    });
 
-  //   final formData = FormData.fromMap({
-  //     'action[0]': 'Video.getPopMovies',
-  //   });
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.post('', data: formData),
+      decoder: (response) async {
+        final json = jsonDecode(response);
+        final movies = json['json'][0]['response']['movies'];
 
-  //   try {
+        return movies.map<KginoItem>((item) {
+          final movie = OckgMovie.fromJson(item);
+          
+          return KginoItem(
+            provider: KginoProvider.ockg.name,
+            id: '${movie.movieId}',
+            name: movie.name,
+            posterUrl: movie.posterUrl,
+          );
+          
+        }).toList();
+      },
+    );
     
-  //     final response = await _dio.post('', data: formData);
-
-  //     final jsonResponse = json.decode(response.data);
-  //     final movies = jsonResponse['json'][0]['response']['movies'];
-
-  //     return movies.map<OckgMovie>((item) {
-  //       return OckgMovie.fromJson(item);
-  //     }).toList();
-      
-  //   } on SocketException catch (_) {
-
-  //     debugPrint('no internet connection');
-      
-  //     return [];
-    
-  //   } catch (exception, stacktrace) {
-      
-  //     debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-  //     return [];
-  //   }
-    
-  // }
+  }
 
 
   /// поиск фильмов
