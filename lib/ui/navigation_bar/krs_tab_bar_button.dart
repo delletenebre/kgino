@@ -47,9 +47,17 @@ class KrsTabBarButton extends HookWidget {
     }
 
 
-    return Focus(
+    return InkWell(
       focusNode: focusNode,
       onFocusChange: onFocusChange,
+
+      borderRadius: BorderRadius.circular(32.0),
+
+      onTap: () {
+        tabsCubit.unfocusAll();
+        tabsCubit.updateSelected(index);
+      },
+
       child: AnimatedContainer(
         height: 40.0,
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0),

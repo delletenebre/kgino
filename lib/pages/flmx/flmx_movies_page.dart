@@ -24,7 +24,7 @@ class FlmxMoviesPage extends HookWidget {
     /// последние добавления
     final asyncLatest = useMemoized(() => api.getLatestMovies());
 
-    /// популярные фильмы
+    /// популярные
     final asyncPopular = useMemoized(() => api.getPopularMovies());
 
     final categories = [
@@ -46,7 +46,7 @@ class FlmxMoviesPage extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const AppHeader(
-            child: Text('Filmix'),
+            child: Text('Filmix / Фильмы'),
           ),
 
           KrsItemDetails(

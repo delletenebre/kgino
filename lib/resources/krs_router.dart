@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../pages/error_page.dart';
-import '../pages/flmx/flmx_home_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
@@ -55,36 +54,25 @@ class KrsRouter {
         },
 
         routes: [
+          /// filmix сериалы
           GoRoute(
-            path: 'flmx',
-            name: 'flmxHome',
+            path: 'flmx/shows',
+            name: 'flmxShows',
             builder: (context, state) {
-              return const FlmxHomePage();
+              return const FlmxShowsPage();
             },
-
             routes: [
+            ],
+          ),
 
-              /// filmix сериалы
-              GoRoute(
-                path: 'shows',
-                name: 'flmxShows',
-                builder: (context, state) {
-                  return const FlmxShowsPage();
-                },
-                routes: [
-                ],
-              ),
-
-              /// filmix фильмы
-              GoRoute(
-                path: 'movies',
-                name: 'flmxMovies',
-                builder: (context, state) {
-                  return const FlmxMoviesPage();
-                },
-                routes: [
-                ],
-              ),
+          /// filmix фильмы
+          GoRoute(
+            path: 'flmx/movies',
+            name: 'flmxMovies',
+            builder: (context, state) {
+              return const FlmxMoviesPage();
+            },
+            routes: [
             ],
           ),
 

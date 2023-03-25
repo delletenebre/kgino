@@ -85,7 +85,7 @@ class FlmxApiProvider {
   }
 
 
-  /// список фильмов
+  /// список новых фильмов
   Future<ApiResponse<List<KginoItem>>> getLatestMovies() async {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/catalog', queryParameters: {
@@ -102,11 +102,45 @@ class FlmxApiProvider {
     );
   }
 
+  /// список популярных фильмов
   Future<ApiResponse<List<KginoItem>>> getPopularMovies() async {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/popular', queryParameters: {
         ..._queryParams,
         'filter': 's0-s14',
+      }),
+      decoder: (json) {
+        return json.map<KginoItem>((item) {
+          return FlmxItem.fromJson(item).toMovieItem();
+        }).toList();
+      },
+    );
+  }
+
+
+  /// список новых сериалов
+  Future<ApiResponse<List<KginoItem>>> getLatestShows() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/catalog', queryParameters: {
+        ..._queryParams,
+        'orderby': 'date',
+        'orderdir': 'desc',
+        'filter': 's7-s93',
+      }),
+      decoder: (json) {
+        return json.map<KginoItem>((item) {
+          return FlmxItem.fromJson(item).toMovieItem();
+        }).toList();
+      },
+    );
+  }
+
+  /// список популярных сериалов
+  Future<ApiResponse<List<KginoItem>>> getPopularShows() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/popular', queryParameters: {
+        ..._queryParams,
+        'filter': 's7-s93',
       }),
       decoder: (json) {
         return json.map<KginoItem>((item) {

@@ -21,4 +21,10 @@ class TabsCubit extends Cubit<int> {
   void requestFocus() {
     focusNodes[state].requestFocus();
   }
+
+  void unfocusAll() {
+    for (final focusNode in focusNodes) {
+      focusNode.unfocus();
+    }
+  }
 }

@@ -60,6 +60,9 @@ class KrsTabBarSearchButton extends HookWidget {
       onFocusChange: onFocusChange,
       style: buttonStyle,
       onPressed: () {
+        tabsCubit.unfocusAll();
+        tabsCubit.updateSelected(index);
+
         Future.delayed(KrsTheme.animationDuration, () {
           final selected = tabsCubit.state == index;
           if (selected) {
