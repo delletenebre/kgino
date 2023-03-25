@@ -69,7 +69,7 @@ class HorizontalListView<T> extends HookWidget {
         key: ValueKey(itemCount),
         create: (context) => FocusableListCubit(
           itemCount: itemCount,
-          offset: 24.0,
+          offset: 32.0,
           /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
           /// фокус не переходил на следующий список, ставим handled
           keyEventResult: KeyEventResult.handled,

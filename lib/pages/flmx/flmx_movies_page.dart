@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../api/flmx_api_provider.dart';
+import '../../models/category_list_item.dart';
 import '../../models/kgino_item.dart';
 import '../../ui/app_header.dart';
 import '../../ui/krs_item_details.dart';
@@ -19,9 +20,26 @@ class FlmxMoviesPage extends HookWidget {
   Widget build(BuildContext context) {
 
     final api = GetIt.instance<FlmxApiProvider>();
-
-    /// список последний добавлений
+    
+    /// последние добавления
     final asyncLatest = useMemoized(() => api.getLatestMovies());
+
+    /// популярные фильмы
+    final asyncPopular = useMemoized(() => api.getPopularMovies());
+
+    final categories = [
+
+      CategoryListItem(
+        title: 'Новые',
+        apiResponse: asyncLatest,
+      ),
+
+      CategoryListItem(
+        title: 'Популярное',
+        apiResponse: asyncPopular,
+      ),
+
+    ];
 
     return Scaffold(
       body: Column(
@@ -42,20 +60,14 @@ class FlmxMoviesPage extends HookWidget {
 
           Expanded(
             child: VerticalListView(
-              itemCount: 1,
+              itemCount: categories.length,
               itemBuilder: (context, focusNode, index) {
+                final category = categories[index];
+
                 return HorizontalListView<KginoItem>(
                   focusNode: focusNode,
-                  titleText: 'Новые',
-                  itemsFuture: Future.microtask(() async {
-                    final response = await asyncLatest;
-
-                    if (response.isSuccess) {
-                      return response.asData.data;
-                    }
-
-                    return [];
-                  }),
+                  titleText: category.title,
+                  itemsFuture: category.itemsFuture,
                   itemBuilder: (context, focusNode, index, item) {
                     return KginoListTile(
                       focusNode: focusNode,

@@ -94,7 +94,8 @@ class FocusableListCubit extends Cubit<FocusableListState> {
       isFixedHeight: true,
       offset: (offset) => this.offset,
       duration: const Duration(milliseconds: 50),
-      curve: Curves.easeIn
+      curve: Curves.easeIn,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
     );
     requestFocus(index);
   }

@@ -61,7 +61,7 @@ class FlmxApiProvider {
   Future<ApiResponse<List<KginoItem>>> search(String searchQuery) async {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/search', queryParameters: {
-        ... _queryParams,
+        ..._queryParams,
         'story': searchQuery
       }),
       decoder: (json) {
@@ -76,7 +76,7 @@ class FlmxApiProvider {
   Future<ApiResponse<KginoItem>> getDetails(String id) async {
     return ApiRequest<KginoItem>().call(
       request: _dio.get('/post/$id', queryParameters: {
-        ... _queryParams,
+        ..._queryParams,
       }),
       decoder: (json) {
         return FlmxItem.fromJson(json).toMovieItem();
@@ -89,10 +89,24 @@ class FlmxApiProvider {
   Future<ApiResponse<List<KginoItem>>> getLatestMovies() async {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/catalog', queryParameters: {
+        ..._queryParams,
         'orderby': 'date',
         'orderdir': 'desc',
         'filter': 's0-s14',
-        ... _queryParams,
+      }),
+      decoder: (json) {
+        return json.map<KginoItem>((item) {
+          return FlmxItem.fromJson(item).toMovieItem();
+        }).toList();
+      },
+    );
+  }
+
+  Future<ApiResponse<List<KginoItem>>> getPopularMovies() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/popular', queryParameters: {
+        ..._queryParams,
+        'filter': 's0-s14',
       }),
       decoder: (json) {
         return json.map<KginoItem>((item) {
