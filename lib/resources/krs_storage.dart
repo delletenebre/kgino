@@ -1,16 +1,31 @@
-import 'dart:convert';
-
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class KrsStorage {
-  KrsStorage({
-    required this.sharedStorage,
-    // required this.secureStorage,
-  });
+import '../models/episode_item.dart';
+import '../models/kgino_item.dart';
 
-  final SharedPreferences sharedStorage;
+class KrsStorage {
+  late final SharedPreferences sharedStorage;
   // final FlutterSecureStorage secureStorage;
+  late final Isar db;
+
+  KrsStorage();
+
+  Future<KrsStorage> initialize() async {
+
+    /// инициализируем локальное хранилище
+    sharedStorage = await SharedPreferences.getInstance();
+
+    /// инициализируем базу данных
+    db = await Isar.open([
+      KginoItemSchema,
+      EpisodeItemSchema
+    ]);
+
+    return this;
+  }
+
 
   /// чтение данных из обычного хранилища
   String read(String key, { String defaultValue = '' }) {

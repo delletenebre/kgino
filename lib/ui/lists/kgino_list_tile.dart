@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../models/kgino_item.dart';
-import 'krs_list_tile.dart';
+import 'kgino_raw_list_tile.dart';
 
 class KginoListTile extends StatelessWidget {
-  final FocusNode? focusNode;
+  final FocusNode focusNode;
   final KginoItem item;
   // final Size posterSize;
   final void Function(FocusNode focusNode)? onFocused;
@@ -12,7 +12,7 @@ class KginoListTile extends StatelessWidget {
 
   const KginoListTile({
     super.key,
-    this.focusNode,
+    required this.focusNode,
     required this.item,
     // this.posterSize = const Size(126.0, 102.0),
     this.onFocused,
@@ -22,7 +22,7 @@ class KginoListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    return KrsListTile(
+    return KginoRawListTile(
       focusNode: focusNode,
       onFocused: onFocused,
       // imageSize: posterSize,

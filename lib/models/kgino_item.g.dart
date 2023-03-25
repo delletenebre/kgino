@@ -20,12 +20,12 @@ const KginoItemSchema = CollectionSchema(
     r'episodeCount': PropertySchema(
       id: 0,
       name: r'episodeCount',
-      type: IsarType.long,
+      type: IsarType.int,
     ),
     r'favorite': PropertySchema(
       id: 1,
       name: r'favorite',
-      type: IsarType.bool,
+      type: IsarType.dateTime,
     ),
     r'hasImdbRating': PropertySchema(
       id: 2,
@@ -55,8 +55,7 @@ const KginoItemSchema = CollectionSchema(
     r'provider': PropertySchema(
       id: 7,
       name: r'provider',
-      type: IsarType.byte,
-      enumMap: _KginoItemproviderEnumValueMap,
+      type: IsarType.string,
     ),
     r'storageKey': PropertySchema(
       id: 8,
@@ -68,19 +67,8 @@ const KginoItemSchema = CollectionSchema(
       name: r'subtitlesEnabled',
       type: IsarType.bool,
     ),
-    r'type': PropertySchema(
-      id: 10,
-      name: r'type',
-      type: IsarType.byte,
-      enumMap: _KginoItemtypeEnumValueMap,
-    ),
-    r'updatedAt': PropertySchema(
-      id: 11,
-      name: r'updatedAt',
-      type: IsarType.dateTime,
-    ),
     r'voiceActing': PropertySchema(
-      id: 12,
+      id: 10,
       name: r'voiceActing',
       type: IsarType.string,
     )
@@ -115,6 +103,7 @@ int _kginoItemEstimateSize(
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.posterUrl.length * 3;
+  bytesCount += 3 + object.provider.length * 3;
   bytesCount += 3 + object.storageKey.length * 3;
   bytesCount += 3 + object.voiceActing.length * 3;
   return bytesCount;
@@ -126,19 +115,17 @@ void _kginoItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.episodeCount);
-  writer.writeBool(offsets[1], object.favorite);
+  writer.writeInt(offsets[0], object.episodeCount);
+  writer.writeDateTime(offsets[1], object.favorite);
   writer.writeBool(offsets[2], object.hasImdbRating);
   writer.writeBool(offsets[3], object.hasKinopoiskRating);
   writer.writeString(offsets[4], object.id);
   writer.writeString(offsets[5], object.name);
   writer.writeString(offsets[6], object.posterUrl);
-  writer.writeByte(offsets[7], object.provider.index);
+  writer.writeString(offsets[7], object.provider);
   writer.writeString(offsets[8], object.storageKey);
   writer.writeBool(offsets[9], object.subtitlesEnabled);
-  writer.writeByte(offsets[10], object.type.index);
-  writer.writeDateTime(offsets[11], object.updatedAt);
-  writer.writeString(offsets[12], object.voiceActing);
+  writer.writeString(offsets[10], object.voiceActing);
 }
 
 KginoItem _kginoItemDeserialize(
@@ -148,18 +135,13 @@ KginoItem _kginoItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = KginoItem(
-    favorite: reader.readBoolOrNull(offsets[1]) ?? false,
+    favorite: reader.readDateTimeOrNull(offsets[1]),
     id: reader.readString(offsets[4]),
     name: reader.readString(offsets[5]),
     posterUrl: reader.readString(offsets[6]),
-    provider:
-        _KginoItemproviderValueEnumMap[reader.readByteOrNull(offsets[7])] ??
-            KginoProvider.ockg,
+    provider: reader.readString(offsets[7]),
     subtitlesEnabled: reader.readBoolOrNull(offsets[9]) ?? false,
-    type: _KginoItemtypeValueEnumMap[reader.readByteOrNull(offsets[10])] ??
-        KginoItemType.movie,
-    updatedAt: reader.readDateTime(offsets[11]),
-    voiceActing: reader.readStringOrNull(offsets[12]) ?? '',
+    voiceActing: reader.readStringOrNull(offsets[10]) ?? '',
   );
   return object;
 }
@@ -172,9 +154,9 @@ P _kginoItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readInt(offset)) as P;
     case 1:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readBool(offset)) as P;
     case 3:
@@ -186,46 +168,17 @@ P _kginoItemDeserializeProp<P>(
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
-      return (_KginoItemproviderValueEnumMap[reader.readByteOrNull(offset)] ??
-          KginoProvider.ockg) as P;
+      return (reader.readString(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 10:
-      return (_KginoItemtypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          KginoItemType.movie) as P;
-    case 11:
-      return (reader.readDateTime(offset)) as P;
-    case 12:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
-
-const _KginoItemproviderEnumValueMap = {
-  'ockg': 0,
-  'tskg': 1,
-  'wcam': 2,
-  'flmx': 3,
-};
-const _KginoItemproviderValueEnumMap = {
-  0: KginoProvider.ockg,
-  1: KginoProvider.tskg,
-  2: KginoProvider.wcam,
-  3: KginoProvider.flmx,
-};
-const _KginoItemtypeEnumValueMap = {
-  'movie': 0,
-  'show': 1,
-  'folder': 2,
-};
-const _KginoItemtypeValueEnumMap = {
-  0: KginoItemType.movie,
-  1: KginoItemType.show,
-  2: KginoItemType.folder,
-};
 
 Id _kginoItemGetId(KginoItem object) {
   return object.isarId;
@@ -378,12 +331,72 @@ extension KginoItemQueryFilter
     });
   }
 
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'favorite',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      favoriteIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'favorite',
+      ));
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteEqualTo(
-      bool value) {
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'favorite',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'favorite',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'favorite',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'favorite',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -854,46 +867,54 @@ extension KginoItemQueryFilter
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerEqualTo(
-      KginoProvider value) {
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'provider',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerGreaterThan(
-    KginoProvider value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'provider',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerLessThan(
-    KginoProvider value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'provider',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerBetween(
-    KginoProvider lower,
-    KginoProvider upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -902,6 +923,76 @@ extension KginoItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'provider',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'provider',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      providerIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'provider',
+        value: '',
       ));
     });
   }
@@ -1046,113 +1137,6 @@ extension KginoItemQueryFilter
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'subtitlesEnabled',
         value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> typeEqualTo(
-      KginoItemType value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'type',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> typeGreaterThan(
-    KginoItemType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'type',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> typeLessThan(
-    KginoItemType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'type',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> typeBetween(
-    KginoItemType lower,
-    KginoItemType upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'type',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> updatedAtEqualTo(
-      DateTime value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'updatedAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      updatedAtGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'updatedAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> updatedAtLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'updatedAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> updatedAtBetween(
-    DateTime lower,
-    DateTime upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'updatedAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
       ));
     });
   }
@@ -1481,30 +1465,6 @@ extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByUpdatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByUpdatedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.desc);
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByVoiceActing() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'voiceActing', Sort.asc);
@@ -1654,30 +1614,6 @@ extension KginoItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByUpdatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByUpdatedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.desc);
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByVoiceActing() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'voiceActing', Sort.asc);
@@ -1738,9 +1674,10 @@ extension KginoItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByProvider() {
+  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByProvider(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'provider');
+      return query.addDistinctBy(r'provider', caseSensitive: caseSensitive);
     });
   }
 
@@ -1754,18 +1691,6 @@ extension KginoItemQueryWhereDistinct
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctBySubtitlesEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'subtitlesEnabled');
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'type');
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByUpdatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'updatedAt');
     });
   }
 
@@ -1791,7 +1716,7 @@ extension KginoItemQueryProperty
     });
   }
 
-  QueryBuilder<KginoItem, bool, QQueryOperations> favoriteProperty() {
+  QueryBuilder<KginoItem, DateTime?, QQueryOperations> favoriteProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'favorite');
     });
@@ -1827,7 +1752,7 @@ extension KginoItemQueryProperty
     });
   }
 
-  QueryBuilder<KginoItem, KginoProvider, QQueryOperations> providerProperty() {
+  QueryBuilder<KginoItem, String, QQueryOperations> providerProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'provider');
     });
@@ -1842,18 +1767,6 @@ extension KginoItemQueryProperty
   QueryBuilder<KginoItem, bool, QQueryOperations> subtitlesEnabledProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'subtitlesEnabled');
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItemType, QQueryOperations> typeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'type');
-    });
-  }
-
-  QueryBuilder<KginoItem, DateTime, QQueryOperations> updatedAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'updatedAt');
     });
   }
 

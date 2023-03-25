@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../ui/lists/horizontal_list_view.dart';
-import '../../ui/lists/krs_list_tile.dart';
+import '../../ui/lists/kgino_raw_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
 class OckgHomePage extends HookWidget {
@@ -37,7 +37,7 @@ class OckgHomePage extends HookWidget {
             ];
           }),
           itemBuilder: (context, focusNode, index, item) {
-            return KrsListTile(
+            return KginoRawListTile(
               focusNode: focusNode,
               onFocused: (focusNode) {
                 

@@ -72,8 +72,7 @@ class FlmxItem with _$FlmxItem {
           ];
           
           return KginoItem(
-            type: KginoItemType.movie,
-            provider: KginoProvider.flmx,
+            provider: KginoProvider.flmx.name,
             id: id.toString(),
             name: title,
             originalName: originalTitle,
@@ -92,8 +91,6 @@ class FlmxItem with _$FlmxItem {
             voiceActings: voiceActings,
 
             seasons: seasons,
-
-            updatedAt: DateTime.now(),
           );
         }).toList();
       }
@@ -115,8 +112,7 @@ class FlmxItem with _$FlmxItem {
     }
 
     return KginoItem(
-      type: KginoItemType.movie,
-      provider: KginoProvider.flmx,
+      provider: KginoProvider.flmx.name,
       id: id.toString(),
       name: title,
       originalName: originalTitle,
@@ -135,8 +131,6 @@ class FlmxItem with _$FlmxItem {
       voiceActings: voiceActings,
 
       seasons: seasons,
-
-      updatedAt: DateTime.now(),
     );
   }
   

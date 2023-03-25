@@ -1,24 +1,26 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+// import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 
-import '../constants.dart';
-import '../models/movie_item.dart';
+import '../models/kgino_item.dart';
 import '../models/tskg/tskg_episode_details.dart';
 import '../models/tskg/tskg_show.dart';
 import 'logs_interceptor.dart';
 import 'tskg_api_isolates.dart';
 
 
+final userAgent = 'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
+
 class TskgApiProvider {
 
   /// ts.kg
   final _dio = Dio(BaseOptions(
     baseUrl: 'https://www.ts.kg',
-    sendTimeout: requestTimeout,
-    receiveTimeout: requestTimeout,
+    sendTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
     headers: {
       'User-Agent': userAgent,
     },
@@ -50,7 +52,7 @@ class TskgApiProvider {
   }
 
   /// получение списка новостей
-  Future<List<TskgMovieItem>> getNews() async {
+  Future<List<KginoItem>> getNews() async {
     try {
 
       /// запрашиваем данные
@@ -75,7 +77,7 @@ class TskgApiProvider {
 
 
   /// получение списка популярных
-  Future<List<MovieItem>> getPopular() async {
+  Future<List<KginoItem>> getPopular() async {
     try {
 
       /// запрашиваем данные
@@ -99,7 +101,7 @@ class TskgApiProvider {
   }
 
   /// получение списка новых
-  Future<List<MovieItem>> getNew() async {
+  Future<List<KginoItem>> getNew() async {
     try {
 
       /// запрашиваем данные
@@ -124,7 +126,7 @@ class TskgApiProvider {
 
 
   /// получение информации о сериале
-  Future<TskgMovieItem> getShow(String showId) async {
+  Future<KginoItem> getShow(String showId) async {
     try {
       /// запрашиваем данные
       final response = await _dio.get(getShowUrlById(showId));
@@ -143,9 +145,9 @@ class TskgApiProvider {
       debugPrint('exception: $exception');
     }
 
-    return TskgMovieItem(
+    return KginoItem(
       id: '',
-      name: '',
+      name: '', posterUrl: '', provider: '',
     );
   }
 
@@ -184,9 +186,9 @@ class TskgApiProvider {
 
 
   /// поиск сериала
-  Future<List<MovieItem>> searchShows(String searchQuery) async {
+  Future<List<KginoItem>> searchShows(String searchQuery) async {
 
-    final items = <MovieItem>[];
+    final items = <KginoItem>[];
 
     if (searchQuery.isNotEmpty) {
       /// ^ если запрос не пустой
@@ -212,9 +214,9 @@ class TskgApiProvider {
 
             if (url.startsWith('/show/')) {
               items.add(
-                TskgMovieItem(
+                KginoItem(
                   id: TskgShow.getShowIdFromUrl(url),
-                  name: name,
+                  name: name, posterUrl: '', provider: '',
                 )
               );
             }

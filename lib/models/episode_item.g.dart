@@ -20,12 +20,12 @@ const EpisodeItemSchema = CollectionSchema(
     r'duration': PropertySchema(
       id: 0,
       name: r'duration',
-      type: IsarType.long,
+      type: IsarType.int,
     ),
     r'episodeNumber': PropertySchema(
       id: 1,
       name: r'episodeNumber',
-      type: IsarType.long,
+      type: IsarType.int,
     ),
     r'id': PropertySchema(
       id: 2,
@@ -40,12 +40,12 @@ const EpisodeItemSchema = CollectionSchema(
     r'position': PropertySchema(
       id: 4,
       name: r'position',
-      type: IsarType.long,
+      type: IsarType.int,
     ),
     r'seasonNumber': PropertySchema(
       id: 5,
       name: r'seasonNumber',
-      type: IsarType.long,
+      type: IsarType.int,
     ),
     r'subtitlesFileUrl': PropertySchema(
       id: 6,
@@ -96,12 +96,12 @@ void _episodeItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.duration);
-  writer.writeLong(offsets[1], object.episodeNumber);
+  writer.writeInt(offsets[0], object.duration);
+  writer.writeInt(offsets[1], object.episodeNumber);
   writer.writeString(offsets[2], object.id);
   writer.writeString(offsets[3], object.name);
-  writer.writeLong(offsets[4], object.position);
-  writer.writeLong(offsets[5], object.seasonNumber);
+  writer.writeInt(offsets[4], object.position);
+  writer.writeInt(offsets[5], object.seasonNumber);
   writer.writeString(offsets[6], object.subtitlesFileUrl);
   writer.writeDateTime(offsets[7], object.updatedAt);
   writer.writeString(offsets[8], object.videoFileUrl);
@@ -114,14 +114,14 @@ EpisodeItem _episodeItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = EpisodeItem(
-    duration: reader.readLongOrNull(offsets[0]) ?? 1,
-    episodeNumber: reader.readLongOrNull(offsets[1]) ?? 0,
+    duration: reader.readIntOrNull(offsets[0]) ?? 1,
+    episodeNumber: reader.readIntOrNull(offsets[1]) ?? 0,
     id: reader.readString(offsets[2]),
     name: reader.readString(offsets[3]),
-    position: reader.readLongOrNull(offsets[4]) ?? 0,
-    seasonNumber: reader.readLongOrNull(offsets[5]) ?? 0,
+    position: reader.readIntOrNull(offsets[4]) ?? 0,
+    seasonNumber: reader.readIntOrNull(offsets[5]) ?? 0,
     subtitlesFileUrl: reader.readStringOrNull(offsets[6]) ?? '',
-    updatedAt: reader.readDateTime(offsets[7]),
+    updatedAt: reader.readDateTimeOrNull(offsets[7]),
     videoFileUrl: reader.readStringOrNull(offsets[8]) ?? '',
   );
   return object;
@@ -135,21 +135,21 @@ P _episodeItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset) ?? 1) as P;
+      return (reader.readIntOrNull(offset) ?? 1) as P;
     case 1:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readIntOrNull(offset) ?? 0) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readIntOrNull(offset) ?? 0) as P;
     case 5:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readIntOrNull(offset) ?? 0) as P;
     case 6:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 7:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
@@ -925,7 +925,25 @@ extension EpisodeItemQueryFilter
   }
 
   QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
-      updatedAtEqualTo(DateTime value) {
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'updatedAt',
@@ -936,7 +954,7 @@ extension EpisodeItemQueryFilter
 
   QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
       updatedAtGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -950,7 +968,7 @@ extension EpisodeItemQueryFilter
 
   QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
       updatedAtLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -964,8 +982,8 @@ extension EpisodeItemQueryFilter
 
   QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
       updatedAtBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1480,7 +1498,7 @@ extension EpisodeItemQueryProperty
     });
   }
 
-  QueryBuilder<EpisodeItem, DateTime, QQueryOperations> updatedAtProperty() {
+  QueryBuilder<EpisodeItem, DateTime?, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
     });

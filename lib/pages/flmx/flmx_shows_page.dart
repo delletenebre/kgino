@@ -10,8 +10,8 @@ import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/kgino_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
-class FlmxHomePage extends HookWidget {
-  const FlmxHomePage({
+class FlmxShowsPage extends HookWidget {
+  const FlmxShowsPage({
     super.key,
   });
 

@@ -5,8 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import '../pages/error_page.dart';
 import '../pages/flmx/flmx_home_page.dart';
+import '../pages/flmx/flmx_movies_page.dart';
+import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
+import '../pages/tskg/tskg_home_page.dart';
 import '../ui/scaffold_with_navigation_bar.dart';
 
 
@@ -58,15 +61,50 @@ class KrsRouter {
             builder: (context, state) {
               return const FlmxHomePage();
             },
+
             routes: [
+
+              /// filmix сериалы
+              GoRoute(
+                path: 'shows',
+                name: 'flmxShows',
+                builder: (context, state) {
+                  return const FlmxShowsPage();
+                },
+                routes: [
+                ],
+              ),
+
+              /// filmix фильмы
+              GoRoute(
+                path: 'movies',
+                name: 'flmxMovies',
+                builder: (context, state) {
+                  return const FlmxMoviesPage();
+                },
+                routes: [
+                ],
+              ),
             ],
           ),
 
+          /// online cinema
           GoRoute(
             path: 'ockg',
             name: 'ockgHome',
             builder: (context, state) {
               return const OckgHomePage();
+            },
+            routes: [
+            ],
+          ),
+
+          /// ts.kg
+          GoRoute(
+            path: 'tskg',
+            name: 'tskgHome',
+            builder: (context, state) {
+              return const TskgHomePage();
             },
             routes: [
             ],

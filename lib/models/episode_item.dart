@@ -7,6 +7,7 @@ part 'episode_item.g.dart';
 @collection
 class EpisodeItem {
 
+  /// внутренний идентификатор в базе данных
   Id get isarId => fastHash(id);
   
   /// идентификатор эпизода
@@ -16,19 +17,19 @@ class EpisodeItem {
   final String name;
 
   /// последняя позиция просмотра эпизода (в секундах)
-  int position;
+  short position;
 
   /// продолжительность эпизода (в секундах)
-  final int duration;
+  final short duration;
 
   /// дата последнего просмотра
-  DateTime updatedAt;
+  DateTime? updatedAt;
 
   /// номер сезона
-  final int seasonNumber;
+  final short seasonNumber;
 
   /// номер эпизода в сезоне
-  final int episodeNumber;
+  final short episodeNumber;
 
   /// ссылка на проигрываемый файл
   String videoFileUrl;
@@ -42,7 +43,7 @@ class EpisodeItem {
 
     this.position = 0,
     this.duration = 1,
-    required this.updatedAt,
+    this.updatedAt,
 
     this.seasonNumber = 0,
     this.episodeNumber = 0,
@@ -51,10 +52,6 @@ class EpisodeItem {
     this.subtitlesFileUrl = '',
     
   });
-
-  // @override
-  // @ignore
-  // List<Object> get props => [id];
 
   /// просмотренная позиция в пределах от 0 до 1
   @ignore

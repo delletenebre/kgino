@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg;
 import 'package:palette_generator/palette_generator.dart';
 
 import '../../../resources/krs_theme.dart';
 
-class KrsListTile extends HookWidget {
-  final FocusNode? focusNode;
+class KginoRawListTile extends HookWidget {
+  final FocusNode focusNode;
   final void Function(FocusNode focusNode)? onFocused;
   final void Function() onTap;
 
@@ -24,9 +23,9 @@ class KrsListTile extends HookWidget {
     LogicalKeyboardKey.select,
   ];
 
-  const KrsListTile({
+  const KginoRawListTile({
     super.key,
-    this.focusNode,
+    required this.focusNode,
     this.onFocused,
     this.imageSize = const Size(100.0, 140.0),
     required this.onTap,
@@ -41,17 +40,16 @@ class KrsListTile extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    
+    final isMounted = useIsMounted();
 
-    final _focusNode = focusNode ?? useFocusNode();
     useEffect(() {
-      _focusNode.addListener(() {
-        if (_focusNode.hasFocus) {
-          onFocused?.call(_focusNode);
+      focusNode.addListener(() {
+        if (focusNode.hasFocus) {
+          onFocused?.call(focusNode);
         }
       });
       return;
-    }, [_focusNode]);
+    }, [focusNode]);
 
     /// получаем цвет свечения
     final glowColor = useState(theme.colorScheme.primary);
@@ -74,7 +72,7 @@ class KrsListTile extends HookWidget {
         //   glowColor.value = palette.lightVibrantColor!.color;
         // }
 
-        if (palette.vibrantColor != null) {
+        if (isMounted() && palette.vibrantColor != null) {
           glowColor.value = palette.vibrantColor!.color;
         }
 
@@ -95,7 +93,7 @@ class KrsListTile extends HookWidget {
         },
 
         child: Focus(
-          focusNode: _focusNode,
+          focusNode: focusNode,
           onFocusChange: (hasFocus) {
             /// при получении фокуса
             focusState.value = hasFocus;
@@ -124,32 +122,39 @@ class KrsListTile extends HookWidget {
                 children: [
                   
                   /// постер сериала
-                  AnimatedContainer(
+                  AnimatedScale(
                     duration: KrsTheme.animationDuration,
-                    width: imageSize.width,
-                    height: imageSize.height,
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        if (focusState.value) BoxShadow(
-                          color: glowColor.value.withOpacity(0.62),
-                          blurRadius: 22.0,
-                          spreadRadius: 2.0
-                        ),
-                      ],
-                      color: theme.scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(12.0),
-                      border: focusState.value
-                        ? Border.all(
-                            color: theme.colorScheme.onPrimaryContainer,
-                            width: 3.0,
-                          )
-                        : null
+                    scale: focusNode.hasFocus ? 1.12 : 1.0,
+                    child: AnimatedContainer(
+                      duration: KrsTheme.animationDuration,
+                      width: imageSize.width,
+                      height: imageSize.height,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          if (focusState.value) BoxShadow(
+                            color: glowColor.value.withOpacity(0.62),
+                            blurRadius: 22.0,
+                            spreadRadius: 2.0
+                          ),
+                        ],
+                        color: theme.scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: focusState.value
+                          ? Border.all(
+                              color: theme.colorScheme.onPrimaryContainer,
+                              width: 3.0,
+                            )
+                          : null
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(9.0),
+                        child: imageUrl.endsWith('.svg')
+                          ? SvgPicture.network(imageUrl)
+                          : Image.network(imageUrl),
+                      ),
                     ),
-                    child: imageUrl.endsWith('.svg')
-                      ? SvgPicture.network(imageUrl)
-                      : Image.network(imageUrl),
                   ),
+                  
 
                   /// название сериала
                   if (title.isNotEmpty) Padding(

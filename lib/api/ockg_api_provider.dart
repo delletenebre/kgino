@@ -7,12 +7,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kgino/models/ockg/ockg_bestsellers_category.dart';
 
+import '../models/api_response.dart';
 import '../models/episode_item.dart';
 import '../models/kgino_item.dart';
 import '../models/ockg/ockg_catalog.dart';
 import '../models/ockg/ockg_comment.dart';
 import '../models/ockg/ockg_movie.dart';
 import '../models/season_item.dart';
+import 'api_request.dart';
 import 'logs_interceptor.dart';
 
 class OckgApiProvider {
@@ -31,35 +33,21 @@ class OckgApiProvider {
 
 
   /// список бестселлеров по категориям
-  Future<List<OckgBestsellersCategory>> getBestsellers() async {
-
+  Future<ApiResponse<List<OckgBestsellersCategory>>> getBestsellers() async {
     final formData = FormData.fromMap({
       'action[0]': 'Video.getBestsellers',
     });
 
-    try {
-    
-      final response = await _dio.post('', data: formData);
+    return ApiRequest<List<OckgBestsellersCategory>>().call(
+      request: _dio.post('', data: formData),
+      decoder: (json) {
+        final bestsellers = json['json'][0]['response']['bestsellers'];
 
-      final jsonResponse = json.decode(response.data);
-      final bestsellers = jsonResponse['json'][0]['response']['bestsellers'];
-
-      return bestsellers.map<OckgBestsellersCategory>((item) {
-        return OckgBestsellersCategory.fromJson(item);
-      }).toList();
-      
-    } on SocketException catch (_) {
-
-      debugPrint('no internet connection');
-      
-      return [];
-    
-    } catch (exception, stacktrace) {
-      
-      debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-      return [];
-    }
+        return bestsellers.map<OckgBestsellersCategory>((item) {
+          return OckgBestsellersCategory.fromJson(item);
+        }).toList();
+      },
+    );
     
   }
 
@@ -99,7 +87,7 @@ class OckgApiProvider {
 
 
   /// поиск фильмов
-  Future<List<KginoItem>> searchMovies(String searchQuery) async {
+  Future<ApiResponse<List<KginoItem>>> searchMovies(String searchQuery) async {
     // final runes = searchQuery.runes.map((r) {
     //   return '%u${r.toRadixString(16).padLeft(4, '0')}';
     // }).toList();
@@ -109,55 +97,35 @@ class OckgApiProvider {
     //   'query[0]': searchQuery,
     // });
 
-    try {
-
-      // final response = await _dio.post('', data: formData);
-    
-      final response = await _dio.get('https://oc.kg/suggestion.php',
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('https://oc.kg/suggestion.php',
         queryParameters: {
           'q': searchQuery,
-        }
-      );
+        },
+      ),
+      decoder: (json) {
+        final moviesJson = json['json'][0]['response']['movies'];
 
-      final jsonResponse = json.decode(response.data);
-      final moviesJson = jsonResponse['json'][0]['response']['movies'];
+        final movies = moviesJson.map<OckgMovie>((item) {
+          return OckgMovie.fromJson(item);
+        });
 
-      final Iterable<OckgMovie> movies = moviesJson.map<OckgMovie>((item) {
-        return OckgMovie.fromJson(item);
-      });
-
-      final List<KginoItem> a = movies.map<KginoItem>((movie) {
-        return KginoItem(
-          type: KginoItemType.movie,
-          provider: KginoProvider.ockg,
-          id: '${movie.movieId}',
-          name: movie.name,
-          posterUrl: movie.posterUrl,
-          updatedAt: DateTime.now(),
-        );
-      }).toList();
-
-      return a;
-      
-    } on SocketException catch (_) {
-
-      debugPrint('no internet connection');
-      
-      return [];
-    
-    } catch (exception, stacktrace) {
-      
-      debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-      return [];
-    }
-
+        return movies.map<KginoItem>((movie) {
+          return KginoItem(
+            provider: KginoProvider.ockg.name,
+            id: '${movie.movieId}',
+            name: movie.name,
+            posterUrl: movie.posterUrl,
+          );
+        }).toList();
+      },
+    );
     
   }
 
 
   /// список фильмов по id жанра
-  Future<List<OckgMovie>> getMoviesByGenreId(int genreId) async {
+  Future<ApiResponse<List<KginoItem>>> getMoviesByGenreId(int genreId) async {
 
     final formData = FormData.fromMap({
       'action[0]': 'Video.getCatalog',
@@ -166,29 +134,25 @@ class OckgApiProvider {
       'size[0]': 20,
     });
 
-    try {
-    
-      final response = await _dio.post('', data: formData);
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.post('', data: formData),
+      decoder: (json) {
+        final movies = json['json'][0]['response']['movies'];
 
-      final jsonResponse = json.decode(response.data);
-      final movies = jsonResponse['json'][0]['response']['movies'];
-
-      return movies.map<OckgMovie>((item) {
-        return OckgMovie.fromJson(item);
-      }).toList();
-      
-    } on SocketException catch (_) {
-
-      debugPrint('no internet connection');
-      
-      return [];
-    
-    } catch (exception, stacktrace) {
-      
-      debugPrint('Exception: $exception, stacktrace: $stacktrace');
-      
-      return [];
-    }
+        return movies.map<OckgMovie>((item) {
+          final movie = OckgMovie.fromJson(item);
+          
+          return KginoItem(
+            provider: KginoProvider.ockg.name,
+            id: '${movie.movieId}',
+            name: movie.name,
+            posterUrl: movie.posterUrl,
+          );
+          
+        }).toList();
+        
+      },
+    );
 
   }
 
@@ -258,12 +222,11 @@ class OckgApiProvider {
           
           items.add(
             KginoItem(
-              type: KginoItemType.folder,
-              provider: KginoProvider.ockg,
+              provider: KginoProvider.ockg.name,
               id: id,
               name: name,
               posterUrl: posterUrl,
-              updatedAt: DateTime.now(),
+              isFolder: true,
             )
           );
         }
@@ -329,8 +292,7 @@ class OckgApiProvider {
       }).isNotEmpty;
 
       return KginoItem(
-        type: KginoItemType.movie,
-        provider: KginoProvider.ockg,
+        provider: KginoProvider.ockg.name,
         id: '${movie.movieId}',
         name: movie.name,
         posterUrl: movie.posterUrl,
@@ -346,7 +308,6 @@ class OckgApiProvider {
         //hasSixAudioChannels: hasSixAudioChannels,
 
         seasons: seasons,
-        updatedAt: DateTime.now(),
       );
       
     } on SocketException catch (_) {

@@ -5,6 +5,7 @@ import 'season_item.dart';
 
 part 'kgino_item.g.dart';
 
+/// название (внутренний идентификатор) сервиса
 enum KginoProvider {
   ockg,
   tskg,
@@ -12,27 +13,15 @@ enum KginoProvider {
   flmx,
 }
 
-enum KginoItemType {
-  movie,
-  show,
-  folder,
-}
-
 @collection
 class KginoItem {
 
+  /// внутренний идентификатор в базе данных
   Id get isarId => fastHash(storageKey);
 
-  /// ключ, по которому сохраняем в БД
-  String get storageKey => '$provider.$id';
-  
-  /// тип контента
-  @enumerated
-  final KginoItemType type;
-
   /// идентификатор сервиса
-  @enumerated
-  final KginoProvider provider;
+  // @enumerated
+  final String provider;
   
   /// идентификатор фильма или сериала
   final String id;
@@ -46,17 +35,16 @@ class KginoItem {
   /// включены или выключены субтитры
   bool subtitlesEnabled;
 
-  /// включены или выключены субтитры
-  bool favorite;
-
-  /// дата последнего просмотра
-  DateTime updatedAt;
+  /// дата добавления в список избранного
+  DateTime? favorite;
 
   /// список просмотренных эпизодов
   final episodes = IsarLinks<EpisodeItem>();
 
   /// текущая озвучка
   String voiceActing;
+
+
 
   /// список сезонов
   @ignore
@@ -85,11 +73,6 @@ class KginoItem {
   /// дополнительная информация (в основном вторая строка, после названия)
   @ignore
   final String subtitle;
-  
-  /// количество эпизодов во всех сезонах
-  int get episodeCount => seasons.fold(0, (previousValue, season) {
-    return previousValue + season.episodes.length;
-  });
 
   /// рейтинг IMDb
   @ignore
@@ -113,17 +96,19 @@ class KginoItem {
   @ignore
   final bool hasSixChannels;
 
+  /// является ли объект папкой
+  @ignore
+  final bool isFolder;
+
 
   KginoItem({
-    required this.type,
     required this.provider,
     required this.id,
     required this.name,
     required this.posterUrl,
 
     this.subtitlesEnabled = false,
-    this.favorite = false,
-    required this.updatedAt,
+    this.favorite,
 
     this.seasons = const [],
 
@@ -144,13 +129,24 @@ class KginoItem {
 
     this.hasSixChannels = false,
 
-  }); //: episodes = episodes ?? List<EpisodeItem>.empty(growable: true);
+    this.isFolder = false,
+
+  });
+
+  /// ключ для идентификатора базы данных
+  String get storageKey => '$provider.$id';
+
+  /// количество эпизодов во всех сезонах
+  short get episodeCount => seasons.fold(0, (previousValue, season) {
+    return previousValue + season.episodes.length;
+  });
+
 
   /// получаем последний просмотренный эпизод
   EpisodeItem? getLastSeenEpisode() {
     if (episodes.isNotEmpty) {
       episodes.toList().sort((a, b) {
-        return b.updatedAt.compareTo(a.updatedAt);
+        return b.updatedAt!.compareTo(a.updatedAt!);
       });
       
       return episodes.first;
@@ -217,9 +213,9 @@ class KginoItem {
 
 /// FNV-1a 64bit hash algorithm optimized for Dart Strings
 int fastHash(String string) {
-  var hash = 0xcbf29ce484222325;
+  int hash = 0xcbf29ce484222325;
 
-  var i = 0;
+  int i = 0;
   while (i < string.length) {
     final codeUnit = string.codeUnitAt(i++);
     hash ^= codeUnit >> 8;
@@ -228,86 +224,16 @@ int fastHash(String string) {
     hash *= 0x100000001b3;
   }
 
+  // int hash = 0x811c9dc5;
+
+  // int i = 0;
+  // while (i < string.length) {
+  //   final codeUnit = string.codeUnitAt(i++);
+  //   hash ^= codeUnit >> 4;
+  //   hash *= 0x01000193;
+  //   hash ^= codeUnit & 0xFF;
+  //   hash *= 0x01000193;
+  // }
+
   return hash;
 }
-// class TskgMovieItem extends MovieItem {
-//   TskgMovieItem({
-//     required String id,
-//     required String name,
-//     List<SeasonItem> seasons = const [],
-
-//     DateTime? updatedAt,
-
-//     String originalName = '',
-//     String description = '',
-//     String year = '',
-//     List<String> genres = const [],
-//     List<String> countries = const [],
-//     String subtitle = '',
-    
-//     super.voiceActing,
-//     super.voiceActings,
-//   }) : super(
-//     type: ServiceName.tskg,
-//     id: id,
-//     name: name,
-//     posterUrl: 'https://www.ts.kg/posters/$id.png',
-//     seasons: seasons,
-
-//     updatedAt: updatedAt,
-    
-//     originalName: originalName,
-//     description: description,
-//     year: year,
-//     genres: genres,
-//     countries: countries,
-//     subtitle: subtitle,
-    
-//   );
-  
-// }
-
-
-// class OckgMovieItem extends MovieItem {
-  
-//   OckgMovieItem({
-//     required String id,
-//     required String name,
-//     required String posterUrl,
-//     required List<SeasonItem> seasons,
-
-//     String originalName = '',
-//     String description = '',
-//     String year = '',
-//     List<String> genres = const [],
-//     List<String> countries = const [],
-
-//     /// implement WithRatings
-//     double ratingImdb = 0.0,
-//     double ratingKinopoisk = 0.0,
-
-//     /// implement WithSixChannels
-//     bool hasSixAudioChannels = false,
-//   }) : super(
-//     type: ServiceName.ockg,
-//     id: id,
-//     name: name,
-//     posterUrl: posterUrl,
-//     seasons: seasons,
-
-//     originalName: originalName,
-//     description: description,
-//     year: year,
-//     genres: genres,
-//     countries: countries,
-
-//     ratingImdb: ratingImdb,
-//     ratingKinopoisk: ratingKinopoisk,
-
-//     duration: seasons.first.episodes.length == 1
-//       ? Duration(seconds: seasons.first.episodes.first.duration)
-//       : Duration.zero,
-
-//     hasSixChannels: hasSixAudioChannels,
-//   );
-// }
