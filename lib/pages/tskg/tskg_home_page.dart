@@ -59,10 +59,13 @@ class TskgHomePage extends HookWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
+                /// заголовок
                 const AppHeader(
                   child: Text('TS.KG'),
                 ),
 
+                /// детали фильма или сериала
                 BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
                   builder: (context, state) {
                     return KrsItemDetails(state);

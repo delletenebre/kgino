@@ -58,10 +58,13 @@ class FlmxShowsPage extends HookWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
+                /// заголовок
                 const AppHeader(
                   child: Text('Filmix / Сериалы'),
                 ),
 
+                /// детали фильма или сериала
                 BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
                   builder: (context, state) {
                     return KrsItemDetails(state);
