@@ -8,6 +8,7 @@ import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
+import '../pages/oc.kg/ockg_movie_details_page.dart';
 import '../pages/tskg/tskg_home_page.dart';
 import '../ui/scaffold_with_navigation_bar.dart';
 
@@ -84,6 +85,18 @@ class KrsRouter {
               return const OckgHomePage();
             },
             routes: [
+
+              GoRoute(
+                path: 'details/:id',
+                name: 'ockgMovieDetails',
+                builder: (context, state) {
+                  final movieId = state.params['id'] ?? '';
+                  return OckgMovieDetailsPage(movieId);
+                },
+                routes: [
+                ],
+              ),
+
             ],
           ),
 

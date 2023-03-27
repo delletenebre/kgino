@@ -55,8 +55,8 @@ class KrsItemDetails extends HookWidget {
           const SizedBox(width: double.maxFinite),
 
           if (kginoItem.posterUrl.isNotEmpty && !kginoItem.posterUrl.endsWith('.svg')) Positioned(
-            top: -92,
-            right: 0,
+            top: -KrsTheme.appBarHeight,
+            right: 0.0,
             child: RepaintBoundary(
               child: Opacity(
                 opacity: 0.62,
@@ -90,7 +90,7 @@ class KrsItemDetails extends HookWidget {
               horizontal: 24.0,
             ),
             width: MediaQuery.of(context).size.width * 0.62,
-            height: KrsTheme.movieDetailsHeight,
+            height: expanded ? null : KrsTheme.movieDetailsHeight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -103,16 +103,16 @@ class KrsItemDetails extends HookWidget {
                 ),
 
                 /// оригинальное название фильма
-                if (expanded && kginoItem.originalName.isNotEmpty) Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(kginoItem.originalName,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+                // if (expanded && kginoItem.originalName.isNotEmpty) Padding(
+                //   padding: const EdgeInsets.only(top: 4.0),
+                //   child: Text(kginoItem.originalName,
+                //     style: theme.textTheme.titleMedium?.copyWith(
+                //       color: theme.colorScheme.outline,
+                //     ),
+                //     maxLines: 1,
+                //     overflow: TextOverflow.ellipsis,
+                //   ),
+                // ),
 
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0),
@@ -157,23 +157,6 @@ class KrsItemDetails extends HookWidget {
                           child: Text(kginoItem.countries.take(2).join(', ')),
                         ),
 
-                        /// озвучка
-                        if (kginoItem.voiceActing.isNotEmpty) Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: KrsItemDetalsChip(
-                            child: Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(right: 4.0),
-                                  child: Icon(Icons.mic),
-                                ),
-                                
-                                Text(kginoItem.voiceActing),
-                              ],
-                            ),
-                          ),
-                        ),
-                        
                         /// если звук 5.1
                         // if (movie.hasSixChannels) Padding(
                         //   padding: const EdgeInsets.only(right: 8.0),
@@ -206,22 +189,35 @@ class KrsItemDetails extends HookWidget {
                       /// рейтинг IMDb
                       if (kginoItem.hasImdbRating) Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: KrsItemDetalsChip(
-                          child: Row(
-                            children: [
-                              Text('${kginoItem.imdbRating}'),
-                            ],
-                          ),
+                        child: KginoRatingChip(
+                          name: 'IMDb',
+                          rating: kginoItem.imdbRating,
                         ),
                       ),
 
                       /// рейтинг КиноПоиск
                       if (kginoItem.hasKinopoiskRating) Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: KrsItemDetalsChip(
+                        child: KginoRatingChip(
+                          name: 'КиноПоиск',
+                          rating: kginoItem.kinopoiskRating,
+                        ),
+                      ),
+
+                      /// озвучка
+                      if (kginoItem.voiceActing.isNotEmpty) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: KrsItemDetailsChip(
                           child: Row(
                             children: [
-                              Text('${kginoItem.kinopoiskRating}'),
+                              const Padding(
+                                padding: EdgeInsets.only(right: 4.0),
+                                child: Icon(Icons.mic,
+                                  size: 16.0,
+                                ),
+                              ),
+                              
+                              Text(kginoItem.voiceActing),
                             ],
                           ),
                         ),
@@ -265,10 +261,10 @@ class KrsItemDetails extends HookWidget {
 }
 
 
-class KrsItemDetalsChip extends StatelessWidget {
+class KrsItemDetailsChip extends StatelessWidget {
   final Widget child;
 
-  const KrsItemDetalsChip({
+  const KrsItemDetailsChip({
     super.key,
     required this.child,
   });
@@ -282,6 +278,49 @@ class KrsItemDetalsChip extends StatelessWidget {
       labelStyle: const TextStyle(
         fontSize: 12.0,
       ),
+    );
+  }
+}
+
+class KginoRatingChip extends StatelessWidget {
+  final String name;
+  final double rating;
+
+  const KginoRatingChip({
+    super.key,
+    required this.name,
+    required this.rating,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Color? textColor;
+
+    if (rating <= 5.5) {
+      textColor = theme.colorScheme.error;
+    }
+    
+    if (rating >= 7.5) {
+      textColor = Colors.green;
+    }
+
+    return KrsItemDetailsChip(
+      child: Row(
+        children: [
+          Text(name),
+
+          const Text(': '),
+
+          Text(rating.toStringAsFixed(1),
+            style: TextStyle(
+              color: textColor,
+              
+            ),
+          ),
+        ],
+      )
     );
   }
 }

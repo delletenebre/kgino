@@ -4,6 +4,9 @@ class KrsTheme {
 
   /// высота контейнера с информацией о фильме
   static const movieDetailsHeight = 220.0;
+  static const movieDetailsExpandedHeight = 320.0;
+
+  static const appBarHeight = 48.0 + (24.0 * 2);
 
   /// тип прокрутки содержимого
   static const scrollPhysics = BouncingScrollPhysics(

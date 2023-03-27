@@ -17,15 +17,15 @@ const KginoItemSchema = CollectionSchema(
   name: r'KginoItem',
   id: -3968783649370085008,
   properties: {
-    r'episodeCount': PropertySchema(
+    r'bookmarked': PropertySchema(
       id: 0,
+      name: r'bookmarked',
+      type: IsarType.dateTime,
+    ),
+    r'episodeCount': PropertySchema(
+      id: 1,
       name: r'episodeCount',
       type: IsarType.int,
-    ),
-    r'favorite': PropertySchema(
-      id: 1,
-      name: r'favorite',
-      type: IsarType.dateTime,
     ),
     r'hasImdbRating': PropertySchema(
       id: 2,
@@ -115,8 +115,8 @@ void _kginoItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeInt(offsets[0], object.episodeCount);
-  writer.writeDateTime(offsets[1], object.favorite);
+  writer.writeDateTime(offsets[0], object.bookmarked);
+  writer.writeInt(offsets[1], object.episodeCount);
   writer.writeBool(offsets[2], object.hasImdbRating);
   writer.writeBool(offsets[3], object.hasKinopoiskRating);
   writer.writeString(offsets[4], object.id);
@@ -135,7 +135,7 @@ KginoItem _kginoItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = KginoItem(
-    favorite: reader.readDateTimeOrNull(offsets[1]),
+    bookmarked: reader.readDateTimeOrNull(offsets[0]),
     id: reader.readString(offsets[4]),
     name: reader.readString(offsets[5]),
     posterUrl: reader.readString(offsets[6]),
@@ -154,9 +154,9 @@ P _kginoItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readInt(offset)) as P;
-    case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 1:
+      return (reader.readInt(offset)) as P;
     case 2:
       return (reader.readBool(offset)) as P;
     case 3:
@@ -276,6 +276,77 @@ extension KginoItemQueryWhere
 
 extension KginoItemQueryFilter
     on QueryBuilder<KginoItem, KginoItem, QFilterCondition> {
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'bookmarked',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      bookmarkedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'bookmarked',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedEqualTo(
+      DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'bookmarked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      bookmarkedGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'bookmarked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'bookmarked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'bookmarked',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> episodeCountEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -323,76 +394,6 @@ extension KginoItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'episodeCount',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'favorite',
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      favoriteIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'favorite',
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'favorite',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'favorite',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'favorite',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> favoriteBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'favorite',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1343,6 +1344,18 @@ extension KginoItemQueryLinks
 }
 
 extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByBookmarked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByBookmarkedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.desc);
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByEpisodeCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'episodeCount', Sort.asc);
@@ -1352,18 +1365,6 @@ extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByEpisodeCountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'episodeCount', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByFavorite() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'favorite', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByFavoriteDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'favorite', Sort.desc);
     });
   }
 
@@ -1480,6 +1481,18 @@ extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
 
 extension KginoItemQuerySortThenBy
     on QueryBuilder<KginoItem, KginoItem, QSortThenBy> {
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByBookmarked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByBookmarkedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.desc);
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByEpisodeCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'episodeCount', Sort.asc);
@@ -1489,18 +1502,6 @@ extension KginoItemQuerySortThenBy
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByEpisodeCountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'episodeCount', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByFavorite() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'favorite', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByFavoriteDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'favorite', Sort.desc);
     });
   }
 
@@ -1629,15 +1630,15 @@ extension KginoItemQuerySortThenBy
 
 extension KginoItemQueryWhereDistinct
     on QueryBuilder<KginoItem, KginoItem, QDistinct> {
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByEpisodeCount() {
+  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByBookmarked() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'episodeCount');
+      return query.addDistinctBy(r'bookmarked');
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByFavorite() {
+  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByEpisodeCount() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'favorite');
+      return query.addDistinctBy(r'episodeCount');
     });
   }
 
@@ -1710,15 +1711,15 @@ extension KginoItemQueryProperty
     });
   }
 
-  QueryBuilder<KginoItem, int, QQueryOperations> episodeCountProperty() {
+  QueryBuilder<KginoItem, DateTime?, QQueryOperations> bookmarkedProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'episodeCount');
+      return query.addPropertyName(r'bookmarked');
     });
   }
 
-  QueryBuilder<KginoItem, DateTime?, QQueryOperations> favoriteProperty() {
+  QueryBuilder<KginoItem, int, QQueryOperations> episodeCountProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'favorite');
+      return query.addPropertyName(r'episodeCount');
     });
   }
 

@@ -35,8 +35,8 @@ class KginoItem {
   /// включены или выключены субтитры
   bool subtitlesEnabled;
 
-  /// дата добавления в список избранного
-  DateTime? favorite;
+  /// дата добавления в список закладок
+  DateTime? bookmarked;
 
   /// список просмотренных эпизодов
   final episodes = IsarLinks<EpisodeItem>();
@@ -108,7 +108,7 @@ class KginoItem {
     required this.posterUrl,
 
     this.subtitlesEnabled = false,
-    this.favorite,
+    this.bookmarked,
 
     this.seasons = const [],
 
