@@ -51,34 +51,31 @@ class KginoRawListTile extends HookWidget {
       return;
     }, [focusNode]);
 
-    /// получаем цвет свечения
+    /// цвет свечения
     final glowColor = useState(theme.colorScheme.primary);
     // final dominantColor = useState(theme.colorScheme.surface);
 
-    useMemoized(() async {
+    /// вычисляем цвет свечения
+    final calculateGlowColor = useCallback(() async {
       if (imageUrl.isNotEmpty && !imageUrl.endsWith('.svg')) {
         /// ^ если изображение есть и оно не векторное
 
-        /// получаем цветовую палитру фильма
-        final palette = await PaletteGenerator.fromImageProvider(
-          NetworkImage(imageUrl)
-        );
+        try {
+          /// получаем цветовую палитру фильма
+          final palette = await PaletteGenerator.fromImageProvider(
+            NetworkImage(imageUrl)
+          );
 
-        // if (palette.colors.isNotEmpty) {
-        //   glowColor.value = palette.colors.first;
-        // }
-
-        // if (palette.lightVibrantColor != null) {
-        //   glowColor.value = palette.lightVibrantColor!.color;
-        // }
-
-        if (isMounted() && palette.vibrantColor != null) {
-          glowColor.value = palette.vibrantColor!.color;
+          if (isMounted() && palette.vibrantColor != null) {
+            /// обновляем цвет свечения
+            glowColor.value = palette.vibrantColor!.color;
+          }
+        } catch (exception) {
+          debugPrint('PaletteGenerator FAIL');
         }
-
+        
       }
-      
-    });
+    }, [key]);
 
     final focusState = useState(false);
 
@@ -97,6 +94,9 @@ class KginoRawListTile extends HookWidget {
           onFocusChange: (hasFocus) {
             /// при получении фокуса
             focusState.value = hasFocus;
+
+            /// вычисляем цвет свечения
+            calculateGlowColor();
           },
 
           onKeyEvent: (node, event) {
@@ -150,7 +150,9 @@ class KginoRawListTile extends HookWidget {
                         borderRadius: BorderRadius.circular(9.0),
                         child: imageUrl.endsWith('.svg')
                           ? SvgPicture.network(imageUrl)
-                          : Image.network(imageUrl),
+                          : Image.network(imageUrl,
+                              cacheHeight: imageSize.height.toInt(),
+                            ),
                       ),
                     ),
                   ),

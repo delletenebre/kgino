@@ -13,9 +13,11 @@ _$_OckgFileMeta _$$_OckgFileMetaFromJson(Map<String, dynamic> json) =>
           : const IntConverter().fromJson(json['playtime_seconds']),
       format: json['format'] as String? ?? '',
       video: OckgFileMetaMedia.fromJson(json['video'] as Map<String, dynamic>),
-      audio: (json['audio'] as List<dynamic>)
-          .map((e) => OckgFileMetaMedia.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      audio: (json['audio'] as List<dynamic>?)
+              ?.map(
+                  (e) => OckgFileMetaMedia.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$_OckgFileMetaToJson(_$_OckgFileMeta instance) =>

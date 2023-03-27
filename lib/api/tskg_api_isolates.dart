@@ -365,14 +365,16 @@ KginoItem showIsolate(String html) {
       } else {
 
         final url = item.attributes['href'] ?? '';
+
+        final id = TskgShow.getShowIdFromUrl(url);
         
         /// формируем список доступных озвучек
         voiceActings.add(
           KginoItem(
             provider: KginoProvider.tskg.name,
-            id: TskgShow.getShowIdFromUrl(url),
+            id: id,
             name: item.text,
-            posterUrl: '',
+            posterUrl: 'https://www.ts.kg/posters/$id.png',
           )
         );
 
@@ -381,7 +383,7 @@ KginoItem showIsolate(String html) {
     }
   }
 
-  final showIdUrl = document.getElementsByClassName('episode as1').firstOrNull?.attributes['href'];
+  final showIdUrl = document.getElementsByClassName('episode').firstOrNull?.attributes['href'];
   final showId = TskgShow.getShowIdFromUrl(showIdUrl ?? '');
 
   return KginoItem(
@@ -398,7 +400,7 @@ KginoItem showIsolate(String html) {
     
     voiceActing: voiceActing,
     voiceActings: voiceActings,
-    posterUrl: '',
+    posterUrl: 'https://www.ts.kg/posters2/$showId.png',
   );
 
 }

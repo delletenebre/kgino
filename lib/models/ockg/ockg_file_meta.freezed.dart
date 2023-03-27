@@ -157,7 +157,7 @@ class _$_OckgFileMeta implements _OckgFileMeta {
       {@IntConverter() this.playtimeSeconds = 0,
       this.format = '',
       required this.video,
-      required final List<OckgFileMetaMedia> audio})
+      final List<OckgFileMetaMedia> audio = const []})
       : _audio = audio;
 
   factory _$_OckgFileMeta.fromJson(Map<String, dynamic> json) =>
@@ -174,6 +174,7 @@ class _$_OckgFileMeta implements _OckgFileMeta {
   final OckgFileMetaMedia video;
   final List<OckgFileMetaMedia> _audio;
   @override
+  @JsonKey()
   List<OckgFileMetaMedia> get audio {
     if (_audio is EqualUnmodifiableListView) return _audio;
     // ignore: implicit_dynamic_type
@@ -221,7 +222,7 @@ abstract class _OckgFileMeta implements OckgFileMeta {
       {@IntConverter() final int playtimeSeconds,
       final String format,
       required final OckgFileMetaMedia video,
-      required final List<OckgFileMetaMedia> audio}) = _$_OckgFileMeta;
+      final List<OckgFileMetaMedia> audio}) = _$_OckgFileMeta;
 
   factory _OckgFileMeta.fromJson(Map<String, dynamic> json) =
       _$_OckgFileMeta.fromJson;

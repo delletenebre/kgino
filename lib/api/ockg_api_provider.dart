@@ -299,6 +299,12 @@ class OckgApiProvider {
           return audios.where((audio) => audio.info.contains('6ch')).isNotEmpty;
         }).isNotEmpty;
 
+
+        Duration duration = Duration.zero;
+        if (seasons.isNotEmpty && seasons.first.episodes.length == 1) {
+          duration = Duration(seconds: seasons.first.episodes.first.duration);
+        }
+
         return KginoItem(
           provider: KginoProvider.ockg.name,
           id: '${movie.movieId}',
@@ -309,6 +315,8 @@ class OckgApiProvider {
           year: movie.year,
           genres: movie.genres,
           countries: movie.countries,
+
+          duration: duration,
           
           imdbRating: movie.ratingImdbValue,
           kinopoiskRating: movie.ratingKinopoiskValue,

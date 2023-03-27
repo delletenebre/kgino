@@ -1,6 +1,6 @@
 extension DurationExtensions on Duration {
   String get formatted {
-    var seconds = inSeconds;
+    int seconds = inSeconds;
     final days = seconds ~/ Duration.secondsPerDay;
     seconds -= days * Duration.secondsPerDay;
     final hours = seconds~/Duration.secondsPerHour;

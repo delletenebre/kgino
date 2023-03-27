@@ -1,5 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
 
 import 'api/flmx_api_provider.dart';
@@ -11,6 +12,9 @@ import 'models/device_details.dart';
 import 'resources/krs_storage.dart';
 
 Future<void> main() async {
+  // debugRepaintRainbowEnabled = true;
+  // debugPaintLayerBordersEnabled = true;
+  
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:kgino/extensions/duration.dart';
 
 import '../models/api_response.dart';
@@ -6,7 +7,7 @@ import '../models/kgino_item.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 
-class KrsItemDetails extends StatelessWidget {
+class KrsItemDetails extends HookWidget {
   final ApiResponse<KginoItem> state;
   final bool expanded;
 
@@ -21,16 +22,17 @@ class KrsItemDetails extends StatelessWidget {
     final locale = KrsLocale.of(context);
 
 
-    if (state.isLoading) {
-      return const SizedBox(
-        height: KrsTheme.movieDetailsHeight,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+    // if (state.isLoading) {
+    //   return const SizedBox(
+    //     height: KrsTheme.movieDetailsHeight,
+    //     child: Center(
+    //       child: CircularProgressIndicator(),
+    //     ),
+    //   );
+    // }
 
-    if (state.isEmpty || state.isError) {
+    // if (state.isLoading || state.isEmpty || state.isError) {
+    if (!state.isSuccess) {
       return const SizedBox(
         height: KrsTheme.movieDetailsHeight,
       );
@@ -39,165 +41,223 @@ class KrsItemDetails extends StatelessWidget {
     /// детали фильма или сериала
     final kginoItem = state.asData.data;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24.0,
-      ),
-      height: KrsTheme.movieDetailsHeight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+    final opacity = useState(0.0);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      opacity.value = 1.0;
+    });
+
+    return AnimatedOpacity(
+      opacity: opacity.value,
+      duration: KrsTheme.animationDuration,
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          /// название фильма
-          Text(kginoItem.name,
-            style: theme.textTheme.titleLarge,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          const SizedBox(width: double.maxFinite),
 
-          /// оригинальное название фильма
-          if (expanded && kginoItem.originalName.isNotEmpty) Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Text(kginoItem.originalName,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          if (kginoItem.posterUrl.isNotEmpty && !kginoItem.posterUrl.endsWith('.svg')) Positioned(
+            top: -92,
+            right: 0,
+            child: RepaintBoundary(
+              child: Opacity(
+                opacity: 0.62,
+                child: ShaderMask(
+                  blendMode: BlendMode.dstOut,
+                  shaderCallback: (rect) {
+                    return const RadialGradient(
+                      center: Alignment.topRight,
+                      radius: 1.0,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black,
+                      ],
+                      stops: [0.25, 1.0],
+                    ).createShader(rect);
+                  },
 
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-              child: DefaultTextStyle(
-              style: TextStyle(
-                fontSize: 14.0,
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)
-              ),
-              child: Row(
-                children: [
-
-                  /// год выпуска, жанры (оставляем не более двух)
-                  Text([ kginoItem.year, ...kginoItem.genres.take(2) ].join(', ')),
-
-                  const SizedBox(width: 12.0),
-
-                  /// продолжительность фильма (или общая для сериала)
-                  if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.first.episodes.length == 1) Text(
-                    kginoItem.duration.formatted
+                  /// постер фильма
+                  child: Image.network(kginoItem.posterUrl,
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.cover,
                   ),
-
-                  /// количество эпизодов (файлов), если сериал
-                  if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.first.episodes.length > 1) Text(
-                    locale.episodesCount(kginoItem.seasons.first.episodes.length)
-                  ),
-
-                  const SizedBox(width: 12.0),
-
-                  /// страны фильма (оставляем не более двух)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text(kginoItem.countries.take(2).join(', ')),
-                  ),
-
-                  /// озвучка
-                  if (kginoItem.voiceActing.isNotEmpty) Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: KrsItemDetalsChip(
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 4.0),
-                            child: Icon(Icons.mic),
-                          ),
-                          
-                          Text(kginoItem.voiceActing),
-                        ],
-                      ),
-                    ),
-                  ),
-                  
-                  /// если звук 5.1
-                  // if (movie.hasSixChannels) Padding(
-                  //   padding: const EdgeInsets.only(right: 8.0),
-                  //   child: KrsChip(
-                  //     dense: true,
-                  //     child: Row(
-                  //       children: const [
-                  //         Padding(
-                  //           padding: EdgeInsets.only(right: 4.0),
-                  //           child: Icon(Icons.volume_up),
-                  //         ),
-                          
-                  //         Text('5.1'),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  
-                ],
+                ),
               ),
             ),
+            
           ),
-          
-          /// рейтинги фильма
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Row(
+
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+            ),
+            width: MediaQuery.of(context).size.width * 0.62,
+            height: KrsTheme.movieDetailsHeight,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                /// название фильма
+                Text(kginoItem.name,
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                /// оригинальное название фильма
+                if (expanded && kginoItem.originalName.isNotEmpty) Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(kginoItem.originalName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                    child: DefaultTextStyle(
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)
+                    ),
+                    child: Row(
+                      children: [
+
+                        /// год выпуска, жанры (оставляем не более двух)
+                        Text([ kginoItem.year, ...kginoItem.genres.take(2) ].join(', ')),
+
+                        const SizedBox(width: 12.0),
+
+                        /// продолжительность фильма (или общая для сериала)
+                        if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.first.episodes.length == 1 && kginoItem.duration.inSeconds == 0) Text(
+                          locale.episodesCount(kginoItem.seasons.first.episodes.length)
+                        ),
+
+                        /// продолжительность фильма (или общая для сериала)
+                        if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.first.episodes.length == 1 && kginoItem.duration.inSeconds > 0) Text(
+                          kginoItem.duration.formatted
+                        ),
+
+                        /// количество эпизодов (файлов), если сериал
+                        if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.length > 1 && kginoItem.seasons.first.episodes.length > 1) Text(
+                          locale.seasonsCount(kginoItem.seasons.length)
+                        ),
+
+                        /// количество эпизодов (файлов), если сериал
+                        if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.length == 1 && kginoItem.seasons.first.episodes.length > 1) Text(
+                          locale.episodesCount(kginoItem.seasons.first.episodes.length)
+                        ),
+
+                        const SizedBox(width: 12.0),
+
+                        /// страны фильма (оставляем не более двух)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(kginoItem.countries.take(2).join(', ')),
+                        ),
+
+                        /// озвучка
+                        if (kginoItem.voiceActing.isNotEmpty) Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: KrsItemDetalsChip(
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 4.0),
+                                  child: Icon(Icons.mic),
+                                ),
+                                
+                                Text(kginoItem.voiceActing),
+                              ],
+                            ),
+                          ),
+                        ),
+                        
+                        /// если звук 5.1
+                        // if (movie.hasSixChannels) Padding(
+                        //   padding: const EdgeInsets.only(right: 8.0),
+                        //   child: KrsChip(
+                        //     dense: true,
+                        //     child: Row(
+                        //       children: const [
+                        //         Padding(
+                        //           padding: EdgeInsets.only(right: 4.0),
+                        //           child: Icon(Icons.volume_up),
+                        //         ),
+                                
+                        //         Text('5.1'),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        
+                      ],
+                    ),
+                  ),
+                ),
                 
-                /// рейтинг IMDb
-                if (kginoItem.hasImdbRating) Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: KrsItemDetalsChip(
-                    child: Row(
-                      children: [
-                        Text('${kginoItem.imdbRating}'),
-                      ],
-                    ),
+                /// рейтинги фильма
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    children: [
+                      
+                      /// рейтинг IMDb
+                      if (kginoItem.hasImdbRating) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: KrsItemDetalsChip(
+                          child: Row(
+                            children: [
+                              Text('${kginoItem.imdbRating}'),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      /// рейтинг КиноПоиск
+                      if (kginoItem.hasKinopoiskRating) Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: KrsItemDetalsChip(
+                          child: Row(
+                            children: [
+                              Text('${kginoItem.kinopoiskRating}'),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      /// качество видео
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: KrsChip(
+                      //     child: Text(movie.quality),
+                      //   ),
+                      // ),
+
+                      /// ограничения к просмотру
+                      // if (movie.mpaa.isNotEmpty) Padding(
+                      //   padding: const EdgeInsets.only(right: 8.0),
+                      //   child: KrsChip(
+                      //     child: Text(movie.mpaa),
+                      //   ),
+                      // ),
+                    ],
                   ),
                 ),
 
-                /// рейтинг КиноПоиск
-                if (kginoItem.hasKinopoiskRating) Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: KrsItemDetalsChip(
-                    child: Row(
-                      children: [
-                        Text('${kginoItem.kinopoiskRating}'),
-                      ],
-                    ),
+                /// описание фильма
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Text(kginoItem.description,
+                    maxLines: expanded ? 10 : 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
 
-                /// качество видео
-                // Padding(
-                //   padding: const EdgeInsets.only(right: 8.0),
-                //   child: KrsChip(
-                //     child: Text(movie.quality),
-                //   ),
-                // ),
-
-                /// ограничения к просмотру
-                // if (movie.mpaa.isNotEmpty) Padding(
-                //   padding: const EdgeInsets.only(right: 8.0),
-                //   child: KrsChip(
-                //     child: Text(movie.mpaa),
-                //   ),
-                // ),
               ],
             ),
           ),
-
-          /// описание фильма
-          Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: Text(kginoItem.description,
-              maxLines: expanded ? 10 : 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-
         ],
       ),
     );

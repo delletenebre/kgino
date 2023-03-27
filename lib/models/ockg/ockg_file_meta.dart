@@ -17,7 +17,7 @@ class OckgFileMeta with _$OckgFileMeta {
     @Default('') String format,
 
     required OckgFileMetaMedia video,
-    required List<OckgFileMetaMedia> audio,
+    @Default([]) List<OckgFileMetaMedia> audio,
 
   }) = _OckgFileMeta;
 
