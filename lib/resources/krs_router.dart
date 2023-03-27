@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
 import '../pages/oc.kg/ockg_movie_details_page.dart';
+import '../pages/player_page.dart';
 import '../pages/tskg/tskg_home_page.dart';
 import '../ui/scaffold_with_navigation_bar.dart';
 
@@ -86,14 +88,57 @@ class KrsRouter {
             },
             routes: [
 
+              /// страница информации о фильме
               GoRoute(
                 path: 'details/:id',
-                name: 'ockgMovieDetails',
+                name: 'ockgDetails',
                 builder: (context, state) {
                   final movieId = state.params['id'] ?? '';
                   return OckgMovieDetailsPage(movieId);
                 },
                 routes: [
+
+                  /// страница плеера
+                  GoRoute(
+                    path: 'player',
+                    name: 'ockgPlayer',
+                    builder: (context, state) {
+                      final kginoItem = state.extra as KginoItem;
+                      final fileId = state.queryParams['episodeId'] ?? '';
+
+                      return PlayerPage(
+                        kginoItem: kginoItem,
+                        episodeId: fileId,
+                        getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
+                          if (initial) {
+                            /// находим сохранённый эпизод, если он есть
+                            
+                            /// контроллер просмотренных эпизодов
+                            // final seenItemsController = GetIt.instance<SeenItemsController>();
+
+                            /// проверяем был ли эпизод в просмотренных
+                            // final episode = seenItemsController.findEpisode(
+                            //   storageKey: seenShowStorageKey,
+                            //   episodeId: currentEpisode.id,
+                            // ) ?? currentEpisode;
+                            final episode = currentEpisode;
+
+                            /// обновляем ссылку на видео файл
+                            episode.videoFileUrl = currentEpisode.videoFileUrl;
+
+                            return episode;
+
+                          } else {
+                            /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
+                            /// не запрашивал продолжить просмотр или нет
+                            currentEpisode.position = 0;
+                            return currentEpisode;
+                          }
+                        },
+                      );
+                    },
+                  ),
+                  
                 ],
               ),
 

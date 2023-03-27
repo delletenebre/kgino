@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
@@ -15,7 +14,7 @@ import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
 import '../../ui/krs_item_details.dart';
 import '../../ui/krs_scroll_view.dart';
-import '../../ui/play_button_seen_information.dart';
+import '../../ui/kgino_item/play_button_tooltip.dart';
 
 
 class OckgMovieDetailsPage extends HookWidget {
@@ -128,8 +127,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                     children: [
 
                                       /// если кнопка Смотреть в фокусе
-                                      if (playButtonHasFocus.value) PlayButtonSeenInformation(
-                                        kginoItem: kginoItem,
+                                      if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
                                         showEpisodeNumber: false,
                                       ),
 
@@ -155,7 +153,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                           },
                                           onPressed: () {
                                             /// переходим на страницу плеера фильма
-                                            context.goNamed('ockgMoviePlayer',
+                                            context.goNamed('ockgPlayer',
                                               params: {
                                                 'id': kginoItem.id,
                                               },

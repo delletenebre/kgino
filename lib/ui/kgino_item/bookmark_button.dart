@@ -25,89 +25,43 @@ class BookmarkButton extends HookWidget {
       initialData: kginoItem,
     );
 
-    return HookBuilder(
-      builder: (context) {
-        if (dbItem.hasData && dbItem.data != null && dbItem.data!.bookmarked != null) {
+    if (dbItem.hasData && dbItem.data != null && dbItem.data!.bookmarked != null) {
+      
+      /// кнопка удаления из избранного
+      return FilledButton.icon(
+        onPressed: () async {
           
-          /// кнопка удаления из избранного
-          return FilledButton.icon(
-            onPressed: () async {
-              
-              /// убираем из избранного
-              final item = dbItem.data!;
-              item.bookmarked = null;
-              await storage.db.writeTxn(() async {
-                await storage.db.kginoItems.put(item);
-              });
+          /// убираем из избранного
+          final item = dbItem.data!;
+          item.bookmarked = null;
+          await storage.db.writeTxn(() async {
+            await storage.db.kginoItems.put(item);
+          });
 
-            },
-            icon: const Icon(Icons.bookmark_remove),
-            label: Text(locale.removeFromBookmarks),
-          );
+        },
+        icon: const Icon(Icons.bookmark_remove),
+        label: Text(locale.removeFromBookmarks),
+      );
 
-        } else {
+    } else {
 
-          /// кнопка добавления в избранное
-          return FilledButton.icon(
-            onPressed: () async {
+      /// кнопка добавления в избранное
+      return FilledButton.icon(
+        onPressed: () async {
 
-              /// добавляем в избранное
-              final item = dbItem.data ?? kginoItem;
-              item.bookmarked = DateTime.now();
-              
-              await storage.db.writeTxn(() async {
-                await storage.db.kginoItems.put(item);
-              });
-              
-            },
-            icon: const Icon(Icons.bookmark_add_outlined),
-            label: Text(locale.addToBookmarks),
-          );
-
-        }
-
-        
-      }
-    );
-
-    // return ValueListenableBuilder(
-    //   valueListenable: seenItemsController.listenable,
-    //   builder: (context, Box<MovieItem> box, _) {
-    //     if (seenItemsController.hasFavorite(show)) {
-    //       /// ^ если уже добавлен в избранное
+          /// добавляем в избранное
+          final item = dbItem.data ?? kginoItem;
+          item.bookmarked = DateTime.now();
+          await storage.db.writeTxn(() async {
+            await storage.db.kginoItems.put(item);
+          });
           
-    //       /// кнопка удаления из избранного
-    //       return Padding(
-    //         padding: const EdgeInsets.only(right: 8.0),
-    //         child: ElevatedButton.icon(
-    //           style: KrsTheme.filledTonalButtonStyleOf(context),
-    //           onPressed: () {
-    //             /// убираем из избранного
-    //             seenItemsController.removeFavorite(show);
-    //           },
-    //           icon: const Icon(Icons.bookmark_remove),
-    //           label: Text(locale.removeFromFavorites),
-    //         ),
-    //       );
-          
-    //     } else {
-    //       /// ^ если ещё нет в избранном
+        },
+        icon: const Icon(Icons.bookmark_add_outlined),
+        label: Text(locale.addToBookmarks),
+      );
 
-    //       /// кнопка добавления в избранное
-    //       return Padding(
-    //         padding: const EdgeInsets.only(right: 8.0),
-    //         child: ElevatedButton.icon(
-    //           style: KrsTheme.filledTonalButtonStyleOf(context),
-    //           onPressed: () {
-    //             /// добавляем в избранное
-    //             seenItemsController.addFavorite(show);
-    //           },
-    //           icon: const Icon(Icons.bookmark_add_outlined),
-    //           label: Text(locale.addToFavorites),
-    //         ),
-    //       );
-    //     }
-    //   }
-    // ),;
+    }
+
   }
 }
