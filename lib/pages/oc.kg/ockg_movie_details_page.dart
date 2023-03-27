@@ -146,7 +146,7 @@ class OckgMovieDetailsPage extends HookWidget {
 
                                       /// кнопка начала просмотра
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding: const EdgeInsets.only(right: 12.0),
                                         child: FilledButton.icon(
                                           // focusNode: playButtonFocusNode,
                                           autofocus: true,
@@ -173,7 +173,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                       /// если файлов несколько, показываем кнопку выбора
                                       /// эпизода
                                       if (kginoItem.seasons.first.episodes.length > 1) Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding: const EdgeInsets.only(right: 12.0),
                                         child: ElevatedButton.icon(
                                           style: KrsTheme.filledTonalButtonStyleOf(context),
                                           onPressed: () {
@@ -190,8 +190,9 @@ class OckgMovieDetailsPage extends HookWidget {
                                         ),
                                       ),
 
+                                      /// кнопка добавления или удаления из закладок
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding: const EdgeInsets.only(right: 12.0),
                                         child: BookmarkButton(kginoItem),
                                       ),
 
