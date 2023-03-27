@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
 
 import '../../models/kgino_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_storage.dart';
-import '../../resources/krs_theme.dart';
 
-class BookmarkButton extends StatelessWidget {
+class BookmarkButton extends HookWidget {
   final KginoItem kginoItem;
 
   const BookmarkButton(this.kginoItem, {
@@ -22,42 +20,48 @@ class BookmarkButton extends StatelessWidget {
     /// хранилище данных
     final storage = GetIt.instance<KrsStorage>();
 
-    // final dbItem = storage.db.kginoItems
-    //   .filter()
-    //   .isarIdEqualTo(kginoItem.isarId)
-    //   .findFirst();
-
-    // Stream<void> dbStream = storage.db.kginoItems.watchLazy();
-
+    /// сохранённый в базе данных элемент
     final dbItem = useStream(storage.db.kginoItems.watchObject(kginoItem.isarId),
       initialData: kginoItem,
     );
 
     return HookBuilder(
       builder: (context) {
-
-        if (dbItem.hasData && dbItem.data != null) {
+        if (dbItem.hasData && dbItem.data != null && dbItem.data!.bookmarked != null) {
           
           /// кнопка удаления из избранного
           return FilledButton.icon(
-            onPressed: () {
+            onPressed: () async {
+              
               /// убираем из избранного
-              // seenItemsController.removeFavorite(show);
+              final item = dbItem.data!;
+              item.bookmarked = null;
+              await storage.db.writeTxn(() async {
+                await storage.db.kginoItems.put(item);
+              });
+
             },
             icon: const Icon(Icons.bookmark_remove),
-            label: Text(locale.removeFromFavorites),
+            label: Text(locale.removeFromBookmarks),
           );
 
         } else {
 
           /// кнопка добавления в избранное
           return FilledButton.icon(
-            onPressed: () {
+            onPressed: () async {
+
               /// добавляем в избранное
-              // seenItemsController.addFavorite(show);
+              final item = dbItem.data ?? kginoItem;
+              item.bookmarked = DateTime.now();
+              
+              await storage.db.writeTxn(() async {
+                await storage.db.kginoItems.put(item);
+              });
+              
             },
             icon: const Icon(Icons.bookmark_add_outlined),
-            label: Text(locale.addToFavorites),
+            label: Text(locale.addToBookmarks),
           );
 
         }

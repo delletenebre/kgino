@@ -77,18 +77,18 @@
     "type": "text"
   },
 
-  "favorites": "Вы хотели посмотреть",
-  "@favorites": {
+  "bookmarks": "Вы хотели посмотреть",
+  "@bookmarks": {
     "type": "text"
   },
 
-  "addToFavorites": "Добавить в избранное",
-  "@addToFavorites": {
+  "addToBookmarks": "Добавить в закладки",
+  "@addToBookmarks": {
     "type": "text"
   },
 
-  "removeFromFavorites": "Убрать из избранного",
-  "@removeFromFavorites": {
+  "removeFromBookmarks": "Удалить из закладок",
+  "@removeFromBookmarks": {
     "type": "text"
   },
 

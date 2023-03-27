@@ -77,18 +77,18 @@
     "type": "text"
   },
 
-  "favorites": "Favorites",
-  "@favorites": {
+  "bookmarks": "Favorites",
+  "@bookmarks": {
     "type": "text"
   },
 
-  "addToFavorites": "Add to favorites",
-  "@addToFavorites": {
+  "addToBookmarks": "Add to favorites",
+  "@addToBookmarks": {
     "type": "text"
   },
 
-  "removeFromFavorites": "Remove from favorites",
-  "@removeFromFavorites": {
+  "removeFromBookmarks": "Remove from favorites",
+  "@removeFromBookmarks": {
     "type": "text"
   },
 
