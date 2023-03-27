@@ -15,6 +15,8 @@ import '../../ui/kgino_item/bookmark_button.dart';
 import '../../ui/krs_item_details.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/kgino_item/play_button_tooltip.dart';
+import '../../ui/loading_indicator.dart';
+import '../../ui/try_again_message.dart';
 
 
 class OckgMovieDetailsPage extends HookWidget {
@@ -59,21 +61,17 @@ class OckgMovieDetailsPage extends HookWidget {
           builder: (context, state) {
                     
             if (state.isError || state.isEmpty) {
-              return Text('error: $state');
-              // return TryAgainMessage(
-              //   onRetry: () {
-                  
-              //   }
-              // );
+              return TryAgainMessage(
+                onRetry: () {
+                  /// запрашиваем данные ещё раз
+                  context.read<KginoItemDetailsCubit>()
+                    .fetch(api.getMovieDetails(kginoItemId));
+                }
+              );
             }
 
             if (state.isLoading) {
-              return Text('loading');
-              // return TryAgainMessage(
-              //   onRetry: () {
-                  
-              //   }
-              // );
+              return const LoadingIndicator();
             }
             
             final kginoItem = state.asData.data;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
     super.key,
-    this.size = 24.0,
+    this.size = 48.0,
     this.color,
   });
 

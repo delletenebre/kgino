@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class KrsScrollView extends StatefulWidget {
+class KrsScrollView extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
   final ScrollPhysics? physics;
-  final ScrollController? scrollController;
+  final ScrollController scrollController;
   final Function(ScrollMetrics scrollMetrics)? onStartScroll;
   final Function(ScrollMetrics scrollMetrics)? onUpdateScroll;
   final Function(ScrollMetrics scrollMetrics)? onEndScroll;
@@ -16,54 +16,31 @@ class KrsScrollView extends StatefulWidget {
     this.physics = const BouncingScrollPhysics(
       parent: AlwaysScrollableScrollPhysics(),
     ),
-    this.scrollController,
+    required this.scrollController,
     this.onStartScroll,
     this.onUpdateScroll,
     this.onEndScroll,
   });
 
   @override
-  State<KrsScrollView> createState() => _KrsScrollViewState();
-}
-
-class _KrsScrollViewState extends State<KrsScrollView> {
-  late final ScrollController _scrollController;
-
-  @override
-  void initState() {
-    _scrollController = widget.scrollController ?? ScrollController();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    if (widget.scrollController != null) {
-      _scrollController.dispose();
-    }
-    
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
-          widget.onStartScroll?.call(scrollNotification.metrics);
+          onStartScroll?.call(scrollNotification.metrics);
         } else if (scrollNotification is ScrollUpdateNotification) {
-          widget.onUpdateScroll?.call(scrollNotification.metrics);
+          onUpdateScroll?.call(scrollNotification.metrics);
         } else if (scrollNotification is ScrollEndNotification) {
-          widget.onEndScroll?.call(scrollNotification.metrics);
+          onEndScroll?.call(scrollNotification.metrics);
         }
         return false;
       },
       child: SingleChildScrollView(
-        controller: _scrollController,
-        padding: widget.padding,
-        physics: widget.physics,
+        controller: scrollController,
+        padding: padding,
+        physics: physics,
         child: Column(
-          children: widget.children,
+          children: children,
         ),
       ),
     );
