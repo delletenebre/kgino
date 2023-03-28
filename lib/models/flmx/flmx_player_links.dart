@@ -10,7 +10,7 @@ part 'flmx_player_links.g.dart';
 class FlmxPlayerLinks with _$FlmxPlayerLinks {
   const factory FlmxPlayerLinks({
     @Default([]) List<FlmxMovieLink> movie,
-    @Default({}) Map<String, Map<String, Map<String, FlmxShowLink>>> playlist,
+    dynamic playlist,
     //@Default([]) List<FlmxMovieLink> trailer,
   }) = _FlmxPlayerLinks;
 

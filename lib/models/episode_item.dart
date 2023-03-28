@@ -39,7 +39,7 @@ class EpisodeItem {
 
   EpisodeItem({
     required this.id,
-    required this.name,
+    this.name = '',
 
     this.position = 0,
     this.duration = 1,

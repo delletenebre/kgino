@@ -31,7 +31,6 @@ class PlayButtonTooltip extends HookWidget {
       initialData: kginoItem,
     );
     
-    
     if (dbItemStream.hasData && dbItemStream.data != null) {
       final dbItem = dbItemStream.data!;
 
@@ -102,6 +101,22 @@ class PlayButtonTooltip extends HookWidget {
           ],
         );
       }
+    }
+
+    if (kginoItem.seasons.first.episodes.length > 1) {
+      final episode = kginoItem.seasons.first.episodes.first;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('${episode.seasonNumber} сезон, ${episode.episodeNumber} серия',
+            style: const TextStyle(
+              fontSize: 12.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
     }
 
     return const SizedBox();

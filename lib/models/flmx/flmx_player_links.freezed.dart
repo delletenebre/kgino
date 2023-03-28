@@ -21,8 +21,7 @@ FlmxPlayerLinks _$FlmxPlayerLinksFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FlmxPlayerLinks {
   List<FlmxMovieLink> get movie => throw _privateConstructorUsedError;
-  Map<String, Map<String, Map<String, FlmxShowLink>>> get playlist =>
-      throw _privateConstructorUsedError;
+  dynamic get playlist => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,9 +35,7 @@ abstract class $FlmxPlayerLinksCopyWith<$Res> {
           FlmxPlayerLinks value, $Res Function(FlmxPlayerLinks) then) =
       _$FlmxPlayerLinksCopyWithImpl<$Res, FlmxPlayerLinks>;
   @useResult
-  $Res call(
-      {List<FlmxMovieLink> movie,
-      Map<String, Map<String, Map<String, FlmxShowLink>>> playlist});
+  $Res call({List<FlmxMovieLink> movie, dynamic playlist});
 }
 
 /// @nodoc
@@ -55,17 +52,17 @@ class _$FlmxPlayerLinksCopyWithImpl<$Res, $Val extends FlmxPlayerLinks>
   @override
   $Res call({
     Object? movie = null,
-    Object? playlist = null,
+    Object? playlist = freezed,
   }) {
     return _then(_value.copyWith(
       movie: null == movie
           ? _value.movie
           : movie // ignore: cast_nullable_to_non_nullable
               as List<FlmxMovieLink>,
-      playlist: null == playlist
+      playlist: freezed == playlist
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
-              as Map<String, Map<String, Map<String, FlmxShowLink>>>,
+              as dynamic,
     ) as $Val);
   }
 }
@@ -78,9 +75,7 @@ abstract class _$$_FlmxPlayerLinksCopyWith<$Res>
       __$$_FlmxPlayerLinksCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {List<FlmxMovieLink> movie,
-      Map<String, Map<String, Map<String, FlmxShowLink>>> playlist});
+  $Res call({List<FlmxMovieLink> movie, dynamic playlist});
 }
 
 /// @nodoc
@@ -95,17 +90,17 @@ class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
   @override
   $Res call({
     Object? movie = null,
-    Object? playlist = null,
+    Object? playlist = freezed,
   }) {
     return _then(_$_FlmxPlayerLinks(
       movie: null == movie
           ? _value._movie
           : movie // ignore: cast_nullable_to_non_nullable
               as List<FlmxMovieLink>,
-      playlist: null == playlist
-          ? _value._playlist
+      playlist: freezed == playlist
+          ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
-              as Map<String, Map<String, Map<String, FlmxShowLink>>>,
+              as dynamic,
     ));
   }
 }
@@ -114,11 +109,8 @@ class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
   const _$_FlmxPlayerLinks(
-      {final List<FlmxMovieLink> movie = const [],
-      final Map<String, Map<String, Map<String, FlmxShowLink>>> playlist =
-          const {}})
-      : _movie = movie,
-        _playlist = playlist;
+      {final List<FlmxMovieLink> movie = const [], this.playlist})
+      : _movie = movie;
 
   factory _$_FlmxPlayerLinks.fromJson(Map<String, dynamic> json) =>
       _$$_FlmxPlayerLinksFromJson(json);
@@ -132,14 +124,8 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
     return EqualUnmodifiableListView(_movie);
   }
 
-  final Map<String, Map<String, Map<String, FlmxShowLink>>> _playlist;
   @override
-  @JsonKey()
-  Map<String, Map<String, Map<String, FlmxShowLink>>> get playlist {
-    if (_playlist is EqualUnmodifiableMapView) return _playlist;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_playlist);
-  }
+  final dynamic playlist;
 
   @override
   String toString() {
@@ -152,7 +138,7 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
         (other.runtimeType == runtimeType &&
             other is _$_FlmxPlayerLinks &&
             const DeepCollectionEquality().equals(other._movie, _movie) &&
-            const DeepCollectionEquality().equals(other._playlist, _playlist));
+            const DeepCollectionEquality().equals(other.playlist, playlist));
   }
 
   @JsonKey(ignore: true)
@@ -160,7 +146,7 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_movie),
-      const DeepCollectionEquality().hash(_playlist));
+      const DeepCollectionEquality().hash(playlist));
 
   @JsonKey(ignore: true)
   @override
@@ -178,9 +164,8 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
 
 abstract class _FlmxPlayerLinks implements FlmxPlayerLinks {
   const factory _FlmxPlayerLinks(
-          {final List<FlmxMovieLink> movie,
-          final Map<String, Map<String, Map<String, FlmxShowLink>>> playlist}) =
-      _$_FlmxPlayerLinks;
+      {final List<FlmxMovieLink> movie,
+      final dynamic playlist}) = _$_FlmxPlayerLinks;
 
   factory _FlmxPlayerLinks.fromJson(Map<String, dynamic> json) =
       _$_FlmxPlayerLinks.fromJson;
@@ -188,7 +173,7 @@ abstract class _FlmxPlayerLinks implements FlmxPlayerLinks {
   @override
   List<FlmxMovieLink> get movie;
   @override
-  Map<String, Map<String, Map<String, FlmxShowLink>>> get playlist;
+  dynamic get playlist;
   @override
   @JsonKey(ignore: true)
   _$$_FlmxPlayerLinksCopyWith<_$_FlmxPlayerLinks> get copyWith =>

@@ -26,7 +26,10 @@ class FocusableListCubit extends Cubit<FocusableListState> {
     for (final focusNode in state.focusNodes) {
       focusNode.dispose();
     }
-    state.scrollController?.dispose();
+
+    if (controller == null) {
+      state.scrollController?.dispose();
+    }
 
     return super.close();
   }

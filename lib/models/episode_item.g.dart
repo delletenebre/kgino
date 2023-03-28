@@ -117,7 +117,7 @@ EpisodeItem _episodeItemDeserialize(
     duration: reader.readIntOrNull(offsets[0]) ?? 1,
     episodeNumber: reader.readIntOrNull(offsets[1]) ?? 0,
     id: reader.readString(offsets[2]),
-    name: reader.readString(offsets[3]),
+    name: reader.readStringOrNull(offsets[3]) ?? '',
     position: reader.readIntOrNull(offsets[4]) ?? 0,
     seasonNumber: reader.readIntOrNull(offsets[5]) ?? 0,
     subtitlesFileUrl: reader.readStringOrNull(offsets[6]) ?? '',
@@ -141,7 +141,7 @@ P _episodeItemDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 4:
       return (reader.readIntOrNull(offset) ?? 0) as P;
     case 5:

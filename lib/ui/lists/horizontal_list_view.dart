@@ -31,6 +31,8 @@ class HorizontalListView<T> extends HookWidget {
   /// отступы списка
   final EdgeInsetsGeometry padding;
 
+  final double height;
+
   const HorizontalListView({
     super.key,
     this.controller,
@@ -45,6 +47,7 @@ class HorizontalListView<T> extends HookWidget {
 
     this.spacing = 24.0,
     this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
+    this.height = 230.0,
   });
 
   @override
@@ -71,13 +74,13 @@ class HorizontalListView<T> extends HookWidget {
     final itemCount = items.length;
 
     return SizedBox(
-      height: 230,
+      height: height,
       child: BlocProvider(
         key: ValueKey(itemCount),
         create: (context) => FocusableListCubit(
           controller: controller,
           itemCount: itemCount,
-          offset: 32.0,
+          offset: padding.horizontal / 2.0,
           /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
           /// фокус не переходил на следующий список, ставим handled
           keyEventResult: KeyEventResult.handled,
@@ -116,9 +119,9 @@ class HorizontalListView<T> extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (titleText.isNotEmpty) Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      start: 24.0,
-                      end: 24.0,
+                    padding: EdgeInsetsDirectional.only(
+                      start: padding.horizontal / 2.0,
+                      end: padding.horizontal / 2.0,
                       bottom: 24.0,
                     ),
                     child: Text(titleText,

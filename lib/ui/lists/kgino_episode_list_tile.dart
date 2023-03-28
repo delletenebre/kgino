@@ -9,7 +9,7 @@ class KginoEpisodeListTile extends StatefulWidget {
   final String titleText;
   final String description;
   final Size posterSize;
-  final void Function(FocusNode focusNode)? onFocused;
+  final void Function()? onFocused;
   final bool showTitle;
   final Function()? onPressed;
   final KeyEventResult Function()? onArrowLeft;
@@ -68,7 +68,7 @@ class _KginoEpisodeListTileState extends State<KginoEpisodeListTile> {
     _focusNode = widget.focusNode;
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        widget.onFocused?.call(_focusNode);
+        widget.onFocused?.call();
       }
     });
     

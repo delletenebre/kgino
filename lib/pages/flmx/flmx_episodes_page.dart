@@ -70,19 +70,25 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// номера сезонов
-          SizedBox(
-            height: 40.0 + 48.0 * 2,
-            child: HorizontalListView<SeasonItem>(
-              padding: const EdgeInsets.all(48.0),
-              controller: _seasonsScrollController,
-              spacing: 8.0,
-              // onItemFocused: (season) {
-              //   _checkEpisodeBySeason(season);
-              // },
-              requestItemIndex: () => _selectedSeasonIndex,
-              itemsFuture: Future.microtask(() => widget.kginoItem.seasons),
-              itemBuilder: (context, focusNode, index, season) {
-                return IconButton(
+          HorizontalListView<SeasonItem>(
+            height: 40.0 + 48.0 * 2.0,
+            padding: const EdgeInsets.all(48.0),
+            controller: _seasonsScrollController,
+            spacing: 8.0,
+            // onItemFocused: (season) {
+            //   _checkEpisodeBySeason(season);
+            // },
+            requestItemIndex: () => _selectedSeasonIndex,
+            itemsFuture: Future.microtask(() => widget.kginoItem.seasons),
+            itemBuilder: (context, focusNode, index, season) {
+              return Focus(
+                onFocusChange: (hasFocus) {
+                  if (hasFocus) {
+                    _checkEpisodeBySeason(season);
+                  }
+                },
+
+                child: IconButton(
                   focusNode: focusNode,
                   style: ButtonStyle(
                     
@@ -117,9 +123,9 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
                     _checkEpisodeBySeason(season);
                   },
                   icon: Text('${index + 1}'),
-                );
-              },
-            ),
+                )
+              );
+            },
           ),
 
           const SizedBox(height: 48.0),
@@ -133,9 +139,6 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 spacing: 24.0,
                 titleText: '${currentSeason.name}, ${locale.episodesCount(currentSeason.episodes.length)}',
-                // onItemFocused: (episode) {
-                //   _checkSeasonByEpisode(episode);
-                // },
                 requestItemIndex: () => _selectedEpisodeIndex,
                 itemsFuture: Future.microtask(() => _episodes),
                 itemBuilder: (context, focusNode, index, episode) {
@@ -158,6 +161,10 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
 
                     /// время просмотра
                     seenValue: seenValue,
+
+                    onFocused: () {
+                      _checkSeasonByEpisode(episode);
+                    },
 
                     onPressed: () {
                       /// переходим на страницу плеера сериала

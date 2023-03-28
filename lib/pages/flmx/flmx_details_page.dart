@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../api/flmx_api_provider.dart';
-import '../../api/ockg_api_provider.dart';
 import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
 import '../../models/kgino_item.dart';
@@ -20,11 +19,11 @@ import '../../ui/loading_indicator.dart';
 import '../../ui/try_again_message.dart';
 
 
-class FlmxMovieDetailsPage extends HookWidget {
+class FlmxDetailsPage extends HookWidget {
   final String kginoItemId;
   final secondContainerKey = GlobalKey();
 
-  FlmxMovieDetailsPage(this.kginoItemId, {
+  FlmxDetailsPage(this.kginoItemId, {
     super.key,
   });
 
@@ -89,7 +88,7 @@ class FlmxMovieDetailsPage extends HookWidget {
               children: [
                 /// заголовок
                 const AppHeader(
-                  child: Text('Filmix Фильмы'),
+                  child: Text('Filmix'),
                 ),
 
                 SizedBox(
@@ -146,7 +145,6 @@ class FlmxMovieDetailsPage extends HookWidget {
                                       Padding(
                                         padding: const EdgeInsets.only(right: 12.0),
                                         child: FilledButton.icon(
-                                          // focusNode: playButtonFocusNode,
                                           autofocus: true,
                                           onFocusChange: (hasFocus) {
                                             playButtonHasFocus.value = hasFocus;
@@ -172,11 +170,10 @@ class FlmxMovieDetailsPage extends HookWidget {
                                       /// эпизода
                                       if (kginoItem.seasons.first.episodes.length > 1) Padding(
                                         padding: const EdgeInsets.only(right: 12.0),
-                                        child: ElevatedButton.icon(
-                                          style: KrsTheme.filledTonalButtonStyleOf(context),
+                                        child: FilledButton.icon(
                                           onPressed: () {
                                             /// переходим на страницу выбора файла
-                                            context.goNamed('flmxEpisodes',
+                                            context.goNamed('flmxShowEpisodes',
                                               params: {
                                                 'id': kginoItem.id,
                                               },

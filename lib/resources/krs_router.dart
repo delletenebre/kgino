@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
-import '../pages/flmx/flmx_movie_details_page.dart';
+import '../pages/flmx/flmx_episodes_page.dart';
+import '../pages/flmx/flmx_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
@@ -14,6 +15,7 @@ import '../pages/oc.kg/ockg_movie_details_page.dart';
 import '../pages/player_page.dart';
 import '../pages/tskg/tskg_home_page.dart';
 import '../ui/scaffold_with_navigation_bar.dart';
+import '../ui/try_again_message.dart';
 
 
 final rootNavigatorKey = 
@@ -73,9 +75,31 @@ class KrsRouter {
                 name: 'flmxShowDetails',
                 builder: (context, state) {
                   final id = state.params['id'] ?? '';
-                  return FlmxMovieDetailsPage(id);
+                  return FlmxDetailsPage(id);
                 },
                 routes: [
+
+                  /// страница эпизодов сериала
+                  GoRoute(
+                    path: 'episodes',
+                    name: 'flmxShowEpisodes',
+                    builder: (context, state) {
+                      final kginoItem = state.extra;
+                      if (kginoItem != null) {
+                        return FlmxEpisodesPage(kginoItem as KginoItem);
+                      }
+                      
+                      return TryAgainMessage(
+                        onRetry: () {
+                          
+                        },
+                      );
+                    },
+                    routes: [
+
+                    ],
+                  ),
+
                 ],
               ),
 
@@ -97,9 +121,31 @@ class KrsRouter {
                 name: 'flmxMovieDetails',
                 builder: (context, state) {
                   final id = state.params['id'] ?? '';
-                  return FlmxMovieDetailsPage(id);
+                  return FlmxDetailsPage(id);
                 },
                 routes: [
+
+                  /// страница эпизодов
+                  GoRoute(
+                    path: 'episodes',
+                    name: 'flmxMovieEpisodes',
+                    builder: (context, state) {
+                      final kginoItem = state.extra;
+                      if (kginoItem != null) {
+                        return FlmxEpisodesPage(kginoItem as KginoItem);
+                      }
+                      
+                      return TryAgainMessage(
+                        onRetry: () {
+                          
+                        },
+                      );
+                    },
+                    routes: [
+
+                    ],
+                  ),
+
                 ],
               ),
 

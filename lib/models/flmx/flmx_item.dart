@@ -55,7 +55,6 @@ class FlmxItem with _$FlmxItem {
 
     String voiceActing = '';
     List<KginoItem> voiceActings = [];
-    List<String> voiceActingsvoiceActingIds = [];
 
     if (playerLinks.movie.isNotEmpty) {
       /// ^ если это фильм
@@ -66,12 +65,9 @@ class FlmxItem with _$FlmxItem {
         voiceActings = playerLinks.movie.map((movie) {
           final seasons = [
             SeasonItem(
-              name: '',
               episodes: [
                 EpisodeItem(
                   id: movie.link,
-                  name: '',
-                  updatedAt: DateTime.now(),
                 ),
               ]
             )
@@ -105,28 +101,38 @@ class FlmxItem with _$FlmxItem {
 
       seasons = [
         SeasonItem(
-          name: '',
           episodes: [
             EpisodeItem(
               id: playerLinks.movie.first.link,
-              name: '',
-              updatedAt: DateTime.now(),
             ),
           ]
         )
       ];
     }
 
-    if (playerLinks.playlist.isNotEmpty) {
+    /// playlist as Map<String, Map<String, Map<String, FlmxShowLink>>>
+    if (playerLinks.playlist is Map && playerLinks.playlist.isNotEmpty) {
       /// ^ если это сериал
+      
+      /// парсим как [Map<String, Map<String, Map<String, FlmxShowLink>>>]
+      final playlist = (playerLinks.playlist as Map<String, dynamic>).map(
+        (k, e) => MapEntry(
+          k, (e as Map<String, dynamic>).map(
+            (k, e) => MapEntry(
+              k, (e as Map<String, dynamic>).map(
+                (k, e) => MapEntry(k,
+                    FlmxShowLink.fromJson(e as Map<String, dynamic>)),
+              )),
+          )),
+      );
     
       /// список всех доступных озвучек
       final translationsMap = <String, Map<String, Map<String, FlmxShowLink>>>{};
 
-      for (final seasonNumber in playerLinks.playlist.keys) {
+      for (final seasonNumber in playlist.keys) {
         
         /// сезон со всеми вариантами озвучек
-        final translationMap = playerLinks.playlist[seasonNumber]!;
+        final translationMap = playlist[seasonNumber]!;
         
         for (final translationName in translationMap.keys) {
 
