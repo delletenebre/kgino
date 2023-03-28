@@ -1,5 +1,7 @@
+import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 
+import '../resources/krs_storage.dart';
 import 'episode_item.dart';
 import 'season_item.dart';
 
@@ -39,10 +41,19 @@ class KginoItem {
   DateTime? bookmarked;
 
   /// список просмотренных эпизодов
-  final episodes = IsarLinks<EpisodeItem>();
+  IsarLinks<EpisodeItem> seenEpisodes = IsarLinks<EpisodeItem>();
 
   /// текущая озвучка
   String voiceActing;
+
+  /// текущая озвучка (срезанная)
+  @ignore
+  String get shortVoiceActing {
+    if (voiceActing.length > 24) {
+      return '${voiceActing.substring(0, 24)}...';
+    }
+    return voiceActing;
+  }
 
 
 
@@ -134,22 +145,23 @@ class KginoItem {
   });
 
   /// ключ для идентификатора базы данных
+  @ignore
   String get storageKey => '$provider.$id';
 
   /// количество эпизодов во всех сезонах
-  short get episodeCount => seasons.fold(0, (previousValue, season) {
+  int get episodeCount => seasons.fold(0, (previousValue, season) {
     return previousValue + season.episodes.length;
   });
 
 
   /// получаем последний просмотренный эпизод
   EpisodeItem? getLastSeenEpisode() {
-    if (episodes.isNotEmpty) {
-      episodes.toList().sort((a, b) {
+    if (seenEpisodes.isNotEmpty) {
+      seenEpisodes.toList().sort((a, b) {
         return b.updatedAt!.compareTo(a.updatedAt!);
       });
       
-      return episodes.first;
+      return seenEpisodes.first;
     }
 
     return null;
@@ -182,6 +194,22 @@ class KginoItem {
     }
     
     return playableEpisode;
+  }
+
+
+  /// хранилище данных
+  @ignore
+  final storage = GetIt.instance<KrsStorage>();
+
+  Future<void> save() async {
+    await storage.db.writeTxn(() async {
+      await storage.db.kginoItems.put(this);
+    });
+  }
+
+  @ignore
+  Stream<KginoItem?> get dbStream {
+    return storage.db.kginoItems.watchObject(isarId);
   }
 
 

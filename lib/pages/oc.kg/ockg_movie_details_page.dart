@@ -12,7 +12,7 @@ import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
-import '../../ui/krs_item_details.dart';
+import '../../ui/kgino_item/krs_item_details.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/kgino_item/play_button_tooltip.dart';
 import '../../ui/loading_indicator.dart';

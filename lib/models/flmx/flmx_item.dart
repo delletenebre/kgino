@@ -219,10 +219,10 @@ class FlmxItem with _$FlmxItem {
 
       /// первый вариант озвучки
       voiceActing = translationsMap.keys.first;
-      return voiceActings.first;
+      seasons = voiceActings.first.seasons;
     }
-      
-
+    
+    
     return KginoItem(
       provider: KginoProvider.flmx.name,
       id: id.toString(),

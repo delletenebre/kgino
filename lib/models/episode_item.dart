@@ -17,19 +17,19 @@ class EpisodeItem {
   final String name;
 
   /// последняя позиция просмотра эпизода (в секундах)
-  short position;
+  int position;
 
   /// продолжительность эпизода (в секундах)
-  final short duration;
+  final int duration;
 
   /// дата последнего просмотра
   DateTime? updatedAt;
 
   /// номер сезона
-  final short seasonNumber;
+  final int seasonNumber;
 
   /// номер эпизода в сезоне
-  final short episodeNumber;
+  final int episodeNumber;
 
   /// ссылка на проигрываемый файл
   String videoFileUrl;

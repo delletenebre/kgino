@@ -12,7 +12,7 @@ import '../../models/category_list_item.dart';
 import '../../models/kgino_item.dart';
 import '../../resources/krs_locale.dart';
 import '../../ui/app_header.dart';
-import '../../ui/krs_item_details.dart';
+import '../../ui/kgino_item/krs_item_details.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/kgino_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';

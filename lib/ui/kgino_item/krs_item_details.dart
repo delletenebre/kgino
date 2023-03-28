@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:kgino/extensions/duration.dart';
 
-import '../models/api_response.dart';
-import '../models/kgino_item.dart';
-import '../resources/krs_locale.dart';
-import '../resources/krs_theme.dart';
+import '../../models/api_response.dart';
+import '../../models/kgino_item.dart';
+import '../../resources/krs_locale.dart';
+import '../../resources/krs_theme.dart';
 
 class KrsItemDetails extends HookWidget {
   final ApiResponse<KginoItem> state;
@@ -20,16 +20,6 @@ class KrsItemDetails extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
-
-
-    // if (state.isLoading) {
-    //   return const SizedBox(
-    //     height: KrsTheme.movieDetailsHeight,
-    //     child: Center(
-    //       child: CircularProgressIndicator(),
-    //     ),
-    //   );
-    // }
 
     // if (state.isLoading || state.isEmpty || state.isError) {
     if (!state.isSuccess) {
@@ -209,6 +199,7 @@ class KrsItemDetails extends HookWidget {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: KrsItemDetailsChip(
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               const Padding(
                                 padding: EdgeInsets.only(right: 4.0),
@@ -217,7 +208,7 @@ class KrsItemDetails extends HookWidget {
                                 ),
                               ),
                               
-                              Text(kginoItem.voiceActing),
+                              Text(kginoItem.shortVoiceActing),
                             ],
                           ),
                         ),
@@ -308,6 +299,7 @@ class KginoRatingChip extends StatelessWidget {
 
     return KrsItemDetailsChip(
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(name),
 
@@ -316,7 +308,6 @@ class KginoRatingChip extends StatelessWidget {
           Text(rating.toStringAsFixed(1),
             style: TextStyle(
               color: textColor,
-              
             ),
           ),
         ],

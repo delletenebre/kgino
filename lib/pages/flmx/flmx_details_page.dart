@@ -9,14 +9,17 @@ import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
 import '../../models/kgino_item.dart';
 import '../../resources/krs_locale.dart';
+import '../../resources/krs_storage.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
-import '../../ui/krs_item_details.dart';
+import '../../ui/kgino_item/voice_actings_button.dart';
+import '../../ui/kgino_item/krs_item_details.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/kgino_item/play_button_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/try_again_message.dart';
+import '../../utils.dart';
 
 
 class FlmxDetailsPage extends HookWidget {
@@ -189,6 +192,26 @@ class FlmxDetailsPage extends HookWidget {
                                       Padding(
                                         padding: const EdgeInsets.only(right: 12.0),
                                         child: BookmarkButton(kginoItem),
+                                      ),
+
+                                      /// кнопка выбора озвучки
+                                      if (kginoItem.voiceActings.length > 1) Padding(
+                                        padding: const EdgeInsets.only(right: 12.0),
+                                        child: VoiceActingsButton(kginoItem,
+                                          onVoiceActingChange: (voiceActing) async {
+
+                                            kginoItem.voiceActing = voiceActing;
+                                            await kginoItem.save();
+
+                                            /// переходим на страницу деталей о сериале
+                                            // TODO fix route to movie
+                                            context.pushReplacementNamed('flmxShowDetails',
+                                              params: {
+                                                'id': kginoItem.id,
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
 
                                     ],

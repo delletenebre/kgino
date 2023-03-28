@@ -20,12 +20,12 @@ const EpisodeItemSchema = CollectionSchema(
     r'duration': PropertySchema(
       id: 0,
       name: r'duration',
-      type: IsarType.int,
+      type: IsarType.long,
     ),
     r'episodeNumber': PropertySchema(
       id: 1,
       name: r'episodeNumber',
-      type: IsarType.int,
+      type: IsarType.long,
     ),
     r'id': PropertySchema(
       id: 2,
@@ -40,12 +40,12 @@ const EpisodeItemSchema = CollectionSchema(
     r'position': PropertySchema(
       id: 4,
       name: r'position',
-      type: IsarType.int,
+      type: IsarType.long,
     ),
     r'seasonNumber': PropertySchema(
       id: 5,
       name: r'seasonNumber',
-      type: IsarType.int,
+      type: IsarType.long,
     ),
     r'subtitlesFileUrl': PropertySchema(
       id: 6,
@@ -96,12 +96,12 @@ void _episodeItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeInt(offsets[0], object.duration);
-  writer.writeInt(offsets[1], object.episodeNumber);
+  writer.writeLong(offsets[0], object.duration);
+  writer.writeLong(offsets[1], object.episodeNumber);
   writer.writeString(offsets[2], object.id);
   writer.writeString(offsets[3], object.name);
-  writer.writeInt(offsets[4], object.position);
-  writer.writeInt(offsets[5], object.seasonNumber);
+  writer.writeLong(offsets[4], object.position);
+  writer.writeLong(offsets[5], object.seasonNumber);
   writer.writeString(offsets[6], object.subtitlesFileUrl);
   writer.writeDateTime(offsets[7], object.updatedAt);
   writer.writeString(offsets[8], object.videoFileUrl);
@@ -114,12 +114,12 @@ EpisodeItem _episodeItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = EpisodeItem(
-    duration: reader.readIntOrNull(offsets[0]) ?? 1,
-    episodeNumber: reader.readIntOrNull(offsets[1]) ?? 0,
+    duration: reader.readLongOrNull(offsets[0]) ?? 1,
+    episodeNumber: reader.readLongOrNull(offsets[1]) ?? 0,
     id: reader.readString(offsets[2]),
     name: reader.readStringOrNull(offsets[3]) ?? '',
-    position: reader.readIntOrNull(offsets[4]) ?? 0,
-    seasonNumber: reader.readIntOrNull(offsets[5]) ?? 0,
+    position: reader.readLongOrNull(offsets[4]) ?? 0,
+    seasonNumber: reader.readLongOrNull(offsets[5]) ?? 0,
     subtitlesFileUrl: reader.readStringOrNull(offsets[6]) ?? '',
     updatedAt: reader.readDateTimeOrNull(offsets[7]),
     videoFileUrl: reader.readStringOrNull(offsets[8]) ?? '',
@@ -135,17 +135,17 @@ P _episodeItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readIntOrNull(offset) ?? 1) as P;
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     case 1:
-      return (reader.readIntOrNull(offset) ?? 0) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 4:
-      return (reader.readIntOrNull(offset) ?? 0) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 5:
-      return (reader.readIntOrNull(offset) ?? 0) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 6:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 7:

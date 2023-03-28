@@ -75,12 +75,12 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
             padding: const EdgeInsets.all(48.0),
             controller: _seasonsScrollController,
             spacing: 8.0,
-            // onItemFocused: (season) {
-            //   _checkEpisodeBySeason(season);
-            // },
             requestItemIndex: () => _selectedSeasonIndex,
             itemsFuture: Future.microtask(() => widget.kginoItem.seasons),
             itemBuilder: (context, focusNode, index, season) {
+
+              final seasonNumber = int.tryParse(season.name) ?? (index + 1);
+
               return Focus(
                 onFocusChange: (hasFocus) {
                   if (hasFocus) {
@@ -122,7 +122,7 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
                     /// при нажатии на номер сезона
                     _checkEpisodeBySeason(season);
                   },
-                  icon: Text('${index + 1}'),
+                  icon: Text('$seasonNumber'),
                 )
               );
             },

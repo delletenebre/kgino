@@ -25,7 +25,7 @@ const KginoItemSchema = CollectionSchema(
     r'episodeCount': PropertySchema(
       id: 1,
       name: r'episodeCount',
-      type: IsarType.int,
+      type: IsarType.long,
     ),
     r'hasImdbRating': PropertySchema(
       id: 2,
@@ -57,18 +57,13 @@ const KginoItemSchema = CollectionSchema(
       name: r'provider',
       type: IsarType.string,
     ),
-    r'storageKey': PropertySchema(
-      id: 8,
-      name: r'storageKey',
-      type: IsarType.string,
-    ),
     r'subtitlesEnabled': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'subtitlesEnabled',
       type: IsarType.bool,
     ),
     r'voiceActing': PropertySchema(
-      id: 10,
+      id: 9,
       name: r'voiceActing',
       type: IsarType.string,
     )
@@ -80,9 +75,9 @@ const KginoItemSchema = CollectionSchema(
   idName: r'isarId',
   indexes: {},
   links: {
-    r'episodes': LinkSchema(
-      id: 7002276521523555894,
-      name: r'episodes',
+    r'seenEpisodes': LinkSchema(
+      id: 6928117659106014040,
+      name: r'seenEpisodes',
       target: r'EpisodeItem',
       single: false,
     )
@@ -104,7 +99,6 @@ int _kginoItemEstimateSize(
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.posterUrl.length * 3;
   bytesCount += 3 + object.provider.length * 3;
-  bytesCount += 3 + object.storageKey.length * 3;
   bytesCount += 3 + object.voiceActing.length * 3;
   return bytesCount;
 }
@@ -116,16 +110,15 @@ void _kginoItemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.bookmarked);
-  writer.writeInt(offsets[1], object.episodeCount);
+  writer.writeLong(offsets[1], object.episodeCount);
   writer.writeBool(offsets[2], object.hasImdbRating);
   writer.writeBool(offsets[3], object.hasKinopoiskRating);
   writer.writeString(offsets[4], object.id);
   writer.writeString(offsets[5], object.name);
   writer.writeString(offsets[6], object.posterUrl);
   writer.writeString(offsets[7], object.provider);
-  writer.writeString(offsets[8], object.storageKey);
-  writer.writeBool(offsets[9], object.subtitlesEnabled);
-  writer.writeString(offsets[10], object.voiceActing);
+  writer.writeBool(offsets[8], object.subtitlesEnabled);
+  writer.writeString(offsets[9], object.voiceActing);
 }
 
 KginoItem _kginoItemDeserialize(
@@ -140,8 +133,8 @@ KginoItem _kginoItemDeserialize(
     name: reader.readString(offsets[5]),
     posterUrl: reader.readString(offsets[6]),
     provider: reader.readString(offsets[7]),
-    subtitlesEnabled: reader.readBoolOrNull(offsets[9]) ?? false,
-    voiceActing: reader.readStringOrNull(offsets[10]) ?? '',
+    subtitlesEnabled: reader.readBoolOrNull(offsets[8]) ?? false,
+    voiceActing: reader.readStringOrNull(offsets[9]) ?? '',
   );
   return object;
 }
@@ -156,7 +149,7 @@ P _kginoItemDeserializeProp<P>(
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readInt(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
       return (reader.readBool(offset)) as P;
     case 3:
@@ -170,10 +163,8 @@ P _kginoItemDeserializeProp<P>(
     case 7:
       return (reader.readString(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
-    case 9:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 10:
+    case 9:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -185,12 +176,12 @@ Id _kginoItemGetId(KginoItem object) {
 }
 
 List<IsarLinkBase<dynamic>> _kginoItemGetLinks(KginoItem object) {
-  return [object.episodes];
+  return [object.seenEpisodes];
 }
 
 void _kginoItemAttach(IsarCollection<dynamic> col, Id id, KginoItem object) {
-  object.episodes
-      .attach(col, col.isar.collection<EpisodeItem>(), r'episodes', id);
+  object.seenEpisodes
+      .attach(col, col.isar.collection<EpisodeItem>(), r'seenEpisodes', id);
 }
 
 extension KginoItemQueryWhereSort
@@ -998,140 +989,6 @@ extension KginoItemQueryFilter
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> storageKeyEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'storageKey',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      storageKeyGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'storageKey',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> storageKeyLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'storageKey',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> storageKeyBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'storageKey',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      storageKeyStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'storageKey',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> storageKeyEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'storageKey',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> storageKeyContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'storageKey',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> storageKeyMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'storageKey',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      storageKeyIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'storageKey',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      storageKeyIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'storageKey',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
       subtitlesEnabledEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
@@ -1282,55 +1139,56 @@ extension KginoItemQueryObject
 
 extension KginoItemQueryLinks
     on QueryBuilder<KginoItem, KginoItem, QFilterCondition> {
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> episodes(
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> seenEpisodes(
       FilterQuery<EpisodeItem> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'episodes');
+      return query.link(q, r'seenEpisodes');
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      episodesLengthEqualTo(int length) {
+      seenEpisodesLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> episodesIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', 0, true, 0, true);
+      return query.linkLength(r'seenEpisodes', length, true, length, true);
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      episodesIsNotEmpty() {
+      seenEpisodesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', 0, false, 999999, true);
+      return query.linkLength(r'seenEpisodes', 0, true, 0, true);
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      episodesLengthLessThan(
+      seenEpisodesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'seenEpisodes', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesLengthLessThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', 0, true, length, include);
+      return query.linkLength(r'seenEpisodes', 0, true, length, include);
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      episodesLengthGreaterThan(
+      seenEpisodesLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', length, include, 999999, true);
+      return query.linkLength(r'seenEpisodes', length, include, 999999, true);
     });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      episodesLengthBetween(
+      seenEpisodesLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1338,7 +1196,7 @@ extension KginoItemQueryLinks
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
-          r'episodes', lower, includeLower, upper, includeUpper);
+          r'seenEpisodes', lower, includeLower, upper, includeUpper);
     });
   }
 }
@@ -1438,18 +1296,6 @@ extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByProviderDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'provider', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByStorageKey() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storageKey', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByStorageKeyDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storageKey', Sort.desc);
     });
   }
 
@@ -1590,18 +1436,6 @@ extension KginoItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByStorageKey() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storageKey', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByStorageKeyDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storageKey', Sort.desc);
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenBySubtitlesEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'subtitlesEnabled', Sort.asc);
@@ -1682,13 +1516,6 @@ extension KginoItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByStorageKey(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'storageKey', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctBySubtitlesEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'subtitlesEnabled');
@@ -1756,12 +1583,6 @@ extension KginoItemQueryProperty
   QueryBuilder<KginoItem, String, QQueryOperations> providerProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'provider');
-    });
-  }
-
-  QueryBuilder<KginoItem, String, QQueryOperations> storageKeyProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'storageKey');
     });
   }
 

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get_it/get_it.dart';
 
 import '../../models/episode_item.dart';
 import '../models/kgino_item.dart';
-import '../resources/krs_storage.dart';
-import '../ui/loading_indicator.dart';
 import '../ui/video_player/video_player_view.dart';
 
 class PlayerPage extends HookWidget {
@@ -27,13 +24,6 @@ class PlayerPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// хранилище данных
-    final storage = GetIt.instance<KrsStorage>();
-
-    final dbItemFuture = useFuture(useMemoized(() {
-      return storage.db.kginoItems.get(kginoItem.isarId);
-    }));
-
     /// все эпизоды в одном списке
     final episodes = useMemoized(() {
       return kginoItem.getAllEpisodes();
@@ -44,23 +34,13 @@ class PlayerPage extends HookWidget {
       return episode.id == episodeId;
     }));
 
-    if (dbItemFuture.connectionState != ConnectionState.done) {
-      /// если запрос из базы данных ещё не выполнен
-
-      /// показываем индикатор загрузки
-      return const LoadingIndicator();
-    }
-
-    /// сохранённый в базе данных элемент
-    final dbItem = dbItemFuture.data ?? kginoItem;
-
     return VideoPlayerView(
-      titleText: dbItem.name,
-      subtitlesEnabled: dbItem.subtitlesEnabled,
+      titleText: kginoItem.name,
+      subtitlesEnabled: kginoItem.subtitlesEnabled,
       onInitialPlayableItem: () => getPlayableItem(
         true,
         episodes[currentIndex.value],
-        dbItem.storageKey,
+        kginoItem.storageKey,
       ),
 
       onSkipNext: (currentIndex.value + 1 < episodes.length) ? () {
@@ -70,7 +50,7 @@ class PlayerPage extends HookWidget {
         return getPlayableItem(
           false,
           episodes[currentIndex.value],
-          dbItem.storageKey,
+          kginoItem.storageKey,
         );
       } : null,
 
@@ -81,7 +61,7 @@ class PlayerPage extends HookWidget {
         return getPlayableItem(
           false,
           episodes[currentIndex.value],
-          dbItem.storageKey,
+          kginoItem.storageKey,
         );
       } : null,
 

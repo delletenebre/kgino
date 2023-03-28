@@ -1,13 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get_it/get_it.dart';
 import 'package:kgino/extensions/duration.dart';
-import 'package:kgino/models/episode_item.dart';
 
 import '../../../resources/krs_locale.dart';
 import '../../models/kgino_item.dart';
-import '../../resources/krs_storage.dart';
 
 class PlayButtonTooltip extends HookWidget {
   final KginoItem kginoItem;
@@ -23,11 +20,8 @@ class PlayButtonTooltip extends HookWidget {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
-    /// хранилище данных
-    final storage = GetIt.instance<KrsStorage>();
-
     /// сохранённый в базе данных элемент
-    final dbItemStream = useStream(storage.db.kginoItems.watchObject(kginoItem.isarId),
+    final dbItemStream = useStream(kginoItem.dbStream,
       initialData: kginoItem,
     );
     
