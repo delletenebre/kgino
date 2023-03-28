@@ -72,16 +72,21 @@ class FlmxShowsPage extends HookWidget {
                 ),
 
                 Expanded(
+
+                  /// общий вертикальный список
                   child: VerticalListView(
                     itemCount: categories.length,
                     itemBuilder: (context, focusNode, index) {
                       final category = categories[index];
 
+                      /// категория сериалов (горизонтальный список)
                       return HorizontalListView<KginoItem>(
                         focusNode: focusNode,
                         titleText: category.title,
                         itemsFuture: category.itemsFuture,
                         itemBuilder: (context, focusNode, index, item) {
+
+                          /// карточка сериала
                           return KginoListTile(
                             focusNode: focusNode,
                             onFocused: (focusNode) {
@@ -100,6 +105,7 @@ class FlmxShowsPage extends HookWidget {
                             },
                             item: item,
                           );
+                          
                         },
                         
                       );

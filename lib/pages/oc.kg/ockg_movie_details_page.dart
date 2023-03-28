@@ -47,6 +47,7 @@ class OckgMovieDetailsPage extends HookWidget {
     final playButtonHasFocus = useState(false);
     final secondContainerPosition = useState(0.0);
 
+    /// вычисляем позицию второго контейнера, если он есть
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final box = secondContainerKey.globalPaintBounds;
       if (box != null) {
