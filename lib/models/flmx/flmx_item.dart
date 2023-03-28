@@ -4,7 +4,9 @@ import 'package:kgino/models/episode_item.dart';
 import '../json_converters.dart';
 import '../kgino_item.dart';
 import '../season_item.dart';
+import 'flmx_last_episode.dart';
 import 'flmx_player_links.dart';
+import 'flmx_show_link.dart';
 
 part 'flmx_item.freezed.dart';
 part 'flmx_item.g.dart';
@@ -39,6 +41,8 @@ class FlmxItem with _$FlmxItem {
     @DoubleConverter() @Default(0.0) double imdbRating,
 
     @Default(FlmxPlayerLinks()) FlmxPlayerLinks playerLinks,
+
+    FlmxLastEpisode? lastEpisode,
     
   }) = _FlmxItem;
 
@@ -54,6 +58,8 @@ class FlmxItem with _$FlmxItem {
     List<String> voiceActingsvoiceActingIds = [];
 
     if (playerLinks.movie.isNotEmpty) {
+      /// ^ если это фильм
+      
       if (playerLinks.movie.length > 1) {
         /// ^ если есть разные озвучки
       
@@ -110,6 +116,106 @@ class FlmxItem with _$FlmxItem {
         )
       ];
     }
+
+    if (playerLinks.playlist.isNotEmpty) {
+      /// ^ если это сериал
+    
+      /// список всех доступных озвучек
+      final translationsMap = <String, Map<String, Map<String, FlmxShowLink>>>{};
+
+      for (final seasonNumber in playerLinks.playlist.keys) {
+        
+        /// сезон со всеми вариантами озвучек
+        final translationMap = playerLinks.playlist[seasonNumber]!;
+        
+        for (final translationName in translationMap.keys) {
+
+          /// добавляем вариант озвучки в общий список, если его ещё нет
+          translationsMap.putIfAbsent(translationName, () => {});
+
+          /// эпизоды сезона текущим вариантом озвучки
+          final episodes = translationMap[translationName]!;
+
+          /// добавляем эпизоды сезона
+          translationsMap[translationName]![seasonNumber] = episodes;
+        }
+      }
+
+      // if (translationsMap.keys.length > 1) {
+        /// ^ если есть разные озвучки
+      
+        for (final entry in translationsMap.entries) {
+          final translationName = entry.key;
+          final seasonsMap = entry.value;
+
+          /// список сезонов
+          final seasons = <SeasonItem>[];
+
+          /// формируем список сезонов
+          for (final seasonEntry in seasonsMap.entries) {
+            final seasonNumber = seasonEntry.key;
+            final episodesMap = seasonEntry.value;
+
+            /// список эпизодов
+            final episodes = <EpisodeItem>[];
+            
+            /// формируем список эпизодов сезона
+            for (final episodeEntry in episodesMap.entries) {
+              final episodeNumber = episodeEntry.key;
+              final episodeValue = episodeEntry.value;
+              
+              /// формируем эпизод
+              episodes.add(
+                EpisodeItem(
+                  id: episodeValue.link,
+                  name: episodeNumber,
+                  seasonNumber: int.tryParse(seasonNumber) ?? 0,
+                  episodeNumber: int.tryParse(episodeNumber) ?? 0,
+                  videoFileUrl: episodeValue.link,
+                ),
+              );
+            }
+
+            /// формируем сезон   
+            seasons.add(
+              SeasonItem(
+                name: seasonNumber,
+                episodes: episodes,
+              )
+            );
+          }
+          
+          voiceActings.add(
+            KginoItem(
+              provider: KginoProvider.flmx.name,
+              id: id.toString(),
+              name: title,
+              originalName: originalTitle,
+              posterUrl: poster,
+              description: shortStory,
+              year: year.toString(),
+              genres: categories,
+              countries: countries,
+
+              imdbRating: imdbRating,
+              kinopoiskRating: kpRating,
+
+              duration: Duration(minutes: duration),
+
+              voiceActing: translationName,
+              voiceActings: voiceActings,
+
+              seasons: seasons,
+            )
+          );
+        }
+      // }
+
+      /// первый вариант озвучки
+      voiceActing = translationsMap.keys.first;
+      return voiceActings.first;
+    }
+      
 
     return KginoItem(
       provider: KginoProvider.flmx.name,

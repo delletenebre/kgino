@@ -8,6 +8,8 @@ import 'focusable_list_cubit/focusable_list_cubit.dart';
 import 'focusable_list_cubit/focusable_list_state.dart';
 
 class HorizontalListView<T> extends HookWidget {
+  final ListObserverController? controller;
+
   final Future<List<T>>? itemsFuture;
   final Widget Function(BuildContext context, FocusNode focusNode, int index, T item) itemBuilder;
 
@@ -26,8 +28,12 @@ class HorizontalListView<T> extends HookWidget {
 
   final double spacing;
 
+  /// отступы списка
+  final EdgeInsetsGeometry padding;
+
   const HorizontalListView({
     super.key,
+    this.controller,
     this.itemsFuture,
     required this.itemBuilder,
 
@@ -38,6 +44,7 @@ class HorizontalListView<T> extends HookWidget {
     this.titleText = '',
 
     this.spacing = 24.0,
+    this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
   });
 
   @override
@@ -68,12 +75,12 @@ class HorizontalListView<T> extends HookWidget {
       child: BlocProvider(
         key: ValueKey(itemCount),
         create: (context) => FocusableListCubit(
+          controller: controller,
           itemCount: itemCount,
           offset: 32.0,
           /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
           /// фокус не переходил на следующий список, ставим handled
           keyEventResult: KeyEventResult.handled,
-
         ),
 
         child: BlocBuilder<FocusableListCubit, FocusableListState>(
@@ -125,7 +132,7 @@ class HorizontalListView<T> extends HookWidget {
                     child: ListViewObserver(
                       controller: focusableListState.listObserverController,
                       child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        padding: padding,
                         scrollDirection: Axis.horizontal,
                         clipBehavior: Clip.none,
                         controller: focusableListState.scrollController,

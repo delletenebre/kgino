@@ -21,7 +21,8 @@ FlmxPlayerLinks _$FlmxPlayerLinksFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FlmxPlayerLinks {
   List<FlmxMovieLink> get movie => throw _privateConstructorUsedError;
-  List<String> get playlist => throw _privateConstructorUsedError;
+  Map<String, Map<String, Map<String, FlmxShowLink>>> get playlist =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +36,9 @@ abstract class $FlmxPlayerLinksCopyWith<$Res> {
           FlmxPlayerLinks value, $Res Function(FlmxPlayerLinks) then) =
       _$FlmxPlayerLinksCopyWithImpl<$Res, FlmxPlayerLinks>;
   @useResult
-  $Res call({List<FlmxMovieLink> movie, List<String> playlist});
+  $Res call(
+      {List<FlmxMovieLink> movie,
+      Map<String, Map<String, Map<String, FlmxShowLink>>> playlist});
 }
 
 /// @nodoc
@@ -62,7 +65,7 @@ class _$FlmxPlayerLinksCopyWithImpl<$Res, $Val extends FlmxPlayerLinks>
       playlist: null == playlist
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as Map<String, Map<String, Map<String, FlmxShowLink>>>,
     ) as $Val);
   }
 }
@@ -75,7 +78,9 @@ abstract class _$$_FlmxPlayerLinksCopyWith<$Res>
       __$$_FlmxPlayerLinksCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<FlmxMovieLink> movie, List<String> playlist});
+  $Res call(
+      {List<FlmxMovieLink> movie,
+      Map<String, Map<String, Map<String, FlmxShowLink>>> playlist});
 }
 
 /// @nodoc
@@ -100,7 +105,7 @@ class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
       playlist: null == playlist
           ? _value._playlist
           : playlist // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as Map<String, Map<String, Map<String, FlmxShowLink>>>,
     ));
   }
 }
@@ -110,7 +115,8 @@ class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
 class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
   const _$_FlmxPlayerLinks(
       {final List<FlmxMovieLink> movie = const [],
-      final List<String> playlist = const []})
+      final Map<String, Map<String, Map<String, FlmxShowLink>>> playlist =
+          const {}})
       : _movie = movie,
         _playlist = playlist;
 
@@ -126,13 +132,13 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
     return EqualUnmodifiableListView(_movie);
   }
 
-  final List<String> _playlist;
+  final Map<String, Map<String, Map<String, FlmxShowLink>>> _playlist;
   @override
   @JsonKey()
-  List<String> get playlist {
-    if (_playlist is EqualUnmodifiableListView) return _playlist;
+  Map<String, Map<String, Map<String, FlmxShowLink>>> get playlist {
+    if (_playlist is EqualUnmodifiableMapView) return _playlist;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_playlist);
+    return EqualUnmodifiableMapView(_playlist);
   }
 
   @override
@@ -172,8 +178,9 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
 
 abstract class _FlmxPlayerLinks implements FlmxPlayerLinks {
   const factory _FlmxPlayerLinks(
-      {final List<FlmxMovieLink> movie,
-      final List<String> playlist}) = _$_FlmxPlayerLinks;
+          {final List<FlmxMovieLink> movie,
+          final Map<String, Map<String, Map<String, FlmxShowLink>>> playlist}) =
+      _$_FlmxPlayerLinks;
 
   factory _FlmxPlayerLinks.fromJson(Map<String, dynamic> json) =
       _$_FlmxPlayerLinks.fromJson;
@@ -181,7 +188,7 @@ abstract class _FlmxPlayerLinks implements FlmxPlayerLinks {
   @override
   List<FlmxMovieLink> get movie;
   @override
-  List<String> get playlist;
+  Map<String, Map<String, Map<String, FlmxShowLink>>> get playlist;
   @override
   @JsonKey(ignore: true)
   _$$_FlmxPlayerLinksCopyWith<_$_FlmxPlayerLinks> get copyWith =>

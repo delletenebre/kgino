@@ -12,10 +12,19 @@ _$_FlmxPlayerLinks _$$_FlmxPlayerLinksFromJson(Map<String, dynamic> json) =>
               ?.map((e) => FlmxMovieLink.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      playlist: (json['playlist'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+      playlist: (json['playlist'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(
+                k,
+                (e as Map<String, dynamic>).map(
+                  (k, e) => MapEntry(
+                      k,
+                      (e as Map<String, dynamic>).map(
+                        (k, e) => MapEntry(k,
+                            FlmxShowLink.fromJson(e as Map<String, dynamic>)),
+                      )),
+                )),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$$_FlmxPlayerLinksToJson(_$_FlmxPlayerLinks instance) =>

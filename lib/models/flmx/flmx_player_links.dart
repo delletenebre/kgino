@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'flmx_movie_link.dart';
+import 'flmx_show_link.dart';
 
 part 'flmx_player_links.freezed.dart';
 part 'flmx_player_links.g.dart';
@@ -9,7 +10,7 @@ part 'flmx_player_links.g.dart';
 class FlmxPlayerLinks with _$FlmxPlayerLinks {
   const factory FlmxPlayerLinks({
     @Default([]) List<FlmxMovieLink> movie,
-    @Default([]) List<String> playlist,
+    @Default({}) Map<String, Map<String, Map<String, FlmxShowLink>>> playlist,
     //@Default([]) List<FlmxMovieLink> trailer,
   }) = _FlmxPlayerLinks;
 
