@@ -27,38 +27,43 @@ const EpisodeItemSchema = CollectionSchema(
       name: r'episodeNumber',
       type: IsarType.long,
     ),
-    r'id': PropertySchema(
+    r'fullId': PropertySchema(
       id: 2,
+      name: r'fullId',
+      type: IsarType.string,
+    ),
+    r'id': PropertySchema(
+      id: 3,
       name: r'id',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
     r'position': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'position',
       type: IsarType.long,
     ),
     r'seasonNumber': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'seasonNumber',
       type: IsarType.long,
     ),
     r'subtitlesFileUrl': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'subtitlesFileUrl',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'videoFileUrl': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'videoFileUrl',
       type: IsarType.string,
     )
@@ -83,6 +88,7 @@ int _episodeItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.fullId.length * 3;
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.subtitlesFileUrl.length * 3;
@@ -98,13 +104,14 @@ void _episodeItemSerialize(
 ) {
   writer.writeLong(offsets[0], object.duration);
   writer.writeLong(offsets[1], object.episodeNumber);
-  writer.writeString(offsets[2], object.id);
-  writer.writeString(offsets[3], object.name);
-  writer.writeLong(offsets[4], object.position);
-  writer.writeLong(offsets[5], object.seasonNumber);
-  writer.writeString(offsets[6], object.subtitlesFileUrl);
-  writer.writeDateTime(offsets[7], object.updatedAt);
-  writer.writeString(offsets[8], object.videoFileUrl);
+  writer.writeString(offsets[2], object.fullId);
+  writer.writeString(offsets[3], object.id);
+  writer.writeString(offsets[4], object.name);
+  writer.writeLong(offsets[5], object.position);
+  writer.writeLong(offsets[6], object.seasonNumber);
+  writer.writeString(offsets[7], object.subtitlesFileUrl);
+  writer.writeDateTime(offsets[8], object.updatedAt);
+  writer.writeString(offsets[9], object.videoFileUrl);
 }
 
 EpisodeItem _episodeItemDeserialize(
@@ -116,13 +123,14 @@ EpisodeItem _episodeItemDeserialize(
   final object = EpisodeItem(
     duration: reader.readLongOrNull(offsets[0]) ?? 1,
     episodeNumber: reader.readLongOrNull(offsets[1]) ?? 0,
-    id: reader.readString(offsets[2]),
-    name: reader.readStringOrNull(offsets[3]) ?? '',
-    position: reader.readLongOrNull(offsets[4]) ?? 0,
-    seasonNumber: reader.readLongOrNull(offsets[5]) ?? 0,
-    subtitlesFileUrl: reader.readStringOrNull(offsets[6]) ?? '',
-    updatedAt: reader.readDateTimeOrNull(offsets[7]),
-    videoFileUrl: reader.readStringOrNull(offsets[8]) ?? '',
+    fullId: reader.readString(offsets[2]),
+    id: reader.readString(offsets[3]),
+    name: reader.readStringOrNull(offsets[4]) ?? '',
+    position: reader.readLongOrNull(offsets[5]) ?? 0,
+    seasonNumber: reader.readLongOrNull(offsets[6]) ?? 0,
+    subtitlesFileUrl: reader.readStringOrNull(offsets[7]) ?? '',
+    updatedAt: reader.readDateTimeOrNull(offsets[8]),
+    videoFileUrl: reader.readStringOrNull(offsets[9]) ?? '',
   );
   return object;
 }
@@ -141,16 +149,18 @@ P _episodeItemDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 5:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 6:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 8:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 9:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -358,6 +368,140 @@ extension EpisodeItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition> fullIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fullId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      fullIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'fullId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition> fullIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'fullId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition> fullIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'fullId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      fullIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'fullId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition> fullIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'fullId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition> fullIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'fullId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition> fullIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'fullId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      fullIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fullId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      fullIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'fullId',
+        value: '',
       ));
     });
   }
@@ -1168,6 +1312,18 @@ extension EpisodeItemQuerySortBy
     });
   }
 
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterSortBy> sortByFullId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fullId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterSortBy> sortByFullIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fullId', Sort.desc);
+    });
+  }
+
   QueryBuilder<EpisodeItem, EpisodeItem, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1281,6 +1437,18 @@ extension EpisodeItemQuerySortThenBy
       thenByEpisodeNumberDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'episodeNumber', Sort.desc);
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterSortBy> thenByFullId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fullId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterSortBy> thenByFullIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fullId', Sort.desc);
     });
   }
 
@@ -1399,6 +1567,13 @@ extension EpisodeItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<EpisodeItem, EpisodeItem, QDistinct> distinctByFullId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fullId', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<EpisodeItem, EpisodeItem, QDistinct> distinctById(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1464,6 +1639,12 @@ extension EpisodeItemQueryProperty
   QueryBuilder<EpisodeItem, int, QQueryOperations> episodeNumberProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'episodeNumber');
+    });
+  }
+
+  QueryBuilder<EpisodeItem, String, QQueryOperations> fullIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fullId');
     });
   }
 

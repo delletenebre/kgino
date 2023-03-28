@@ -218,6 +218,10 @@ KginoItem showIsolate(String html) {
   /// парсим html
   final document = parse(html);
 
+  /// парсим идентификатор сериала
+  final showIdUrl = document.getElementsByClassName('episode').firstOrNull?.attributes['href'];
+  final showId = TskgShow.getShowIdFromUrl(showIdUrl ?? '');
+
   /// парсим название сериала
   final title = document.getElementById('h-show-title')?.text ?? '';
 
@@ -330,6 +334,7 @@ KginoItem showIsolate(String html) {
 
       return EpisodeItem(
         id: '$episodeId',
+        fullId: EpisodeItem.getFullId(KginoProvider.tskg.name, showId, '$episodeId'),
         name: episodeTitle ,
         seasonNumber: seasonIndex + 1,
         episodeNumber: episodeIndex + 1,
@@ -346,6 +351,7 @@ KginoItem showIsolate(String html) {
   }).toList();
 
   
+
   /// текущая озвучка
   String voiceActing = '';
   
@@ -385,9 +391,6 @@ KginoItem showIsolate(String html) {
       
     }
   }
-
-  final showIdUrl = document.getElementsByClassName('episode').firstOrNull?.attributes['href'];
-  final showId = TskgShow.getShowIdFromUrl(showIdUrl ?? '');
 
   return KginoItem(
     provider: KginoProvider.tskg.name,

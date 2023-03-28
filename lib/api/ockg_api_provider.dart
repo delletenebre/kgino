@@ -283,6 +283,7 @@ class OckgApiProvider {
             episodes: movie.files.mapIndexed((index, file) {
               return EpisodeItem(
                 id: '${file.fileId}',
+                fullId: EpisodeItem.getFullId(KginoProvider.ockg.name, movie.movieId.toString(), '${file.fileId}'),
                 name: file.name,
                 videoFileUrl: file.path.replaceFirst('/home/video/', 'https://p1.oc.kg:8082/'),
                 seasonNumber: 1,

@@ -68,6 +68,7 @@ class FlmxItem with _$FlmxItem {
               episodes: [
                 EpisodeItem(
                   id: movie.link,
+                  fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), movie.link),
                 ),
               ]
             )
@@ -104,6 +105,7 @@ class FlmxItem with _$FlmxItem {
           episodes: [
             EpisodeItem(
               id: playerLinks.movie.first.link,
+              fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), playerLinks.movie.first.link),
             ),
           ]
         )
@@ -174,6 +176,7 @@ class FlmxItem with _$FlmxItem {
               episodes.add(
                 EpisodeItem(
                   id: episodeValue.link,
+                  fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), episodeValue.link),
                   name: episodeNumber,
                   seasonNumber: int.tryParse(seasonNumber) ?? 0,
                   episodeNumber: int.tryParse(episodeNumber) ?? 0,

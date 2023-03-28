@@ -8,10 +8,13 @@ part 'episode_item.g.dart';
 class EpisodeItem {
 
   /// внутренний идентификатор в базе данных
-  Id get isarId => fastHash(id);
+  Id get isarId => fastHash(fullId);
   
   /// идентификатор эпизода
   final String id;
+
+  /// полный идентификатор эпизода
+  final String fullId;
 
   /// название эпизода
   final String name;
@@ -39,6 +42,7 @@ class EpisodeItem {
 
   EpisodeItem({
     required this.id,
+    required this.fullId,
     this.name = '',
 
     this.position = 0,
@@ -60,5 +64,9 @@ class EpisodeItem {
   /// был ли эпизод полностью просмотрен
   @ignore
   bool get isSeen => percentPosition > 0.95;
+
+  static String getFullId(String provider, String itemId, String episodeId) {
+    return '$provider/$itemId/$episodeId';
+  }
 
 }
