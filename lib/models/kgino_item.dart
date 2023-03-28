@@ -88,11 +88,13 @@ class KginoItem {
   /// рейтинг IMDb
   @ignore
   final double imdbRating;
+  @ignore
   bool get hasImdbRating => imdbRating > 0.0;
 
   /// рейтинг Кинопоиск
   @ignore
   final double kinopoiskRating;
+  @ignore
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
   /// продолжительность

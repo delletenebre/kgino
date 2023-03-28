@@ -10,7 +10,7 @@ import '../loading_indicator.dart';
 
 class VoiceActingsButton extends HookWidget {
   final KginoItem kginoItem;
-  final Function(String voiceActing) onVoiceActingChange;
+  final Function(KginoItem item) onVoiceActingChange;
 
   const VoiceActingsButton(this.kginoItem, {
     super.key,
@@ -46,7 +46,7 @@ class VoiceActingsButton extends HookWidget {
                   Navigator.pop(context);
 
                   /// вызываем пользовательский обработчик
-                  onVoiceActingChange(item.voiceActing);
+                  onVoiceActingChange(item);
 
                 },
               );

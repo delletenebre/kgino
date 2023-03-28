@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../api/tskg_api_provider.dart';
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
 import '../pages/flmx/flmx_episodes_page.dart';
@@ -13,6 +15,7 @@ import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
 import '../pages/oc.kg/ockg_movie_details_page.dart';
 import '../pages/player_page.dart';
+import '../pages/tskg/tskg_details_page.dart';
 import '../pages/tskg/tskg_home_page.dart';
 import '../ui/scaffold_with_navigation_bar.dart';
 import '../ui/try_again_message.dart';
@@ -226,6 +229,98 @@ class KrsRouter {
               return const TskgHomePage();
             },
             routes: [
+
+              /// страница информации о сериале
+              GoRoute(
+                path: 'show/:id',
+                name: 'tskgDetails',
+                builder: (context, state) {
+                  final id = state.params['id'] ?? '';
+                  return TskgDetailsPage(id);
+                },
+                routes: [
+
+                  /// страница плеера
+                  GoRoute(
+                    path: 'player',
+                    name: 'tskgPlayer',
+                    builder: (context, state) {
+                      final kginoItem = state.extra as KginoItem;
+                      final fileId = state.queryParams['episodeId'] ?? '';
+
+                      return PlayerPage(
+                        kginoItem: kginoItem,
+                        episodeId: fileId,
+                        getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
+                          /// провайдер запросов к API
+                          final api = GetIt.instance<TskgApiProvider>();
+                          
+                          /// получаем данные эпизода
+                          final episodeDetails = await api.getEpisodeDetails(currentEpisode.id);
+
+                          /// задаём качество видео в HD или в SD
+                          String videoUrl = episodeDetails?.video.files.hd.url
+                              ?? episodeDetails?.video.files.sd.url ?? '';
+
+                          /// субтитры
+                          String subtitlesUrl = episodeDetails?.video.subtitles ?? '';
+
+                          /// обновляем ссылку на видео файл
+                          currentEpisode.videoFileUrl = videoUrl;
+
+                          /// обновляем ссылку на файл субтитров
+                          currentEpisode.subtitlesFileUrl = subtitlesUrl;
+
+                          if (initial) {
+                            // /// контроллер просмотренных эпизодов
+                            // final seenItemsController = GetIt.instance<SeenItemsController>();
+
+                            // /// проверяем был ли эпизод в просмотренных
+                            // final seenEpisode = seenItemsController.findEpisode(
+                            //   storageKey: seenShowStorageKey,
+                            //   episodeId: currentEpisode.id,
+                            // );
+
+                            // /// восстанавливаем время просмотра, если эпизод уже был в просмотренных
+                            // currentEpisode.position = seenEpisode?.position ?? 0;
+                            currentEpisode.position = 0;
+                            
+                          } else {
+                            /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
+                            /// не запрашивал продолжить просмотр или нет
+                            currentEpisode.position = 0;
+                          }
+
+                          return currentEpisode;
+                        },
+                      );
+                    },
+                  ),
+
+                  /// страница эпизодов сериала
+                  GoRoute(
+                    path: 'episodes',
+                    name: 'tskgEpisodes',
+                    builder: (context, state) {
+                      final kginoItem = state.extra;
+                      if (kginoItem != null) {
+                        return FlmxEpisodesPage(kginoItem as KginoItem);
+                      }
+                      
+                      return TryAgainMessage(
+                        onRetry: () {
+                          
+                        },
+                      );
+                    },
+                    routes: [
+
+                    ],
+                  ),
+
+                ],
+              ),
+
             ],
           ),
         ]

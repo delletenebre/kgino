@@ -42,9 +42,11 @@ class KginoItemDetailsCubit extends Cubit<ApiResponse<KginoItem>> {
           kginoItem.bookmarked = dbItem.bookmarked;
           kginoItem.seenEpisodes = dbItem.seenEpisodes;
           kginoItem.voiceActing = dbItem.voiceActing;
-          kginoItem.seasons = (kginoItem.voiceActings.firstWhere((movie) {
-            return movie.voiceActing == dbItem.voiceActing;
-          })).seasons;
+          if (kginoItem.voiceActings.isNotEmpty) {
+            kginoItem.seasons = (kginoItem.voiceActings.firstWhere((movie) {
+              return movie.voiceActing == dbItem.voiceActing;
+            })).seasons;
+          }
           
           emit(ApiResponse.data(kginoItem));
         

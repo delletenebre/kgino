@@ -103,8 +103,12 @@ class OckgHomePage extends HookWidget {
                             },
                             onTap: () {
 
-                              /// переходим на страницу фильма
-                              context.go('/ockg/details/${item.id}');
+                              /// переходим на страницу детальной информации
+                              context.goNamed('okkgDetails',
+                                params: {
+                                  'id': item.id,
+                                }
+                              );
                               
                             },
                             item: item,

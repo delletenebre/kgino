@@ -15,7 +15,14 @@ class BookmarkButton extends HookWidget {
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
-    if (kginoItem.bookmarked != null) {
+    /// сохранённый в базе данных элемент
+    final kginoItemStream = useStream(kginoItem.dbStream,
+      initialData: kginoItem,
+    );
+    
+    final dbItem = kginoItemStream.data!;
+
+    if (dbItem.bookmarked != null) {
       
       /// кнопка удаления из избранного
       return FilledButton.icon(

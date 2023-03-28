@@ -4,12 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../api/flmx_api_provider.dart';
+import '../../api/tskg_api_provider.dart';
 import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
 import '../../models/kgino_item.dart';
 import '../../resources/krs_locale.dart';
-import '../../resources/krs_storage.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
@@ -19,14 +18,13 @@ import '../../ui/krs_scroll_view.dart';
 import '../../ui/kgino_item/play_button_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/try_again_message.dart';
-import '../../utils.dart';
 
 
-class FlmxDetailsPage extends HookWidget {
+class TskgDetailsPage extends HookWidget {
   final String kginoItemId;
   final secondContainerKey = GlobalKey();
 
-  FlmxDetailsPage(this.kginoItemId, {
+  TskgDetailsPage(this.kginoItemId, {
     super.key,
   });
 
@@ -39,7 +37,7 @@ class FlmxDetailsPage extends HookWidget {
     final screenSize = MediaQuery.of(context).size;
 
     /// провайдер запросов к API
-    final api = GetIt.instance<FlmxApiProvider>();
+    final api = GetIt.instance<TskgApiProvider>();
 
     /// контроллер расширенной информации о фильме
     final detailsCubit = KginoItemDetailsCubit();
@@ -60,7 +58,7 @@ class FlmxDetailsPage extends HookWidget {
 
     return Scaffold(
       body: BlocProvider<KginoItemDetailsCubit>(
-        create: (context) => detailsCubit..fetch(api.getMovieDetails(kginoItemId)),
+        create: (context) => detailsCubit..fetch(api.getShowDetails(kginoItemId)),
         child: BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
           builder: (context, state) {
                     
@@ -69,7 +67,7 @@ class FlmxDetailsPage extends HookWidget {
                 onRetry: () {
                   /// запрашиваем данные ещё раз
                   context.read<KginoItemDetailsCubit>()
-                    .fetch(api.getMovieDetails(kginoItemId));
+                    .fetch(api.getShowDetails(kginoItemId));
                 }
               );
             }
@@ -91,7 +89,7 @@ class FlmxDetailsPage extends HookWidget {
               children: [
                 /// заголовок
                 const AppHeader(
-                  child: Text('Filmix'),
+                  child: Text('TS.KG'),
                 ),
 
                 SizedBox(
@@ -154,7 +152,7 @@ class FlmxDetailsPage extends HookWidget {
                                           },
                                           onPressed: () {
                                             /// переходим на страницу плеера фильма
-                                            context.goNamed('flmxPlayer',
+                                            context.goNamed('tskgPlayer',
                                               params: {
                                                 'id': kginoItem.id,
                                               },
@@ -176,7 +174,7 @@ class FlmxDetailsPage extends HookWidget {
                                         child: FilledButton.icon(
                                           onPressed: () {
                                             /// переходим на страницу выбора файла
-                                            context.goNamed('flmxShowEpisodes',
+                                            context.goNamed('tskgEpisodes',
                                               params: {
                                                 'id': kginoItem.id,
                                               },
@@ -199,15 +197,11 @@ class FlmxDetailsPage extends HookWidget {
                                         padding: const EdgeInsets.only(right: 12.0),
                                         child: VoiceActingsButton(kginoItem,
                                           onVoiceActingChange: (selectedItem) async {
-
-                                            kginoItem.voiceActing = selectedItem.voiceActing;
-                                            await kginoItem.save();
-
                                             /// переходим на страницу деталей о сериале
                                             // TODO fix route to movie
-                                            context.pushReplacementNamed('flmxShowDetails',
+                                            context.pushReplacementNamed('tskgDetails',
                                               params: {
-                                                'id': kginoItem.id,
+                                                'id': selectedItem.id,
                                               },
                                             );
                                           },

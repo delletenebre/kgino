@@ -27,43 +27,33 @@ const KginoItemSchema = CollectionSchema(
       name: r'episodeCount',
       type: IsarType.long,
     ),
-    r'hasImdbRating': PropertySchema(
-      id: 2,
-      name: r'hasImdbRating',
-      type: IsarType.bool,
-    ),
-    r'hasKinopoiskRating': PropertySchema(
-      id: 3,
-      name: r'hasKinopoiskRating',
-      type: IsarType.bool,
-    ),
     r'id': PropertySchema(
-      id: 4,
+      id: 2,
       name: r'id',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 5,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'posterUrl': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'posterUrl',
       type: IsarType.string,
     ),
     r'provider': PropertySchema(
-      id: 7,
+      id: 5,
       name: r'provider',
       type: IsarType.string,
     ),
     r'subtitlesEnabled': PropertySchema(
-      id: 8,
+      id: 6,
       name: r'subtitlesEnabled',
       type: IsarType.bool,
     ),
     r'voiceActing': PropertySchema(
-      id: 9,
+      id: 7,
       name: r'voiceActing',
       type: IsarType.string,
     )
@@ -111,14 +101,12 @@ void _kginoItemSerialize(
 ) {
   writer.writeDateTime(offsets[0], object.bookmarked);
   writer.writeLong(offsets[1], object.episodeCount);
-  writer.writeBool(offsets[2], object.hasImdbRating);
-  writer.writeBool(offsets[3], object.hasKinopoiskRating);
-  writer.writeString(offsets[4], object.id);
-  writer.writeString(offsets[5], object.name);
-  writer.writeString(offsets[6], object.posterUrl);
-  writer.writeString(offsets[7], object.provider);
-  writer.writeBool(offsets[8], object.subtitlesEnabled);
-  writer.writeString(offsets[9], object.voiceActing);
+  writer.writeString(offsets[2], object.id);
+  writer.writeString(offsets[3], object.name);
+  writer.writeString(offsets[4], object.posterUrl);
+  writer.writeString(offsets[5], object.provider);
+  writer.writeBool(offsets[6], object.subtitlesEnabled);
+  writer.writeString(offsets[7], object.voiceActing);
 }
 
 KginoItem _kginoItemDeserialize(
@@ -129,12 +117,12 @@ KginoItem _kginoItemDeserialize(
 ) {
   final object = KginoItem(
     bookmarked: reader.readDateTimeOrNull(offsets[0]),
-    id: reader.readString(offsets[4]),
-    name: reader.readString(offsets[5]),
-    posterUrl: reader.readString(offsets[6]),
-    provider: reader.readString(offsets[7]),
-    subtitlesEnabled: reader.readBoolOrNull(offsets[8]) ?? false,
-    voiceActing: reader.readStringOrNull(offsets[9]) ?? '',
+    id: reader.readString(offsets[2]),
+    name: reader.readString(offsets[3]),
+    posterUrl: reader.readString(offsets[4]),
+    provider: reader.readString(offsets[5]),
+    subtitlesEnabled: reader.readBoolOrNull(offsets[6]) ?? false,
+    voiceActing: reader.readStringOrNull(offsets[7]) ?? '',
   );
   return object;
 }
@@ -151,20 +139,16 @@ P _kginoItemDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
-    case 7:
-      return (reader.readString(offset)) as P;
-    case 8:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 9:
+    case 7:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -389,26 +373,6 @@ extension KginoItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      hasImdbRatingEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'hasImdbRating',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
-      hasKinopoiskRatingEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'hasKinopoiskRating',
-        value: value,
       ));
     });
   }
@@ -1226,31 +1190,6 @@ extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByHasImdbRating() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasImdbRating', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByHasImdbRatingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasImdbRating', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByHasKinopoiskRating() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasKinopoiskRating', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy>
-      sortByHasKinopoiskRatingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasKinopoiskRating', Sort.desc);
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1348,31 +1287,6 @@ extension KginoItemQuerySortThenBy
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByEpisodeCountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'episodeCount', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByHasImdbRating() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasImdbRating', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByHasImdbRatingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasImdbRating', Sort.desc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByHasKinopoiskRating() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasKinopoiskRating', Sort.asc);
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy>
-      thenByHasKinopoiskRatingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hasKinopoiskRating', Sort.desc);
     });
   }
 
@@ -1476,18 +1390,6 @@ extension KginoItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByHasImdbRating() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'hasImdbRating');
-    });
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByHasKinopoiskRating() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'hasKinopoiskRating');
-    });
-  }
-
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctById(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1547,18 +1449,6 @@ extension KginoItemQueryProperty
   QueryBuilder<KginoItem, int, QQueryOperations> episodeCountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'episodeCount');
-    });
-  }
-
-  QueryBuilder<KginoItem, bool, QQueryOperations> hasImdbRatingProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'hasImdbRating');
-    });
-  }
-
-  QueryBuilder<KginoItem, bool, QQueryOperations> hasKinopoiskRatingProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'hasKinopoiskRating');
     });
   }
 

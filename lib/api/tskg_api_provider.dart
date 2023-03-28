@@ -85,7 +85,8 @@ class TskgApiProvider {
       decoder: (response) async {
         final html = response.toString();  
 
-        return await compute(newSectionIsolate, html);
+        // return await compute(newSectionIsolate, html);
+        return newSectionIsolate(html);
       },
     );
     
@@ -98,57 +99,12 @@ class TskgApiProvider {
       decoder: (response) async {
         final html = response.toString();  
 
-        return await compute(popularSectionIsolate, html);
+        // return await compute(popularSectionIsolate, html);
+        return await popularSectionIsolate(html);
       },
     );
     
   }
-
-  // /// получение списка популярных
-  // Future<List<KginoItem>> getPopular() async {
-  //   try {
-
-  //     /// запрашиваем данные
-  //     final response = await _dio.get('/');
-
-  //     if (response.statusCode == 200) {
-  //       /// ^ если запрос выполнен успешно
-        
-        
-
-  //     }
-  //   } catch (exception) {
-  //     /// ^ если прозошла сетевая ошибка
-      
-  //     debugPrint('exception: $exception');
-  //   }
-
-  //   return [];
-  // }
-
-  // /// получение списка новых
-  // Future<List<KginoItem>> getNew() async {
-  //   try {
-
-  //     /// запрашиваем данные
-  //     final response = await _dio.get('/');
-
-  //     if (response.statusCode == 200) {
-  //       /// ^ если запрос выполнен успешно
-        
-  //       final html = response.data.toString();  
-
-  //       return await compute(newSectionIsolate, html);
-
-  //     }
-  //   } catch (exception) {
-  //     /// ^ если прозошла сетевая ошибка
-      
-  //     debugPrint('exception: $exception');
-  //   }
-
-  //   return [];
-  // }
 
 
   /// получение информации о сериале
@@ -160,7 +116,8 @@ class TskgApiProvider {
       decoder: (response) async {
         final html = response.toString();  
 
-        return await compute(showIsolate, html);
+        // return await compute(showIsolate, html);
+        return showIsolate(html);
       },
     );
   }
