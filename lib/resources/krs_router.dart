@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
+import '../pages/flmx/flmx_movie_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
@@ -65,6 +66,19 @@ class KrsRouter {
               return const FlmxShowsPage();
             },
             routes: [
+
+              /// страница информации о сериале
+              GoRoute(
+                path: ':id',
+                name: 'flmxShowDetails',
+                builder: (context, state) {
+                  final id = state.params['id'] ?? '';
+                  return FlmxMovieDetailsPage(id);
+                },
+                routes: [
+                ],
+              ),
+
             ],
           ),
 
@@ -76,6 +90,19 @@ class KrsRouter {
               return const FlmxMoviesPage();
             },
             routes: [
+
+              /// страница информации о фильме
+              GoRoute(
+                path: ':id',
+                name: 'flmxMovieDetails',
+                builder: (context, state) {
+                  final id = state.params['id'] ?? '';
+                  return FlmxMovieDetailsPage(id);
+                },
+                routes: [
+                ],
+              ),
+
             ],
           ),
 
@@ -93,8 +120,8 @@ class KrsRouter {
                 path: 'details/:id',
                 name: 'ockgDetails',
                 builder: (context, state) {
-                  final movieId = state.params['id'] ?? '';
-                  return OckgMovieDetailsPage(movieId);
+                  final id = state.params['id'] ?? '';
+                  return OckgMovieDetailsPage(id);
                 },
                 routes: [
 

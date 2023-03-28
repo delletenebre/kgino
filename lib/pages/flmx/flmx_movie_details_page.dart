@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../api/flmx_api_provider.dart';
 import '../../api/ockg_api_provider.dart';
 import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
@@ -19,11 +20,11 @@ import '../../ui/loading_indicator.dart';
 import '../../ui/try_again_message.dart';
 
 
-class OckgMovieDetailsPage extends HookWidget {
+class FlmxMovieDetailsPage extends HookWidget {
   final String kginoItemId;
   final secondContainerKey = GlobalKey();
 
-  OckgMovieDetailsPage(this.kginoItemId, {
+  FlmxMovieDetailsPage(this.kginoItemId, {
     super.key,
   });
 
@@ -36,7 +37,7 @@ class OckgMovieDetailsPage extends HookWidget {
     final screenSize = MediaQuery.of(context).size;
 
     /// провайдер запросов к API
-    final api = GetIt.instance<OckgApiProvider>();
+    final api = GetIt.instance<FlmxApiProvider>();
 
     /// контроллер расширенной информации о фильме
     final detailsCubit = KginoItemDetailsCubit();
@@ -88,7 +89,7 @@ class OckgMovieDetailsPage extends HookWidget {
               children: [
                 /// заголовок
                 const AppHeader(
-                  child: Text('Online Cinema'),
+                  child: Text('Filmix Фильмы'),
                 ),
 
                 SizedBox(
@@ -152,7 +153,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                           },
                                           onPressed: () {
                                             /// переходим на страницу плеера фильма
-                                            context.goNamed('ockgPlayer',
+                                            context.goNamed('flmxPlayer',
                                               params: {
                                                 'id': kginoItem.id,
                                               },
@@ -175,7 +176,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                           style: KrsTheme.filledTonalButtonStyleOf(context),
                                           onPressed: () {
                                             /// переходим на страницу выбора файла
-                                            context.goNamed('ockgEpisodes',
+                                            context.goNamed('flmxEpisodes',
                                               params: {
                                                 'id': kginoItem.id,
                                               },
