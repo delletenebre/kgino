@@ -205,6 +205,7 @@ class KginoItem {
 
   Future<void> save() async {
     await storage.db.writeTxn(() async {
+      await seenEpisodes.save();
       await storage.db.kginoItems.put(this);
     });
   }

@@ -66,12 +66,11 @@ class PlayerPage extends HookWidget {
       } : null,
 
       onUpdatePosition: (episode, position, subtitlesEnabled) {
-        // _seenItemsController.updatePosition(
-        //   movie: dbItem,
-        //   episode: episode,
-        //   position: position,
-        //   subtitlesEnabled: subtitlesEnabled,
-        // );
+        episode.updatedAt = DateTime.now();
+        episode.position = position;
+        kginoItem.subtitlesEnabled = subtitlesEnabled;
+        kginoItem.seenEpisodes.add(episode);
+        kginoItem.save();
       }
     );
   }
