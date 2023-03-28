@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,7 @@ String getTextByClassName(Document document, String className) {
   return '';
 }
 
-Future<List<KginoItem>> newsIsolate(String html) async {
+Future<List<KginoItem>> lasEpisodesIsolate(String html) async {
   final items = <KginoItem>[];
 
   /// парсим html
@@ -72,7 +73,6 @@ Future<List<KginoItem>> newsIsolate(String html) async {
         if (tagSmall.isNotEmpty) {
           subtitle = tagSmall.first.text;
         }
-        //debugPrint('subtitle: $subtitle');
 
         /// жанры
         final genres = (tagA.attributes['title'] ?? '').split(', ');
@@ -94,18 +94,21 @@ Future<List<KginoItem>> newsIsolate(String html) async {
 
         // });
 
-        items.add(
-          KginoItem(
-            provider: KginoProvider.tskg.name,
-            id: TskgShow.getShowIdFromUrl(link),
-            name: title,
-            // updatedAt: date,
-            subtitle: subtitle,
-            genres: genres,
-            posterUrl: '',
-            //badges: badges.toList(),
-          )
-        );
+        final id = TskgShow.getShowIdFromUrl(link);
+        if (id.isNotEmpty) {
+          items.add(
+            KginoItem(
+              provider: KginoProvider.tskg.name,
+              id: id,
+              name: title,
+              // updatedAt: date,
+              subtitle: subtitle,
+              genres: genres,
+              posterUrl: 'https://www.ts.kg/posters/$id.png',
+              //badges: badges.toList(),
+            )
+          );
+        }
       }
 
     }

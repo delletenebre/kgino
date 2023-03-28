@@ -53,28 +53,43 @@ class TskgApiProvider {
     return '';
   }
 
-  /// получение списка новостей
-  Future<List<KginoItem>> getNews() async {
-    try {
+  // /// получение списка новостей
+  // Future<List<KginoItem>> getNews() async {
+  //   try {
 
-      /// запрашиваем данные
-      final response = await _dio.get('/news');
+  //     /// запрашиваем данные
+  //     final response = await _dio.get('/news');
 
-      if (response.statusCode == 200) {
-        /// ^ если запрос выполнен успешно
+  //     if (response.statusCode == 200) {
+  //       /// ^ если запрос выполнен успешно
         
-        final html = response.data.toString();
+  //       final html = response.data.toString();
 
-        return await compute(newsIsolate, html);
+  //       // return await compute(newsIsolate, html);
+  //       return await newsIsolate(html);
 
-      }
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
+  //     }
+  //   } catch (exception) {
+  //     /// ^ если прозошла сетевая ошибка
       
-      debugPrint('exception: $exception');
-    }
+  //     debugPrint('exception: $exception');
+  //   }
 
-    return [];
+  //   return [];
+  // }
+
+  /// список последних поступлений
+  Future<ApiResponse<List<KginoItem>>> getLastEpisodes() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/news'),
+      decoder: (response) async {
+        final html = response.toString();  
+
+        // return await compute(newSectionIsolate, html);
+        return lasEpisodesIsolate(html);
+      },
+    );
+    
   }
 
 
@@ -100,7 +115,7 @@ class TskgApiProvider {
         final html = response.toString();  
 
         // return await compute(popularSectionIsolate, html);
-        return await popularSectionIsolate(html);
+        return popularSectionIsolate(html);
       },
     );
     

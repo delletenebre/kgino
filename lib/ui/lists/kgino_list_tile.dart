@@ -29,6 +29,7 @@ class KginoListTile extends StatelessWidget {
       onTap: onTap,
 
       title: item.name,
+      subtitle: item.subtitle,
       imageUrl: item.posterUrl,      
     );
   }

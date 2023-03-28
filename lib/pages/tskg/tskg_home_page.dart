@@ -38,6 +38,9 @@ class TskgHomePage extends HookWidget {
     /// популярные
     final asyncPopular = useMemoized(() => api.getPopularShows());
 
+    /// новые эпизоды
+    final asyncLastEpisodes = useMemoized(() => api.getLastEpisodes());
+
     final categories = [
 
       CategoryListItem(
@@ -48,6 +51,11 @@ class TskgHomePage extends HookWidget {
       CategoryListItem(
         title: locale.popular,
         apiResponse: asyncPopular,
+      ),
+
+      CategoryListItem(
+        title: 'Новые серии',
+        apiResponse: asyncLastEpisodes,
       ),
 
     ];
