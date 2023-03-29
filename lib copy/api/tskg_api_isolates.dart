@@ -73,7 +73,6 @@ Future<List<TskgMovieItem>> newsIsolate(String html) async {
         if (tagSmall.isNotEmpty) {
           subtitle = tagSmall.first.text;
         }
-        //debugPrint('subtitle: $subtitle');
 
         /// жанры
         final genres = (tagA.attributes['title'] ?? '').split(', ');

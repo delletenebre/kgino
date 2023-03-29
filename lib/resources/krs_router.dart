@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../api/tskg_api_provider.dart';
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
-import '../pages/flmx/flmx_episodes_page.dart';
+import '../pages/episodes_page.dart';
 import '../pages/flmx/flmx_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
@@ -89,7 +89,7 @@ class KrsRouter {
                     builder: (context, state) {
                       final kginoItem = state.extra;
                       if (kginoItem != null) {
-                        return FlmxEpisodesPage(kginoItem as KginoItem);
+                        return EpisodesPage(kginoItem as KginoItem);
                       }
                       
                       return TryAgainMessage(
@@ -135,7 +135,7 @@ class KrsRouter {
                     builder: (context, state) {
                       final kginoItem = state.extra;
                       if (kginoItem != null) {
-                        return FlmxEpisodesPage(kginoItem as KginoItem);
+                        return EpisodesPage(kginoItem as KginoItem);
                       }
                       
                       return TryAgainMessage(
@@ -304,7 +304,7 @@ class KrsRouter {
                     builder: (context, state) {
                       final kginoItem = state.extra;
                       if (kginoItem != null) {
-                        return FlmxEpisodesPage(kginoItem as KginoItem);
+                        return EpisodesPage(kginoItem as KginoItem);
                       }
                       
                       return TryAgainMessage(

@@ -26,7 +26,8 @@ class MoviesPage extends HookWidget {
               /// ссылка на filmix
               {
                 'name': 'Filmix',
-                'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
+                // 'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
+                'imageUrl': 'assets/images/flmx.svg',
                 'route': '/flmx/movies',
               },
 
@@ -34,6 +35,7 @@ class MoviesPage extends HookWidget {
               {
                 'name': 'OC.KG',
                 'imageUrl': 'https://oc.kg/templates/mobile/img/logooc_winter.png',
+                // 'imageUrl': 'assets/images/ockg.svg',
                 'route': '/ockg',
               },
 

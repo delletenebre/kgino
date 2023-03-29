@@ -88,8 +88,8 @@ flutter:
   generate: true
   uses-material-design: true
 
-  # assets:
-  #   - assets/images/
+  assets:
+    - assets/images/
 
   fonts:
     - family: Golos UI

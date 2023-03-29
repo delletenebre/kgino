@@ -26,14 +26,16 @@ class ShowsPage extends HookWidget {
               /// ссылка на filmix
               {
                 'name': 'Filmix',
-                'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
+                // 'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
+                'imageUrl': 'assets/images/flmx.svg',
                 'route': '/flmx/shows',
               },
 
               /// ссылка на ts.kg
               {
                 'name': 'TS.KG',
-                'imageUrl': 'https://www.ts.kg/img/logo.svg',
+                // 'imageUrl': 'https://www.ts.kg/img/logo.svg',
+                'imageUrl': 'assets/images/tskg.svg',
                 'route': '/tskg',
               },
 

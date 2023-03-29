@@ -445,8 +445,10 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     // /// сколько просмотрено в процентах [0,1]
     // final percentPosition = position / duration;
 
-    /// сохраняем информацию о времени просмотра эпизода
-    widget.onUpdatePosition(_episode!,  position, _subtitlesEnabled);
+    if (position % 10 == 0 || position == duration) {
+      /// сохраняем информацию о времени просмотра эпизода
+      widget.onUpdatePosition(_episode!,  position, _subtitlesEnabled);
+    }
 
     /// чтобы экран не уходил в сон
     Wakelock.toggle(

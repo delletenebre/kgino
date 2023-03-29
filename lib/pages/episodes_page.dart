@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-import '../../models/episode_item.dart';
-import '../../models/kgino_item.dart';
-import '../../models/season_item.dart';
-import '../../resources/krs_locale.dart';
-import '../../ui/lists/horizontal_list_view.dart';
-import '../../ui/lists/kgino_episode_list_tile.dart';
+import '../models/episode_item.dart';
+import '../models/kgino_item.dart';
+import '../models/season_item.dart';
+import '../resources/krs_locale.dart';
+import '../ui/lists/horizontal_list_view.dart';
+import '../ui/lists/kgino_episode_list_tile.dart';
 
 
-class FlmxEpisodesPage extends StatefulWidget {
+class EpisodesPage extends StatefulWidget {
   final KginoItem kginoItem;
 
-  const FlmxEpisodesPage(this.kginoItem,{
+  const EpisodesPage(this.kginoItem,{
     super.key,
   });
 
   @override
-  State<FlmxEpisodesPage> createState() => _FlmxEpisodesPageState();
+  State<EpisodesPage> createState() => _EpisodesPageState();
 }
 
-class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
+class _EpisodesPageState extends State<EpisodesPage> {
   final _seasonsScrollController = ListObserverController(
     controller: ScrollController()
   );
@@ -143,7 +142,7 @@ class _FlmxEpisodesPageState extends State<FlmxEpisodesPage> {
                 itemsFuture: Future.microtask(() => _episodes),
                 itemBuilder: (context, focusNode, index, episode) {
                   /// просмотренное время [0; 1]
-                  double seenValue = 0.0;
+                  double seenValue = 0.5;
                   // final seenEpisode = seenEpisodesController.findEpisode(
                   //   storageKey: widget.kginoItem.storageKey,
                   //   episodeId: episode.id,

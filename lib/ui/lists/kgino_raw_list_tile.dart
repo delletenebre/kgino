@@ -57,7 +57,7 @@ class KginoRawListTile extends HookWidget {
 
     /// вычисляем цвет свечения
     final calculateGlowColor = useCallback(() async {
-      if (imageUrl.isNotEmpty && !imageUrl.endsWith('.svg')) {
+      if (imageUrl.isNotEmpty && !imageUrl.endsWith('.svg') && !imageUrl.startsWith('assets/')) {
         /// ^ если изображение есть и оно не векторное
 
         try {
@@ -148,11 +148,16 @@ class KginoRawListTile extends HookWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(9.0),
-                        child: imageUrl.endsWith('.svg')
-                          ? SvgPicture.network(imageUrl)
-                          : Image.network(imageUrl,
-                              cacheHeight: imageSize.height.toInt(),
-                            ),
+                        child: imageUrl.startsWith('assets/')
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(imageUrl),
+                            )
+                          : imageUrl.endsWith('.svg')
+                            ? SvgPicture.network(imageUrl)
+                            : Image.network(imageUrl,
+                                cacheHeight: imageSize.height.toInt(),
+                              ),
                       ),
                     ),
                   ),
