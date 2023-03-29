@@ -240,53 +240,44 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           final result = await Utils.showModal<bool?>(
             context: context,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: ListView(
+              shrinkWrap: true,
               children: [
 
                 /// кнопка продолжить просмотр
-                SizedBox(
-                  width: 320.0,
-                  child: ElevatedButton(
-                    autofocus: true,
-                    style: KrsTheme.filledTonalButtonStyleOf(context),
-                    onPressed: () {
-                      if (mounted) {
-                        /// перематываем на нужную позицию и запускаем видео
-                        _playerController?.seekTo(Duration(seconds: _episode!.position - 5))
-                          .then((_) {
-                            _playerController?.play();
-                          });
+                FilledButton(
+                  autofocus: true,
+                  onPressed: () {
+                    if (mounted) {
+                      /// перематываем на нужную позицию и запускаем видео
+                      _playerController?.seekTo(Duration(seconds: _episode!.position - 5))
+                        .then((_) {
+                          _playerController?.play();
+                        });
 
-                        /// закрываем диалоговое окно
-                        Navigator.pop(context, true);
-                      }
-                    },
-                    child: Text(locale.continueWatching),
-                  ),
+                      /// закрываем диалоговое окно
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  child: Text(locale.continueWatching),
                 ),
 
                 /// кнопка начать сначала
-                SizedBox(
-                  width: 320.0,
-                  child: ElevatedButton(
-                    autofocus: true,
-                    style: KrsTheme.filledTonalButtonStyleOf(context),
-                    onPressed: () {
-                      if (mounted) {
-                        /// запускаем видео
-                        _playerController?.play();
+                FilledButton(
+                  onPressed: () {
+                    if (mounted) {
+                      /// запускаем видео
+                      _playerController?.play();
 
-                        /// закрываем диалоговое окно
-                        Navigator.pop(context, false);
-                      }
-                    },
-                    child: Text(locale.startOver),
-                  ),
-                ),
+                      /// закрываем диалоговое окно
+                      Navigator.pop(context, false);
+                    }
+                  },
+                  child: Text(locale.startOver),
+                )
 
-              ],
-            ),
+              ]
+            )
           );
 
           /// если при выборе нажали кнопку назад - закрываем плеер

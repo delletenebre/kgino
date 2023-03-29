@@ -27,6 +27,7 @@ class VoiceActingsButton extends HookWidget {
           context: context,
           titleText: 'Выбор аудио',
           child: ListView(
+            shrinkWrap: true,
             children: kginoItem.voiceActings.map((item) {
               if (item.voiceActing == kginoItem.voiceActing) {
                 /// ^ если озвучка совпадает с текущей
