@@ -65,9 +65,7 @@ class PlayerPage extends HookWidget {
         );
       } : null,
 
-      onUpdatePosition: (episode, position, subtitlesEnabled) {
-        episode.updatedAt = DateTime.now();
-        episode.position = position;
+      onUpdatePosition: (episode, subtitlesEnabled) {
         kginoItem.subtitlesEnabled = subtitlesEnabled;
         kginoItem.seenEpisodes.add(episode);
         kginoItem.save();

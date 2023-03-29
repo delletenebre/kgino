@@ -19,6 +19,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   
+  async: ^2.11.0
   audio_video_progress_bar: ^1.0.1
   cached_network_image: ^3.2.3
   collection: ^1.17.0

@@ -34,7 +34,6 @@ class VideoPlayerView extends StatefulWidget {
   /// при обновлении времени просмотра
   final Function(
     EpisodeItem episode,
-    int position,
     bool subtitlesEnabled,
   ) onUpdatePosition;
 
@@ -451,8 +450,10 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     final duration = _playerController?.value.duration.inSeconds ?? 0;
 
     if (position % 10 == 0 || position == duration) {
+      _episode!.position = position;
+      _episode!.updatedAt = DateTime.now();
       /// сохраняем информацию о времени просмотра эпизода
-      widget.onUpdatePosition(_episode!,  position, _subtitlesEnabled);
+      widget.onUpdatePosition(_episode!, _subtitlesEnabled);
     }
 
     /// чтобы экран не уходил в сон

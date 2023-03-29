@@ -120,19 +120,16 @@ class TskgDetailsPage extends HookWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  height: 40.0,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
 
-                                      /// если кнопка Смотреть в фокусе
-                                      if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
-                                        showEpisodeNumber: false,
-                                      ),
+                                    /// если кнопка Смотреть в фокусе
+                                    if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
+                                      showEpisodeNumber: false,
+                                    ),
 
-                                    ],
-                                  ),
+                                  ],
                                 ),
 
                                 const SizedBox(height: 8.0),

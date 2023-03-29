@@ -46,7 +46,7 @@ class PlayButtonTooltip extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (showEpisodeNumber) Text('${playableEpisode.seasonNumber} сезон, ${playableEpisode.episodeNumber} серия',
+            Text('${playableEpisode.seasonNumber} сезон, ${playableEpisode.episodeNumber} серия',
               style: const TextStyle(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,
@@ -58,7 +58,7 @@ class PlayButtonTooltip extends HookWidget {
               : locale.continueWatching,
               
               style: const TextStyle(
-                fontSize: 12.0,
+                fontSize: 10.0,
               ),
             ),
 
@@ -107,6 +107,12 @@ class PlayButtonTooltip extends HookWidget {
             style: const TextStyle(
               fontSize: 12.0,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          if (episode.name.isNotEmpty) Text(episode.name,
+            style: const TextStyle(
+              fontSize: 10.0,
             ),
           ),
         ],

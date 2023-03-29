@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -187,17 +188,10 @@ class KrsRouter {
                         episodeId: fileId,
                         getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
                           if (initial) {
-                            /// находим сохранённый эпизод, если он есть
-                            
-                            /// контроллер просмотренных эпизодов
-                            // final seenItemsController = GetIt.instance<SeenItemsController>();
-
                             /// проверяем был ли эпизод в просмотренных
-                            // final episode = seenItemsController.findEpisode(
-                            //   storageKey: seenShowStorageKey,
-                            //   episodeId: currentEpisode.id,
-                            // ) ?? currentEpisode;
-                            final episode = currentEpisode;
+                            final episode = kginoItem.seenEpisodes.firstWhere((element) {
+                              return element.id == currentEpisode.id;
+                            }, orElse: () => currentEpisode);
 
                             /// обновляем ссылку на видео файл
                             episode.videoFileUrl = currentEpisode.videoFileUrl;
@@ -272,22 +266,20 @@ class KrsRouter {
                           currentEpisode.subtitlesFileUrl = subtitlesUrl;
 
                           if (initial) {
-                            // /// контроллер просмотренных эпизодов
-                            // final seenItemsController = GetIt.instance<SeenItemsController>();
 
-                            // /// проверяем был ли эпизод в просмотренных
-                            // final seenEpisode = seenItemsController.findEpisode(
-                            //   storageKey: seenShowStorageKey,
-                            //   episodeId: currentEpisode.id,
-                            // );
+                            /// проверяем был ли эпизод в просмотренных
+                            final seenEpisode = kginoItem.seenEpisodes.firstWhere((element) {
+                              return element.id == currentEpisode.id;
+                            }, orElse: () => currentEpisode);
 
-                            // /// восстанавливаем время просмотра, если эпизод уже был в просмотренных
-                            // currentEpisode.position = seenEpisode?.position ?? 0;
-                            currentEpisode.position = 0;
+                            /// восстанавливаем время просмотра, если эпизод
+                            /// уже был в просмотренных
+                            currentEpisode.position = seenEpisode.position;
                             
                           } else {
-                            /// сбрасываем время просмотра у текущего эпизода, чтобы при переключении
-                            /// не запрашивал продолжить просмотр или нет
+                            /// сбрасываем время просмотра у текущего эпизода,
+                            /// чтобы при переключении не запрашивал продолжить
+                            /// просмотр или нет
                             currentEpisode.position = 0;
                           }
 
