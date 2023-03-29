@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 
@@ -159,11 +160,12 @@ class KginoItem {
   /// получаем последний просмотренный эпизод
   EpisodeItem? getLastSeenEpisode() {
     if (seenEpisodes.isNotEmpty) {
-      seenEpisodes.toList().sort((a, b) {
+      final elements = [...seenEpisodes];
+      elements.sort((a, b) {
         return b.updatedAt!.compareTo(a.updatedAt!);
       });
       
-      return seenEpisodes.first;
+      return elements.first;
     }
 
     return null;
@@ -205,8 +207,9 @@ class KginoItem {
 
   Future<void> save() async {
     await storage.db.writeTxn(() async {
-      await seenEpisodes.save();
+      await storage.db.episodeItems.putAll(seenEpisodes.toList());
       await storage.db.kginoItems.put(this);
+      await seenEpisodes.save();
     });
   }
 

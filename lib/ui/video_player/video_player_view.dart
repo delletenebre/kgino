@@ -433,17 +433,22 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     }
   }
 
+
+  int _lastPosition = 0;
   /// слушатель изменения позиции просмотра виде
   void _changeVideoPositionListener() {
-    
+
     /// текущая позиция просмотра видео
     final position = _playerController?.value.position.inSeconds ?? 0;
 
+    if (_lastPosition == position) {
+      return;
+    }
+    
+    _lastPosition = position;
+
     /// общая продолжительность видео
     final duration = _playerController?.value.duration.inSeconds ?? 0;
-
-    // /// сколько просмотрено в процентах [0,1]
-    // final percentPosition = position / duration;
 
     if (position % 10 == 0 || position == duration) {
       /// сохраняем информацию о времени просмотра эпизода

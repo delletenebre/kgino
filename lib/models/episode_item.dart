@@ -57,9 +57,9 @@ class EpisodeItem {
     
   });
 
-  /// просмотренная позиция в пределах от 0 до 1
+  /// просмотренная позиция в пределах от 0 до 1 (шаг 5%)
   @ignore
-  double get percentPosition => position / duration;
+  double get percentPosition => ((position / duration) / 0.05).ceilToDouble() * 0.05;
 
   /// был ли эпизод полностью просмотрен
   @ignore

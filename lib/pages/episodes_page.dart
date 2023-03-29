@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
@@ -142,15 +143,12 @@ class _EpisodesPageState extends State<EpisodesPage> {
                 itemsFuture: Future.microtask(() => _episodes),
                 itemBuilder: (context, focusNode, index, episode) {
                   /// просмотренное время [0; 1]
-                  double seenValue = 0.5;
-                  // final seenEpisode = seenEpisodesController.findEpisode(
-                  //   storageKey: widget.kginoItem.storageKey,
-                  //   episodeId: episode.id,
-                  // );
+                  double seenValue = 0.0;
+                  final seenEpisode = widget.kginoItem.seenEpisodes.singleWhereOrNull((element) => element.id == episode.id);
 
-                  // if (seenEpisode != null) {
-                  //   seenValue = seenEpisode.percentPosition;
-                  // }
+                  if (seenEpisode != null) {
+                    seenValue = seenEpisode.percentPosition;
+                  }
 
                   return KginoEpisodeListTile(
                     focusNode: focusNode,
