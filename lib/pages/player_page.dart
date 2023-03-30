@@ -69,7 +69,18 @@ class PlayerPage extends HookWidget {
         kginoItem.subtitlesEnabled = subtitlesEnabled;
         kginoItem.seenEpisodes.add(episode);
         kginoItem.save();
-      }
+      },
+
+      onQualityChanged: (quality) async {
+        kginoItem.playableQuality = quality;
+        await kginoItem.save();
+
+        return getPlayableItem(
+          true,
+          episodes[currentIndex.value],
+          kginoItem.storageKey,
+        );
+      },
     );
   }
 }

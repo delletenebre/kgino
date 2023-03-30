@@ -44,6 +44,8 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
 
   final bool subtitlesEnabled;
 
+  final int quality;
+
   const VideoPlayerControlsOverlay({
     super.key,
     required this.playerController,
@@ -59,6 +61,7 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
     required this.onSubtitleToggle,
     this.onChangeQuality,
     this.subtitlesEnabled = false,
+    this.quality = 0,
   });
 
   @override
@@ -255,7 +258,9 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                           widget.onChangeQuality?.call();
                         },
                         icon: const Icon(Icons.video_settings_outlined),
-                        child: Text('Качество видео'),
+                        child: widget.quality == 0
+                          ? Text('Качество видео')
+                          : Text('${widget.quality}'),
                         
                       ),
 

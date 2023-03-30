@@ -30,6 +30,8 @@ class VideoPlayerView extends StatefulWidget {
   final Future<EpisodeItem> Function() onInitialPlayableItem;
   final Future<EpisodeItem> Function()? onSkipPrevious;
   final Future<EpisodeItem> Function()? onSkipNext;
+  final Future<EpisodeItem> Function(int quality) onQualityChanged;
+
 
   /// при обновлении времени просмотра
   final Function(
@@ -46,6 +48,7 @@ class VideoPlayerView extends StatefulWidget {
     this.onSkipPrevious,
     this.onSkipNext,
     required this.onUpdatePosition,
+    required this.onQualityChanged,
   });
 
   @override
@@ -394,6 +397,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                     });
                   },
 
+                  quality: _episode?.quality ?? 0,
                   onChangeQuality: _episode == null && _episode!.playableQualities.length < 2 ? null : () async {
                     final result = await Utils.showModal<int?>(
                       context: context,
@@ -402,9 +406,12 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                         children: _episode!.playableQualities.map((quality) {
                           return FilledButton.icon(
                             autofocus: true,
-                            onPressed: () {
+                            onPressed: () async {
                               /// закрываем диалоговое окно
                               Navigator.pop(context, quality);
+
+                              final item = await widget.onQualityChanged.call(quality);
+                              _changeVideo(() async { return item; });
                             },
                             icon: const SizedBox(),
                             label: Text('$quality'),

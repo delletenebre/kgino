@@ -137,6 +137,7 @@ class KrsRouter {
                             playableQuality = currentEpisode.playableQualities.first;
                           }
 
+                          currentEpisode.quality = playableQuality;
                           currentEpisode.videoFileUrl = currentEpisode.videoFileUrl.replaceFirst('%s', '$playableQuality');
 
                           return currentEpisode;

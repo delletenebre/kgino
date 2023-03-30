@@ -43,6 +43,9 @@ class EpisodeItem {
     /// варианты качества видео
   List<int> playableQualities;
 
+  @ignore
+  int quality;
+
   EpisodeItem({
     required this.id,
     required this.fullId,
@@ -59,6 +62,8 @@ class EpisodeItem {
     this.subtitlesFileUrl = '',
 
     this.playableQualities = const [],
+
+    this.quality = 0,
     
   });
 
