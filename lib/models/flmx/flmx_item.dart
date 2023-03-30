@@ -74,6 +74,8 @@ class FlmxItem with _$FlmxItem {
           playableQualities.addAll(variants.map((v) => int.tryParse(v) ?? 0));
         }
         
+        final videoUrl = movie.link.replaceFirst(RegExp(r'(\[[,\d]+\])'), '%s');
+
         voiceActings[movie.translation] = VoiceActing(
           id: movie.translation,
           name: movie.translation,
@@ -81,9 +83,11 @@ class FlmxItem with _$FlmxItem {
             SeasonItem(
               episodes: [
                 EpisodeItem(
-                  id: movie.link.replaceFirst(RegExp(r'(\[[,\d]+\])'), '%s'),
+                  id: videoUrl,
                   fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), movie.link),
                   playableQualities: playableQualities,
+                  videoFileUrl: videoUrl,
+                  duration: duration,
                 ),
               ],
             )

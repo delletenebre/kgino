@@ -393,6 +393,33 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                       _subtitlesEnabled = subtitlesEnabled;
                     });
                   },
+
+                  onChangeQuality: _episode == null && _episode!.playableQualities.length < 2 ? null : () async {
+                    final result = await Utils.showModal<int?>(
+                      context: context,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: _episode!.playableQualities.map((quality) {
+                          return FilledButton.icon(
+                            autofocus: true,
+                            onPressed: () {
+                              /// закрываем диалоговое окно
+                              Navigator.pop(context, quality);
+                            },
+                            icon: const SizedBox(),
+                            label: Text('$quality'),
+                          );
+                        }).toList(),
+                      )
+                    );
+
+                    /// если при выборе нажали кнопку назад - закрываем плеер
+                    if (result == null) {
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    }
+                  },
                   
                 ),
               ),
@@ -442,6 +469,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     if (position % 10 == 0 || position == duration) {
       _episode!.position = position;
+      _episode!.duration = duration;
       _episode!.updatedAt = DateTime.now();
       /// сохраняем информацию о времени просмотра эпизода
       widget.onUpdatePosition(_episode!, _subtitlesEnabled);

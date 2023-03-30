@@ -23,7 +23,7 @@ class EpisodeItem {
   int position;
 
   /// продолжительность эпизода (в секундах)
-  final int duration;
+  int duration;
 
   /// дата последнего просмотра
   DateTime? updatedAt;

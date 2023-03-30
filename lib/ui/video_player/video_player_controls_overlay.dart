@@ -4,6 +4,7 @@ import 'package:video_player/video_player.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
+import '../../utils.dart';
 import '../loading_indicator.dart';
 import 'play_pause_button.dart';
 import 'video_player_controls_button.dart';
@@ -38,6 +39,9 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
   /// обработчик при нажатии на кнопку субтитров
   final Function(bool subtitlesEnabled) onSubtitleToggle;
 
+  /// обработчик при выборе качества видео
+  final Function()? onChangeQuality;
+
   final bool subtitlesEnabled;
 
   const VideoPlayerControlsOverlay({
@@ -53,6 +57,7 @@ class VideoPlayerControlsOverlay extends StatefulWidget {
     required this.onPlayPause,
     required this.onShowOverlay,
     required this.onSubtitleToggle,
+    this.onChangeQuality,
     this.subtitlesEnabled = false,
   });
 
@@ -238,6 +243,19 @@ class _VideoPlayerControlsOverlayState extends State<VideoPlayerControlsOverlay>
                         },
                         icon: const Icon(Icons.subtitles_off),
                         child: Text(locale.disableSubtitles),
+                        
+                      ),
+
+                      /// кнопка смены качества видео
+                      if (widget.onChangeQuality != null) VideoPlayerControlsButton(
+                        
+                        onPressed: () async {
+                          /// вызываем пользовательский обработчик выбора
+                          /// качества видео
+                          widget.onChangeQuality?.call();
+                        },
+                        icon: const Icon(Icons.video_settings_outlined),
+                        child: Text('Качество видео'),
                         
                       ),
 

@@ -210,12 +210,12 @@ class KginoItem {
   final storage = GetIt.instance<KrsStorage>();
 
   Future<void> save() async {
-    await storage.db.writeTxn(() async {
+    storage.db.writeTxnSync(() async {
       if (seenEpisodes.isNotEmpty) {
-        await storage.db.episodeItems.putAll(seenEpisodes.toList());
-        await storage.db.kginoItems.put(this);
+        storage.db.episodeItems.putAllSync(seenEpisodes.toList());
       }
-      await seenEpisodes.save();
+      storage.db.kginoItems.putSync(this);
+      seenEpisodes.saveSync();
     });
   }
 
