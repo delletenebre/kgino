@@ -8,6 +8,7 @@ import '../models/episode_item.dart';
 import '../models/kgino_item.dart';
 import '../models/season_item.dart';
 import '../models/tskg/tskg_show.dart';
+import '../models/voice_acting.dart';
 
 
 String getTextByClassName(Document document, String className) {
@@ -355,7 +356,7 @@ KginoItem showIsolate(String html) {
   String voiceActing = '';
   
   /// список доступных озвучек
-  final voiceActings = <KginoItem>[];
+  final voiceActings = <String, VoiceActing>{};
   
   /// парсим список доступных озвучек
   final voiceActingElements = document.getElementsByClassName('btn-group btn-group-sm');
@@ -377,13 +378,9 @@ KginoItem showIsolate(String html) {
         final id = TskgShow.getShowIdFromUrl(url);
         
         /// формируем список доступных озвучек
-        voiceActings.add(
-          KginoItem(
-            provider: KginoProvider.tskg.name,
-            id: id,
-            name: item.text,
-            posterUrl: 'https://www.ts.kg/posters/$id.png',
-          )
+        voiceActings[id] = VoiceActing(
+          id: id,
+          name: item.text,
         );
 
       }

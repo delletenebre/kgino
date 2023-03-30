@@ -122,100 +122,94 @@ class FlmxDetailsPage extends HookWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  height: 40.0,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
 
-                                      /// если кнопка Смотреть в фокусе
-                                      if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
-                                        showEpisodeNumber: false,
-                                      ),
+                                    /// если кнопка Смотреть в фокусе
+                                    if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
+                                      showEpisodeNumber: false,
+                                    ),
 
-                                    ],
-                                  ),
+                                  ],
                                 ),
 
                                 const SizedBox(height: 8.0),
                                 
-                                SizedBox(
-                                  height: 40.0,
-                                  child: Row(
-                                    children: [
+                                Row(
+                                  children: [
 
-                                      /// кнопка начала просмотра
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: FilledButton.icon(
-                                          autofocus: true,
-                                          onFocusChange: (hasFocus) {
-                                            playButtonHasFocus.value = hasFocus;
-                                          },
-                                          onPressed: () {
-                                            /// переходим на страницу плеера фильма
-                                            context.goNamed('flmxPlayer',
-                                              params: {
-                                                'id': kginoItem.id,
-                                              },
-                                              queryParams: {
-                                                'episodeId': kginoItem.seasons.first.episodes.first.id,
-                                              },
-                                              extra: kginoItem,
-                                            );
-                                          },
-                                          icon: const Icon(Icons.play_arrow),
-                                          label: Text(locale.play),
-                                        ),
+                                    /// кнопка начала просмотра
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: FilledButton.icon(
+                                        autofocus: true,
+                                        onFocusChange: (hasFocus) {
+                                          playButtonHasFocus.value = hasFocus;
+                                        },
+                                        onPressed: () {
+                                          /// переходим на страницу плеера фильма
+                                          context.goNamed('flmxShowPlayer',
+                                            params: {
+                                              'id': kginoItem.id,
+                                            },
+                                            queryParams: {
+                                              'episodeId': kginoItem.seasons.first.episodes.first.id,
+                                            },
+                                            extra: kginoItem,
+                                          );
+                                        },
+                                        icon: const Icon(Icons.play_arrow),
+                                        label: Text(locale.play),
                                       ),
+                                    ),
 
-                                      /// если файлов несколько, показываем кнопку выбора
-                                      /// эпизода
-                                      if (kginoItem.seasons.first.episodes.length > 1) Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: FilledButton.icon(
-                                          onPressed: () {
-                                            /// переходим на страницу выбора файла
-                                            context.goNamed('flmxShowEpisodes',
-                                              params: {
-                                                'id': kginoItem.id,
-                                              },
-                                              extra: kginoItem,
-                                            );
-                                          },
-                                          icon: const Icon(Icons.folder_open),
-                                          label: Text(locale.selectEpisode),
-                                        ),
+                                    /// если файлов несколько, показываем кнопку выбора
+                                    /// эпизода
+                                    if (kginoItem.seasons.first.episodes.length > 1) Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: FilledButton.icon(
+                                        onPressed: () {
+                                          /// переходим на страницу выбора файла
+                                          context.goNamed('flmxShowEpisodes',
+                                            params: {
+                                              'id': kginoItem.id,
+                                            },
+                                            extra: kginoItem,
+                                          );
+                                        },
+                                        icon: const Icon(Icons.folder_open),
+                                        label: Text(locale.selectEpisode),
                                       ),
+                                    ),
 
-                                      /// кнопка добавления или удаления из закладок
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: BookmarkButton(kginoItem),
+                                    /// кнопка добавления или удаления из закладок
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: BookmarkButton(kginoItem),
+                                    ),
+
+                                    /// кнопка выбора озвучки
+                                    if (kginoItem.voiceActings.length > 1) Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: VoiceActingsButton(kginoItem,
+                                        onVoiceActingChange: (voiceActing) async {
+
+                                          kginoItem.voiceActing = voiceActing.id;
+                                          await kginoItem.save();
+
+                                          /// переходим на страницу деталей о сериале
+                                          // TODO fix route to movie
+                                          context.pushReplacementNamed('flmxShowDetails',
+                                            params: {
+                                              'id': kginoItem.id,
+                                            },
+                                          );
+                                        },
                                       ),
+                                    ),
 
-                                      /// кнопка выбора озвучки
-                                      if (kginoItem.voiceActings.length > 1) Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: VoiceActingsButton(kginoItem,
-                                          onVoiceActingChange: (selectedItem) async {
-
-                                            kginoItem.voiceActing = selectedItem.voiceActing;
-                                            await kginoItem.save();
-
-                                            /// переходим на страницу деталей о сериале
-                                            // TODO fix route to movie
-                                            context.pushReplacementNamed('flmxShowDetails',
-                                              params: {
-                                                'id': kginoItem.id,
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
+                                  ],
                                 ),
                               ],
                             ),

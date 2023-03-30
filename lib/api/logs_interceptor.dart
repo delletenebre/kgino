@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,7 +29,12 @@ class LogsInterceptor extends InterceptorsWrapper {
     if (kDebugMode) {
       /// ^ если режим отладки
       
-      print("| [DIO] Response [code ${response.statusCode}]: ${response.data.toString()}");
+      print("| [DIO] Response [code ${response.statusCode}]: ${response.data}");
+      // try {
+      //   log("| [DIO] Response [code ${response.statusCode}]: ${jsonEncode(response.data)}");
+      // } catch(exception) {
+      //   log("| [DIO] Response [code ${response.statusCode}]: ${response.data.toString()}");
+      // }
       print("└------------------------------------------------------------------------------");
     }
 
@@ -37,7 +45,8 @@ class LogsInterceptor extends InterceptorsWrapper {
   onError(DioError err, handler) async {
     if (kDebugMode) {
       /// ^ если режим отладки
-      print("| [DIO] Error: ${err.error}: ${err.response.toString()}");
+      
+      log("| [DIO] Error: ${err.error}: ${err.response.toString()}");
       print("└------------------------------------------------------------------------------");
     }
 

@@ -4,6 +4,7 @@ import 'package:kgino/models/episode_item.dart';
 import '../json_converters.dart';
 import '../kgino_item.dart';
 import '../season_item.dart';
+import '../voice_acting.dart';
 import 'flmx_last_episode.dart';
 import 'flmx_player_links.dart';
 import 'flmx_show_link.dart';
@@ -54,62 +55,45 @@ class FlmxItem with _$FlmxItem {
     List<SeasonItem> seasons = [];
 
     String voiceActing = '';
-    List<KginoItem> voiceActings = [];
+    Map<String, VoiceActing> voiceActings = {};
+    Map<String, List<SeasonItem>> voiceActingSeasons = {};
 
     if (playerLinks.movie.isNotEmpty) {
       /// ^ если это фильм
       
-      if (playerLinks.movie.length > 1) {
-        /// ^ если есть разные озвучки
-      
-        voiceActings = playerLinks.movie.map((movie) {
-          final seasons = [
+      for (final movie in playerLinks.movie) {
+        final playableQualities = <int>[];
+
+        final qualityRegExp = RegExp(r'\[([,\d]+)\]');
+        final qualities = qualityRegExp.allMatches(movie.link)
+          .map((m) => m.group(0));
+        
+        if (qualities.isNotEmpty) {
+          final variants = qualities.first.toString().split(',');
+          variants.removeWhere((element) => element.isEmpty);
+          playableQualities.addAll(variants.map((v) => int.tryParse(v) ?? 0));
+        }
+        
+        voiceActings[movie.translation] = VoiceActing(
+          id: movie.translation,
+          name: movie.translation,
+          seasons: [
             SeasonItem(
               episodes: [
                 EpisodeItem(
-                  id: movie.link,
+                  id: movie.link.replaceFirst(RegExp(r'(\[[,\d]+\])'), '%s'),
                   fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), movie.link),
+                  playableQualities: playableQualities,
                 ),
-              ]
+              ],
             )
-          ];
-          
-          return KginoItem(
-            provider: KginoProvider.flmx.name,
-            id: id.toString(),
-            name: title,
-            originalName: originalTitle,
-            posterUrl: poster,
-            description: shortStory,
-            year: year.toString(),
-            genres: categories,
-            countries: countries,
+          ],
+        );
 
-            imdbRating: imdbRating,
-            kinopoiskRating: kpRating,
-
-            duration: Duration(minutes: duration),
-
-            voiceActing: movie.translation,
-            voiceActings: voiceActings,
-
-            seasons: seasons,
-          );
-        }).toList();
       }
 
       voiceActing = playerLinks.movie.first.translation;
-
-      seasons = [
-        SeasonItem(
-          episodes: [
-            EpisodeItem(
-              id: playerLinks.movie.first.link,
-              fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), playerLinks.movie.first.link),
-            ),
-          ]
-        )
-      ];
+      seasons = voiceActings[voiceActing]!.seasons;
     }
 
     /// playlist as Map<String, Map<String, Map<String, FlmxShowLink>>>
@@ -117,15 +101,41 @@ class FlmxItem with _$FlmxItem {
       /// ^ если это сериал
       
       /// парсим как [Map<String, Map<String, Map<String, FlmxShowLink>>>]
+      // final playlist = (playerLinks.playlist as Map<String, dynamic>).map(
+      //   (k, e) => MapEntry(
+      //     k, (e as Map<String, dynamic>).map(
+      //       (k, e) => MapEntry(
+      //         k, (e as Map<String, dynamic>).map(
+      //           (k, e) => MapEntry(k,
+      //               FlmxShowLink.fromJson(e as Map<String, dynamic>)),
+      //         )),
+      //     )),
+      // );
+
       final playlist = (playerLinks.playlist as Map<String, dynamic>).map(
-        (k, e) => MapEntry(
-          k, (e as Map<String, dynamic>).map(
-            (k, e) => MapEntry(
-              k, (e as Map<String, dynamic>).map(
-                (k, e) => MapEntry(k,
-                    FlmxShowLink.fromJson(e as Map<String, dynamic>)),
-              )),
-          )),
+        (k, e) {
+          // print('k $k');
+          return MapEntry(
+            k, (e as Map<String, dynamic>).map(
+              (k, e) {
+                // print('kkk $k');
+
+                try {
+                  return MapEntry(
+                    k, (e as Map<String, dynamic>).map(
+                      (k, e) {
+                        // print('kkkkk $k');
+                        return MapEntry(k, FlmxShowLink.fromJson(e as Map<String, dynamic>));
+                      }
+                    )
+                  );
+                } catch (exception) {
+                  return const MapEntry('', <String, FlmxShowLink>{});
+                }
+              }
+            )
+          );
+        },
       );
     
       /// список всех доступных озвучек
@@ -135,6 +145,9 @@ class FlmxItem with _$FlmxItem {
         
         /// сезон со всеми вариантами озвучек
         final translationMap = playlist[seasonNumber]!;
+
+        /// если были проблемы с парсингом, удаляем пустую озвучку
+        translationMap.remove('');
         
         for (final translationName in translationMap.keys) {
 
@@ -148,81 +161,62 @@ class FlmxItem with _$FlmxItem {
           translationsMap[translationName]![seasonNumber] = episodes;
         }
       }
-
-      // if (translationsMap.keys.length > 1) {
-        /// ^ если есть разные озвучки
       
-        for (final entry in translationsMap.entries) {
-          final translationName = entry.key;
-          final seasonsMap = entry.value;
+      for (final entry in translationsMap.entries) {
+        final translationName = entry.key;
+        final seasonsMap = entry.value;
 
-          /// список сезонов
-          final seasons = <SeasonItem>[];
+        /// список сезонов
+        final seasons = <SeasonItem>[];
 
-          /// формируем список сезонов
-          for (final seasonEntry in seasonsMap.entries) {
-            final seasonNumber = seasonEntry.key;
-            final episodesMap = seasonEntry.value;
+        /// формируем список сезонов
+        for (final seasonEntry in seasonsMap.entries) {
+          final seasonNumber = seasonEntry.key;
+          final episodesMap = seasonEntry.value;
 
-            /// список эпизодов
-            final episodes = <EpisodeItem>[];
+          /// список эпизодов
+          final episodes = <EpisodeItem>[];
+          
+          /// формируем список эпизодов сезона
+          for (final episodeEntry in episodesMap.entries) {
+            final episodeNumber = episodeEntry.key;
+            final episodeValue = episodeEntry.value;
             
-            /// формируем список эпизодов сезона
-            for (final episodeEntry in episodesMap.entries) {
-              final episodeNumber = episodeEntry.key;
-              final episodeValue = episodeEntry.value;
-              
-              /// формируем эпизод
-              episodes.add(
-                EpisodeItem(
-                  id: episodeValue.link,
-                  fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), episodeValue.link),
-                  name: episodeNumber,
-                  seasonNumber: int.tryParse(seasonNumber) ?? 0,
-                  episodeNumber: int.tryParse(episodeNumber) ?? 0,
-                  videoFileUrl: episodeValue.link,
-                ),
-              );
-            }
-
-            /// формируем сезон   
-            seasons.add(
-              SeasonItem(
-                name: seasonNumber,
-                episodes: episodes,
-              )
+            /// формируем эпизод
+            episodes.add(
+              EpisodeItem(
+                id: episodeValue.link,
+                fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), episodeValue.link),
+                name: episodeNumber,
+                seasonNumber: int.tryParse(seasonNumber) ?? 0,
+                episodeNumber: int.tryParse(episodeNumber) ?? 0,
+                videoFileUrl: episodeValue.link,
+                playableQualities: episodeValue.qualities,
+              ),
             );
           }
-          
-          voiceActings.add(
-            KginoItem(
-              provider: KginoProvider.flmx.name,
-              id: id.toString(),
-              name: title,
-              originalName: originalTitle,
-              posterUrl: poster,
-              description: shortStory,
-              year: year.toString(),
-              genres: categories,
-              countries: countries,
 
-              imdbRating: imdbRating,
-              kinopoiskRating: kpRating,
-
-              duration: Duration(minutes: duration),
-
-              voiceActing: translationName,
-              voiceActings: voiceActings,
-
-              seasons: seasons,
+          /// формируем сезон   
+          seasons.add(
+            SeasonItem(
+              name: seasonNumber,
+              episodes: episodes,
             )
           );
+
+          voiceActingSeasons[translationName] = seasons;
         }
-      // }
+        
+        voiceActings[translationName] = VoiceActing(
+          id: translationName,
+          name: translationName,
+          seasons: voiceActingSeasons[translationName]!,
+        );
+      }
 
       /// первый вариант озвучки
       voiceActing = translationsMap.keys.first;
-      seasons = voiceActings.first.seasons;
+      seasons = voiceActingSeasons[voiceActing]!;
     }
     
     

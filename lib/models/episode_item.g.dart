@@ -42,28 +42,33 @@ const EpisodeItemSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'position': PropertySchema(
+    r'playableQualities': PropertySchema(
       id: 5,
+      name: r'playableQualities',
+      type: IsarType.longList,
+    ),
+    r'position': PropertySchema(
+      id: 6,
       name: r'position',
       type: IsarType.long,
     ),
     r'seasonNumber': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'seasonNumber',
       type: IsarType.long,
     ),
     r'subtitlesFileUrl': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'subtitlesFileUrl',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'videoFileUrl': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'videoFileUrl',
       type: IsarType.string,
     )
@@ -91,6 +96,7 @@ int _episodeItemEstimateSize(
   bytesCount += 3 + object.fullId.length * 3;
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.playableQualities.length * 8;
   bytesCount += 3 + object.subtitlesFileUrl.length * 3;
   bytesCount += 3 + object.videoFileUrl.length * 3;
   return bytesCount;
@@ -107,11 +113,12 @@ void _episodeItemSerialize(
   writer.writeString(offsets[2], object.fullId);
   writer.writeString(offsets[3], object.id);
   writer.writeString(offsets[4], object.name);
-  writer.writeLong(offsets[5], object.position);
-  writer.writeLong(offsets[6], object.seasonNumber);
-  writer.writeString(offsets[7], object.subtitlesFileUrl);
-  writer.writeDateTime(offsets[8], object.updatedAt);
-  writer.writeString(offsets[9], object.videoFileUrl);
+  writer.writeLongList(offsets[5], object.playableQualities);
+  writer.writeLong(offsets[6], object.position);
+  writer.writeLong(offsets[7], object.seasonNumber);
+  writer.writeString(offsets[8], object.subtitlesFileUrl);
+  writer.writeDateTime(offsets[9], object.updatedAt);
+  writer.writeString(offsets[10], object.videoFileUrl);
 }
 
 EpisodeItem _episodeItemDeserialize(
@@ -126,11 +133,12 @@ EpisodeItem _episodeItemDeserialize(
     fullId: reader.readString(offsets[2]),
     id: reader.readString(offsets[3]),
     name: reader.readStringOrNull(offsets[4]) ?? '',
-    position: reader.readLongOrNull(offsets[5]) ?? 0,
-    seasonNumber: reader.readLongOrNull(offsets[6]) ?? 0,
-    subtitlesFileUrl: reader.readStringOrNull(offsets[7]) ?? '',
-    updatedAt: reader.readDateTimeOrNull(offsets[8]),
-    videoFileUrl: reader.readStringOrNull(offsets[9]) ?? '',
+    playableQualities: reader.readLongList(offsets[5]) ?? const [],
+    position: reader.readLongOrNull(offsets[6]) ?? 0,
+    seasonNumber: reader.readLongOrNull(offsets[7]) ?? 0,
+    subtitlesFileUrl: reader.readStringOrNull(offsets[8]) ?? '',
+    updatedAt: reader.readDateTimeOrNull(offsets[9]),
+    videoFileUrl: reader.readStringOrNull(offsets[10]) ?? '',
   );
   return object;
 }
@@ -153,14 +161,16 @@ P _episodeItemDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 5:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readLongList(offset) ?? const []) as P;
     case 6:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 7:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 8:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 9:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 10:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -818,6 +828,151 @@ extension EpisodeItemQueryFilter
         property: r'name',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'playableQualities',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'playableQualities',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'playableQualities',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'playableQualities',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'playableQualities',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'playableQualities',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'playableQualities',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'playableQualities',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'playableQualities',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<EpisodeItem, EpisodeItem, QAfterFilterCondition>
+      playableQualitiesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'playableQualities',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1588,6 +1743,13 @@ extension EpisodeItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<EpisodeItem, EpisodeItem, QDistinct>
+      distinctByPlayableQualities() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'playableQualities');
+    });
+  }
+
   QueryBuilder<EpisodeItem, EpisodeItem, QDistinct> distinctByPosition() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'position');
@@ -1657,6 +1819,13 @@ extension EpisodeItemQueryProperty
   QueryBuilder<EpisodeItem, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<EpisodeItem, List<int>, QQueryOperations>
+      playableQualitiesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'playableQualities');
     });
   }
 

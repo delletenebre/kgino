@@ -119,82 +119,76 @@ class OckgMovieDetailsPage extends HookWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  height: 40.0,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
 
-                                      /// если кнопка Смотреть в фокусе
-                                      if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
-                                        showEpisodeNumber: false,
-                                      ),
+                                    /// если кнопка Смотреть в фокусе
+                                    if (playButtonHasFocus.value) PlayButtonTooltip(kginoItem,
+                                      showEpisodeNumber: false,
+                                    ),
 
-                                    ],
-                                  ),
+                                  ],
                                 ),
 
                                 const SizedBox(height: 8.0),
                                 
-                                SizedBox(
-                                  height: 40.0,
-                                  child: Row(
-                                    children: [
+                                Row(
+                                  children: [
 
-                                      /// кнопка начала просмотра
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: FilledButton.icon(
-                                          // focusNode: playButtonFocusNode,
-                                          autofocus: true,
-                                          onFocusChange: (hasFocus) {
-                                            playButtonHasFocus.value = hasFocus;
-                                          },
-                                          onPressed: () {
-                                            /// переходим на страницу плеера фильма
-                                            context.goNamed('ockgPlayer',
-                                              params: {
-                                                'id': kginoItem.id,
-                                              },
-                                              queryParams: {
-                                                'episodeId': kginoItem.seasons.first.episodes.first.id,
-                                              },
-                                              extra: kginoItem,
-                                            );
-                                          },
-                                          icon: const Icon(Icons.play_arrow),
-                                          label: Text(locale.play),
-                                        ),
+                                    /// кнопка начала просмотра
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: FilledButton.icon(
+                                        // focusNode: playButtonFocusNode,
+                                        autofocus: true,
+                                        onFocusChange: (hasFocus) {
+                                          playButtonHasFocus.value = hasFocus;
+                                        },
+                                        onPressed: () {
+                                          /// переходим на страницу плеера фильма
+                                          context.goNamed('ockgPlayer',
+                                            params: {
+                                              'id': kginoItem.id,
+                                            },
+                                            queryParams: {
+                                              'episodeId': kginoItem.seasons.first.episodes.first.id,
+                                            },
+                                            extra: kginoItem,
+                                          );
+                                        },
+                                        icon: const Icon(Icons.play_arrow),
+                                        label: Text(locale.play),
                                       ),
+                                    ),
 
-                                      /// если файлов несколько, показываем кнопку выбора
-                                      /// эпизода
-                                      if (kginoItem.seasons.first.episodes.length > 1) Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: ElevatedButton.icon(
-                                          style: KrsTheme.filledTonalButtonStyleOf(context),
-                                          onPressed: () {
-                                            /// переходим на страницу выбора файла
-                                            context.goNamed('ockgEpisodes',
-                                              params: {
-                                                'id': kginoItem.id,
-                                              },
-                                              extra: kginoItem,
-                                            );
-                                          },
-                                          icon: const Icon(Icons.folder_open),
-                                          label: Text(locale.selectEpisode),
-                                        ),
+                                    /// если файлов несколько, показываем кнопку выбора
+                                    /// эпизода
+                                    if (kginoItem.seasons.first.episodes.length > 1) Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: ElevatedButton.icon(
+                                        style: KrsTheme.filledTonalButtonStyleOf(context),
+                                        onPressed: () {
+                                          /// переходим на страницу выбора файла
+                                          context.goNamed('ockgEpisodes',
+                                            params: {
+                                              'id': kginoItem.id,
+                                            },
+                                            extra: kginoItem,
+                                          );
+                                        },
+                                        icon: const Icon(Icons.folder_open),
+                                        label: Text(locale.selectEpisode),
                                       ),
+                                    ),
 
-                                      /// кнопка добавления или удаления из закладок
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
-                                        child: BookmarkButton(kginoItem),
-                                      ),
+                                    /// кнопка добавления или удаления из закладок
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: BookmarkButton(kginoItem),
+                                    ),
 
-                                    ],
-                                  ),
+                                  ],
                                 ),
                               ],
                             ),

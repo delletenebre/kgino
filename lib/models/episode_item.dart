@@ -40,6 +40,9 @@ class EpisodeItem {
   /// ссылка на файл субтитров
   String subtitlesFileUrl;
 
+    /// варианты качества видео
+  List<int> playableQualities;
+
   EpisodeItem({
     required this.id,
     required this.fullId,
@@ -54,6 +57,8 @@ class EpisodeItem {
 
     this.videoFileUrl = '',
     this.subtitlesFileUrl = '',
+
+    this.playableQualities = const [],
     
   });
 

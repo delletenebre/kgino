@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import '../resources/krs_storage.dart';
 import 'episode_item.dart';
 import 'season_item.dart';
+import 'voice_acting.dart';
 
 part 'kgino_item.g.dart';
 
@@ -56,7 +57,8 @@ class KginoItem {
     return voiceActing;
   }
 
-
+  /// выбранное качество видео
+  int playableQuality;
 
   /// список сезонов
   @ignore
@@ -104,7 +106,7 @@ class KginoItem {
 
   /// список доступных озвучек
   @ignore
-  final List<KginoItem> voiceActings;
+  final Map<String, VoiceActing> voiceActings;
 
   /// аудио информация о наличии звуковой дорожки 5.1
   @ignore
@@ -139,11 +141,13 @@ class KginoItem {
     this.duration = Duration.zero,
 
     this.voiceActing = '',
-    this.voiceActings = const [],
+    this.voiceActings = const {},
 
     this.hasSixChannels = false,
 
     this.isFolder = false,
+
+    this.playableQuality = 720,
 
   });
 
@@ -207,8 +211,10 @@ class KginoItem {
 
   Future<void> save() async {
     await storage.db.writeTxn(() async {
-      await storage.db.episodeItems.putAll(seenEpisodes.toList());
-      await storage.db.kginoItems.put(this);
+      if (seenEpisodes.isNotEmpty) {
+        await storage.db.episodeItems.putAll(seenEpisodes.toList());
+        await storage.db.kginoItems.put(this);
+      }
       await seenEpisodes.save();
     });
   }

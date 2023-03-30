@@ -99,9 +99,64 @@ class KrsRouter {
                         },
                       );
                     },
-                    routes: [
+                  ),
 
-                    ],
+                  /// страница плеера
+                  GoRoute(
+                    path: 'player',
+                    name: 'flmxShowPlayer',
+                    builder: (context, state) {
+                      final kginoItem = state.extra as KginoItem;
+                      final fileId = state.queryParams['episodeId'] ?? '';
+
+                      return PlayerPage(
+                        kginoItem: kginoItem,
+                        episodeId: fileId,
+                        getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
+                          // /// задаём качество видео в HD или в SD
+                          // String videoUrl = episodeDetails?.video.files.hd.url
+                          //     ?? episodeDetails?.video.files.sd.url ?? '';
+
+                          // /// субтитры
+                          // String subtitlesUrl = episodeDetails?.video.subtitles ?? '';
+
+                          // /// обновляем ссылку на видео файл
+                          // currentEpisode.videoFileUrl = videoUrl;
+
+                          // /// обновляем ссылку на файл субтитров
+                          // currentEpisode.subtitlesFileUrl = subtitlesUrl;
+
+                          // if (initial) {
+
+                          //   /// проверяем был ли эпизод в просмотренных
+                          //   final seenEpisode = kginoItem.seenEpisodes.firstWhere((element) {
+                          //     return element.id == currentEpisode.id;
+                          //   }, orElse: () => currentEpisode);
+
+                          //   /// восстанавливаем время просмотра, если эпизод
+                          //   /// уже был в просмотренных
+                          //   currentEpisode.position = seenEpisode.position;
+                            
+                          // } else {
+                          //   /// сбрасываем время просмотра у текущего эпизода,
+                          //   /// чтобы при переключении не запрашивал продолжить
+                          //   /// просмотр или нет
+                          //   currentEpisode.position = 0;
+                          // }
+
+                          int playableQuality = kginoItem.playableQuality;
+                          if (!currentEpisode.playableQualities.contains(kginoItem.playableQuality)) {
+                            currentEpisode.playableQualities.sort((a, b) => a.compareTo(b));
+                            playableQuality = currentEpisode.playableQualities.first;
+                          }
+
+                          currentEpisode.videoFileUrl = currentEpisode.videoFileUrl.replaceFirst('%s', '$playableQuality');
+                          print('currentEpisode: ${currentEpisode.videoFileUrl}');
+
+                          return currentEpisode;
+                        },
+                      );
+                    },
                   ),
 
                 ],

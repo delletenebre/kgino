@@ -37,23 +37,28 @@ const KginoItemSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'posterUrl': PropertySchema(
+    r'playableQuality': PropertySchema(
       id: 4,
+      name: r'playableQuality',
+      type: IsarType.long,
+    ),
+    r'posterUrl': PropertySchema(
+      id: 5,
       name: r'posterUrl',
       type: IsarType.string,
     ),
     r'provider': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'provider',
       type: IsarType.string,
     ),
     r'subtitlesEnabled': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'subtitlesEnabled',
       type: IsarType.bool,
     ),
     r'voiceActing': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'voiceActing',
       type: IsarType.string,
     )
@@ -103,10 +108,11 @@ void _kginoItemSerialize(
   writer.writeLong(offsets[1], object.episodeCount);
   writer.writeString(offsets[2], object.id);
   writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.posterUrl);
-  writer.writeString(offsets[5], object.provider);
-  writer.writeBool(offsets[6], object.subtitlesEnabled);
-  writer.writeString(offsets[7], object.voiceActing);
+  writer.writeLong(offsets[4], object.playableQuality);
+  writer.writeString(offsets[5], object.posterUrl);
+  writer.writeString(offsets[6], object.provider);
+  writer.writeBool(offsets[7], object.subtitlesEnabled);
+  writer.writeString(offsets[8], object.voiceActing);
 }
 
 KginoItem _kginoItemDeserialize(
@@ -119,10 +125,11 @@ KginoItem _kginoItemDeserialize(
     bookmarked: reader.readDateTimeOrNull(offsets[0]),
     id: reader.readString(offsets[2]),
     name: reader.readString(offsets[3]),
-    posterUrl: reader.readString(offsets[4]),
-    provider: reader.readString(offsets[5]),
-    subtitlesEnabled: reader.readBoolOrNull(offsets[6]) ?? false,
-    voiceActing: reader.readStringOrNull(offsets[7]) ?? '',
+    playableQuality: reader.readLongOrNull(offsets[4]) ?? 720,
+    posterUrl: reader.readString(offsets[5]),
+    provider: reader.readString(offsets[6]),
+    subtitlesEnabled: reader.readBoolOrNull(offsets[7]) ?? false,
+    voiceActing: reader.readStringOrNull(offsets[8]) ?? '',
   );
   return object;
 }
@@ -143,12 +150,14 @@ P _kginoItemDeserializeProp<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 720) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readString(offset)) as P;
     case 7:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 8:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -690,6 +699,62 @@ extension KginoItemQueryFilter
     });
   }
 
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      playableQualityEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'playableQuality',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      playableQualityGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'playableQuality',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      playableQualityLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'playableQuality',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      playableQualityBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'playableQuality',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1214,6 +1279,18 @@ extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
     });
   }
 
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPlayableQuality() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.asc);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPlayableQualityDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.desc);
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPosterUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'posterUrl', Sort.asc);
@@ -1326,6 +1403,18 @@ extension KginoItemQuerySortThenBy
     });
   }
 
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPlayableQuality() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.asc);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPlayableQualityDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.desc);
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPosterUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'posterUrl', Sort.asc);
@@ -1404,6 +1493,12 @@ extension KginoItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByPlayableQuality() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'playableQuality');
+    });
+  }
+
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByPosterUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1461,6 +1556,12 @@ extension KginoItemQueryProperty
   QueryBuilder<KginoItem, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<KginoItem, int, QQueryOperations> playableQualityProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'playableQuality');
     });
   }
 
