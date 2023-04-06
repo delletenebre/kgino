@@ -111,11 +111,7 @@ class TskgHomePage extends HookWidget {
                             onTap: () {
 
                               /// переходим на страницу детальной информации
-                              context.goNamed('tskgDetails',
-                                params: {
-                                  'id': item.id,
-                                }
-                              );
+                              item.goToDetails(context);
                               
                             },
                             item: item,

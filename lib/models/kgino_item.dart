@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:isar/isar.dart';
 
 import '../resources/krs_storage.dart';
@@ -222,6 +224,30 @@ class KginoItem {
   @ignore
   Stream<KginoItem?> get dbStream {
     return storage.db.kginoItems.watchObject(isarId);
+  }
+
+  void goToDetails(BuildContext context) {
+    if (provider == KginoProvider.flmx.name) {
+      return context.pushNamed('flmxShowDetails', params: {
+        'id': id,
+      });
+    }
+
+    if (provider == KginoProvider.ockg.name) {
+      return context.pushNamed('ockgDetails',
+        params: {
+          'id': id,
+        }
+      );
+    }
+
+    if (provider == KginoProvider.tskg.name) {
+      return context.pushNamed('tskgDetails',
+        params: {
+          'id': id,
+        }
+      );
+    }
   }
 
 

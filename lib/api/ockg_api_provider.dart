@@ -110,8 +110,8 @@ class OckgApiProvider {
           'q': searchQuery,
         },
       ),
-      decoder: (json) {
-        final moviesJson = json['json'][0]['response']['movies'];
+      decoder: (json) async {
+        final moviesJson = jsonDecode(json)['json'][0]['response']['movies'];
 
         final movies = moviesJson.map<OckgMovie>((item) {
           return OckgMovie.fromJson(item);
@@ -143,7 +143,7 @@ class OckgApiProvider {
 
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.post('', data: formData),
-      decoder: (json) {
+      decoder: (json) async {
         final movies = json['json'][0]['response']['movies'];
 
         return movies.map<OckgMovie>((item) {

@@ -52,5 +52,8 @@ Future<void> main() async {
   /// регистрируем провайдер запросов к REST API как singleton
   GetIt.instance.registerSingleton<TskgApiProvider>(TskgApiProvider());
 
+  /// регистрируем контроллер для поискового запроса
+  GetIt.instance.registerSingleton<TextEditingController>(TextEditingController());
+
   runApp(const App());
 }

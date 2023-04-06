@@ -27,6 +27,9 @@ class KrsTabBarSearchButton extends HookWidget {
 
     final tabsCubit = GetIt.instance<TabsCubit>();
 
+    /// контроллер поискового запроса
+    final textEditingController = GetIt.instance<TextEditingController>();
+
     final selected = tabsCubit.state == index;
     final focusNode = tabsCubit.focusNodes[index];
     void onFocusChange(hasFocus) {
@@ -96,6 +99,7 @@ class KrsTabBarSearchButton extends HookWidget {
               )) : TextField(
               focusNode: textFieldFocusNode,
               textInputAction: TextInputAction.search,
+              controller: textEditingController,
 
               style: const TextStyle(
                 fontSize: 14.0,

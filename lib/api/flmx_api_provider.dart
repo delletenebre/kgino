@@ -155,4 +155,20 @@ class FlmxApiProvider {
     );
   }
 
+
+  /// поиск фильмов
+  Future<ApiResponse<List<KginoItem>>> searchMovies(String searchQuery) async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/search', queryParameters: {
+        ..._queryParams,
+        'story': searchQuery,
+      }),
+      decoder: (json) async {
+        return json.map<KginoItem>((item) {
+          return FlmxItem.fromJson(item).toMovieItem();
+        }).toList();
+      },
+    );
+  }
+
 }

@@ -73,6 +73,10 @@ class HorizontalListView<T> extends HookWidget {
     final items = snapshot.data!;
     final itemCount = items.length;
 
+    if (items.isEmpty) {
+      return const SizedBox();
+    }
+
     return SizedBox(
       height: height,
       child: BlocProvider(

@@ -172,53 +172,88 @@ class TskgApiProvider {
 
 
   /// поиск сериала
-  Future<List<KginoItem>> searchShows(String searchQuery) async {
+  Future<ApiResponse<List<KginoItem>>> searchShows(String searchQuery, {
+    CancelToken? cancelToken,
+  }) async {
 
-    final items = <KginoItem>[];
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/shows/search/$searchQuery',
+        cancelToken: cancelToken,
+        options: Options(
+          headers: {
+            'x-requested-with': 'XMLHttpRequest',
+          },
+        ),
+      ),
+      decoder: (response) async {
+        final items = <KginoItem>[];
 
-    if (searchQuery.isNotEmpty) {
-      /// ^ если запрос не пустой
-      
-      try {
+        for (final item in response) {
+          final name = item['name'];
+          final url = item['url'];
 
-        /// запрашиваем данные
-        final response = await _dio.get('/shows/search/$searchQuery',
-          options: Options(
-            headers: {
-              'x-requested-with': 'XMLHttpRequest',
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          /// ^ если запрос выполнен успешно
-          final jsonItems = response.data;
-
-          for (final item in jsonItems) {
-            final name = item['name'];
-            final url = item['url'];
-
-            if (url.startsWith('/show/')) {
-              items.add(
-                KginoItem(
-                  id: TskgShow.getShowIdFromUrl(url),
-                  name: name, posterUrl: '', provider: '',
-                )
-              );
-            }
+          if (url.startsWith('/show/')) {
+            final showId = TskgShow.getShowIdFromUrl(url);
+            items.add(
+              KginoItem(
+                id: showId,
+                name: name,
+                posterUrl: 'https://www.ts.kg/posters2/$showId.png',
+                provider: KginoProvider.tskg.name,
+              )
+            );
           }
-
         }
 
-      } catch (exception) {
-        /// ^ если прозошла сетевая ошибка
+        return items;
+      },
+    );
+
+    // final items = <KginoItem>[];
+
+    // if (searchQuery.isNotEmpty) {
+    //   /// ^ если запрос не пустой
+      
+    //   try {
+
+    //     /// запрашиваем данные
+    //     final response = await _dio.get('/shows/search/$searchQuery',
+    //       options: Options(
+    //         headers: {
+    //           'x-requested-with': 'XMLHttpRequest',
+    //         },
+    //       ),
+    //     );
+
+    //     if (response.statusCode == 200) {
+    //       /// ^ если запрос выполнен успешно
+    //       final jsonItems = response.data;
+
+    //       for (final item in jsonItems) {
+    //         final name = item['name'];
+    //         final url = item['url'];
+
+    //         if (url.startsWith('/show/')) {
+    //           items.add(
+    //             KginoItem(
+    //               id: TskgShow.getShowIdFromUrl(url),
+    //               name: name, posterUrl: '', provider: '',
+    //             )
+    //           );
+    //         }
+    //       }
+
+    //     }
+
+    //   } catch (exception) {
+    //     /// ^ если прозошла сетевая ошибка
         
-        debugPrint('exception: $exception');
-      }
+    //     debugPrint('exception: $exception');
+    //   }
 
-    }
+    // }
 
-    return items;
+    // return items;
   }
 
 
