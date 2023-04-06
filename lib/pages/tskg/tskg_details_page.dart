@@ -147,7 +147,7 @@ class TskgDetailsPage extends HookWidget {
                                         },
                                         onPressed: () {
                                           /// переходим на страницу плеера фильма
-                                          context.goNamed('tskgPlayer',
+                                          context.pushNamed('tskgPlayer',
                                             params: {
                                               'id': kginoItem.id,
                                             },
@@ -169,7 +169,7 @@ class TskgDetailsPage extends HookWidget {
                                       child: FilledButton.icon(
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
-                                          context.goNamed('tskgEpisodes',
+                                          context.pushNamed('tskgEpisodes',
                                             params: {
                                               'id': kginoItem.id,
                                             },

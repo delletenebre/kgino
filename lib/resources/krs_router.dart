@@ -131,6 +131,11 @@ class KrsRouter {
                             currentEpisode.position = 0;
                           }
 
+                          print('currentEpisode.id: ${currentEpisode.id}');
+                          print('currentEpisode.url: ${currentEpisode.videoFileUrl}');
+
+                          print('currentEpisode.position: ${currentEpisode.position}');
+
                           int playableQuality = kginoItem.playableQuality;
                           if (!currentEpisode.playableQualities.contains(kginoItem.playableQuality)) {
                             currentEpisode.playableQualities.sort((a, b) => a.compareTo(b));
@@ -139,7 +144,12 @@ class KrsRouter {
 
                           currentEpisode.quality = playableQuality;
                           currentEpisode.videoFileUrl = currentEpisode.videoFileUrl.replaceFirst('%s', '$playableQuality');
-
+                          currentEpisode.videoFileUrl = currentEpisode.videoFileUrl.replaceAllMapped(RegExp(r'_(\d+?).mp4'), (match) {
+                            return '$playableQuality';
+                          });
+                          print('currentEpisode.url: ${currentEpisode.videoFileUrl}');
+                          
+                          
                           return currentEpisode;
                         },
                       );

@@ -83,8 +83,8 @@ class FlmxItem with _$FlmxItem {
             SeasonItem(
               episodes: [
                 EpisodeItem(
-                  id: videoUrl,
-                  fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), movie.link),
+                  id: '0/0',
+                  fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), '0/0'),
                   playableQualities: playableQualities,
                   videoFileUrl: videoUrl,
                   duration: duration,
@@ -185,12 +185,14 @@ class FlmxItem with _$FlmxItem {
           for (final episodeEntry in episodesMap.entries) {
             final episodeNumber = episodeEntry.key;
             final episodeValue = episodeEntry.value;
+
+            final episodeId = '$seasonNumber/$episodeNumber';
             
             /// формируем эпизод
             episodes.add(
               EpisodeItem(
-                id: episodeValue.link,
-                fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), episodeValue.link),
+                id: episodeId,
+                fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), episodeId),
                 name: episodeNumber,
                 seasonNumber: int.tryParse(seasonNumber) ?? 0,
                 episodeNumber: int.tryParse(episodeNumber) ?? 0,

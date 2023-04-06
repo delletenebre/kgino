@@ -165,7 +165,7 @@ class _EpisodesPageState extends State<EpisodesPage> {
 
                     onPressed: () {
                       /// переходим на страницу плеера сериала
-                      context.goNamed('tskgPlayer',
+                      context.pushNamed('tskgPlayer',
                         params: {
                           'id': widget.kginoItem.id,    
                         },

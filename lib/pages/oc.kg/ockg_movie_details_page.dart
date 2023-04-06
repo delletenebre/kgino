@@ -147,7 +147,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                         },
                                         onPressed: () {
                                           /// переходим на страницу плеера фильма
-                                          context.goNamed('ockgPlayer',
+                                          context.pushNamed('ockgPlayer',
                                             params: {
                                               'id': kginoItem.id,
                                             },
@@ -170,7 +170,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                         style: KrsTheme.filledTonalButtonStyleOf(context),
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
-                                          context.goNamed('ockgEpisodes',
+                                          context.pushNamed('ockgEpisodes',
                                             params: {
                                               'id': kginoItem.id,
                                             },

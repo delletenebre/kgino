@@ -59,6 +59,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   /// флаг, чтобы спросить о продолжении просмотра один раз
   bool _initialize = false;
 
+  int _videoQualityChangedAt = 0;
+
   /// состояние страницы
   VideoPlayerState _pageState = VideoPlayerState.loading;
 
@@ -201,7 +203,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       /// инициализируем плеер
       await _playerController!.initialize().then((_) {
         /// проверяем нужную позицию
-        if (_episode!.position < 60) {
+        if (_videoQualityChangedAt > 0) {
+          /// перематываем на нужную позицию и запускаем видео
+          _playerController!.seekTo(Duration(seconds: _videoQualityChangedAt))
+            .then((_) {
+              _playerController!.play();
+            });
+          _videoQualityChangedAt = 0;
+        } else if (_episode!.position < 60) {
           /// запускаем видео
           _playerController!.play();
         }
@@ -411,6 +420,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                               Navigator.pop(context, quality);
 
                               final item = await widget.onQualityChanged.call(quality);
+                              _videoQualityChangedAt = (_playerController?.value.position.inSeconds ?? 0) - 3;
                               _changeVideo(() async { return item; });
                             },
                             icon: const SizedBox(),

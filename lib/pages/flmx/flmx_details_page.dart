@@ -149,7 +149,7 @@ class FlmxDetailsPage extends HookWidget {
                                         },
                                         onPressed: () {
                                           /// переходим на страницу плеера фильма
-                                          context.goNamed('flmxShowPlayer',
+                                          context.pushNamed('flmxShowPlayer',
                                             params: {
                                               'id': kginoItem.id,
                                             },
@@ -171,7 +171,7 @@ class FlmxDetailsPage extends HookWidget {
                                       child: FilledButton.icon(
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
-                                          context.goNamed('flmxShowEpisodes',
+                                          context.pushNamed('flmxShowEpisodes',
                                             params: {
                                               'id': kginoItem.id,
                                             },

@@ -48,7 +48,7 @@ class ShowsPage extends HookWidget {
                 
               },
               onTap: () {
-                context.go(item['route']!);
+                context.push(item['route']!);
               },
               title: item['name']!,
               imageUrl: item['imageUrl']!,

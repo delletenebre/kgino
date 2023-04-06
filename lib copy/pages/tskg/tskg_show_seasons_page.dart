@@ -164,7 +164,7 @@ class _TskgShowSeasonsPageState extends State<TskgShowSeasonsPage> {
 
                     onPressed: () {
                       /// переходим на страницу плеера сериала
-                      context.goNamed('tskgPlayer',
+                      context.pushNamed('tskgPlayer',
                         params: {
                           'id': widget.show.id,    
                         },

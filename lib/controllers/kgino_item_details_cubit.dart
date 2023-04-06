@@ -42,6 +42,7 @@ class KginoItemDetailsCubit extends Cubit<ApiResponse<KginoItem>> {
           kginoItem.bookmarked = dbItem.bookmarked;
           kginoItem.seenEpisodes = dbItem.seenEpisodes;
           kginoItem.voiceActing = dbItem.voiceActing;
+          kginoItem.playableQuality = dbItem.playableQuality;
           if (kginoItem.voiceActings.containsKey(dbItem.voiceActing)) {
             kginoItem.seasons = kginoItem.voiceActings[dbItem.voiceActing]!.seasons;
           }

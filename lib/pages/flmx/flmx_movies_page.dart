@@ -103,7 +103,7 @@ class FlmxMoviesPage extends HookWidget {
                             onTap: () {
                               
                               /// переходим на страницу фильма
-                              context.goNamed('flmxMovieDetails', params: {
+                              context.pushNamed('flmxMovieDetails', params: {
                                 'id': item.id,
                               });
                               

@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         tooltip: locale.settings,
                         onPressed: () {
                           /// переходим на страницу настроек
-                          context.go('/settings');
+                          context.push('/settings');
                         },
                         icon: const Icon(Icons.settings),
                       ),
