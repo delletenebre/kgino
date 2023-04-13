@@ -175,7 +175,7 @@ class FlmxApiProvider {
 
 
   /// запрос ключа авторизации
-  Future<ApiResponse<FlmxToken>> getToken(String id, {
+  Future<ApiResponse<FlmxToken>> getToken({
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<FlmxToken>().call(
@@ -202,7 +202,7 @@ class FlmxApiProvider {
   }
 
   /// запрос профиля пользователя
-  Future<ApiResponse<FlmxProfile>> getProfile(String id, {
+  Future<ApiResponse<FlmxProfile>> getProfile({
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<FlmxProfile>().call(

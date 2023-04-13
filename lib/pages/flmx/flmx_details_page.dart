@@ -9,7 +9,6 @@ import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
 import '../../models/kgino_item.dart';
 import '../../resources/krs_locale.dart';
-import '../../resources/krs_storage.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
@@ -19,7 +18,6 @@ import '../../ui/krs_scroll_view.dart';
 import '../../ui/kgino_item/play_button_tooltip.dart';
 import '../../ui/loading_indicator.dart';
 import '../../ui/try_again_message.dart';
-import '../../utils.dart';
 
 
 class FlmxDetailsPage extends HookWidget {
