@@ -8,6 +8,8 @@ import '../models/flmx/flmx_profile.dart';
 
 class FlmxAccountCubit extends Cubit<ApiResponse<FlmxProfile>> {
 
+  String userCode = '';
+
   /// провайдер запросов к API
   final api = GetIt.instance<FlmxApiProvider>();
     
@@ -16,11 +18,7 @@ class FlmxAccountCubit extends Cubit<ApiResponse<FlmxProfile>> {
   }
 
   Future<String> getCode() async {
-    emit(ApiResponse.loading());
-
     final response = await api.getToken();
-
-    emit(ApiResponse.empty());
 
     if (response.isSuccess) {
       return response.asData.data.userCode;
@@ -36,6 +34,10 @@ class FlmxAccountCubit extends Cubit<ApiResponse<FlmxProfile>> {
 
     if (isClosed) {
       return;
+    }
+
+    if (response.isError) {
+      userCode = await getCode();
     }
 
     emit(response);
