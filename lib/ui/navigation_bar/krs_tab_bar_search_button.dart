@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import '../../../resources/krs_locale.dart';
 import '../../../resources/krs_theme.dart';
 import '../../controllers/tabs_cubit.dart';
+import '../../pages/search_page.dart';
 
 class KrsTabBarSearchButton extends HookWidget {
   final int index;
@@ -67,10 +68,7 @@ class KrsTabBarSearchButton extends HookWidget {
         tabsCubit.updateSelected(index);
 
         Future.delayed(KrsTheme.animationDuration, () {
-          final selected = tabsCubit.state == index;
-          if (selected) {
-            textFieldFocusNode.requestFocus();
-          }
+          textFieldFocusNode.requestFocus();
         });
       },
       child: Row(
@@ -100,6 +98,13 @@ class KrsTabBarSearchButton extends HookWidget {
               focusNode: textFieldFocusNode,
               textInputAction: TextInputAction.search,
               controller: textEditingController,
+
+              onChanged: (value) {
+              },
+
+              onSubmitted: (value) {
+                focusNode.requestFocus();
+              },
 
               style: const TextStyle(
                 fontSize: 14.0,

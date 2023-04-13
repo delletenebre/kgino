@@ -7,6 +7,8 @@ import 'package:uuid/uuid.dart';
 import '../models/api_response.dart';
 import '../models/device_details.dart';
 import '../models/flmx/flmx_item.dart';
+import '../models/flmx/flmx_profile.dart';
+import '../models/flmx/flmx_token.dart';
 import '../models/kgino_item.dart';
 import 'api_request.dart';
 import 'logs_interceptor.dart';
@@ -33,7 +35,7 @@ class FlmxApiProvider {
     
     String authToken = storage.sharedStorage.getString('filmix_auth_token') ?? '';
     if (authToken.isEmpty) {
-      authToken = md5.convert(const Uuid().v4().codeUnits).toString().substring(0, 18);
+      authToken = md5.convert(const Uuid().v4().codeUnits).toString();//.substring(0, 18);
       storage.sharedStorage.setString('filmix_auth_token', authToken);
     }
 
@@ -167,6 +169,51 @@ class FlmxApiProvider {
         return json.map<KginoItem>((item) {
           return FlmxItem.fromJson(item).toMovieItem();
         }).toList();
+      },
+    );
+  }
+
+
+  /// запрос ключа авторизации
+  Future<ApiResponse<FlmxToken>> getToken(String id, {
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<FlmxToken>().call(
+      request: _dio.get('/token_request',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) async {
+        final token = FlmxToken.fromJson(json);
+        
+
+        /// хранилище данных
+        final storage = GetIt.instance<KrsStorage>();
+
+        storage.sharedStorage.setString('filmix_auth_token', token.code);
+
+        _queryParams['user_dev_token'] = token.code;
+
+        return token;
+      },
+    );
+  }
+
+  /// запрос профиля пользователя
+  Future<ApiResponse<FlmxProfile>> getProfile(String id, {
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<FlmxProfile>().call(
+      request: _dio.get('/user_profile',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) async {
+        return FlmxProfile.fromJson(json);
       },
     );
   }

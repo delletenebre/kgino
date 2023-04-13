@@ -228,13 +228,13 @@ class KginoItem {
 
   void goToDetails(BuildContext context) {
     if (provider == KginoProvider.flmx.name) {
-      return context.pushNamed('flmxShowDetails', params: {
+      context.pushNamed('flmxShowDetails', params: {
         'id': id,
       });
     }
 
     if (provider == KginoProvider.ockg.name) {
-      return context.pushNamed('ockgDetails',
+      context.pushNamed('ockgDetails',
         params: {
           'id': id,
         }
@@ -242,7 +242,7 @@ class KginoItem {
     }
 
     if (provider == KginoProvider.tskg.name) {
-      return context.pushNamed('tskgDetails',
+      context.pushNamed('tskgDetails',
         params: {
           'id': id,
         }

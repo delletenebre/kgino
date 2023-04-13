@@ -13,6 +13,8 @@ import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/kgino_list_tile.dart';
 import '../ui/lists/vertical_list_view.dart';
 
+// Key seachResultsKey = ValueKey('');
+
 class SearchPage extends HookWidget {
   const SearchPage({
     super.key,
@@ -34,33 +36,27 @@ class SearchPage extends HookWidget {
     /// провайдер запросов к API
     final ockgApi = GetIt.instance<OckgApiProvider>();
 
-    final updateSeachResultsKey = useState(UniqueKey());
+    // final updateSeachResultsKey = useState(UniqueKey());
+
+    
 
     /// контроллер поискового запроса
     final searchController = GetIt.instance<TextEditingController>();
-
-    final onSeachQueryChanged = useCallback(() {
-      updateSeachResultsKey.value = UniqueKey();
-    }, [key]);
-
-    useEffect(() {
-      searchController.addListener(onSeachQueryChanged);
-      return () => searchController.removeListener(onSeachQueryChanged);
-    }, [searchController]);
-
-
     final searchQuery = searchController.text;
+
+    useValueListenable(searchController);
+    
     final asyncTskgSearchResults = useMemoized(() {
       return tskgApi.searchShows(searchQuery);
-    }, [updateSeachResultsKey.value]);
+    }, [searchController.text]);
 
     final asyncFlmxSearchResults = useMemoized(() {
       return flmxApi.searchMovies(searchQuery);
-    }, [updateSeachResultsKey.value]);
+    }, [searchController.text]);
 
     final asyncOckgSearchResults = useMemoized(() {
       return ockgApi.searchMovies(searchQuery);
-    }, [updateSeachResultsKey.value]);
+    }, [searchController.text]);
 
     final categories = [
 
@@ -85,7 +81,7 @@ class SearchPage extends HookWidget {
       body: Builder(
         builder: (context) {
           return VerticalListView(
-            key: updateSeachResultsKey.value,
+            key: ValueKey(searchController.text),
             itemCount: categories.length,
             itemBuilder: (context, focusNode, index) {
               final category = categories[index];

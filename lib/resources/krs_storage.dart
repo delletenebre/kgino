@@ -20,7 +20,7 @@ class KrsStorage {
     /// инициализируем базу данных
     db = await Isar.open([
       KginoItemSchema,
-      EpisodeItemSchema
+      EpisodeItemSchema,
     ]);
 
     return this;
