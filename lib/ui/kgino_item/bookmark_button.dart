@@ -25,7 +25,7 @@ class BookmarkButton extends HookWidget {
     if (dbItem.bookmarked != null) {
       
       /// кнопка удаления из избранного
-      return FilledButton.icon(
+      return FilledButton.tonalIcon(
         onPressed: () async {
           
           /// убираем из избранного
@@ -40,7 +40,7 @@ class BookmarkButton extends HookWidget {
     } else {
 
       /// кнопка добавления в избранное
-      return FilledButton.icon(
+      return FilledButton.tonalIcon(
         onPressed: () async {
 
           /// добавляем в избранное

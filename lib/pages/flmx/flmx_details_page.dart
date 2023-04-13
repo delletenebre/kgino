@@ -142,7 +142,7 @@ class FlmxDetailsPage extends HookWidget {
                                     /// кнопка начала просмотра
                                     Padding(
                                       padding: const EdgeInsets.only(right: 12.0),
-                                      child: FilledButton.icon(
+                                      child: FilledButton.tonalIcon(
                                         autofocus: true,
                                         onFocusChange: (hasFocus) {
                                           playButtonHasFocus.value = hasFocus;
@@ -168,7 +168,7 @@ class FlmxDetailsPage extends HookWidget {
                                     /// эпизода
                                     if (kginoItem.seasons.first.episodes.length > 1) Padding(
                                       padding: const EdgeInsets.only(right: 12.0),
-                                      child: FilledButton.icon(
+                                      child: FilledButton.tonalIcon(
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
                                           context.pushNamed('flmxShowEpisodes',

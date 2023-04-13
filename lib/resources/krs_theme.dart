@@ -23,60 +23,6 @@ class KrsTheme {
   /// длительность показа уведомлений
   static const snackBarDuration = Duration(seconds: 5);
 
-  /// стиль [ElevatedButton] для Filled-style
-  static ButtonStyle filledButtonStyleOf(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return ElevatedButton.styleFrom(
-      minimumSize: const Size(0.0, 46.0),
-      foregroundColor: theme.colorScheme.onPrimary,
-      backgroundColor: theme.colorScheme.primary,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
-    ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
-  }
-
-  static ButtonStyle filledTonalButtonStyleOf (BuildContext context) {
-    return ElevatedButton.styleFrom(
-      minimumSize: const Size(0.0, 46.0),
-      foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
-    ).copyWith(
-      elevation: ButtonStyleButton.allOrNull(0.0)
-    );
-  }
-
-  /// стиль [ElevatedButton] для кнопок удаления
-  static ButtonStyle dangerButtonStyleOf(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return ElevatedButton.styleFrom(
-      foregroundColor: theme.colorScheme.onError,
-      backgroundColor: theme.colorScheme.error,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
-    ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
-  }
-
-  /// стиль [ElevatedButton] для кнопок удаления
-  static ButtonStyle textButtonStyleOf(BuildContext context) {
-    // final theme = Theme.of(context);
-    
-    return ElevatedButton.styleFrom(
-      minimumSize: const Size(0.0, 46.0),
-      // foregroundColor: theme.colorScheme.onError,
-      backgroundColor: Colors.transparent,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(4.0),
-      // ),
-    ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
-  }
-
   /// отступы обычные
   static const md = 24.0;
   static const paddingMd = EdgeInsets.all(md);

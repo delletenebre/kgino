@@ -30,7 +30,7 @@ class VoiceActingsButton extends HookWidget {
               if (voiceActing.id == kginoItem.voiceActing) {
                 /// ^ если озвучка совпадает с текущей
                 
-                return FilledButton.icon(
+                return FilledButton.tonalIcon(
                   autofocus: true,
                   icon: const Icon(Icons.check),
                   label: Text(voiceActing.name),
@@ -38,7 +38,7 @@ class VoiceActingsButton extends HookWidget {
                 );
               }
 
-              return FilledButton(
+              return FilledButton.tonal(
                 child: Text(voiceActing.name),
                 onPressed: () async {
                   /// закрываем диалоговое окно

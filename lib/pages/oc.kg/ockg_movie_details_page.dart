@@ -139,7 +139,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                     /// кнопка начала просмотра
                                     Padding(
                                       padding: const EdgeInsets.only(right: 12.0),
-                                      child: FilledButton.icon(
+                                      child: FilledButton.tonalIcon(
                                         // focusNode: playButtonFocusNode,
                                         autofocus: true,
                                         onFocusChange: (hasFocus) {
@@ -166,8 +166,7 @@ class OckgMovieDetailsPage extends HookWidget {
                                     /// эпизода
                                     if (kginoItem.seasons.first.episodes.length > 1) Padding(
                                       padding: const EdgeInsets.only(right: 12.0),
-                                      child: ElevatedButton.icon(
-                                        style: KrsTheme.filledTonalButtonStyleOf(context),
+                                      child: FilledButton.tonalIcon(
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
                                           context.pushNamed('ockgEpisodes',

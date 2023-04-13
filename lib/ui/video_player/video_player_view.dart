@@ -257,7 +257,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               children: [
 
                 /// кнопка продолжить просмотр
-                FilledButton(
+                FilledButton.tonal(
                   autofocus: true,
                   onPressed: () {
                     if (mounted) {
@@ -275,7 +275,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                 ),
 
                 /// кнопка начать сначала
-                FilledButton(
+                FilledButton.tonal(
                   onPressed: () {
                     if (mounted) {
                       /// запускаем видео
@@ -413,7 +413,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                       child: ListView(
                         shrinkWrap: true,
                         children: _episode!.playableQualities.map((quality) {
-                          return FilledButton.icon(
+                          return FilledButton.tonalIcon(
                             autofocus: true,
                             onPressed: () async {
                               /// закрываем диалоговое окно
