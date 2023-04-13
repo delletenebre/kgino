@@ -3,6 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:kgino/resources/krs_theme.dart';
 
 import '../../resources/krs_locale.dart';
+import '../../utils.dart';
+import '../flmx/flmx_account_dialog.dart';
 
 class KrsTabBarSettingsButton extends HookWidget {
   const KrsTabBarSettingsButton({
@@ -31,7 +33,7 @@ class KrsTabBarSettingsButton extends HookWidget {
             right: 24.0,
             child: AnimatedContainer(
               duration: KrsTheme.animationDuration,
-              width: showOverlay.value ? 320.0 : 0,
+              width: showOverlay.value ? 400.0 : 0,
               height: showOverlay.value ? screenSize.height - 48.0 : 0,
               child: Card(
                 elevation: 8.0,
@@ -49,22 +51,26 @@ class KrsTabBarSettingsButton extends HookWidget {
                     children: [
                       ListTile(
                         onTap: () {
-
+                          Utils.showModal(
+                            context: context,
+                            titleText: 'Аккаунт Filmix',
+                            child: const FlmxAccountDialog(),
+                          );
                         },
-                        title: Text('Setting 1'),
+                        title: const Text('Аккаунт Filmix'),
                       ),
-                      ListTile(
-                        onTap: () {
+                      // ListTile(
+                      //   onTap: () {
                           
-                        },
-                        title: Text('Setting 2'),
-                      ),
-                      ListTile(
-                        onTap: () {
+                      //   },
+                      //   title: Text('Setting 2'),
+                      // ),
+                      // ListTile(
+                      //   onTap: () {
                           
-                        },
-                        title: Text('Setting 3'),
-                      )
+                      //   },
+                      //   title: Text('Setting 3'),
+                      // )
                     ],
                   ),
                 ),

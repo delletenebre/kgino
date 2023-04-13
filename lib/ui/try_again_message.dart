@@ -33,9 +33,8 @@ class TryAgainMessage extends StatelessWidget {
             child: Text(locale.errorLoadingVideo),
           ),
 
-          ElevatedButton(
+          FilledButton.tonal(
             autofocus: true,
-            style: KrsTheme.filledTonalButtonStyleOf(context),
             onPressed: () {
               onRetry();
             },
