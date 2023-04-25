@@ -73,9 +73,11 @@ class KrsTabBarSearchButton extends HookWidget {
       },
       child: Row(
         children: [
-          const Padding(
-            padding: EdgeInsetsDirectional.only(end: 8.0),
-            child: Icon(Icons.search),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(end: 8.0),
+            child: Icon(Icons.search,
+              color: theme.textTheme.bodyMedium?.color,
+            ),
           ),
           
           AnimatedSwitcher(
@@ -91,46 +93,51 @@ class KrsTabBarSearchButton extends HookWidget {
                 )
               );
             },
-            child: !selected ? Text(locale.search, style: const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-              )) : TextField(
-              focusNode: textFieldFocusNode,
-              textInputAction: TextInputAction.search,
-              controller: textEditingController,
+            child: !selected
+              ? Text(locale.search,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w500,
+                    color: theme.textTheme.bodyMedium?.color,
+                  ),
+                )
+              : TextField(
+                  focusNode: textFieldFocusNode,
+                  textInputAction: TextInputAction.search,
+                  controller: textEditingController,
 
-              onChanged: (value) {
-              },
+                  onChanged: (value) {
+                  },
 
-              onSubmitted: (value) {
-                focusNode.requestFocus();
-              },
+                  onSubmitted: (value) {
+                    focusNode.requestFocus();
+                  },
 
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-              ),
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                  ),
 
-              decoration: InputDecoration(
-                constraints: const BoxConstraints(
-                  maxWidth: 200.0,
-                  minWidth: 200.0,
-                  maxHeight: 40.0,
-                  minHeight: 40.0,
+                  decoration: InputDecoration(
+                    constraints: const BoxConstraints(
+                      maxWidth: 200.0,
+                      minWidth: 200.0,
+                      maxHeight: 40.0,
+                      minHeight: 40.0,
+                    ),
+                    isCollapsed: true,
+                    contentPadding: const EdgeInsets.only(top: 8.0),
+
+                    hintText: locale.searchHint,
+                    hintStyle: TextStyle(
+                      fontSize: 14.0,
+                      color: theme.colorScheme.outline,
+                      fontWeight: FontWeight.w500,
+                    ),
+
+                    border: InputBorder.none,
+                  ),
                 ),
-                isCollapsed: true,
-                contentPadding: const EdgeInsets.only(top: 8.0),
-
-                hintText: locale.searchHint,
-                hintStyle: TextStyle(
-                  fontSize: 14.0,
-                  color: theme.colorScheme.outline,
-                  fontWeight: FontWeight.w500,
-                ),
-
-                border: InputBorder.none,
-              ),
-            ),
           ),
         ],
       ),

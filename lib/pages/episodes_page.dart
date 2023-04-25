@@ -164,16 +164,46 @@ class _EpisodesPageState extends State<EpisodesPage> {
                     },
 
                     onPressed: () {
-                      /// переходим на страницу плеера сериала
-                      context.pushNamed('tskgPlayer',
-                        params: {
-                          'id': widget.kginoItem.id,    
-                        },
-                        queryParams: {
-                          'episodeId': episode.id,
-                        },
-                        extra: widget.kginoItem,
-                      );
+
+                      if (widget.kginoItem.provider == KginoProvider.tskg.name) {
+                        /// переходим на страницу плеера сериала
+                        context.pushNamed('tskgPlayer',
+                          params: {
+                            'id': widget.kginoItem.id,    
+                          },
+                          queryParams: {
+                            'episodeId': episode.id,
+                          },
+                          extra: widget.kginoItem,
+                        );
+                      }
+
+                      if (widget.kginoItem.provider == KginoProvider.flmx.name) {
+                        /// переходим на страницу плеера сериала
+                        context.pushNamed('flmxShowPlayer',
+                          params: {
+                            'id': widget.kginoItem.id,    
+                          },
+                          queryParams: {
+                            'episodeId': episode.id,
+                          },
+                          extra: widget.kginoItem,
+                        );
+                      }
+
+                      if (widget.kginoItem.provider == KginoProvider.ockg.name) {
+                        /// переходим на страницу плеера сериала
+                        context.pushNamed('ockgPlayer',
+                          params: {
+                            'id': widget.kginoItem.id,    
+                          },
+                          queryParams: {
+                            'episodeId': episode.id,
+                          },
+                          extra: widget.kginoItem,
+                        );
+                      }
+                      
                     },
                   );
                 },

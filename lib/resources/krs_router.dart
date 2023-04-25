@@ -362,46 +362,6 @@ class KrsRouter {
           ),
         ]
       ),
-      // ShellRoute(
-      //   navigatorKey: mainNavigatorKey,
-      //   builder: (context, state, child) {
-      //     return ScaffoldWithNavigationBar(
-      //       child: child
-      //     );
-      //   },
-      //   routes: [
-      //     /// стартовая страница
-      //     GoRoute(
-      //       path: '/',
-      //       builder: (context, state) {
-      //         return const HomePage();
-      //       },
-
-      //       routes: [
-      //         GoRoute(
-      //           path: 'flmx',
-      //           name: 'flmxHome',
-      //           builder: (context, state) {
-      //             return const FlmxHomePage();
-      //           },
-      //           routes: [
-      //           ],
-      //         ),
-
-      //         GoRoute(
-      //           path: 'ockg',
-      //           name: 'ockgHome',
-      //           builder: (context, state) {
-      //             return const OckgHomePage();
-      //           },
-      //           routes: [
-      //           ],
-      //         ),
-      //       ]
-      //     ),
-          
-      //   ],
-      // ),
     ],
   );
 }
