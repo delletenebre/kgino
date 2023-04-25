@@ -407,7 +407,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                   },
 
                   quality: _episode?.quality ?? 0,
-                  onChangeQuality: _episode == null && _episode!.playableQualities.length < 2 ? null : () async {
+                  onChangeQuality: _episode == null || _episode!.playableQualities.length < 2 ? null : () async {
                     final result = await Utils.showModal<int?>(
                       context: context,
                       child: ListView(
