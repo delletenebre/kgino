@@ -1,11 +1,11 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
 
 import 'api/flmx_api_provider.dart';
 import 'api/ockg_api_provider.dart';
 import 'api/tskg_api_provider.dart';
+import 'api/wcam_api_provider.dart';
 import 'app.dart';
 import 'controllers/tabs_cubit.dart';
 import 'models/device_details.dart';
@@ -51,6 +51,9 @@ Future<void> main() async {
 
   /// регистрируем провайдер запросов к REST API как singleton
   GetIt.instance.registerSingleton<TskgApiProvider>(TskgApiProvider());
+
+  /// регистрируем провайдер запросов веб-камер
+  GetIt.instance.registerSingleton<WcamApiProvider>(WcamApiProvider());
 
   /// регистрируем контроллер для поискового запроса
   GetIt.instance.registerSingleton<TextEditingController>(TextEditingController());

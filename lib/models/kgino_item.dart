@@ -252,29 +252,29 @@ class KginoItem {
   }
 
 
-  // factory KginoItem.webcamera({
-  //   required String name,
-  //   required String posterUrl,
-  //   required String videoFileUrl,
-  // }) => KginoItem(
-  //   type: KginoItemType.movie,
-  //   provider: KginoProvider.wcam,
-  //   id: '',
-  //   name: name,
-  //   posterUrl: posterUrl,
-  //   seasons: [
-  //     SeasonItem(
-  //       name: '',
-  //       episodes: [
-  //         EpisodeItem(
-  //           id: '',
-  //           name: '',
-  //           videoFileUrl: videoFileUrl
-  //         ),
-  //       ],
-  //     ),
-  //   ],
-  // );
+  factory KginoItem.webcamera({
+    required String name,
+    required String posterUrl,
+    required String videoFileUrl,
+  }) => KginoItem(
+    provider: KginoProvider.wcam.name,
+    id: '',
+    name: name,
+    posterUrl: posterUrl,
+    seasons: [
+      SeasonItem(
+        name: '',
+        episodes: [
+          EpisodeItem(
+            id: '',
+            fullId: '',
+            name: '',
+            videoFileUrl: videoFileUrl,
+          ),
+        ],
+      ),
+    ],
+  );
   
 }
 

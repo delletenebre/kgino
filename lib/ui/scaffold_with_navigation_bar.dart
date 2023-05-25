@@ -96,11 +96,11 @@ class ScaffoldWithNavigationBar extends HookWidget {
                                       label: Text(locale.shows),
                                     ),
 
-                                    // KrsTabBarButton(
-                                    //   index: 3,
-                                    //   onPressed: () {},
-                                    //   label: Text(locale.cameras),
-                                    // ),
+                                    KrsTabBarButton(
+                                      index: 3,
+                                      onPressed: () {},
+                                      label: Text(locale.cameras),
+                                    ),
                                   ],
                                 ),
                               ),

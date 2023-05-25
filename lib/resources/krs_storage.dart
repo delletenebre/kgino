@@ -1,5 +1,6 @@
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/episode_item.dart';
@@ -17,11 +18,16 @@ class KrsStorage {
     /// инициализируем локальное хранилище
     sharedStorage = await SharedPreferences.getInstance();
 
+    final directory = await getApplicationDocumentsDirectory();
+
     /// инициализируем базу данных
-    db = await Isar.open([
-      KginoItemSchema,
-      EpisodeItemSchema,
-    ], directory: '');
+    db = await Isar.open(
+      [
+        KginoItemSchema,
+        EpisodeItemSchema,
+      ],
+      directory: directory.path,
+    );
 
     return this;
   }

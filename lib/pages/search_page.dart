@@ -37,8 +37,6 @@ class SearchPage extends HookWidget {
 
     // final updateSeachResultsKey = useState(UniqueKey());
 
-    
-
     /// контроллер поискового запроса
     final searchController = GetIt.instance<TextEditingController>();
     final searchQuery = searchController.text;

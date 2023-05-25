@@ -360,6 +360,24 @@ class KrsRouter {
 
             ],
           ),
+
+          GoRoute(
+            path: 'webCameraPlayer',
+            name: 'wcamPlayer',
+            builder: (context, state) {
+              final kginoItem = state.extra as KginoItem;
+              final fileId = state.queryParameters['episodeId'] ?? '';
+
+              return PlayerPage(
+                kginoItem: kginoItem,
+                episodeId: fileId,
+                getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
+                  return currentEpisode;
+                },
+              );
+            },
+          ),
+
         ]
       ),
     ],

@@ -6,7 +6,6 @@ import 'package:get_it/get_it.dart';
 import '../controllers/tabs_cubit.dart';
 import '../resources/krs_theme.dart';
 import 'cameras_page.dart';
-import 'error_page.dart';
 import 'movies_page.dart';
 import 'search_page.dart';
 import 'shows_page.dart';
@@ -26,7 +25,6 @@ class HomePage extends HookWidget {
       create: (_) => tabsCubit,
       child: BlocListener<TabsCubit, int>(
         listener: (context, selectedIndex) {
-          print('selectedIndex: $selectedIndex');
           pageController.animateToPage(selectedIndex,
             duration: KrsTheme.animationDuration,
             curve: Curves.easeIn,
