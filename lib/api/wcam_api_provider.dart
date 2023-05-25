@@ -35,21 +35,15 @@ class WcamApiProvider {
 
 
   /// получение списка камер live.saimanet.kg
-  Future<List<KginoItem>> getSaimaCameras() async {
+  Future<ApiResponse<List<KginoItem>>> getSaimaCameras() async {
     
-    /// список элементов
-    final items = <KginoItem>[];
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('https://live.saimanet.kg'),
+      decoder: (response) async {
+        final items = <KginoItem>[];
 
-    try {
-
-      /// запрашиваем данные
-      final response = await _dio.get('https://live.saimanet.kg');
-
-      if (response.statusCode == 200) {
-        /// ^ если запрос выполнен успешно
-        
         /// парсим html
-        final document = parse(response.data);
+        final document = parse(response);
 
         /// получаем элементы списка камер
         final elements = document.getElementsByClassName('onemaincam');
@@ -96,14 +90,9 @@ class WcamApiProvider {
             }
           }
         }
+        return items;
       }
-    } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
-      
-      debugPrint('exception: $exception');
-    }
-
-    return items;
+    );
   }
 
   Future<String> getSaimaYoutueLink(String url) async {
@@ -174,7 +163,7 @@ class WcamApiProvider {
           return KginoItem.webcamera(
             name: name,
             posterUrl: imageSrc,
-            videoFileUrl: 'https://webcam.elcat.kg/37c2e7a3-4d4f-4d3b-83ca-f8c7eb5ff780',
+            videoFileUrl: 'https://webcam.elcat.kg:5443/LiveApp/streams/$streamName.m3u8?token=null',
           );
         }).toList();
       }

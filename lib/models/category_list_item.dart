@@ -22,7 +22,7 @@ class CategoryListItem {
         }
       }
 
-      return [];
+      return items;
     });
   }
 }

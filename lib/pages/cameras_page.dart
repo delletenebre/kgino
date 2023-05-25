@@ -23,15 +23,24 @@ class CamerasPage extends HookWidget {
     /// провайдер запросов к API
     final api = GetIt.instance<WcamApiProvider>();
 
-    final asyncElcat = useMemoized(() {
-      return api.getElcatCameras();
+    // final asyncElcat = useMemoized(() {
+    //   return api.getElcatCameras();
+    // });
+
+    final asyncSaima = useMemoized(() {
+      return api.getSaimaCameras();
     });
 
     final categories = [
 
+      // CategoryListItem(
+      //   title: 'Элкат',
+      //   apiResponse: asyncElcat,
+      // ),
+
       CategoryListItem(
-        title: 'Элкат',
-        apiResponse: asyncElcat,
+        title: 'SaimaNet',
+        apiResponse: asyncSaima,
       ),
 
       CategoryListItem(
