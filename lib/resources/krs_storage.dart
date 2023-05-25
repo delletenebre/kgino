@@ -21,7 +21,7 @@ class KrsStorage {
     db = await Isar.open([
       KginoItemSchema,
       EpisodeItemSchema,
-    ]);
+    ], directory: '');
 
     return this;
   }

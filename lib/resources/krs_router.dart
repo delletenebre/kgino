@@ -78,7 +78,7 @@ class KrsRouter {
                 path: ':id',
                 name: 'flmxShowDetails',
                 builder: (context, state) {
-                  final id = state.params['id'] ?? '';
+                  final id = state.pathParameters['id'] ?? '';
                   return FlmxDetailsPage(id);
                 },
                 routes: [
@@ -107,7 +107,7 @@ class KrsRouter {
                     name: 'flmxShowPlayer',
                     builder: (context, state) {
                       final kginoItem = state.extra as KginoItem;
-                      final fileId = state.queryParams['episodeId'] ?? '';
+                      final fileId = state.queryParameters['episodeId'] ?? '';
 
                       return PlayerPage(
                         kginoItem: kginoItem,
@@ -169,7 +169,7 @@ class KrsRouter {
                 path: ':id',
                 name: 'flmxMovieDetails',
                 builder: (context, state) {
-                  final id = state.params['id'] ?? '';
+                  final id = state.pathParameters['id'] ?? '';
                   return FlmxDetailsPage(id);
                 },
                 routes: [
@@ -215,7 +215,7 @@ class KrsRouter {
                 path: 'details/:id',
                 name: 'ockgDetails',
                 builder: (context, state) {
-                  final id = state.params['id'] ?? '';
+                  final id = state.pathParameters['id'] ?? '';
                   return OckgMovieDetailsPage(id);
                 },
                 routes: [
@@ -226,7 +226,7 @@ class KrsRouter {
                     name: 'ockgPlayer',
                     builder: (context, state) {
                       final kginoItem = state.extra as KginoItem;
-                      final fileId = state.queryParams['episodeId'] ?? '';
+                      final fileId = state.queryParameters['episodeId'] ?? '';
 
                       return PlayerPage(
                         kginoItem: kginoItem,
@@ -274,7 +274,7 @@ class KrsRouter {
                 path: 'show/:id',
                 name: 'tskgDetails',
                 builder: (context, state) {
-                  final id = state.params['id'] ?? '';
+                  final id = state.pathParameters['id'] ?? '';
                   return TskgDetailsPage(id);
                 },
                 routes: [
@@ -285,7 +285,7 @@ class KrsRouter {
                     name: 'tskgPlayer',
                     builder: (context, state) {
                       final kginoItem = state.extra as KginoItem;
-                      final fileId = state.queryParams['episodeId'] ?? '';
+                      final fileId = state.queryParameters['episodeId'] ?? '';
 
                       return PlayerPage(
                         kginoItem: kginoItem,

@@ -70,7 +70,7 @@ class FlmxItem with _$FlmxItem {
         
         if (qualities.isNotEmpty) {
           final variants = qualities.first.toString().split(',');
-          variants.removeWhere((element) => element.isEmpty);
+          variants.removeWhere((element) => int.tryParse(element) == null);
           playableQualities.addAll(variants.map((v) => int.tryParse(v) ?? 0));
         }
         

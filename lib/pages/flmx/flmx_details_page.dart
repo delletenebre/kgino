@@ -148,10 +148,10 @@ class FlmxDetailsPage extends HookWidget {
                                         onPressed: () {
                                           /// переходим на страницу плеера фильма
                                           context.pushNamed('flmxShowPlayer',
-                                            params: {
+                                            pathParameters: {
                                               'id': kginoItem.id,
                                             },
-                                            queryParams: {
+                                            queryParameters: {
                                               'episodeId': kginoItem.seasons.first.episodes.first.id,
                                             },
                                             extra: kginoItem,
@@ -170,7 +170,7 @@ class FlmxDetailsPage extends HookWidget {
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
                                           context.pushNamed('flmxShowEpisodes',
-                                            params: {
+                                            pathParameters: {
                                               'id': kginoItem.id,
                                             },
                                             extra: kginoItem,
@@ -199,7 +199,7 @@ class FlmxDetailsPage extends HookWidget {
                                           /// переходим на страницу деталей о сериале
                                           // TODO fix route to movie
                                           context.pushReplacementNamed('flmxShowDetails',
-                                            params: {
+                                            pathParameters: {
                                               'id': kginoItem.id,
                                             },
                                           );

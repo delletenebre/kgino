@@ -148,10 +148,10 @@ class TskgDetailsPage extends HookWidget {
                                         onPressed: () {
                                           /// переходим на страницу плеера фильма
                                           context.pushNamed('tskgPlayer',
-                                            params: {
+                                            pathParameters: {
                                               'id': kginoItem.id,
                                             },
-                                            queryParams: {
+                                            queryParameters: {
                                               'episodeId': kginoItem.seasons.first.episodes.first.id,
                                             },
                                             extra: kginoItem,
@@ -170,7 +170,7 @@ class TskgDetailsPage extends HookWidget {
                                         onPressed: () {
                                           /// переходим на страницу выбора файла
                                           context.pushNamed('tskgEpisodes',
-                                            params: {
+                                            pathParameters: {
                                               'id': kginoItem.id,
                                             },
                                             extra: kginoItem,
@@ -195,7 +195,7 @@ class TskgDetailsPage extends HookWidget {
                                           /// переходим на страницу деталей о сериале
                                           // TODO fix route to movie
                                           context.pushReplacementNamed('tskgDetails',
-                                            params: {
+                                            pathParameters: {
                                               'id': voiceActing.id,
                                             },
                                           );

@@ -104,9 +104,11 @@ class FlmxShowsPage extends HookWidget {
                             onTap: () {
 
                               /// переходим на страницу сериала
-                              context.pushNamed('flmxShowDetails', params: {
-                                'id': item.id,
-                              });
+                              context.pushNamed('flmxShowDetails',
+                                pathParameters: {
+                                  'id': item.id,
+                                },
+                              );
                               
                             },
                             item: item,
