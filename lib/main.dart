@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:video_player_win/video_player_win.dart';
 
 import 'api/flmx_api_provider.dart';
 import 'api/ockg_api_provider.dart';
@@ -17,6 +21,10 @@ Future<void> main() async {
   
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (!kIsWeb && Platform.isWindows) {
+    WindowsVideoPlayer.registerWith();
+  }
 
   
   /// регистрируем [KrsStorage] как singleton

@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^2.1.0
   uuid: ^3.0.7
   video_player: ^2.6.1
+  video_player_win: ^2.2.2
   wakelock: ^0.6.2
   youtube_player_flutter: ^8.1.2
 
