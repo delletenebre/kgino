@@ -53,12 +53,13 @@ class HorizontalListView<T> extends HookWidget {
   @override
   Widget build(context) {
     /// текущая страница элементов (при динамической загрузке)
-    final currentPage = useState(0);
+    final currentPage = useState(1);
+    
 
     /// была ли достигнута последняя страница
-    bool _lastPageReached = false;
+    bool lastPageReached = false;
 
-    final _focusNodes = <FocusNode>[];
+    // final _focusNodes = <FocusNode>[];
     
     /// текущий элемент, на котором фокус
     final currentFocusableIndex = useState(0);
@@ -70,8 +71,12 @@ class HorizontalListView<T> extends HookWidget {
       return const LinearProgressIndicator();
     }
 
-    final items = snapshot.data!;
-    final itemCount = items.length;
+    List<T> items = snapshot.data!;
+    final itemCount = useState(items.length);
+
+    final pageLoading = useState(false);
+    final currentItemIndex = useState(0);
+    final needUpdateFocus = useState(false);
 
     if (items.isEmpty) {
       return const SizedBox();
@@ -80,10 +85,10 @@ class HorizontalListView<T> extends HookWidget {
     return SizedBox(
       height: height,
       child: BlocProvider(
-        key: ValueKey(itemCount),
+        key: ValueKey(itemCount.value),
         create: (context) => FocusableListCubit(
           controller: controller,
-          itemCount: itemCount,
+          itemCount: itemCount.value,
           offset: padding.horizontal / 2.0,
           /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
           /// фокус не переходил на следующий список, ставим handled
@@ -93,6 +98,13 @@ class HorizontalListView<T> extends HookWidget {
         child: BlocBuilder<FocusableListCubit, FocusableListState>(
           builder: (context, focusableListState) {
             final listCubit = context.read<FocusableListCubit>();
+            
+            if (needUpdateFocus.value) {
+              Future.microtask(() {
+                listCubit.megaJumpTo(currentItemIndex.value);
+                needUpdateFocus.value = false;
+              });
+            }
 
             return Focus(
               focusNode: focusNode,
@@ -143,7 +155,7 @@ class HorizontalListView<T> extends HookWidget {
                         scrollDirection: Axis.horizontal,
                         clipBehavior: Clip.none,
                         controller: focusableListState.scrollController,
-                        itemCount: itemCount,
+                        itemCount: itemCount.value,
 
                         /// разделитель
                         separatorBuilder: (context, index) {
@@ -158,14 +170,21 @@ class HorizontalListView<T> extends HookWidget {
 
                             onFocusChange: (hasFocus) async {
                               if (hasFocus) {
-                                if (!_lastPageReached && index > items.length - 7) {
-                                  final items = await onLoadNextPage?.call(currentPage.value++, itemCount) ?? [];
-                                  //_updateListItems(items);
-                                  if (items.isEmpty) {
-                                    _lastPageReached = true;
+                                if (!pageLoading.value && !lastPageReached && index > itemCount.value - 7) {
+                                  pageLoading.value = true;
+                                  currentPage.value++;
+                                  final newItems = await onLoadNextPage?.call(currentPage.value, itemCount.value) ?? [];
+                                  if (newItems.isEmpty) {
+                                    lastPageReached = true;
+                                  } else {
+                                    items.addAll(newItems);
+                                    currentItemIndex.value = listCubit.state.focusableIndex;
+                                    itemCount.value = items.length;
+                                    needUpdateFocus.value = true;
                                   }
+                                  pageLoading.value = false;
                                 }
-                                
+
                                 /// при быстрой перемотке, для экономии ресурсов,
                                 /// немного тормозим вызов [onItemFocused],
                                 /// в котором происходит загрузка дополнительных

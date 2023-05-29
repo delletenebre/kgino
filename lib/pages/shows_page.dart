@@ -13,7 +13,6 @@ class ShowsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return VerticalListView(
       itemCount: 1,

@@ -148,7 +148,13 @@ class KginoRawListTile extends HookWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(9.0),
-                        child: imageUrl.startsWith('assets/')
+                        child: imageUrl.isEmpty
+                          ? Opacity(
+                            opacity: 0.62,
+                            child: SvgPicture.asset('assets/images/kgino_grayscale.svg',
+                            ),
+                          )
+                          : imageUrl.startsWith('assets/')
                           ? Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SvgPicture.asset(imageUrl),

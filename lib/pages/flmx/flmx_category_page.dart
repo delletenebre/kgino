@@ -16,9 +16,14 @@ import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/kgino_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
-class FlmxMoviesPage extends HookWidget {
-  const FlmxMoviesPage({
+class FlmxCategoryPage extends HookWidget {
+  final String categoryId;
+  final String categoryName;
+
+  const FlmxCategoryPage({
     super.key,
+    required this.categoryId,
+    required this.categoryName,
   });
 
   @override
@@ -30,31 +35,15 @@ class FlmxMoviesPage extends HookWidget {
 
     /// контроллер расширенной информации о фильме
     final detailsCubit = KginoItemDetailsCubit();
-    
-    /// последние добавления
-    final asyncLatest = useMemoized(() => api.getLatestMovies());
 
-    /// популярные
-    final asyncPopular = useMemoized(() => api.getPopularMovies());
-
-    /// список категорий
-    final asyncCategories = useMemoized(() => api.getCategories());
+    /// список фильмов в категории
+    final asyncMovies = useMemoized(() => api.getCategory(categoryId));
 
     final categories = [
 
       CategoryListItem(
         title: locale.latest,
-        apiResponse: asyncLatest,
-      ),
-
-      CategoryListItem(
-        title: locale.popular,
-        apiResponse: asyncPopular,
-      ),
-
-      CategoryListItem(
-        title: locale.popular,
-        apiResponse: asyncCategories,
+        apiResponse: asyncMovies,
       ),
 
     ];
@@ -69,8 +58,8 @@ class FlmxMoviesPage extends HookWidget {
               children: [
 
                 /// заголовок
-                const AppHeader(
-                  child: Text('Filmix / Фильмы'),
+                AppHeader(
+                  child: Text('Filmix / Фильмы / $categoryName'),
                 ),
 
                 /// детали фильма или сериала
@@ -92,6 +81,20 @@ class FlmxMoviesPage extends HookWidget {
                       return HorizontalListView<KginoItem>(
                         focusNode: focusNode,
                         titleText: category.title,
+                        onLoadNextPage: (page, loadedCount) async {
+                          print('onLoadNextPage page $page');
+                          final result = await api.getCategory(categoryId,
+                            page: page,
+                          );
+                          if (result.isSuccess) {
+                            print('onLoadNextPage isSuccess ${result.asData.data} ');
+                            return result.asData.data;
+                          }
+
+                          print('onLoadNextPage $result');
+
+                          return [];
+                        },
                         itemsFuture: category.itemsFuture,
                         itemBuilder: (context, focusNode, index, item) {
 

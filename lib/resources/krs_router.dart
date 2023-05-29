@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import '../api/tskg_api_provider.dart';
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
 import '../pages/episodes_page.dart';
+import '../pages/flmx/flmx_category_page.dart';
 import '../pages/flmx/flmx_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
@@ -163,6 +163,20 @@ class KrsRouter {
               return const FlmxMoviesPage();
             },
             routes: [
+
+              /// страница информации о фильме
+              GoRoute(
+                path: 'category',
+                name: 'flmxCategory',
+                builder: (context, state) {
+                  final id = state.queryParameters['id'] ?? '';
+                  final name = state.queryParameters['name'] ?? '';
+                  return FlmxCategoryPage(
+                    categoryId: id,
+                    categoryName: name,
+                  );
+                },
+              ),
 
               /// страница информации о фильме
               GoRoute(

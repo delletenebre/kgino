@@ -124,6 +124,26 @@ class FlmxApiProvider {
     );
   }
 
+  /// список популярных фильмов
+  Future<ApiResponse<List<KginoItem>>> getCategory(String categoryId, {
+    int page = 1,
+  }) async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/catalog', queryParameters: {
+        ..._queryParams,
+        'orderby': 'date',
+        'orderdir': 'desc',
+        'filter': 's0-$categoryId',
+        'page': page,
+      }),
+      decoder: (json) async {
+        return json.map<KginoItem>((item) {
+          return FlmxItem.fromJson(item).toMovieItem();
+        }).toList();
+      },
+    );
+  }
+
 
   /// список новых сериалов
   Future<ApiResponse<List<KginoItem>>> getLatestShows() async {
@@ -214,6 +234,31 @@ class FlmxApiProvider {
       ),
       decoder: (json) async {
         return FlmxProfile.fromJson(json);
+      },
+    );
+  }
+
+  /// список категорий
+  Future<ApiResponse<List<KginoItem>>> getCategories() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/category_list', queryParameters: {
+        ..._queryParams,
+      }),
+      decoder: (json) async {
+        final categories = <KginoItem>[];
+        Map.from(json).forEach((key, value) {
+          categories.add(
+            KginoItem(
+              provider: KginoProvider.flmx.name,
+              id: key.toString().replaceAll('f', 'g'),
+              name: value,
+              posterUrl: '',
+              isFolder: true,
+            )
+          );
+        });
+
+        return categories;
       },
     );
   }
