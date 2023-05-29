@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:isar/isar.dart';
 
+import '../models/category_list_item.dart';
+import '../models/kgino_item.dart';
+import '../resources/krs_storage.dart';
 import '../ui/lists/horizontal_list_view.dart';
+import '../ui/lists/kgino_list_tile.dart';
 import '../ui/lists/kgino_raw_list_tile.dart';
 import '../ui/lists/vertical_list_view.dart';
 
@@ -13,112 +19,100 @@ class MoviesPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    /// хранилище данных
+    final storage = GetIt.instance<KrsStorage>();
+
+    final categories = useState({
+
+      'services': CategoryListItem(
+        title: 'Выберите сервис',
+        items: [
+          KginoItem(
+            provider: KginoProvider.flmxShow.name,
+            id: '/flmx/movies',
+            name: 'Filmix',
+            posterUrl: 'assets/images/flmx.svg',
+            isFolder: true,
+          ),
+
+          KginoItem(
+            provider: KginoProvider.tskg.name,
+            id: '/ockg',
+            name: 'OC.KG',
+            posterUrl: 'https://oc.kg/templates/mobile/img/logooc_winter.png',
+            isFolder: true,
+          ),
+        ],
+      ),
+
+    });
+
+    /// фильтруем сохранённые сериалы
+    final savedItemsQuery = storage.db.kginoItems
+      .where()
+      .filter()
+      .bookmarkedIsNotNull()
+      .providerEqualTo(KginoProvider.flmxMovie.name)
+      .or()
+      .providerEqualTo(KginoProvider.ockg.name)
+      .sortByBookmarkedDesc()
+      .build();
+
+    final savedItems = savedItemsQuery.watch(fireImmediately: true);
+    savedItems.listen((data) {
+      final newCategories = {...categories.value};
+      newCategories['saved'] = CategoryListItem(
+        title: 'В закладках',
+        items: data,
+      );
+      categories.value = newCategories;
+    });
 
     return VerticalListView(
-      itemCount: 1,
+      itemCount: categories.value.length,
       itemBuilder: (context, focusNode, index) {
-        return HorizontalListView(
+        final category = categories.value.values.elementAt(index);
+
+        return HorizontalListView<KginoItem>(
           focusNode: focusNode,
-          titleText: 'Выберите сервис',
-          itemsFuture: Future.delayed(Duration.zero, () {
-            return [
-              /// ссылка на filmix
-              {
-                'name': 'Filmix',
-                // 'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
-                'imageUrl': 'assets/images/flmx.svg',
-                'route': '/flmx/movies',
-              },
-
-              /// ссылка на oc.kg
-              {
-                'name': 'OC.KG',
-                'imageUrl': 'https://oc.kg/templates/mobile/img/logooc_winter.png',
-                // 'imageUrl': 'assets/images/ockg.svg',
-                'route': '/ockg',
-              },
-
-            ];
-          }),
+          titleText: category.title,
+          itemsFuture: category.itemsFuture,
           itemBuilder: (context, focusNode, index, item) {
-            return KginoRawListTile(
+
+            if (item.isFolder) {
+              return KginoRawListTile(
+                focusNode: focusNode,
+                onFocused: (focusNode) {
+                  
+                },
+                onTap: () {
+                  context.push(item.id);
+                },
+                title: item.name,
+                imageUrl: item.posterUrl,
+              );
+            }
+
+            /// карточка фильма
+            return KginoListTile(
               focusNode: focusNode,
-              onFocused: (focusNode) {
-                
-              },
               onTap: () {
-                context.push(item['route']!);
+                /// переходим на страницу сериала
+                context.pushNamed(item.provider == KginoProvider.flmxShow.name
+                  ? 'flmxMovieDetails' : 'ockgDetails',
+                  pathParameters: {
+                    'id': item.id,
+                  },
+                );
               },
-              title: item['name']!,
-              imageUrl: item['imageUrl']!,
+              item: item,
             );
+
           },
           
         );
       },
     );
 
-    // return Column(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   children: [
-    //     Container(
-    //       padding: const EdgeInsets.symmetric(
-    //         horizontal: 24.0,
-    //       ),
-    //       height: KrsTheme.movieDetailsHeight,
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         mainAxisAlignment: MainAxisAlignment.start,
-    //         children: [
-    //           Text('Yfpasdasdkaj  asdajsdnlasdm mlasmdkamskdl askmd ',
-    //             style: TextStyle(
-    //               fontSize: 18.0,
-    //             ),
-    //           ),
-
-    //           Row(
-    //             children: [
-    //               Chip(
-    //                 padding: const EdgeInsets.all(0.0),
-    //                 label: Text('2022'),
-    //               )
-    //             ],
-    //           ),
-
-    //           Text('Эвелин получает доступ к воспоминаниям, эмоциям и невероятным способностям других версии? себя. Теперь она может прожить тысячи жизней и быть кем угодно - известной актрисой, мастером боевых искусств, оперной дивой и даже небесным божеством. Но всем мультивселенным угрожает таинственная сущность, с которой Эвелин предстоит сразиться. Как знать, возможно, заодно она разберётся и с самым страшным злом - своими налогами.'),
-
-    //         ],
-    //       ),
-    //     ),
-
-    //     Expanded(
-    //       child: VerticalListView(
-    //         itemCount: 2,
-    //         itemBuilder: (context, focusNode, index) {
-    //           return HorizontalListView(
-    //             focusNode: focusNode,
-    //             titleText: 'Gjcktlrbs',
-    //             itemsFuture: Future.delayed(Duration(seconds: 1), () {
-    //               return [100, 200, 5, 7, 8, 10,100, 200, 5, 7, 8, 10,100, 200, 5, 7, 8, 10,100, 200, 5, 7, 8, 10];
-    //             }),
-    //             itemBuilder: (context, focusNode, index, item) {
-    //               return MovieListTile(
-    //                 focusNode: focusNode,
-    //                 onFocused: (focusNode) {
-                      
-    //                 },
-    //                 onTap: () {
-                      
-    //                 },
-    //               );
-    //             },
-                
-    //           );
-    //         },
-    //       ),
-    //     ),
-    //   ],
-    // );
   }
 }

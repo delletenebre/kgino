@@ -25,7 +25,7 @@ class ShowsPage extends HookWidget {
 
     final categories = useState({
 
-      '0': CategoryListItem(
+      'services': CategoryListItem(
         title: 'Выберите сервис',
         items: [
           KginoItem(
@@ -61,12 +61,12 @@ class ShowsPage extends HookWidget {
 
     final savedItems = savedItemsQuery.watch(fireImmediately: true);
     savedItems.listen((data) {
-      final a = {...categories.value};
-      a['1'] = CategoryListItem(
+      final newCategories = {...categories.value};
+      newCategories['saved'] = CategoryListItem(
         title: 'В закладках',
         items: data,
       );
-      categories.value = a;
+      categories.value = newCategories;
     });
 
     return VerticalListView(
@@ -98,8 +98,9 @@ class ShowsPage extends HookWidget {
             return KginoListTile(
               focusNode: focusNode,
               onTap: () {
-                /// переходим на страницу фильма
-                context.pushNamed('flmxMovieDetails',
+                /// переходим на страницу сериала
+                context.pushNamed(item.provider == KginoProvider.flmxShow.name
+                  ? 'flmxShowDetails' : 'tskgDetails',
                   pathParameters: {
                     'id': item.id,
                   },
@@ -114,48 +115,5 @@ class ShowsPage extends HookWidget {
       },
     );
 
-    // return VerticalListView(
-    //   itemCount: 1,
-    //   itemBuilder: (context, focusNode, index) {
-    //     return HorizontalListView(
-    //       focusNode: focusNode,
-    //       titleText: 'Выберите сервис',
-    //       itemsFuture: Future.delayed(Duration.zero, () {
-    //         return [
-    //           /// ссылка на filmix
-    //           {
-    //             'name': 'Filmix',
-    //             // 'imageUrl': 'https://filmix.ac/templates/Filmix/media/img/svg/logo.svg',
-    //             'imageUrl': 'assets/images/flmx.svg',
-    //             'route': '/flmx/shows',
-    //           },
-
-    //           /// ссылка на ts.kg
-    //           {
-    //             'name': 'TS.KG',
-    //             // 'imageUrl': 'https://www.ts.kg/img/logo.svg',
-    //             'imageUrl': 'assets/images/tskg.svg',
-    //             'route': '/tskg',
-    //           },
-
-    //         ];
-    //       }),
-    //       itemBuilder: (context, focusNode, index, item) {
-    //         return KginoRawListTile(
-    //           focusNode: focusNode,
-    //           onFocused: (focusNode) {
-                
-    //           },
-    //           onTap: () {
-    //             context.push(item['route']!);
-    //           },
-    //           title: item['name']!,
-    //           imageUrl: item['imageUrl']!,
-    //         );
-    //       },
-          
-    //     );
-    //   },
-    // );
   }
 }

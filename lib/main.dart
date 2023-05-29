@@ -35,15 +35,34 @@ Future<void> main() async {
 
   /// информация об устройстве
   final deviceInfo = DeviceInfoPlugin();
-  final androidDeviceInfo = await deviceInfo.androidInfo;
+  String deviceId = 'Unknown';
+  String deviceModel = 'Unknown';
+  String deviceBrand = 'Unknown';
+  String deviceOsVersion = '0.0.0';
+  if (Platform.isAndroid) {
+    final info = await deviceInfo.androidInfo;
+    deviceId = info.id;
+    deviceModel = info.model;
+    deviceBrand = info.brand;
+    deviceOsVersion = info.version.release;
+  } else if (Platform.isWindows) {
+    final info = await deviceInfo.windowsInfo;
+    deviceId = info.deviceId;
+    deviceModel = info.computerName;
+    deviceBrand = info.registeredOwner;
+    deviceOsVersion = '${info.productName} ${info.buildNumber}';
+  }
+
+
   GetIt.instance.registerSingleton<DeviceDetails>(
     DeviceDetails(
-      id: androidDeviceInfo.id,
-      name: androidDeviceInfo.model,
-      vendor: androidDeviceInfo.brand,
-      osVersion: androidDeviceInfo.version.release,
+      id: deviceId,
+      name: deviceModel,
+      vendor: deviceBrand,
+      osVersion: deviceOsVersion,
     )
   );
+  
 
 
   /// регистрируем [TabsCubit] как singleton
