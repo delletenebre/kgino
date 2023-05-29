@@ -71,6 +71,8 @@ class PlayerPage extends HookWidget {
       onUpdatePosition: (episode, subtitlesEnabled) {
         if (saveProgress) {
           kginoItem.subtitlesEnabled = subtitlesEnabled;
+
+          kginoItem.save();
           if (kginoItem.seenEpisodes.lookup(episode) != null) {
             kginoItem.seenEpisodes.remove(episode);
           }

@@ -361,7 +361,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               if (!widget.isLiveStream) SafeArea(
                 child: VideoPlayerControlsOverlay(
                   titleText: widget.titleText,
-                  subtitleText: _episode!.seasonNumber > 0 || _episode!.episodeNumber > 0
+                  subtitleText: _episode!.hasShowNumbers
                     ? '${_episode!.seasonNumber}x${_episode!.episodeNumber} ${_episode!.name}'
                     : _episode!.name.isNotEmpty ? _episode!.name : '',
                   isVisible: _isControlOverlayVisible,

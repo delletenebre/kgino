@@ -46,7 +46,7 @@ class PlayButtonTooltip extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('${playableEpisode.seasonNumber} сезон, ${playableEpisode.episodeNumber} серия',
+            if (playableEpisode.hasShowNumbers) Text('${playableEpisode.seasonNumber} сезон, ${playableEpisode.episodeNumber} серия',
               style: const TextStyle(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,

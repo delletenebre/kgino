@@ -75,6 +75,9 @@ class EpisodeItem {
   @ignore
   bool get isSeen => percentPosition > 0.95;
 
+  @ignore
+  bool get hasShowNumbers => seasonNumber > 0 && episodeNumber > 0;
+
   static String getFullId(String provider, String itemId, String episodeId) {
     return '$provider/$itemId/$episodeId';
   }
