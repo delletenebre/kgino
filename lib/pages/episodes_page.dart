@@ -178,7 +178,7 @@ class _EpisodesPageState extends State<EpisodesPage> {
                         );
                       }
 
-                      if (widget.kginoItem.provider == KginoProvider.flmx.name) {
+                      if ([KginoProvider.flmxMovie.name, KginoProvider.flmxShow.name].contains(widget.kginoItem.provider)) {
                         /// переходим на страницу плеера сериала
                         context.pushNamed('flmxShowPlayer',
                           pathParameters: {

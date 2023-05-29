@@ -10,7 +10,6 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../models/episode_item.dart';
 import '../../resources/krs_locale.dart';
-import '../../resources/krs_theme.dart';
 import '../../utils.dart';
 import '../loading_indicator.dart';
 import '../try_again_message.dart';
@@ -362,7 +361,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               if (!widget.isLiveStream) SafeArea(
                 child: VideoPlayerControlsOverlay(
                   titleText: widget.titleText,
-                  subtitleText: '${_episode!.seasonNumber}x${_episode!.episodeNumber} ${_episode!.name}',
+                  subtitleText: _episode!.hasShowNumbers
+                    ? '${_episode!.seasonNumber}x${_episode!.episodeNumber} ${_episode!.name}'
+                    : _episode!.name.isNotEmpty ? _episode!.name : '',
                   isVisible: _isControlOverlayVisible,
                   playerController: _playerController,
                   onPlayPause: () {

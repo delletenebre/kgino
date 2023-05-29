@@ -94,19 +94,7 @@ class FlmxApiProvider {
 
   /// список новых фильмов
   Future<ApiResponse<List<KginoItem>>> getLatestMovies() async {
-    return ApiRequest<List<KginoItem>>().call(
-      request: _dio.get('/catalog', queryParameters: {
-        ..._queryParams,
-        'orderby': 'date',
-        'orderdir': 'desc',
-        'filter': 's0-s14',
-      }),
-      decoder: (json) async {
-        return json.map<KginoItem>((item) {
-          return FlmxItem.fromJson(item).toMovieItem();
-        }).toList();
-      },
-    );
+    return getFiltered(['s0','s14'], 1);
   }
 
   /// список популярных фильмов
@@ -124,15 +112,29 @@ class FlmxApiProvider {
     );
   }
 
+  /// список фильмов по категории
+  Future<ApiResponse<List<KginoItem>>> getMoviesByCategory(String categoryId, {
+    int page = 1,
+  }) async {
+    return getFiltered(['s0','s14',categoryId], page);
+  }
 
-  /// список новых сериалов
-  Future<ApiResponse<List<KginoItem>>> getLatestShows() async {
+  /// список сериалов по категории
+  Future<ApiResponse<List<KginoItem>>> getShowsByCategory(String categoryId, {
+    int page = 1,
+  }) async {
+    return getFiltered(['s7','s93',categoryId], page);
+  }
+
+  /// список с фильтрацией
+  Future<ApiResponse<List<KginoItem>>> getFiltered(List<String> filter, int page) async {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/catalog', queryParameters: {
         ..._queryParams,
         'orderby': 'date',
         'orderdir': 'desc',
-        'filter': 's7-s93',
+        'filter': filter.join('-'),
+        'page': page,
       }),
       decoder: (json) async {
         return json.map<KginoItem>((item) {
@@ -140,6 +142,12 @@ class FlmxApiProvider {
         }).toList();
       },
     );
+  }
+
+
+  /// список новых сериалов
+  Future<ApiResponse<List<KginoItem>>> getLatestShows() async {
+    return getFiltered(['s7','s93'], 1);
   }
 
   /// список популярных сериалов
@@ -214,6 +222,31 @@ class FlmxApiProvider {
       ),
       decoder: (json) async {
         return FlmxProfile.fromJson(json);
+      },
+    );
+  }
+
+  /// список категорий
+  Future<ApiResponse<List<KginoItem>>> getCategories() async {
+    return ApiRequest<List<KginoItem>>().call(
+      request: _dio.get('/category_list', queryParameters: {
+        ..._queryParams,
+      }),
+      decoder: (json) async {
+        final categories = <KginoItem>[];
+        Map.from(json).forEach((key, value) {
+          categories.add(
+            KginoItem(
+              provider: KginoProvider.flmxMovie.name,
+              id: key.toString().replaceAll('f', 'g'),
+              name: value,
+              posterUrl: '',
+              isFolder: true,
+            )
+          );
+        });
+
+        return categories;
       },
     );
   }

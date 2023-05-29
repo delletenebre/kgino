@@ -37,6 +37,9 @@ class FlmxShowsPage extends HookWidget {
     /// популярные
     final asyncPopular = useMemoized(() => api.getPopularShows());
 
+    /// список категорий
+    final asyncCategories = useMemoized(() => api.getCategories());
+
     final categories = [
 
       CategoryListItem(
@@ -47,6 +50,11 @@ class FlmxShowsPage extends HookWidget {
       CategoryListItem(
         title: locale.popular,
         apiResponse: asyncPopular,
+      ),
+
+      CategoryListItem(
+        title: locale.genres,
+        apiResponse: asyncCategories,
       ),
 
     ];
@@ -103,12 +111,27 @@ class FlmxShowsPage extends HookWidget {
                             },
                             onTap: () {
 
-                              /// переходим на страницу сериала
-                              context.pushNamed('flmxShowDetails',
-                                pathParameters: {
-                                  'id': item.id,
-                                },
-                              );
+                              if (item.isFolder) {
+                                /// ^ если это категория (жанр)
+                                
+                                /// переходим в папку выбранной категории
+                                context.pushNamed('flmxShowsCategory',
+                                  queryParameters: {
+                                    'id': item.id,
+                                    'name': item.name,
+                                  },
+                                );
+                              
+                              } else {
+                                /// ^ если это сериал
+                              
+                                /// переходим на страницу сериала
+                                context.pushNamed('flmxShowDetails',
+                                  pathParameters: {
+                                    'id': item.id,
+                                  },
+                                );
+                              }
                               
                             },
                             item: item,

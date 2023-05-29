@@ -13,6 +13,7 @@ import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
 import '../../ui/kgino_item/krs_item_details.dart';
+import '../../ui/kgino_item/play_button.dart';
 import '../../ui/krs_scroll_view.dart';
 import '../../ui/kgino_item/play_button_tooltip.dart';
 import '../../ui/loading_indicator.dart';
@@ -137,29 +138,11 @@ class OckgMovieDetailsPage extends HookWidget {
                                   children: [
 
                                     /// кнопка начала просмотра
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 12.0),
-                                      child: FilledButton.tonalIcon(
-                                        // focusNode: playButtonFocusNode,
-                                        autofocus: true,
-                                        onFocusChange: (hasFocus) {
-                                          playButtonHasFocus.value = hasFocus;
-                                        },
-                                        onPressed: () {
-                                          /// переходим на страницу плеера фильма
-                                          context.pushNamed('ockgPlayer',
-                                            pathParameters: {
-                                              'id': kginoItem.id,
-                                            },
-                                            queryParameters: {
-                                              'episodeId': kginoItem.seasons.first.episodes.first.id,
-                                            },
-                                            extra: kginoItem,
-                                          );
-                                        },
-                                        icon: const Icon(Icons.play_arrow),
-                                        label: Text(locale.play),
-                                      ),
+                                    PlayButton(kginoItem,
+                                      routeName: 'ockgPlayer',
+                                      onFocusChange: (hasFocus) {
+                                        playButtonHasFocus.value = hasFocus;
+                                      },
                                     ),
 
                                     /// если файлов несколько, показываем кнопку выбора

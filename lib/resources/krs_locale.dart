@@ -19,16 +19,16 @@ class KrsLocale {
   /// язык по умолчанию
   static String get defaultLocale {
     return 'ru';
-    final systemLocale = Intl.systemLocale.substring(0, 2);
+    // final systemLocale = Intl.systemLocale.substring(0, 2);
 
-    /// Проверяем есть ли в списке системный язык...
-    if (locales.containsKey(systemLocale)) {
-      /// ...если есть - возвращаем системный
-      return systemLocale;
-    } else {
-      /// ...если нет - возвращаем первый из поддерживаемых
-      return locales.keys.first;
-    }
+    // /// Проверяем есть ли в списке системный язык...
+    // if (locales.containsKey(systemLocale)) {
+    //   /// ...если есть - возвращаем системный
+    //   return systemLocale;
+    // } else {
+    //   /// ...если нет - возвращаем первый из поддерживаемых
+    //   return locales.keys.first;
+    // }
   }
 
   //static String get currentLocale => Get.find<LocaleController>().locale;

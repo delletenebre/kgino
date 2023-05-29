@@ -33,6 +33,9 @@ class HomePage extends HookWidget {
           // pageController.position = selectedIndex;
         },
         child: PageView(
+          onPageChanged: (index) {
+            tabsCubit.updateSelected(index);
+          },
           controller: pageController,
           
           children: const [

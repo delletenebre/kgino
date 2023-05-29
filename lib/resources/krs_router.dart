@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -9,8 +8,10 @@ import '../api/tskg_api_provider.dart';
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
 import '../pages/episodes_page.dart';
+import '../pages/flmx/flmx_movies_category_page.dart';
 import '../pages/flmx/flmx_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
+import '../pages/flmx/flmx_shows_category_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
@@ -72,6 +73,20 @@ class KrsRouter {
               return const FlmxShowsPage();
             },
             routes: [
+
+              /// страница категории фильмов
+              GoRoute(
+                path: 'category',
+                name: 'flmxShowsCategory',
+                builder: (context, state) {
+                  final id = state.queryParameters['id'] ?? '';
+                  final name = state.queryParameters['name'] ?? '';
+                  return FlmxShowsCategoryPage(
+                    categoryId: id,
+                    categoryName: name,
+                  );
+                },
+              ),
 
               /// страница информации о сериале
               GoRoute(
@@ -163,6 +178,20 @@ class KrsRouter {
               return const FlmxMoviesPage();
             },
             routes: [
+
+              /// страница категории фильмов
+              GoRoute(
+                path: 'category',
+                name: 'flmxMoviesCategory',
+                builder: (context, state) {
+                  final id = state.queryParameters['id'] ?? '';
+                  final name = state.queryParameters['name'] ?? '';
+                  return FlmxMoviesCategoryPage(
+                    categoryId: id,
+                    categoryName: name,
+                  );
+                },
+              ),
 
               /// страница информации о фильме
               GoRoute(
@@ -371,6 +400,7 @@ class KrsRouter {
               return PlayerPage(
                 kginoItem: kginoItem,
                 episodeId: fileId,
+                saveProgress: false,
                 getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
                   return currentEpisode;
                 },

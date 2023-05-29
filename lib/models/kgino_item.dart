@@ -15,7 +15,8 @@ enum KginoProvider {
   ockg,
   tskg,
   wcam,
-  flmx,
+  flmxMovie,
+  flmxShow,
 }
 
 @collection
@@ -192,11 +193,15 @@ class KginoItem {
 
     EpisodeItem playableEpisode = lastSeenEpisode;
 
-    final episodeIndex = episodes.indexOf(lastSeenEpisode);
+    
+    final episodeIndex = episodes.indexWhere((episode) {
+      return episode.id == lastSeenEpisode.id;
+    });
+    
     if (episodeIndex > -1) {
       playableEpisode = episodes.elementAt(episodeIndex);
       playableEpisode.position = lastSeenEpisode.position;
-
+      
       if (playableEpisode.isSeen && episodeIndex < episodes.length - 1) {
         playableEpisode = episodes.elementAt(episodeIndex + 1);
       }
@@ -226,7 +231,7 @@ class KginoItem {
   }
 
   void goToDetails(BuildContext context) {
-    if (provider == KginoProvider.flmx.name) {
+    if ([KginoProvider.flmxMovie.name, KginoProvider.flmxShow.name].contains(provider)) {
       context.pushNamed('flmxShowDetails',
         pathParameters: {
           'id': id,

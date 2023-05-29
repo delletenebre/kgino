@@ -9,52 +9,39 @@ import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
 import '../../models/category_list_item.dart';
 import '../../models/kgino_item.dart';
-import '../../resources/krs_locale.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/krs_item_details.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/kgino_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
-class FlmxMoviesPage extends HookWidget {
-  const FlmxMoviesPage({
+class FlmxShowsCategoryPage extends HookWidget {
+  final String categoryId;
+  final String categoryName;
+
+  const FlmxShowsCategoryPage({
     super.key,
+    required this.categoryId,
+    required this.categoryName,
   });
 
   @override
   Widget build(BuildContext context) {
-    final locale = KrsLocale.of(context);
 
     /// провайдер запросов к API
     final api = GetIt.instance<FlmxApiProvider>();
 
     /// контроллер расширенной информации о фильме
     final detailsCubit = KginoItemDetailsCubit();
-    
-    /// последние добавления
-    final asyncLatest = useMemoized(() => api.getLatestMovies());
 
-    /// популярные
-    final asyncPopular = useMemoized(() => api.getPopularMovies());
-
-    /// список категорий
-    final asyncCategories = useMemoized(() => api.getCategories());
+    /// список фильмов в категории
+    final asyncMovies = useMemoized(() => api.getShowsByCategory(categoryId));
 
     final categories = [
 
       CategoryListItem(
-        title: locale.latest,
-        apiResponse: asyncLatest,
-      ),
-
-      CategoryListItem(
-        title: locale.popular,
-        apiResponse: asyncPopular,
-      ),
-
-      CategoryListItem(
-        title: locale.genres,
-        apiResponse: asyncCategories,
+        title: categoryName,
+        apiResponse: asyncMovies,
       ),
 
     ];
@@ -69,8 +56,8 @@ class FlmxMoviesPage extends HookWidget {
               children: [
 
                 /// заголовок
-                const AppHeader(
-                  child: Text('Filmix / Фильмы'),
+                AppHeader(
+                  child: Text('Filmix / Фильмы / $categoryName'),
                 ),
 
                 /// детали фильма или сериала
@@ -92,6 +79,16 @@ class FlmxMoviesPage extends HookWidget {
                       return HorizontalListView<KginoItem>(
                         focusNode: focusNode,
                         titleText: category.title,
+                        onLoadNextPage: (page, loadedCount) async {
+                          final result = await api.getShowsByCategory(categoryId,
+                            page: page,
+                          );
+                          if (result.isSuccess) {
+                            return result.asData.data;
+                          }
+
+                          return [];
+                        },
                         itemsFuture: category.itemsFuture,
                         itemBuilder: (context, focusNode, index, item) {
 
@@ -110,28 +107,12 @@ class FlmxMoviesPage extends HookWidget {
                             },
                             onTap: () {
                               
-                              if (item.isFolder) {
-                                /// ^ если это категория (жанр)
-                                
-                                /// переходим в папку выбранной категории
-                                context.pushNamed('flmxMoviesCategory',
-                                  queryParameters: {
-                                    'id': item.id,
-                                    'name': item.name,
-                                  },
-                                );
-                              
-                              } else {
-                                /// ^ если это фильм
-                                
-                                /// переходим на страницу фильма
-                                context.pushNamed('flmxMovieDetails',
-                                  pathParameters: {
-                                    'id': item.id,
-                                  },
-                                );
-                              }
-                              
+                              /// переходим на страницу фильма
+                              context.pushNamed('flmxShowDetails',
+                                pathParameters: {
+                                  'id': item.id,
+                                },
+                              );
                               
                             },
                             item: item,

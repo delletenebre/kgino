@@ -13,7 +13,6 @@ import 'logs_interceptor.dart';
 
 class WcamApiProvider {
 
-  /// ts.kg
   final _dio = Dio(BaseOptions(
     sendTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
@@ -170,7 +169,7 @@ class WcamApiProvider {
     );
   }
 
-  Future<List<KginoItem>> getKtCameras() async {
+  List<KginoItem> getKtCameras() {
     return [
       KginoItem.webcamera(
         // id: '1',

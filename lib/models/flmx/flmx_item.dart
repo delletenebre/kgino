@@ -54,6 +54,8 @@ class FlmxItem with _$FlmxItem {
     /// сезоны
     List<SeasonItem> seasons = [];
 
+    KginoProvider provider = KginoProvider.flmxMovie;
+
     String voiceActing = '';
     Map<String, VoiceActing> voiceActings = {};
     Map<String, List<SeasonItem>> voiceActingSeasons = {};
@@ -84,7 +86,7 @@ class FlmxItem with _$FlmxItem {
               episodes: [
                 EpisodeItem(
                   id: '0/0',
-                  fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), '0/0'),
+                  fullId: EpisodeItem.getFullId(provider.name, id.toString(), '0/0'),
                   playableQualities: playableQualities,
                   videoFileUrl: videoUrl,
                   duration: duration,
@@ -104,6 +106,7 @@ class FlmxItem with _$FlmxItem {
     if (playerLinks.playlist is Map && playerLinks.playlist.isNotEmpty) {
       /// ^ если это сериал
       
+      provider = KginoProvider.flmxShow;
       /// парсим как [Map<String, Map<String, Map<String, FlmxShowLink>>>]
       // final playlist = (playerLinks.playlist as Map<String, dynamic>).map(
       //   (k, e) => MapEntry(
@@ -192,7 +195,7 @@ class FlmxItem with _$FlmxItem {
             episodes.add(
               EpisodeItem(
                 id: episodeId,
-                fullId: EpisodeItem.getFullId(KginoProvider.flmx.name, id.toString(), episodeId),
+                fullId: EpisodeItem.getFullId(provider.name, id.toString(), episodeId),
                 name: episodeNumber,
                 seasonNumber: int.tryParse(seasonNumber) ?? 0,
                 episodeNumber: int.tryParse(episodeNumber) ?? 0,
@@ -227,7 +230,7 @@ class FlmxItem with _$FlmxItem {
     
     
     return KginoItem(
-      provider: KginoProvider.flmx.name,
+      provider: provider.name,
       id: id.toString(),
       name: title,
       originalName: originalTitle,
