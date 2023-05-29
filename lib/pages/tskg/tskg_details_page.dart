@@ -12,6 +12,7 @@ import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/bookmark_button.dart';
+import '../../ui/kgino_item/play_button.dart';
 import '../../ui/kgino_item/voice_actings_button.dart';
 import '../../ui/kgino_item/krs_item_details.dart';
 import '../../ui/krs_scroll_view.dart';
@@ -138,80 +139,10 @@ class TskgDetailsPage extends HookWidget {
                                   children: [
 
                                     /// кнопка начала просмотра
-                                    HookBuilder(
-                                      builder: (context) {
-
-                                        /// сохранённый в базе данных элемент
-                                        final dbItemStream = useStream(kginoItem.dbStream,
-                                          initialData: kginoItem,
-                                        );
-
-                                        if (dbItemStream.hasData && dbItemStream.data != null) {
-                                          final dbItem = dbItemStream.data!;
-
-                                          /// запрашиваем последний просмотренный эпизод
-                                          final lastSeenEpisode = dbItem.getLastSeenEpisode();
-
-                                          if (lastSeenEpisode != null) {
-                                            /// ^ если у сериала есть просмотреные серии
-                                            
-                                            /// получаем эпизод, с которого нужно продолжить просмотр
-                                            final playableEpisode = kginoItem.getNextPlayableEpisode(lastSeenEpisode);
-                                            print('debajim playableEpisode: ${playableEpisode.seasonNumber}x${playableEpisode.episodeNumber}');
-                                            print('debajim playableEpisode: ${playableEpisode.isSeen}');
-
-                                            /// кнопка продолжить просмотр
-                                            return Padding(
-                                              padding: const EdgeInsets.only(right: 8.0),
-                                              child: FilledButton.tonalIcon(
-                                                autofocus: true,
-                                                onFocusChange: (hasFocus) {
-                                                  playButtonHasFocus.value = hasFocus;
-                                                },
-                                                onPressed: () {
-                                                  /// переходим на страницу плеера фильма
-                                                  context.pushNamed('tskgPlayer',
-                                                    pathParameters: {
-                                                      'id': kginoItem.id,
-                                                    },
-                                                    queryParameters: {
-                                                      'episodeId': playableEpisode.id,
-                                                    },
-                                                    extra: kginoItem,
-                                                  );
-                                                },
-                                                icon: const Icon(Icons.play_arrow),
-                                                label: Text(locale.play),
-                                              ),
-                                            );
-                                          }
-                                        }
-
-                                        /// кнопка начала просмотра
-                                        return Padding(
-                                          padding: const EdgeInsets.only(right: 12.0),
-                                          child: FilledButton.tonalIcon(
-                                            autofocus: true,
-                                            onFocusChange: (hasFocus) {
-                                              playButtonHasFocus.value = hasFocus;
-                                            },
-                                            onPressed: () {
-                                              /// переходим на страницу плеера фильма
-                                              context.pushNamed('tskgPlayer',
-                                                pathParameters: {
-                                                  'id': kginoItem.id,
-                                                },
-                                                queryParameters: {
-                                                  'episodeId': kginoItem.seasons.first.episodes.first.id,
-                                                },
-                                                extra: kginoItem,
-                                              );
-                                            },
-                                            icon: const Icon(Icons.play_arrow),
-                                            label: Text(locale.play),
-                                          ),
-                                        );
-
+                                    PlayButton(kginoItem,
+                                      routeName: 'tskgPlayer',
+                                      onFocusChange: (hasFocus) {
+                                        playButtonHasFocus.value = hasFocus;
                                       },
                                     ),
 
