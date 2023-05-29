@@ -371,6 +371,7 @@ class KrsRouter {
               return PlayerPage(
                 kginoItem: kginoItem,
                 episodeId: fileId,
+                saveProgress: false,
                 getPlayableItem: (initial, currentEpisode, seenShowStorageKey) async {
                   return currentEpisode;
                 },

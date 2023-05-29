@@ -8,6 +8,8 @@ import '../ui/video_player/video_player_view.dart';
 class PlayerPage extends HookWidget {
   final KginoItem kginoItem;
   final String episodeId;
+  final bool saveProgress;
+
   final Future<EpisodeItem> Function(
     bool initial,
     EpisodeItem currentEpisode,
@@ -19,6 +21,7 @@ class PlayerPage extends HookWidget {
     required this.kginoItem,
     required this.getPlayableItem,
     this.episodeId = '',
+    this.saveProgress = true,
   });
 
 
@@ -66,9 +69,14 @@ class PlayerPage extends HookWidget {
       } : null,
 
       onUpdatePosition: (episode, subtitlesEnabled) {
-        kginoItem.subtitlesEnabled = subtitlesEnabled;
-        kginoItem.seenEpisodes.add(episode);
-        kginoItem.save();
+        if (saveProgress) {
+          kginoItem.subtitlesEnabled = subtitlesEnabled;
+          if (kginoItem.seenEpisodes.lookup(episode) != null) {
+            kginoItem.seenEpisodes.remove(episode);
+          }
+          kginoItem.seenEpisodes.add(episode);
+          kginoItem.save();
+        }
       },
 
       onQualityChanged: (quality) async {

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -192,11 +193,15 @@ class KginoItem {
 
     EpisodeItem playableEpisode = lastSeenEpisode;
 
-    final episodeIndex = episodes.indexOf(lastSeenEpisode);
+    
+    final episodeIndex = episodes.indexWhere((episode) {
+      return episode.id == lastSeenEpisode.id;
+    });
+    
     if (episodeIndex > -1) {
       playableEpisode = episodes.elementAt(episodeIndex);
       playableEpisode.position = lastSeenEpisode.position;
-
+      
       if (playableEpisode.isSeen && episodeIndex < episodes.length - 1) {
         playableEpisode = episodes.elementAt(episodeIndex + 1);
       }

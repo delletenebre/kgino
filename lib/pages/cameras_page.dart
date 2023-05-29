@@ -44,6 +44,11 @@ class CamerasPage extends HookWidget {
       ),
 
       CategoryListItem(
+        title: 'Кыргызтелеком',
+        items: api.getKtCameras(),
+      ),
+
+      CategoryListItem(
         title: 'Интересное',
         items: [
 
