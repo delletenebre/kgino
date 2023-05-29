@@ -9,18 +9,17 @@ import '../../controllers/kgino_item_details_cubit.dart';
 import '../../models/api_response.dart';
 import '../../models/category_list_item.dart';
 import '../../models/kgino_item.dart';
-import '../../resources/krs_locale.dart';
 import '../../ui/app_header.dart';
 import '../../ui/kgino_item/krs_item_details.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/kgino_list_tile.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
-class FlmxCategoryPage extends HookWidget {
+class FlmxShowsCategoryPage extends HookWidget {
   final String categoryId;
   final String categoryName;
 
-  const FlmxCategoryPage({
+  const FlmxShowsCategoryPage({
     super.key,
     required this.categoryId,
     required this.categoryName,
@@ -28,7 +27,6 @@ class FlmxCategoryPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = KrsLocale.of(context);
 
     /// провайдер запросов к API
     final api = GetIt.instance<FlmxApiProvider>();
@@ -37,12 +35,12 @@ class FlmxCategoryPage extends HookWidget {
     final detailsCubit = KginoItemDetailsCubit();
 
     /// список фильмов в категории
-    final asyncMovies = useMemoized(() => api.getCategory(categoryId));
+    final asyncMovies = useMemoized(() => api.getShowsByCategory(categoryId));
 
     final categories = [
 
       CategoryListItem(
-        title: locale.latest,
+        title: categoryName,
         apiResponse: asyncMovies,
       ),
 
@@ -82,16 +80,12 @@ class FlmxCategoryPage extends HookWidget {
                         focusNode: focusNode,
                         titleText: category.title,
                         onLoadNextPage: (page, loadedCount) async {
-                          print('onLoadNextPage page $page');
-                          final result = await api.getCategory(categoryId,
+                          final result = await api.getShowsByCategory(categoryId,
                             page: page,
                           );
                           if (result.isSuccess) {
-                            print('onLoadNextPage isSuccess ${result.asData.data} ');
                             return result.asData.data;
                           }
-
-                          print('onLoadNextPage $result');
 
                           return [];
                         },
@@ -113,28 +107,12 @@ class FlmxCategoryPage extends HookWidget {
                             },
                             onTap: () {
                               
-                              if (item.isFolder) {
-                                /// ^ если это категория (жанр)
-                                
-                                /// переходим в папку выбранной категории
-                                context.pushNamed('flmxCategory',
-                                  queryParameters: {
-                                    'id': item.id,
-                                    'name': item.name,
-                                  },
-                                );
-                              
-                              } else {
-                                /// ^ если это фильм
-                                
-                                /// переходим на страницу фильма
-                                context.pushNamed('flmxMovieDetails',
-                                  pathParameters: {
-                                    'id': item.id,
-                                  },
-                                );
-                              }
-                              
+                              /// переходим на страницу фильма
+                              context.pushNamed('flmxShowDetails',
+                                pathParameters: {
+                                  'id': item.id,
+                                },
+                              );
                               
                             },
                             item: item,

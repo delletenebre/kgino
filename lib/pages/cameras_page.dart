@@ -97,43 +97,37 @@ class CamerasPage extends HookWidget {
 
     ];
 
-    return Scaffold(
-      body: Builder(
-        builder: (context) {
-          return VerticalListView(
-            itemCount: categories.length,
-            itemBuilder: (context, focusNode, index) {
-              final category = categories[index];
+    return VerticalListView(
+      itemCount: categories.length,
+      itemBuilder: (context, focusNode, index) {
+        final category = categories[index];
 
-              /// категория сериалов (горизонтальный список)
-              return HorizontalListView<KginoItem>(
-                focusNode: focusNode,
-                titleText: category.title,
-                itemsFuture: category.itemsFuture,
-                itemBuilder: (context, focusNode, index, item) {
+        /// категория сериалов (горизонтальный список)
+        return HorizontalListView<KginoItem>(
+          focusNode: focusNode,
+          titleText: category.title,
+          itemsFuture: category.itemsFuture,
+          itemBuilder: (context, focusNode, index, item) {
 
-                  /// карточка сериала
-                  return KginoListTile(
-                    focusNode: focusNode,
-                    onTap: () {
-                      /// переходим на страницу плеера камеры
-                      context.pushNamed('wcamPlayer',
-                        queryParameters: {
-                          'episodeId': item.seasons.first.episodes.first.id,
-                        },
-                        extra: item,
-                      );
-                    },
-                    item: item,
-                  );
+            /// карточка сериала
+            return KginoListTile(
+              focusNode: focusNode,
+              onTap: () {
+                /// переходим на страницу плеера камеры
+                context.pushNamed('wcamPlayer',
+                  queryParameters: {
+                    'episodeId': item.seasons.first.episodes.first.id,
+                  },
+                  extra: item,
+                );
+              },
+              item: item,
+            );
 
-                },
-                
-              );
-            },
-          );
-        },
-      ),
+          },
+          
+        );
+      },
     );
   }
 }

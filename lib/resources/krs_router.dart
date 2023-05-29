@@ -8,9 +8,10 @@ import '../api/tskg_api_provider.dart';
 import '../models/kgino_item.dart';
 import '../pages/error_page.dart';
 import '../pages/episodes_page.dart';
-import '../pages/flmx/flmx_category_page.dart';
+import '../pages/flmx/flmx_movies_category_page.dart';
 import '../pages/flmx/flmx_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
+import '../pages/flmx/flmx_shows_category_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
@@ -72,6 +73,20 @@ class KrsRouter {
               return const FlmxShowsPage();
             },
             routes: [
+
+              /// страница категории фильмов
+              GoRoute(
+                path: 'category',
+                name: 'flmxShowsCategory',
+                builder: (context, state) {
+                  final id = state.queryParameters['id'] ?? '';
+                  final name = state.queryParameters['name'] ?? '';
+                  return FlmxShowsCategoryPage(
+                    categoryId: id,
+                    categoryName: name,
+                  );
+                },
+              ),
 
               /// страница информации о сериале
               GoRoute(
@@ -164,14 +179,14 @@ class KrsRouter {
             },
             routes: [
 
-              /// страница информации о фильме
+              /// страница категории фильмов
               GoRoute(
                 path: 'category',
-                name: 'flmxCategory',
+                name: 'flmxMoviesCategory',
                 builder: (context, state) {
                   final id = state.queryParameters['id'] ?? '';
                   final name = state.queryParameters['name'] ?? '';
-                  return FlmxCategoryPage(
+                  return FlmxMoviesCategoryPage(
                     categoryId: id,
                     categoryName: name,
                   );
