@@ -237,7 +237,7 @@ class FlmxApiProvider {
         Map.from(json).forEach((key, value) {
           categories.add(
             KginoItem(
-              provider: KginoProvider.flmx.name,
+              provider: KginoProvider.flmxMovie.name,
               id: key.toString().replaceAll('f', 'g'),
               name: value,
               posterUrl: '',

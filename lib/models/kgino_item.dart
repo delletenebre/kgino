@@ -15,7 +15,8 @@ enum KginoProvider {
   ockg,
   tskg,
   wcam,
-  flmx,
+  flmxMovie,
+  flmxShow,
 }
 
 @collection
@@ -230,7 +231,7 @@ class KginoItem {
   }
 
   void goToDetails(BuildContext context) {
-    if (provider == KginoProvider.flmx.name) {
+    if ([KginoProvider.flmxMovie.name, KginoProvider.flmxShow.name].contains(provider)) {
       context.pushNamed('flmxShowDetails',
         pathParameters: {
           'id': id,
