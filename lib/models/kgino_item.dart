@@ -17,6 +17,7 @@ enum KginoProvider {
   wcam,
   flmxMovie,
   flmxShow,
+  hdrz,
 }
 
 @collection

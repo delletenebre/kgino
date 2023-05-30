@@ -53,6 +53,14 @@ class MoviesPage extends HookWidget {
           ),
 
           KginoItem(
+            provider: KginoProvider.hdrz.name,
+            id: '/hdrz/movies',
+            name: 'HDRezka',
+            posterUrl: '',
+            isFolder: true,
+          ),
+
+          KginoItem(
             provider: KginoProvider.tskg.name,
             id: '/ockg',
             name: 'OC.KG',

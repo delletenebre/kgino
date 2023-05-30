@@ -13,6 +13,8 @@ import '../pages/flmx/flmx_details_page.dart';
 import '../pages/flmx/flmx_movies_page.dart';
 import '../pages/flmx/flmx_shows_category_page.dart';
 import '../pages/flmx/flmx_shows_page.dart';
+import '../pages/hdrz/hdrz_details_page.dart';
+import '../pages/hdrz/hdrz_movies_page.dart';
 import '../pages/home_page.dart';
 import '../pages/oc.kg/ockg_home_page.dart';
 import '../pages/oc.kg/ockg_movie_details_page.dart';
@@ -401,6 +403,66 @@ class KrsRouter {
               );
             },
           ),
+
+
+
+          /// hdrezka фильмы
+          GoRoute(
+            path: 'hdrz/movies',
+            name: 'hdrzMovies',
+            builder: (context, state) {
+              return const HdrzMoviesPage();
+            },
+            routes: [
+
+              // /// страница категории фильмов
+              // GoRoute(
+              //   path: 'category',
+              //   name: 'flmxMoviesCategory',
+              //   builder: (context, state) {
+              //     final id = state.queryParameters['id'] ?? '';
+              //     final name = state.queryParameters['name'] ?? '';
+              //     return FlmxMoviesCategoryPage(
+              //       categoryId: id,
+              //       categoryName: name,
+              //     );
+              //   },
+              // ),
+
+              /// страница информации о фильме
+              GoRoute(
+                path: ':id',
+                name: 'hdrzMovieDetails',
+                builder: (context, state) {
+                  final id = state.pathParameters['id'] ?? '';
+                  return HdrzDetailsPage(id);
+                },
+                routes: [
+
+                  // /// страница эпизодов
+                  // GoRoute(
+                  //   path: 'episodes',
+                  //   name: 'flmxMovieEpisodes',
+                  //   builder: (context, state) {
+                  //     final kginoItem = state.extra;
+                  //     if (kginoItem != null) {
+                  //       return EpisodesPage(kginoItem as KginoItem);
+                  //     }
+                      
+                  //     return TryAgainMessage(
+                  //       onRetry: () {
+                          
+                  //       },
+                  //     );
+                  //   },
+                  // ),
+
+                ],
+              ),
+
+            ],
+          ),
+
 
         ]
       ),

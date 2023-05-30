@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 import 'api/flmx_api_provider.dart';
+import 'api/hdrz_api_provider.dart';
 import 'api/ockg_api_provider.dart';
 import 'api/tskg_api_provider.dart';
 import 'api/wcam_api_provider.dart';
@@ -81,6 +82,9 @@ Future<void> main() async {
 
   /// регистрируем провайдер запросов веб-камер
   GetIt.instance.registerSingleton<WcamApiProvider>(WcamApiProvider());
+
+  /// регистрируем провайдер запросов к REST API как singleton
+  GetIt.instance.registerSingleton<HdrzApiProvider>(HdrzApiProvider());
 
   /// регистрируем контроллер для поискового запроса
   GetIt.instance.registerSingleton<TextEditingController>(TextEditingController());
