@@ -19,12 +19,29 @@ class MoviesPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+
     /// хранилище данных
     final storage = GetIt.instance<KrsStorage>();
 
-    final categories = useState({
+    /// фильтруем сохранённые сериалы
+    final savedItemsQuery = storage.db.kginoItems
+      .where()
+      .filter()
+      .bookmarkedIsNotNull()
+      .and()
+      .group((q) => q
+        .providerEqualTo(KginoProvider.ockg.name)
+        .or()
+        .providerEqualTo(KginoProvider.flmxMovie.name)
+      )
+      .sortByBookmarkedDesc()
+      .build();
 
-      'services': CategoryListItem(
+    final stream = useMemoized(() => savedItemsQuery.watch(fireImmediately: true));
+    final savedItems = useStream(stream);
+
+    final categories = [
+      CategoryListItem(
         title: 'Выберите сервис',
         items: [
           KginoItem(
@@ -45,35 +62,20 @@ class MoviesPage extends HookWidget {
         ],
       ),
 
-    });
-
-    /// фильтруем сохранённые сериалы
-    final savedItemsQuery = storage.db.kginoItems
-      .where()
-      .filter()
-      .bookmarkedIsNotNull()
-      .providerEqualTo(KginoProvider.flmxMovie.name)
-      .or()
-      .providerEqualTo(KginoProvider.ockg.name)
-      .sortByBookmarkedDesc()
-      .build();
-
-    final savedItems = savedItemsQuery.watch(fireImmediately: true);
-    savedItems.listen((data) {
-      final newCategories = {...categories.value};
-      newCategories['saved'] = CategoryListItem(
+      CategoryListItem(
         title: 'В закладках',
-        items: data,
-      );
-      categories.value = newCategories;
-    });
+        items: savedItems.data ?? [],
+      ),
+
+    ];
 
     return VerticalListView(
-      itemCount: categories.value.length,
+      itemCount: categories.length,
       itemBuilder: (context, focusNode, index) {
-        final category = categories.value.values.elementAt(index);
+        final category = categories.elementAt(index);
 
         return HorizontalListView<KginoItem>(
+          key: ObjectKey(category),
           focusNode: focusNode,
           titleText: category.title,
           itemsFuture: category.itemsFuture,

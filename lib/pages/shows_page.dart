@@ -4,8 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:isar/isar.dart';
 
-import '../models/kgino_item.dart';
 import '../models/category_list_item.dart';
+import '../models/kgino_item.dart';
 import '../resources/krs_storage.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/kgino_list_tile.dart';
@@ -23,9 +23,25 @@ class ShowsPage extends HookWidget {
     /// хранилище данных
     final storage = GetIt.instance<KrsStorage>();
 
-    final categories = useState({
+    /// фильтруем сохранённые сериалы
+    final savedItemsQuery = storage.db.kginoItems
+      .where()
+      .filter()
+      .bookmarkedIsNotNull()
+      .and()
+      .group((q) => q
+        .providerEqualTo(KginoProvider.tskg.name)
+        .or()
+        .providerEqualTo(KginoProvider.flmxShow.name)
+      )
+      .sortByBookmarkedDesc()
+      .build();
 
-      'services': CategoryListItem(
+    final stream = useMemoized(() => savedItemsQuery.watch(fireImmediately: true));
+    final savedItems = useStream(stream);
+
+    final categories = [
+      CategoryListItem(
         title: 'Выберите сервис',
         items: [
           KginoItem(
@@ -46,35 +62,20 @@ class ShowsPage extends HookWidget {
         ],
       ),
 
-    });
-
-    /// фильтруем сохранённые сериалы
-    final savedItemsQuery = storage.db.kginoItems
-      .where()
-      .filter()
-      .bookmarkedIsNotNull()
-      .providerEqualTo(KginoProvider.flmxShow.name)
-      .or()
-      .providerEqualTo(KginoProvider.tskg.name)
-      .sortByBookmarkedDesc()
-      .build();
-
-    final savedItems = savedItemsQuery.watch(fireImmediately: true);
-    savedItems.listen((data) {
-      final newCategories = {...categories.value};
-      newCategories['saved'] = CategoryListItem(
+      CategoryListItem(
         title: 'В закладках',
-        items: data,
-      );
-      categories.value = newCategories;
-    });
+        items: savedItems.data ?? [],
+      ),
+
+    ];
 
     return VerticalListView(
-      itemCount: categories.value.length,
+      itemCount: categories.length,
       itemBuilder: (context, focusNode, index) {
-        final category = categories.value.values.elementAt(index);
+        final category = categories.elementAt(index);
 
         return HorizontalListView<KginoItem>(
+          key: ObjectKey(category),
           focusNode: focusNode,
           titleText: category.title,
           itemsFuture: category.itemsFuture,

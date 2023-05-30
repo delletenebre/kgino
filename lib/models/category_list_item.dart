@@ -13,16 +13,14 @@ class CategoryListItem {
   });
 
   Future<List<KginoItem>> get itemsFuture async {
-    return Future.microtask(() async {
-      if (apiResponse != null) {
-        final response = await apiResponse!;
+    if (apiResponse != null) {
+      final response = await apiResponse!;
 
-        if (response.isSuccess) {
-          return response.asData.data;
-        }
+      if (response.isSuccess) {
+        return response.asData.data;
       }
+    }
 
-      return items;
-    });
+    return items;
   }
 }
