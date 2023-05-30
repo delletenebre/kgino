@@ -101,6 +101,9 @@ class HdrzApiProvider {
           id: 'id',
           name: 'name',
           posterUrl: 'posterUrl',
+          seasons: [
+            
+          ]
         );
 
       },

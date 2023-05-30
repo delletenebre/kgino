@@ -149,7 +149,7 @@ class HdrzDetailsPage extends HookWidget {
 
                                     /// если файлов несколько, показываем кнопку выбора
                                     /// эпизода
-                                    if (kginoItem.seasons.first.episodes.length > 1) Padding(
+                                    if (kginoItem.seasons.isNotEmpty && kginoItem.seasons.first.episodes.length > 1) Padding(
                                       padding: const EdgeInsets.only(right: 12.0),
                                       child: FilledButton.tonalIcon(
                                         onPressed: () {
