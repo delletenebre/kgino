@@ -3,7 +3,7 @@ description: KGino project
 
 publish_to: 'none'
 
-version: 3.2.5+325
+version: 3.2.6+326
 
 environment:
   sdk: ">=2.18.2 <3.0.0"
