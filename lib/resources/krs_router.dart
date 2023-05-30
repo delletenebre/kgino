@@ -219,9 +219,6 @@ class KrsRouter {
                         },
                       );
                     },
-                    routes: [
-
-                    ],
                   ),
 
                 ],
@@ -379,9 +376,6 @@ class KrsRouter {
                         },
                       );
                     },
-                    routes: [
-
-                    ],
                   ),
 
                 ],

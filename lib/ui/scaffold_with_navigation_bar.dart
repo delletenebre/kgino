@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 
 import '../controllers/tabs_cubit.dart';
 import '../resources/krs_locale.dart';
@@ -122,22 +121,6 @@ class ScaffoldWithNavigationBar extends HookWidget {
           
           Expanded(
             child: child
-            // Stack(
-            //   children: [
-
-            //     child,
-                      
-
-            //     // Visibility(
-            //     //   visible: _tabBarHasFocus,
-            //     //   child: Positioned.fill(
-            //     //     child: ColoredBox(
-            //     //       color: theme.scaffoldBackgroundColor.withOpacity(0.5),
-            //     //     ),
-            //     //   ),
-            //     // ),
-            //   ],
-            // ),
           ),
         ],
       ),

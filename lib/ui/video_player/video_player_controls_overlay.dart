@@ -4,7 +4,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
-import '../../utils.dart';
 import '../loading_indicator.dart';
 import 'play_pause_button.dart';
 import 'video_player_controls_button.dart';

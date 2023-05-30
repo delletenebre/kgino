@@ -32,7 +32,6 @@ class _EpisodesPageState extends State<EpisodesPage> {
   );
 
   final _episodes = <EpisodeItem>[];
-  late final int _episodeCount;
   int _selectedSeasonIndex = 0;
   int _selectedEpisodeIndex = 0;
 
@@ -42,11 +41,6 @@ class _EpisodesPageState extends State<EpisodesPage> {
     for (final season in widget.kginoItem.seasons) {
       _episodes.addAll(season.episodes);
     }
-
-    /// количество эпизодов во всех сезонах
-    _episodeCount = widget.kginoItem.seasons.fold(0, (previousValue, season) {
-      return previousValue + season.episodes.length;
-    });
 
     super.initState();
   }

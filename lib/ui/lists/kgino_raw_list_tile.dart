@@ -17,11 +17,11 @@ class KginoRawListTile extends HookWidget {
   final Size imageSize;
 
   /// кнопки, которые могут отвечать за выбор элемента
-  final _selectKeysMap = const [
-    LogicalKeyboardKey.enter,
-    LogicalKeyboardKey.numpadEnter,
-    LogicalKeyboardKey.select,
-  ];
+  // final _selectKeysMap = const [
+  //   LogicalKeyboardKey.enter,
+  //   LogicalKeyboardKey.numpadEnter,
+  //   LogicalKeyboardKey.select,
+  // ];
 
   const KginoRawListTile({
     super.key,

@@ -13,7 +13,6 @@ class KrsTabBarSettingsButton extends HookWidget {
 
   @override
   Widget build(context) {
-    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     final showOverlay = useState(false);

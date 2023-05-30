@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../resources/krs_locale.dart';
-import '../../resources/krs_theme.dart';
 
 class TryAgainMessage extends StatelessWidget {
   final Function() onRetry;

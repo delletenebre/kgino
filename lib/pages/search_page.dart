@@ -7,7 +7,6 @@ import '../api/ockg_api_provider.dart';
 import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/kgino_item.dart';
-import '../resources/krs_locale.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/kgino_list_tile.dart';
 import '../ui/lists/vertical_list_view.dart';
@@ -21,10 +20,6 @@ class SearchPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = KrsLocale.of(context);
-
-    /// контроллер расширенной информации о фильме
-    // final detailsCubit = KginoItemDetailsCubit();
 
     /// провайдер запросов к API
     final flmxApi = GetIt.instance<FlmxApiProvider>();
@@ -34,8 +29,6 @@ class SearchPage extends HookWidget {
 
     /// провайдер запросов к API
     final ockgApi = GetIt.instance<OckgApiProvider>();
-
-    // final updateSeachResultsKey = useState(UniqueKey());
 
     /// контроллер поискового запроса
     final searchController = GetIt.instance<TextEditingController>();

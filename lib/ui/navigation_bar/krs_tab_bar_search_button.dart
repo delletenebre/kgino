@@ -1,13 +1,11 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../resources/krs_locale.dart';
 import '../../../resources/krs_theme.dart';
 import '../../controllers/tabs_cubit.dart';
-import '../../pages/search_page.dart';
 
 class KrsTabBarSearchButton extends HookWidget {
   final int index;
