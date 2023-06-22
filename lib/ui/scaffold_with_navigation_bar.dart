@@ -29,8 +29,52 @@ class ScaffoldWithNavigationBar extends HookWidget {
     final tabsCubit = GetIt.instance<TabsCubit>();
 
     return Scaffold(
+      endDrawer: SizedBox(
+        width: 320.0, //showOverlay.value ? 320.0 : 0,
+        height: 500 - 32.0,
+        child: Card(
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 48.0,
+              left: 24.0,
+              right: 24.0,
+              bottom: 24.0,
+            ),
+            child: ListView(
+              children: [
+                ListTile(
+                  onTap: () {
+                    // Utils.showModal(
+                    //   context: context,
+                    //   titleText: 'Аккаунт Filmix',
+                    //   child: const FlmxAccountDialog(),
+                    // );
+                  },
+                  title: const Text('Аккаунт Filmix'),
+                ),
+                // ListTile(
+                //   onTap: () {
+                    
+                //   },
+                //   title: Text('Setting 2'),
+                // ),
+                // ListTile(
+                //   onTap: () {
+                    
+                //   },
+                //   title: Text('Setting 3'),
+                // )
+              ],
+            ),
+          ),
+        ),
+      ),
       appBar: PreferredSize(
-        preferredSize: const Size(double.maxFinite, 148.0 + 24.0),
+        preferredSize: const Size(double.maxFinite, 48.0 + 24.0 * 2),
         child: Focus(
           canRequestFocus: false,
           skipTraversal: true,
@@ -41,75 +85,80 @@ class ScaffoldWithNavigationBar extends HookWidget {
               tabsCubit.requestFocus();
             }
           },
-          child: Opacity(
-            opacity: focused.value ? 1.0 : 0.62,
-            child: BlocProvider(
-              create: (_) => tabsCubit,
-              child: BlocBuilder<TabsCubit, int>(
-                builder: (context, selectedIndex) => Row(
-                  children: [
-                    
-                    AnimatedOpacity(
-                      duration: KrsTheme.animationDuration,
-                      opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
-                      child: AnimatedContainer(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 24.0,
+            ),
+            child: Opacity(
+              opacity: focused.value ? 1.0 : 0.62,
+              child: BlocProvider(
+                create: (_) => tabsCubit,
+                child: BlocBuilder<TabsCubit, int>(
+                  builder: (context, selectedIndex) => Row(
+                    children: [
+                      
+                      AnimatedOpacity(
                         duration: KrsTheme.animationDuration,
-                        margin: EdgeInsetsDirectional.only(
-                          start: tabsCubit.state == 0 ? 0 : 24.0,
-                          end: 32.0,
-                        ),
-                        width: tabsCubit.state == 0 ? 0 : 58.0,
-                        
-                        child: const AppLogo(),
-
-                      ),
-
-                    ),
-
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                KrsTabBarSearchButton(
-                                  index: 0,
-                                  onPressed: () {}, 
-                                ),
-
-                                const SizedBox(width: 4.0),
-                                
-                                KrsTabBarButton(
-                                  index: 1,
-                                  onPressed: () {},
-                                  label: Text(locale.movies),
-                                ),
-
-                                const SizedBox(width: 4.0),
-
-                                KrsTabBarButton(
-                                  index: 2,
-                                  onPressed: () {},
-                                  label: Text(locale.shows),
-                                ),
-
-                                const SizedBox(width: 4.0),
-
-                                KrsTabBarButton(
-                                  index: 3,
-                                  onPressed: () {},
-                                  label: Text(locale.cameras),
-                                ),
-                              ],
-                            ),
+                        opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
+                        child: AnimatedContainer(
+                          duration: KrsTheme.animationDuration,
+                          margin: EdgeInsetsDirectional.only(
+                            start: tabsCubit.state == 0 ? 0 : 24.0,
+                            end: 32.0,
                           ),
+                          width: tabsCubit.state == 0 ? 0 : 58.0,
+                          
+                          child: const AppLogo(),
 
-                          /// кнопка входа в настройки
-                          const KrsTabBarSettingsButton(),
-                        ],
+                        ),
+
                       ),
-                    ),
-                  ],
+
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  KrsTabBarSearchButton(
+                                    index: 0,
+                                    onPressed: () {}, 
+                                  ),
+
+                                  const SizedBox(width: 4.0),
+                                  
+                                  KrsTabBarButton(
+                                    index: 1,
+                                    onPressed: () {},
+                                    label: Text(locale.movies),
+                                  ),
+
+                                  const SizedBox(width: 4.0),
+
+                                  KrsTabBarButton(
+                                    index: 2,
+                                    onPressed: () {},
+                                    label: Text(locale.shows),
+                                  ),
+
+                                  const SizedBox(width: 4.0),
+
+                                  KrsTabBarButton(
+                                    index: 3,
+                                    onPressed: () {},
+                                    label: Text(locale.cameras),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            /// кнопка входа в настройки
+                            const KrsTabBarSettingsButton(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
