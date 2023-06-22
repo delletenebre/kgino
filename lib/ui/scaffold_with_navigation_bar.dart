@@ -6,7 +6,9 @@ import 'package:get_it/get_it.dart';
 import '../controllers/tabs_cubit.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
+import '../utils.dart';
 import 'app_logo.dart';
+import 'flmx/flmx_account_dialog.dart';
 import 'navigation_bar/krs_tab_bar_search_button.dart';
 import 'navigation_bar/krs_tab_bar_button.dart';
 import 'navigation_bar/krs_tab_bar_settings_button.dart';
@@ -21,6 +23,7 @@ class ScaffoldWithNavigationBar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     
     final locale = KrsLocale.of(context);
 
@@ -31,43 +34,26 @@ class ScaffoldWithNavigationBar extends HookWidget {
     return Scaffold(
       endDrawer: SizedBox(
         width: 320.0, //showOverlay.value ? 320.0 : 0,
-        height: 500 - 32.0,
+        height: screenSize.height - 32.0,
         child: Card(
           elevation: 8.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(
-              top: 48.0,
-              left: 24.0,
-              right: 24.0,
-              bottom: 24.0,
-            ),
+            padding: const EdgeInsets.all(24.0),
             child: ListView(
               children: [
                 ListTile(
                   onTap: () {
-                    // Utils.showModal(
-                    //   context: context,
-                    //   titleText: 'Аккаунт Filmix',
-                    //   child: const FlmxAccountDialog(),
-                    // );
+                    Utils.showModal(
+                      context: context,
+                      titleText: 'Аккаунт Filmix',
+                      child: const FlmxAccountDialog(),
+                    );
                   },
                   title: const Text('Аккаунт Filmix'),
                 ),
-                // ListTile(
-                //   onTap: () {
-                    
-                //   },
-                //   title: Text('Setting 2'),
-                // ),
-                // ListTile(
-                //   onTap: () {
-                    
-                //   },
-                //   title: Text('Setting 3'),
-                // )
               ],
             ),
           ),
