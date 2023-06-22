@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 import 'api/flmx_api_provider.dart';
@@ -40,7 +41,13 @@ Future<void> main() async {
   String deviceModel = 'Unknown';
   String deviceBrand = 'Unknown';
   String deviceOsVersion = '0.0.0';
-  if (Platform.isAndroid) {
+  if (kIsWeb) {
+    final info = await deviceInfo.webBrowserInfo;
+    deviceId = const Uuid().v4();
+    deviceModel = info.product ?? 'Unknown';
+    deviceBrand = info.vendor ?? 'Unknown';
+    deviceOsVersion = info.appVersion ?? '0.0.0';
+  } else if (Platform.isAndroid) {
     final info = await deviceInfo.androidInfo;
     deviceId = info.id;
     deviceModel = info.model;
@@ -68,7 +75,7 @@ Future<void> main() async {
 
   /// регистрируем [TabsCubit] как singleton
   GetIt.instance.registerSingleton<TabsCubit>(
-    TabsCubit(1)
+    TabsCubit(2)
   );
 
   /// регистрируем провайдер запросов к REST API как singleton

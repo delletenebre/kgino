@@ -18,18 +18,19 @@ class ThemeController extends Cubit<ThemeMode> {
   }
 
   void changeByString(String themeMode) {
-    switch (themeMode) {
-      case 'ThemeMode.system':
-        emit(ThemeMode.system);
-        break;
-      case 'ThemeMode.dark':
-        emit(ThemeMode.dark);
-        break;
-      case 'ThemeMode.light':
-      default:
-        emit(ThemeMode.light);
-        break;
-    }
+    changeTheme(ThemeMode.dark);
+    // switch (themeMode) {
+    //   case 'ThemeMode.system':
+    //     emit(ThemeMode.system);
+    //     break;
+    //   case 'ThemeMode.dark':
+    //     emit(ThemeMode.dark);
+    //     break;
+    //   case 'ThemeMode.light':
+    //   default:
+    //     emit(ThemeMode.light);
+    //     break;
+    // }
   }
 
   void changeTheme(ThemeMode themeMode) {

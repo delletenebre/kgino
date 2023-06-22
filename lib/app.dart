@@ -53,7 +53,7 @@ class App extends StatelessWidget {
 
               theme: KrsTheme.light,
               darkTheme: KrsTheme.dark,
-              themeMode: ThemeMode.dark//themeMode,
+              themeMode: themeMode,
             ),
           );
         },

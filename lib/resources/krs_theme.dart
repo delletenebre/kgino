@@ -75,7 +75,15 @@ class KrsTheme {
 
     colorScheme: colorScheme['dark']!.copyWith(
       //primary: seedColor,
-      shadow: colorScheme['dark']!.shadow.withOpacity(0.33),
+      // shadow: colorScheme['dark']!.shadow.withOpacity(0.33),
+    ),
+
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+      }
     ),
 
   );

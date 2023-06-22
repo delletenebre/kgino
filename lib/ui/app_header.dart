@@ -24,7 +24,7 @@ class AppHeader extends StatelessWidget {
             ),
 
             DefaultTextStyle(
-              style: const TextStyle(
+              style: DefaultTextStyle.of(context).style.copyWith(
                 fontSize: 24.0,
               ),
               child: child,

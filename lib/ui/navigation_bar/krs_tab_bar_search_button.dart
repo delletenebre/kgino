@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -29,32 +30,205 @@ class KrsTabBarSearchButton extends HookWidget {
     /// контроллер поискового запроса
     final textEditingController = GetIt.instance<TextEditingController>();
 
+    final focusState = useState(false);
+
     final selected = tabsCubit.state == index;
     final focusNode = tabsCubit.focusNodes[index];
     void onFocusChange(hasFocus) {
       if (hasFocus) {
         tabsCubit.updateSelected(index);
       }
+
+      focusState.value = hasFocus;
     }
 
-    final buttonStyle = ButtonStyle(
-      padding: MaterialStateProperty.all(
-        const EdgeInsets.symmetric(
-          horizontal: 24.0,
-        )
-      ),
-      
-      backgroundColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.focused)) {
-          return theme.colorScheme.primary.withOpacity(0.24);
-        }
-        
-        if (selected) {
-          return theme.colorScheme.primary.withOpacity(0.12);
-        }
+    Color? backgroundColor;
+    if (focusState.value) {
+      backgroundColor = theme.colorScheme.primary.withOpacity(0.24);
+    } else if (selected) {
+      backgroundColor = theme.colorScheme.primary.withOpacity(0.12);
+    }
+    final foregroundColor = theme.textTheme.bodyMedium?.color;
 
-        return null;
-      }),
+    final buttonStyle = TextButton.styleFrom(
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+    );
+
+    return TextButton.icon(
+      focusNode: focusNode,
+      onFocusChange: onFocusChange,
+      style: buttonStyle,
+      onPressed: () {
+        //tabsCubit.unfocusAll();
+        tabsCubit.updateSelected(index);
+
+        Future.delayed(KrsTheme.animationDuration, () {
+          textFieldFocusNode.requestFocus();
+        });
+      },
+      icon: const Icon(Icons.search_rounded),
+      label: AnimatedSwitcher(
+        duration: KrsTheme.animationDuration,
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: WidthTransition(
+              sizeFactor: animation,
+              child: child,
+            ),
+          );
+        },
+        child: !selected
+          ? Text(locale.search)
+          : TextField(
+              focusNode: textFieldFocusNode,
+              textInputAction: TextInputAction.search,
+              controller: textEditingController,
+              textAlignVertical: TextAlignVertical.center,
+
+              onChanged: (value) {
+              },
+
+              onSubmitted: (value) {
+                focusNode.requestFocus();
+              },
+
+              style: const TextStyle(
+                fontSize: 14.0,
+                height: 1.0,
+                // fontWeight: FontWeight.w500,
+              ),
+              cursorHeight: 20.0,
+              cursorOpacityAnimates: true,
+
+              decoration: InputDecoration(
+                constraints: const BoxConstraints(
+                  maxWidth: 200.0,
+                  // minWidth: 200.0,
+                ),
+                isCollapsed: true,
+                contentPadding: const EdgeInsets.only(top: 0.0),
+
+                hintText: locale.searchHint,
+                hintStyle: TextStyle(
+                  fontSize: 14.0,
+                  height: 1.0,
+                  color: theme.colorScheme.outline,
+                  // fontWeight: FontWeight.w500,
+                ),
+
+                
+
+                // border: OutlineInputBorder(),
+                border: InputBorder.none,
+              ),
+            ),
+      ),
+      // label: AnimatedContainer(
+      //   duration: KrsTheme.animationDuration,
+      //   width: selected ? 200.0 : locale.search.characters.length * 9.0,
+      //   child: TextField(
+      //     enabled: selected,
+      //     focusNode: textFieldFocusNode,
+      //     textInputAction: TextInputAction.search,
+      //     controller: textEditingController,
+      //     textAlignVertical: TextAlignVertical.center,
+
+      //     onChanged: (value) {
+      //     },
+
+      //     onSubmitted: (value) {
+      //       focusNode.requestFocus();
+      //     },
+
+      //     style: const TextStyle(
+      //       fontSize: 14.0,
+      //       height: 1.0,
+      //       // fontWeight: FontWeight.w500,
+      //     ),
+      //     cursorHeight: 20.0,
+      //     cursorOpacityAnimates: true,
+
+      //     decoration: InputDecoration(
+      //       isCollapsed: true,
+      //       contentPadding: const EdgeInsets.only(top: 0.0),
+
+      //       hintText: selected ? locale.searchHint : locale.search,
+      //       hintStyle: TextStyle(
+      //         fontSize: 14.0,
+      //         height: 1.0,
+      //         color: selected ? theme.colorScheme.outline : theme.textTheme.bodyMedium?.color,
+      //         // fontWeight: FontWeight.w500,
+      //       ),
+
+            
+
+      //       // border: OutlineInputBorder(),
+      //       border: InputBorder.none,
+      //     ),
+      //   ),
+      // ),
+      // AnimatedSwitcher(
+      //   duration: KrsTheme.animationDuration,
+      //   transitionBuilder: (child, animation) {
+      //     return FadeTransition(
+      //       opacity: animation,
+      //       child: SizeTransition(
+      //         sizeFactor: animation,
+      //         axis: Axis.horizontal,
+      //         axisAlignment: 1.0,
+      //         child: child,
+      //       ),
+      //     );
+      //   },
+      //   child: !selected
+      //     ? Text(locale.search)
+      //     : TextField(
+      //         focusNode: textFieldFocusNode,
+      //         textInputAction: TextInputAction.search,
+      //         controller: textEditingController,
+      //         textAlignVertical: TextAlignVertical.center,
+
+      //         onChanged: (value) {
+      //         },
+
+      //         onSubmitted: (value) {
+      //           focusNode.requestFocus();
+      //         },
+
+      //         style: const TextStyle(
+      //           fontSize: 14.0,
+      //           height: 1.0,
+      //           // fontWeight: FontWeight.w500,
+      //         ),
+      //         cursorHeight: 20.0,
+      //         cursorOpacityAnimates: true,
+
+      //         decoration: InputDecoration(
+      //           constraints: const BoxConstraints(
+      //             maxWidth: 200.0,
+      //             minWidth: 200.0,
+      //           ),
+      //           isCollapsed: true,
+      //           contentPadding: const EdgeInsets.only(top: 0.0),
+
+      //           hintText: locale.searchHint,
+      //           hintStyle: TextStyle(
+      //             fontSize: 14.0,
+      //             height: 1.0,
+      //             color: theme.colorScheme.outline,
+      //             // fontWeight: FontWeight.w500,
+      //           ),
+
+                
+
+      //           // border: OutlineInputBorder(),
+      //           border: InputBorder.none,
+      //         ),
+      //       ),
+      // ),
+      
     );
     
     return TextButton(
@@ -70,75 +244,118 @@ class KrsTabBarSearchButton extends HookWidget {
         });
       },
       child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 8.0),
-            child: Icon(Icons.search,
-              color: theme.textTheme.bodyMedium?.color,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8.0),
+              child: Icon(Icons.search,
+                color: theme.textTheme.bodyMedium?.color,
+              ),
             ),
-          ),
-          
-          AnimatedSwitcher(
-            duration: KrsTheme.animationDuration,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: SizeTransition(
-                  sizeFactor: animation,
-                  axis: Axis.horizontal,
-                  axisAlignment: 1.0,
-                  child: child,
-                )
-              );
-            },
-            child: !selected
-              ? Text(locale.search,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                    color: theme.textTheme.bodyMedium?.color,
-                  ),
-                )
-              : TextField(
-                  focusNode: textFieldFocusNode,
-                  textInputAction: TextInputAction.search,
-                  controller: textEditingController,
+            
+            SizedBox(
+              height: 40.0,
+              child: AnimatedSwitcher(
+                duration: KrsTheme.animationDuration,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SizeTransition(
+                      sizeFactor: animation,
+                      axis: Axis.horizontal,
+                      axisAlignment: 0.0,
+                      child: child,
+                    )
+                  );
+                },
+                child: !selected
+                  ? Text(locale.search,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        color: theme.textTheme.bodyMedium?.color,
+                      ),
+                    )
+                  : TextField(
+                      focusNode: textFieldFocusNode,
+                      textInputAction: TextInputAction.search,
+                      controller: textEditingController,
 
-                  onChanged: (value) {
-                  },
+                      onChanged: (value) {
+                      },
 
-                  onSubmitted: (value) {
-                    focusNode.requestFocus();
-                  },
+                      onSubmitted: (value) {
+                        focusNode.requestFocus();
+                      },
 
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
 
-                  decoration: InputDecoration(
-                    constraints: const BoxConstraints(
-                      maxWidth: 200.0,
-                      minWidth: 200.0,
-                      maxHeight: 40.0,
-                      minHeight: 40.0,
+                      decoration: InputDecoration(
+                        constraints: const BoxConstraints(
+                          maxWidth: 200.0,
+                          minWidth: 200.0,
+                          maxHeight: 40.0,
+                          minHeight: 40.0,
+                        ),
+                        isCollapsed: true,
+                        contentPadding: const EdgeInsets.only(top: 8.0),
+
+                        hintText: locale.searchHint,
+                        hintStyle: TextStyle(
+                          fontSize: 14.0,
+                          color: theme.colorScheme.outline,
+                          fontWeight: FontWeight.w500,
+                        ),
+
+                        border: InputBorder.none,
+                      ),
                     ),
-                    isCollapsed: true,
-                    contentPadding: const EdgeInsets.only(top: 8.0),
+              ),
+            ),
+            
+          ],
+        ),
+      
+    );
+  }
+}
 
-                    hintText: locale.searchHint,
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: theme.colorScheme.outline,
-                      fontWeight: FontWeight.w500,
-                    ),
 
-                    border: InputBorder.none,
-                  ),
-                ),
-          ),
-        ],
-      ),
+class WidthTransition extends AnimatedWidget {
+  /// Creates a size transition.
+  ///
+  /// The [axis], [sizeFactor], and [axisAlignment] arguments must not be null.
+  /// The [axis] argument defaults to [Axis.vertical]. The [axisAlignment]
+  /// defaults to 0.0, which centers the child along the main axis during the
+  /// transition.
+  const WidthTransition({
+    super.key,
+    this.axis = Axis.vertical,
+    required Animation<double> sizeFactor,
+    this.child,
+  }) : super(listenable: sizeFactor);
+
+  /// [Axis.horizontal] if [sizeFactor] modifies the width, otherwise
+  /// [Axis.vertical].
+  final Axis axis;
+
+  Animation<double> get sizeFactor => listenable as Animation<double>;
+
+  /// The widget below this widget in the tree.
+  ///
+  /// {@macro flutter.widgets.ProxyWidget.child}
+  final Widget? child;
+
+  @override
+  Widget build(context) {
+    return Align(
+      alignment: Alignment.centerRight,//const AlignmentDirectional(1.0, -1.0),
+      heightFactor: 1.0,
+      widthFactor: math.max(sizeFactor.value, 0.0),
+      child: child,
     );
   }
 }

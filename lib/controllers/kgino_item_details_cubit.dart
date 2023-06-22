@@ -36,7 +36,9 @@ class KginoItemDetailsCubit extends Cubit<ApiResponse<KginoItem>> {
 
         if (response.isSuccess) {
           final kginoItem = response.asData.data;
-          final dbItem = await _storage.db.kginoItems.get(kginoItem.isarId) ?? kginoItem;
+          final dbItem = kginoItem.isarId != null 
+            ? (await _storage.db.kginoItems.get(kginoItem.isarId!) ?? kginoItem)
+            : kginoItem;
 
           kginoItem.subtitlesEnabled = dbItem.subtitlesEnabled;
           kginoItem.bookmarked = dbItem.bookmarked;

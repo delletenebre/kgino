@@ -27,7 +27,9 @@ class MoviesPage extends HookWidget {
     final savedItemsQuery = storage.db.kginoItems
       .where()
       .filter()
-      .bookmarkedIsNotNull()
+      .not()
+      .bookmarkedIsNull()
+      // .bookmarkedIsNotNull()
       .and()
       .group((q) => q
         .providerEqualTo(KginoProvider.ockg.name)
@@ -37,7 +39,7 @@ class MoviesPage extends HookWidget {
       .sortByBookmarkedDesc()
       .build();
 
-    final stream = useMemoized(() => savedItemsQuery.watch(fireImmediately: true));
+    final stream = useMemoized(() => savedItemsQuery.watch(initialReturn: true));//fireImmediately: true));
     final savedItems = useStream(stream);
 
     final categories = [

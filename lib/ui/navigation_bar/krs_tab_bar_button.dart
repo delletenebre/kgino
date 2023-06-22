@@ -45,46 +45,62 @@ class KrsTabBarButton extends HookWidget {
     } else if (selected) {
       backgroundColor = theme.colorScheme.primary.withOpacity(0.12);
     }
+    final foregroundColor = theme.textTheme.bodyMedium?.color;
+
+    final buttonStyle = TextButton.styleFrom(      
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+    );
 
 
-    return InkWell(
+    return TextButton(
+      style: buttonStyle,
       focusNode: focusNode,
       onFocusChange: onFocusChange,
-
-      borderRadius: BorderRadius.circular(32.0),
-
-      onTap: () {
+      onPressed: () {
         tabsCubit.unfocusAll();
         tabsCubit.updateSelected(index);
       },
-
-      child: AnimatedContainer(
-        height: 40.0,
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0),
-        duration: KrsTheme.animationDuration,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32.0),
-          color: backgroundColor,
-        ),
-        child: Row(
-          children: [
-            if (icon != null) Padding(
-              padding: const EdgeInsetsDirectional.only(end: 12.0),
-              child: icon,
-            ),
-            
-            DefaultTextStyle(
-              style: TextStyle(
-                fontSize: 16.0,
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w500,
-              ),
-              child: label,
-            ),
-          ],
-        ),
-      ),
+      child: label
     );
+    
+    // InkWell(
+    //   focusNode: focusNode,
+    //   onFocusChange: onFocusChange,
+
+    //   borderRadius: BorderRadius.circular(32.0),
+
+    //   onTap: () {
+    //     tabsCubit.unfocusAll();
+    //     tabsCubit.updateSelected(index);
+    //   },
+
+    //   child: AnimatedContainer(
+    //     height: 40.0,
+    //     padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0),
+    //     duration: KrsTheme.animationDuration,
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(32.0),
+    //       color: backgroundColor,
+    //     ),
+    //     child: Row(
+    //       children: [
+    //         if (icon != null) Padding(
+    //           padding: const EdgeInsetsDirectional.only(end: 12.0),
+    //           child: icon,
+    //         ),
+            
+    //         DefaultTextStyle(
+    //           style: DefaultTextStyle.of(context).style.copyWith(
+    //             fontSize: 16.0,
+    //             fontWeight: FontWeight.w500,
+    //           ),
+    //           child: label,
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
 
   }
 }

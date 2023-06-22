@@ -148,22 +148,26 @@ class KginoRawListTile extends HookWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(9.0),
-                        child: imageUrl.isEmpty
-                          ? Opacity(
-                            opacity: 0.62,
-                            child: SvgPicture.asset('assets/images/kgino_grayscale.svg',
-                            ),
-                          )
-                          : imageUrl.startsWith('assets/')
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(imageUrl),
-                            )
-                          : imageUrl.endsWith('.svg')
-                            ? SvgPicture.network(imageUrl)
-                            : Image.network(imageUrl,
-                                cacheHeight: imageSize.height.toInt(),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12.0),
+                          onTap: onTap,
+                          child: imageUrl.isEmpty
+                            ? Opacity(
+                              opacity: 0.62,
+                              child: SvgPicture.asset('assets/images/kgino_grayscale.svg',
                               ),
+                            )
+                            : imageUrl.startsWith('assets/')
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(imageUrl),
+                              )
+                            : imageUrl.endsWith('.svg')
+                              ? SvgPicture.network(imageUrl)
+                              : Image.network(imageUrl,
+                                  cacheHeight: imageSize.height.toInt(),
+                                ),
+                          ),
                       ),
                     ),
                   ),
@@ -172,14 +176,21 @@ class KginoRawListTile extends HookWidget {
                   /// название сериала
                   if (title.isNotEmpty) Padding(
                     padding: const EdgeInsets.only(top: 12.0),
-                    child: AnimatedDefaultTextStyle(
-                      duration: KrsTheme.animationDuration,
+                    // child: AnimatedDefaultTextStyle(
+                    //   duration: KrsTheme.animationDuration,
+                    //   style: theme.textTheme.bodyMedium!.copyWith(
+                    //     fontSize: 12.0,
+                    //   ),
+                    //   child: Text(title,
+                    //     maxLines: subtitle.isEmpty ? 2 : 1,
+                    //     overflow: TextOverflow.ellipsis,
+                    //   ),
+                    // ),
+                    child: Text(title,
+                      maxLines: subtitle.isEmpty ? 2 : 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 12.0,
-                      ),
-                      child: Text(title,
-                        maxLines: subtitle.isEmpty ? 2 : 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),

@@ -20,11 +20,13 @@ enum KginoProvider {
   hdrz,
 }
 
-@collection
+@Collection()
 class KginoItem {
 
   /// внутренний идентификатор в базе данных
-  Id get isarId => fastHash(storageKey);
+  @Id()
+  int? isarId;
+  // Id get isarId => fastHash(storageKey);
 
   /// идентификатор сервиса
   // @enumerated
@@ -52,7 +54,7 @@ class KginoItem {
   String voiceActing;
 
   /// текущая озвучка (срезанная)
-  @ignore
+  @Ignore()
   String get shortVoiceActing {
     if (voiceActing.length > 24) {
       return '${voiceActing.substring(0, 24)}...';
@@ -64,59 +66,59 @@ class KginoItem {
   int playableQuality;
 
   /// список сезонов
-  @ignore
+  @Ignore()
   List<SeasonItem> seasons;
 
   /// оригинальное название
-  @ignore
+  @Ignore()
   final String originalName;
   
   /// описание фильма или сериала
-  @ignore
+  @Ignore()
   final String description;
   
   /// год выхода в прокат
-  @ignore
+  @Ignore()
   final String year;
 
   /// жанры
-  @ignore
+  @Ignore()
   final List<String> genres;
 
   /// страны
-  @ignore
+  @Ignore()
   final List<String> countries;
 
   /// дополнительная информация (в основном вторая строка, после названия)
-  @ignore
+  @Ignore()
   final String subtitle;
 
   /// рейтинг IMDb
-  @ignore
+  @Ignore()
   final double imdbRating;
-  @ignore
+  @Ignore()
   bool get hasImdbRating => imdbRating > 0.0;
 
   /// рейтинг Кинопоиск
-  @ignore
+  @Ignore()
   final double kinopoiskRating;
-  @ignore
+  @Ignore()
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
   /// продолжительность
-  @ignore
+  @Ignore()
   final Duration duration;
 
   /// список доступных озвучек
-  @ignore
+  @Ignore()
   final Map<String, VoiceActing> voiceActings;
 
   /// аудио информация о наличии звуковой дорожки 5.1
-  @ignore
+  @Ignore()
   final bool hasSixChannels;
 
   /// является ли объект папкой
-  @ignore
+  @Ignore()
   final bool isFolder;
 
 
@@ -155,7 +157,7 @@ class KginoItem {
   });
 
   /// ключ для идентификатора базы данных
-  @ignore
+  @Ignore()
   String get storageKey => '$provider.$id';
 
   /// количество эпизодов во всех сезонах
@@ -213,11 +215,11 @@ class KginoItem {
 
 
   /// хранилище данных
-  @ignore
+  @Ignore()
   final storage = GetIt.instance<KrsStorage>();
 
   Future<void> save() async {
-    storage.db.writeTxnSync(() async {
+    storage.db.writeTxnSync((isar) async {
       if (seenEpisodes.isNotEmpty) {
         storage.db.episodeItems.putAllSync(seenEpisodes.toList());
       }
@@ -226,9 +228,9 @@ class KginoItem {
     });
   }
 
-  @ignore
+  @Ignore()
   Stream<KginoItem?> get dbStream {
-    return storage.db.kginoItems.watchObject(isarId);
+    return storage.db.kginoItems.watchObject(isarId ?? 0);
   }
 
   void goToDetails(BuildContext context) {
@@ -286,7 +288,8 @@ class KginoItem {
 
 /// FNV-1a 64bit hash algorithm optimized for Dart Strings
 int fastHash(String string) {
-  int hash = 0xcbf29ce484222325;
+  // int hash = 0xcbf29ce484222325;
+  int hash = BigInt.parse('0xcbf29ce484222325').toInt();
 
   int i = 0;
   while (i < string.length) {

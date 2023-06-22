@@ -29,101 +29,94 @@ class ScaffoldWithNavigationBar extends HookWidget {
     final tabsCubit = GetIt.instance<TabsCubit>();
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Focus(
-            canRequestFocus: false,
-            skipTraversal: true,
-            onFocusChange: (hasFocus) {
-              focused.value = hasFocus;
+      appBar: PreferredSize(
+        preferredSize: const Size(double.maxFinite, 148.0 + 24.0),
+        child: Focus(
+          canRequestFocus: false,
+          skipTraversal: true,
+          onFocusChange: (hasFocus) {
+            focused.value = hasFocus;
 
-              if (hasFocus) {
-                tabsCubit.requestFocus();
-              }
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 24.0,
-              ),
-              child: Opacity(
-                opacity: focused.value ? 1.0 : 0.62,
-                child: BlocProvider(
-                  create: (_) => tabsCubit,
-                  child: BlocBuilder<TabsCubit, int>(
-                    builder: (context, selectedIndex) => Row(
-                      children: [
+            if (hasFocus) {
+              tabsCubit.requestFocus();
+            }
+          },
+          child: Opacity(
+            opacity: focused.value ? 1.0 : 0.62,
+            child: BlocProvider(
+              create: (_) => tabsCubit,
+              child: BlocBuilder<TabsCubit, int>(
+                builder: (context, selectedIndex) => Row(
+                  children: [
+                    
+                    AnimatedOpacity(
+                      duration: KrsTheme.animationDuration,
+                      opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
+                      child: AnimatedContainer(
+                        duration: KrsTheme.animationDuration,
+                        margin: EdgeInsetsDirectional.only(
+                          start: tabsCubit.state == 0 ? 0 : 24.0,
+                          end: 32.0,
+                        ),
+                        width: tabsCubit.state == 0 ? 0 : 58.0,
                         
-                        AnimatedOpacity(
-                          duration: KrsTheme.animationDuration,
-                          opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
-                          child: AnimatedContainer(
-                            duration: KrsTheme.animationDuration,
-                            margin: EdgeInsetsDirectional.only(
-                              start: tabsCubit.state == 0 ? 0 : 24.0,
-                              end: 32.0,
-                            ),
-                            width: tabsCubit.state == 0 ? 0 : 58.0,
-                            
-                            child: const AppLogo(),
+                        child: const AppLogo(),
 
-                          ),
+                      ),
 
-                        ),
-
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    KrsTabBarSearchButton(
-                                      index: 0,
-                                      onPressed: () {}, 
-                                    ),
-                                    
-                                    KrsTabBarButton(
-                                      index: 1,
-                                      onPressed: () {},
-                                      label: Text(locale.movies),
-                                    ),
-
-                                    KrsTabBarButton(
-                                      index: 2,
-                                      onPressed: () {},
-                                      label: Text(locale.shows),
-                                    ),
-
-                                    KrsTabBarButton(
-                                      index: 3,
-                                      onPressed: () {},
-                                      label: Text(locale.cameras),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              /// кнопка входа в настройки
-                              const KrsTabBarSettingsButton(),
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
-                  ),
+
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                KrsTabBarSearchButton(
+                                  index: 0,
+                                  onPressed: () {}, 
+                                ),
+
+                                const SizedBox(width: 4.0),
+                                
+                                KrsTabBarButton(
+                                  index: 1,
+                                  onPressed: () {},
+                                  label: Text(locale.movies),
+                                ),
+
+                                const SizedBox(width: 4.0),
+
+                                KrsTabBarButton(
+                                  index: 2,
+                                  onPressed: () {},
+                                  label: Text(locale.shows),
+                                ),
+
+                                const SizedBox(width: 4.0),
+
+                                KrsTabBarButton(
+                                  index: 3,
+                                  onPressed: () {},
+                                  label: Text(locale.cameras),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          /// кнопка входа в настройки
+                          const KrsTabBarSettingsButton(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-
-
           ),
-          
-          Expanded(
-            child: child
-          ),
-        ],
+        ),
       ),
+      body: child,
     );
   }
 }
