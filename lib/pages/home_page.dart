@@ -40,8 +40,8 @@ class HomePage extends HookWidget {
           
           children: const [
             SearchPage(),
-            MoviesPage(),
             ShowsPage(),
+            MoviesPage(),
             CamerasPage(),
           ],
         ),

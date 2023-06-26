@@ -75,7 +75,7 @@ Future<void> main() async {
 
   /// регистрируем [TabsCubit] как singleton
   GetIt.instance.registerSingleton<TabsCubit>(
-    TabsCubit(2)
+    TabsCubit(1)
   );
 
   /// регистрируем провайдер запросов к REST API как singleton

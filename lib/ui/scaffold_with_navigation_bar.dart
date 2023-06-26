@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
+import '../constants.dart';
 import '../controllers/tabs_cubit.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
@@ -30,6 +31,8 @@ class ScaffoldWithNavigationBar extends HookWidget {
     final focused = useState(false);
     
     final tabsCubit = GetIt.instance<TabsCubit>();
+
+    const paddingSize = 24.0;
 
     return Scaffold(
       endDrawer: SizedBox(
@@ -60,7 +63,7 @@ class ScaffoldWithNavigationBar extends HookWidget {
         ),
       ),
       appBar: PreferredSize(
-        preferredSize: const Size(double.maxFinite, 48.0 + 24.0 * 2),
+        preferredSize: const Size(double.maxFinite, 48.0 + (paddingSize * 2)),
         child: Focus(
           canRequestFocus: false,
           skipTraversal: true,
@@ -73,76 +76,100 @@ class ScaffoldWithNavigationBar extends HookWidget {
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: 24.0,
+              vertical: paddingSize,
             ),
             child: Opacity(
               opacity: focused.value ? 1.0 : 0.62,
               child: BlocProvider(
                 create: (_) => tabsCubit,
                 child: BlocBuilder<TabsCubit, int>(
-                  builder: (context, selectedIndex) => Row(
+                  builder: (context, selectedIndex) => Stack(
+                    alignment: AlignmentDirectional.centerStart,
                     children: [
-                      
-                      AnimatedOpacity(
+                      AnimatedPositioned(
                         duration: KrsTheme.animationDuration,
-                        opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
-                        child: AnimatedContainer(
+                        left: tabsCubit.state == 0 ? -appLogoWidth : paddingSize,
+                        child: AnimatedOpacity(
                           duration: KrsTheme.animationDuration,
-                          margin: EdgeInsetsDirectional.only(
-                            start: tabsCubit.state == 0 ? 0 : 24.0,
-                            end: 32.0,
-                          ),
-                          width: tabsCubit.state == 0 ? 0 : 58.0,
-                          
+                          opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
                           child: const AppLogo(),
-
                         ),
-
                       ),
 
-                      Expanded(
+                      AnimatedPositioned(
+                        duration: KrsTheme.animationDuration,
+                        left: tabsCubit.state == 0 ? paddingSize : paddingSize + appLogoWidth + 4.0,
+                        right: paddingSize,
                         child: Row(
                           children: [
+                            
+                            // AnimatedOpacity(
+                            //   duration: KrsTheme.animationDuration,
+                            //   opacity: tabsCubit.state == 0 ? 0.0 : 1.0,
+                            //   child: AnimatedContainer(
+                            //     duration: KrsTheme.animationDuration,
+                            //     margin: EdgeInsetsDirectional.only(
+                            //       start: tabsCubit.state == 0 ? 0 : 24.0,
+                            //       end: 32.0,
+                            //     ),
+                            //     width: tabsCubit.state == 0 ? 0 : 58.0,
+                                
+                            //     child: const AppLogo(),
+
+                            //   ),
+
+                            // ),
+
+                            
+
                             Expanded(
                               child: Row(
                                 children: [
-                                  KrsTabBarSearchButton(
-                                    index: 0,
-                                    onPressed: () {}, 
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        KrsTabBarSearchButton(
+                                          index: 0,
+                                          onPressed: () {}, 
+                                        ),
+
+                                        const SizedBox(width: 4.0),
+
+                                        KrsTabBarButton(
+                                          index: 1,
+                                          onPressed: () {},
+                                          label: Text(locale.shows),
+                                        ),
+
+                                        const SizedBox(width: 4.0),
+
+                                        KrsTabBarButton(
+                                          index: 2,
+                                          onPressed: () {},
+                                          label: Text(locale.movies),
+                                        ),
+
+                                        const SizedBox(width: 4.0),
+
+                                        KrsTabBarButton(
+                                          index: 3,
+                                          onPressed: () {},
+                                          label: Text(locale.cameras),
+                                        ),
+                                      ],
+                                    ),
                                   ),
 
-                                  const SizedBox(width: 4.0),
-                                  
-                                  KrsTabBarButton(
-                                    index: 1,
-                                    onPressed: () {},
-                                    label: Text(locale.movies),
-                                  ),
-
-                                  const SizedBox(width: 4.0),
-
-                                  KrsTabBarButton(
-                                    index: 2,
-                                    onPressed: () {},
-                                    label: Text(locale.shows),
-                                  ),
-
-                                  const SizedBox(width: 4.0),
-
-                                  KrsTabBarButton(
-                                    index: 3,
-                                    onPressed: () {},
-                                    label: Text(locale.cameras),
-                                  ),
+                                  /// кнопка входа в настройки
+                                  const KrsTabBarSettingsButton(),
                                 ],
                               ),
                             ),
-
-                            /// кнопка входа в настройки
-                            const KrsTabBarSettingsButton(),
                           ],
                         ),
+
                       ),
+                      
                     ],
                   ),
                 ),

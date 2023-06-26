@@ -1,0 +1,1 @@
+const appLogoWidth = 84.0;

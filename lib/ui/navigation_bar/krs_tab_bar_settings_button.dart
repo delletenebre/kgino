@@ -83,17 +83,14 @@ class KrsTabBarSettingsButton extends HookWidget {
           //   ),
           // ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: IconButton(
-              tooltip: locale.settings,
-              onPressed: () {
-                /// показываем/скрываем страницу настроек
-                showOverlay.value = !showOverlay.value;
-                Scaffold.of(context).openEndDrawer();
-              },
-              icon: const Icon(Icons.settings),
-            ),
+          IconButton(
+            tooltip: locale.settings,
+            onPressed: () {
+              /// показываем/скрываем страницу настроек
+              showOverlay.value = !showOverlay.value;
+              Scaffold.of(context).openEndDrawer();
+            },
+            icon: const Icon(Icons.settings),
           ),
         ],
       ),
