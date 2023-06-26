@@ -47,7 +47,7 @@ class HorizontalListView<T> extends HookWidget {
 
     this.spacing = 24.0,
     this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
-    this.height = 232.0,
+    this.height = 234.0,
   });
 
   @override
