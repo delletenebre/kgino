@@ -102,7 +102,7 @@ class FlmxApiProvider {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/popular', queryParameters: {
         ..._queryParams,
-        'filter': 's0-s14',
+        'section': '0',
       }),
       decoder: (json) async {
         return json.map<KginoItem>((item) {
@@ -155,7 +155,7 @@ class FlmxApiProvider {
     return ApiRequest<List<KginoItem>>().call(
       request: _dio.get('/popular', queryParameters: {
         ..._queryParams,
-        'filter': 's7-s93',
+        'section': '7',
       }),
       decoder: (json) async {
         return json.map<KginoItem>((item) {
