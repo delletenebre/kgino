@@ -56,6 +56,7 @@ class KrsTabBarSearchButton extends HookWidget {
     );
 
     return TextButton.icon(
+      clipBehavior: Clip.antiAlias,
       focusNode: focusNode,
       onFocusChange: onFocusChange,
       style: buttonStyle,
