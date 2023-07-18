@@ -6,132 +6,141 @@ part of 'kgino_item.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
 extension GetKginoItemCollection on Isar {
-  IsarCollection<KginoItem> get kginoItems => getCollection();
+  IsarCollection<KginoItem> get kginoItems => this.collection();
 }
 
 const KginoItemSchema = CollectionSchema(
-  name: 'KginoItem',
-  schema:
-      '{"name":"KginoItem","idName":"isarId","properties":[{"name":"bookmarked","type":"Long"},{"name":"episodeCount","type":"Long"},{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"playableQuality","type":"Long"},{"name":"posterUrl","type":"String"},{"name":"provider","type":"String"},{"name":"subtitlesEnabled","type":"Bool"},{"name":"voiceActing","type":"String"}],"indexes":[],"links":[{"name":"seenEpisodes","target":"EpisodeItem"}]}',
-  idName: 'isarId',
-  propertyIds: {
-    'bookmarked': 0,
-    'episodeCount': 1,
-    'id': 2,
-    'name': 3,
-    'playableQuality': 4,
-    'posterUrl': 5,
-    'provider': 6,
-    'subtitlesEnabled': 7,
-    'voiceActing': 8
+  name: r'KginoItem',
+  id: -3968783649370085008,
+  properties: {
+    r'bookmarked': PropertySchema(
+      id: 0,
+      name: r'bookmarked',
+      type: IsarType.dateTime,
+    ),
+    r'episodeCount': PropertySchema(
+      id: 1,
+      name: r'episodeCount',
+      type: IsarType.long,
+    ),
+    r'id': PropertySchema(
+      id: 2,
+      name: r'id',
+      type: IsarType.string,
+    ),
+    r'name': PropertySchema(
+      id: 3,
+      name: r'name',
+      type: IsarType.string,
+    ),
+    r'playableQuality': PropertySchema(
+      id: 4,
+      name: r'playableQuality',
+      type: IsarType.long,
+    ),
+    r'posterUrl': PropertySchema(
+      id: 5,
+      name: r'posterUrl',
+      type: IsarType.string,
+    ),
+    r'provider': PropertySchema(
+      id: 6,
+      name: r'provider',
+      type: IsarType.string,
+    ),
+    r'subtitlesEnabled': PropertySchema(
+      id: 7,
+      name: r'subtitlesEnabled',
+      type: IsarType.bool,
+    ),
+    r'voiceActing': PropertySchema(
+      id: 8,
+      name: r'voiceActing',
+      type: IsarType.string,
+    )
   },
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {'seenEpisodes': 0},
-  backlinkLinkNames: {},
+  estimateSize: _kginoItemEstimateSize,
+  serialize: _kginoItemSerialize,
+  deserialize: _kginoItemDeserialize,
+  deserializeProp: _kginoItemDeserializeProp,
+  idName: r'isarId',
+  indexes: {},
+  links: {
+    r'seenEpisodes': LinkSchema(
+      id: 6928117659106014040,
+      name: r'seenEpisodes',
+      target: r'EpisodeItem',
+      single: false,
+    )
+  },
+  embeddedSchemas: {},
   getId: _kginoItemGetId,
-  setId: _kginoItemSetId,
   getLinks: _kginoItemGetLinks,
-  attachLinks: _kginoItemAttachLinks,
-  serializeNative: _kginoItemSerializeNative,
-  deserializeNative: _kginoItemDeserializeNative,
-  deserializePropNative: _kginoItemDeserializePropNative,
-  serializeWeb: _kginoItemSerializeWeb,
-  deserializeWeb: _kginoItemDeserializeWeb,
-  deserializePropWeb: _kginoItemDeserializePropWeb,
-  version: 3,
+  attach: _kginoItemAttach,
+  version: '3.1.0+1',
 );
 
-int? _kginoItemGetId(KginoItem object) {
-  if (object.isarId == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.isarId;
-  }
+int _kginoItemEstimateSize(
+  KginoItem object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.id.length * 3;
+  bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.posterUrl.length * 3;
+  bytesCount += 3 + object.provider.length * 3;
+  bytesCount += 3 + object.voiceActing.length * 3;
+  return bytesCount;
 }
 
-void _kginoItemSetId(KginoItem object, int id) {
-  object.isarId = id;
+void _kginoItemSerialize(
+  KginoItem object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeDateTime(offsets[0], object.bookmarked);
+  writer.writeLong(offsets[1], object.episodeCount);
+  writer.writeString(offsets[2], object.id);
+  writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.playableQuality);
+  writer.writeString(offsets[5], object.posterUrl);
+  writer.writeString(offsets[6], object.provider);
+  writer.writeBool(offsets[7], object.subtitlesEnabled);
+  writer.writeString(offsets[8], object.voiceActing);
 }
 
-List<IsarLinkBase> _kginoItemGetLinks(KginoItem object) {
-  return [object.seenEpisodes];
-}
-
-void _kginoItemSerializeNative(
-    IsarCollection<KginoItem> collection,
-    IsarRawObject rawObj,
-    KginoItem object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.bookmarked;
-  final _bookmarked = value0;
-  final value1 = object.episodeCount;
-  final _episodeCount = value1;
-  final value2 = object.id;
-  final _id = IsarBinaryWriter.utf8Encoder.convert(value2);
-  dynamicSize += (_id.length) as int;
-  final value3 = object.name;
-  final _name = IsarBinaryWriter.utf8Encoder.convert(value3);
-  dynamicSize += (_name.length) as int;
-  final value4 = object.playableQuality;
-  final _playableQuality = value4;
-  final value5 = object.posterUrl;
-  final _posterUrl = IsarBinaryWriter.utf8Encoder.convert(value5);
-  dynamicSize += (_posterUrl.length) as int;
-  final value6 = object.provider;
-  final _provider = IsarBinaryWriter.utf8Encoder.convert(value6);
-  dynamicSize += (_provider.length) as int;
-  final value7 = object.subtitlesEnabled;
-  final _subtitlesEnabled = value7;
-  final value8 = object.voiceActing;
-  final _voiceActing = IsarBinaryWriter.utf8Encoder.convert(value8);
-  dynamicSize += (_voiceActing.length) as int;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDateTime(offsets[0], _bookmarked);
-  writer.writeLong(offsets[1], _episodeCount);
-  writer.writeBytes(offsets[2], _id);
-  writer.writeBytes(offsets[3], _name);
-  writer.writeLong(offsets[4], _playableQuality);
-  writer.writeBytes(offsets[5], _posterUrl);
-  writer.writeBytes(offsets[6], _provider);
-  writer.writeBool(offsets[7], _subtitlesEnabled);
-  writer.writeBytes(offsets[8], _voiceActing);
-}
-
-KginoItem _kginoItemDeserializeNative(IsarCollection<KginoItem> collection,
-    int id, IsarBinaryReader reader, List<int> offsets) {
+KginoItem _kginoItemDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = KginoItem(
     bookmarked: reader.readDateTimeOrNull(offsets[0]),
     id: reader.readString(offsets[2]),
     name: reader.readString(offsets[3]),
-    playableQuality: reader.readLong(offsets[4]),
+    playableQuality: reader.readLongOrNull(offsets[4]) ?? 720,
     posterUrl: reader.readString(offsets[5]),
     provider: reader.readString(offsets[6]),
-    subtitlesEnabled: reader.readBool(offsets[7]),
-    voiceActing: reader.readString(offsets[8]),
+    subtitlesEnabled: reader.readBoolOrNull(offsets[7]) ?? false,
+    voiceActing: reader.readStringOrNull(offsets[8]) ?? '',
   );
-  object.isarId = id;
-  _kginoItemAttachLinks(collection, id, object);
   return object;
 }
 
-P _kginoItemDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+P _kginoItemDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
@@ -141,184 +150,141 @@ P _kginoItemDeserializePropNative<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 720) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _kginoItemSerializeWeb(
-    IsarCollection<KginoItem> collection, KginoItem object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(
-      jsObj, 'bookmarked', object.bookmarked?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'episodeCount', object.episodeCount);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
-  IsarNative.jsObjectSet(jsObj, 'name', object.name);
-  IsarNative.jsObjectSet(jsObj, 'playableQuality', object.playableQuality);
-  IsarNative.jsObjectSet(jsObj, 'posterUrl', object.posterUrl);
-  IsarNative.jsObjectSet(jsObj, 'provider', object.provider);
-  IsarNative.jsObjectSet(jsObj, 'subtitlesEnabled', object.subtitlesEnabled);
-  IsarNative.jsObjectSet(jsObj, 'voiceActing', object.voiceActing);
-  return jsObj;
+Id _kginoItemGetId(KginoItem object) {
+  return object.isarId;
 }
 
-KginoItem _kginoItemDeserializeWeb(
-    IsarCollection<KginoItem> collection, dynamic jsObj) {
-  final object = KginoItem(
-    bookmarked: IsarNative.jsObjectGet(jsObj, 'bookmarked') != null
-        ? DateTime.fromMillisecondsSinceEpoch(
-                IsarNative.jsObjectGet(jsObj, 'bookmarked'),
-                isUtc: true)
-            .toLocal()
-        : null,
-    id: IsarNative.jsObjectGet(jsObj, 'id') ?? '',
-    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
-    playableQuality: IsarNative.jsObjectGet(jsObj, 'playableQuality') ??
-        double.negativeInfinity,
-    posterUrl: IsarNative.jsObjectGet(jsObj, 'posterUrl') ?? '',
-    provider: IsarNative.jsObjectGet(jsObj, 'provider') ?? '',
-    subtitlesEnabled:
-        IsarNative.jsObjectGet(jsObj, 'subtitlesEnabled') ?? false,
-    voiceActing: IsarNative.jsObjectGet(jsObj, 'voiceActing') ?? '',
-  );
-  object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
-  _kginoItemAttachLinks(
-      collection, IsarNative.jsObjectGet(jsObj, 'isarId'), object);
-  return object;
+List<IsarLinkBase<dynamic>> _kginoItemGetLinks(KginoItem object) {
+  return [object.seenEpisodes];
 }
 
-P _kginoItemDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    case 'bookmarked':
-      return (IsarNative.jsObjectGet(jsObj, 'bookmarked') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'bookmarked'),
-                  isUtc: true)
-              .toLocal()
-          : null) as P;
-    case 'episodeCount':
-      return (IsarNative.jsObjectGet(jsObj, 'episodeCount') ??
-          double.negativeInfinity) as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
-    case 'isarId':
-      return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
-    case 'name':
-      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
-    case 'playableQuality':
-      return (IsarNative.jsObjectGet(jsObj, 'playableQuality') ??
-          double.negativeInfinity) as P;
-    case 'posterUrl':
-      return (IsarNative.jsObjectGet(jsObj, 'posterUrl') ?? '') as P;
-    case 'provider':
-      return (IsarNative.jsObjectGet(jsObj, 'provider') ?? '') as P;
-    case 'subtitlesEnabled':
-      return (IsarNative.jsObjectGet(jsObj, 'subtitlesEnabled') ?? false) as P;
-    case 'voiceActing':
-      return (IsarNative.jsObjectGet(jsObj, 'voiceActing') ?? '') as P;
-    default:
-      throw 'Illegal propertyName';
-  }
-}
-
-void _kginoItemAttachLinks(IsarCollection col, int id, KginoItem object) {
-  object.seenEpisodes.attach(col, col.isar.episodeItems, 'seenEpisodes', id);
+void _kginoItemAttach(IsarCollection<dynamic> col, Id id, KginoItem object) {
+  object.seenEpisodes
+      .attach(col, col.isar.collection<EpisodeItem>(), r'seenEpisodes', id);
 }
 
 extension KginoItemQueryWhereSort
     on QueryBuilder<KginoItem, KginoItem, QWhere> {
   QueryBuilder<KginoItem, KginoItem, QAfterWhere> anyIsarId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 }
 
 extension KginoItemQueryWhere
     on QueryBuilder<KginoItem, KginoItem, QWhereClause> {
   QueryBuilder<KginoItem, KginoItem, QAfterWhereClause> isarIdEqualTo(
-      int isarId) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: isarId,
-      includeLower: true,
-      upper: isarId,
-      includeUpper: true,
-    ));
+      Id isarId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: isarId,
+        upper: isarId,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterWhereClause> isarIdNotEqualTo(
-      int isarId) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: isarId, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: isarId, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: isarId, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: isarId, includeUpper: false),
-      );
-    }
+      Id isarId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: isarId, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: isarId, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: isarId, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: isarId, includeUpper: false),
+            );
+      }
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterWhereClause> isarIdGreaterThan(
-      int isarId,
+      Id isarId,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: isarId, includeLower: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: isarId, includeLower: include),
+      );
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterWhereClause> isarIdLessThan(
-      int isarId,
+      Id isarId,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: isarId, includeUpper: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: isarId, includeUpper: include),
+      );
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterWhereClause> isarIdBetween(
-    int lowerIsarId,
-    int upperIsarId, {
+    Id lowerIsarId,
+    Id upperIsarId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerIsarId,
-      includeLower: includeLower,
-      upper: upperIsarId,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerIsarId,
+        includeLower: includeLower,
+        upper: upperIsarId,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
 extension KginoItemQueryFilter
     on QueryBuilder<KginoItem, KginoItem, QFilterCondition> {
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'bookmarked',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'bookmarked',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      bookmarkedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'bookmarked',
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'bookmarked',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'bookmarked',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -326,24 +292,26 @@ extension KginoItemQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'bookmarked',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'bookmarked',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedLessThan(
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'bookmarked',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'bookmarked',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> bookmarkedBetween(
@@ -352,22 +320,25 @@ extension KginoItemQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'bookmarked',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'bookmarked',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> episodeCountEqualTo(
       int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'episodeCount',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'episodeCount',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -375,12 +346,13 @@ extension KginoItemQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'episodeCount',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'episodeCount',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -388,12 +360,13 @@ extension KginoItemQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'episodeCount',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'episodeCount',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> episodeCountBetween(
@@ -402,284 +375,338 @@ extension KginoItemQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'episodeCount',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'episodeCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'id',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'id',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'id',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'id',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'id',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'isarId',
-      value: null,
-    ));
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> idIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'id',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> isarIdEqualTo(
-      int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'isarId',
-      value: value,
-    ));
+      Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isarId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> isarIdGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'isarId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isarId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> isarIdLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'isarId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isarId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> isarIdBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'isarId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isarId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'name',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'name',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'name',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'name',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> nameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'name',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
       playableQualityEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'playableQuality',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'playableQuality',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -687,12 +714,13 @@ extension KginoItemQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'playableQuality',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'playableQuality',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -700,12 +728,13 @@ extension KginoItemQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'playableQuality',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'playableQuality',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -715,287 +744,351 @@ extension KginoItemQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'playableQuality',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'playableQuality',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'posterUrl',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'posterUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
       posterUrlGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'posterUrl',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'posterUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'posterUrl',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'posterUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'posterUrl',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'posterUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'posterUrl',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'posterUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'posterUrl',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'posterUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'posterUrl',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'posterUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'posterUrl',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'posterUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> posterUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'posterUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      posterUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'posterUrl',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'provider',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'provider',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'provider',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'provider',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'provider',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'provider',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'provider',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'provider',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'provider',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'provider',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'provider',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> providerIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'provider',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      providerIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'provider',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
       subtitlesEnabledEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'subtitlesEnabled',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'subtitlesEnabled',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> voiceActingEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'voiceActing',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'voiceActing',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
       voiceActingGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'voiceActing',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'voiceActing',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> voiceActingLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'voiceActing',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'voiceActing',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> voiceActingBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'voiceActing',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'voiceActing',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
@@ -1003,316 +1096,496 @@ extension KginoItemQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'voiceActing',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'voiceActing',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> voiceActingEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'voiceActing',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'voiceActing',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> voiceActingContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'voiceActing',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'voiceActing',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> voiceActingMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'voiceActing',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'voiceActing',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      voiceActingIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'voiceActing',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      voiceActingIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'voiceActing',
+        value: '',
+      ));
+    });
   }
 }
+
+extension KginoItemQueryObject
+    on QueryBuilder<KginoItem, KginoItem, QFilterCondition> {}
 
 extension KginoItemQueryLinks
     on QueryBuilder<KginoItem, KginoItem, QFilterCondition> {
   QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition> seenEpisodes(
       FilterQuery<EpisodeItem> q) {
-    return linkInternal(
-      isar.episodeItems,
-      q,
-      'seenEpisodes',
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'seenEpisodes');
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'seenEpisodes', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'seenEpisodes', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'seenEpisodes', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'seenEpisodes', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'seenEpisodes', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<KginoItem, KginoItem, QAfterFilterCondition>
+      seenEpisodesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'seenEpisodes', lower, includeLower, upper, includeUpper);
+    });
   }
 }
 
-extension KginoItemQueryWhereSortBy
-    on QueryBuilder<KginoItem, KginoItem, QSortBy> {
+extension KginoItemQuerySortBy on QueryBuilder<KginoItem, KginoItem, QSortBy> {
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByBookmarked() {
-    return addSortByInternal('bookmarked', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByBookmarkedDesc() {
-    return addSortByInternal('bookmarked', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByEpisodeCount() {
-    return addSortByInternal('episodeCount', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'episodeCount', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByEpisodeCountDesc() {
-    return addSortByInternal('episodeCount', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'episodeCount', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByIsarId() {
-    return addSortByInternal('isarId', Sort.asc);
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByIsarIdDesc() {
-    return addSortByInternal('isarId', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByName() {
-    return addSortByInternal('name', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByNameDesc() {
-    return addSortByInternal('name', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPlayableQuality() {
-    return addSortByInternal('playableQuality', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPlayableQualityDesc() {
-    return addSortByInternal('playableQuality', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPosterUrl() {
-    return addSortByInternal('posterUrl', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'posterUrl', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByPosterUrlDesc() {
-    return addSortByInternal('posterUrl', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'posterUrl', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByProvider() {
-    return addSortByInternal('provider', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'provider', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByProviderDesc() {
-    return addSortByInternal('provider', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'provider', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortBySubtitlesEnabled() {
-    return addSortByInternal('subtitlesEnabled', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtitlesEnabled', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy>
       sortBySubtitlesEnabledDesc() {
-    return addSortByInternal('subtitlesEnabled', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtitlesEnabled', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByVoiceActing() {
-    return addSortByInternal('voiceActing', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'voiceActing', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> sortByVoiceActingDesc() {
-    return addSortByInternal('voiceActing', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'voiceActing', Sort.desc);
+    });
   }
 }
 
-extension KginoItemQueryWhereSortThenBy
+extension KginoItemQuerySortThenBy
     on QueryBuilder<KginoItem, KginoItem, QSortThenBy> {
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByBookmarked() {
-    return addSortByInternal('bookmarked', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByBookmarkedDesc() {
-    return addSortByInternal('bookmarked', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookmarked', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByEpisodeCount() {
-    return addSortByInternal('episodeCount', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'episodeCount', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByEpisodeCountDesc() {
-    return addSortByInternal('episodeCount', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'episodeCount', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByIsarId() {
-    return addSortByInternal('isarId', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isarId', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByIsarIdDesc() {
-    return addSortByInternal('isarId', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isarId', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByName() {
-    return addSortByInternal('name', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByNameDesc() {
-    return addSortByInternal('name', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPlayableQuality() {
-    return addSortByInternal('playableQuality', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPlayableQualityDesc() {
-    return addSortByInternal('playableQuality', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'playableQuality', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPosterUrl() {
-    return addSortByInternal('posterUrl', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'posterUrl', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByPosterUrlDesc() {
-    return addSortByInternal('posterUrl', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'posterUrl', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByProvider() {
-    return addSortByInternal('provider', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'provider', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByProviderDesc() {
-    return addSortByInternal('provider', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'provider', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenBySubtitlesEnabled() {
-    return addSortByInternal('subtitlesEnabled', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtitlesEnabled', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy>
       thenBySubtitlesEnabledDesc() {
-    return addSortByInternal('subtitlesEnabled', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtitlesEnabled', Sort.desc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByVoiceActing() {
-    return addSortByInternal('voiceActing', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'voiceActing', Sort.asc);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QAfterSortBy> thenByVoiceActingDesc() {
-    return addSortByInternal('voiceActing', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'voiceActing', Sort.desc);
+    });
   }
 }
 
 extension KginoItemQueryWhereDistinct
     on QueryBuilder<KginoItem, KginoItem, QDistinct> {
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByBookmarked() {
-    return addDistinctByInternal('bookmarked');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'bookmarked');
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByEpisodeCount() {
-    return addDistinctByInternal('episodeCount');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'episodeCount');
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctById(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('id', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByIsarId() {
-    return addDistinctByInternal('isarId');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'id', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('name', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByPlayableQuality() {
-    return addDistinctByInternal('playableQuality');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'playableQuality');
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByPosterUrl(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('posterUrl', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'posterUrl', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByProvider(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('provider', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'provider', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctBySubtitlesEnabled() {
-    return addDistinctByInternal('subtitlesEnabled');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'subtitlesEnabled');
+    });
   }
 
   QueryBuilder<KginoItem, KginoItem, QDistinct> distinctByVoiceActing(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('voiceActing', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'voiceActing', caseSensitive: caseSensitive);
+    });
   }
 }
 
 extension KginoItemQueryProperty
     on QueryBuilder<KginoItem, KginoItem, QQueryProperty> {
+  QueryBuilder<KginoItem, int, QQueryOperations> isarIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isarId');
+    });
+  }
+
   QueryBuilder<KginoItem, DateTime?, QQueryOperations> bookmarkedProperty() {
-    return addPropertyNameInternal('bookmarked');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'bookmarked');
+    });
   }
 
   QueryBuilder<KginoItem, int, QQueryOperations> episodeCountProperty() {
-    return addPropertyNameInternal('episodeCount');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'episodeCount');
+    });
   }
 
   QueryBuilder<KginoItem, String, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
-  }
-
-  QueryBuilder<KginoItem, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyNameInternal('isarId');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
   }
 
   QueryBuilder<KginoItem, String, QQueryOperations> nameProperty() {
-    return addPropertyNameInternal('name');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'name');
+    });
   }
 
   QueryBuilder<KginoItem, int, QQueryOperations> playableQualityProperty() {
-    return addPropertyNameInternal('playableQuality');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'playableQuality');
+    });
   }
 
   QueryBuilder<KginoItem, String, QQueryOperations> posterUrlProperty() {
-    return addPropertyNameInternal('posterUrl');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'posterUrl');
+    });
   }
 
   QueryBuilder<KginoItem, String, QQueryOperations> providerProperty() {
-    return addPropertyNameInternal('provider');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'provider');
+    });
   }
 
   QueryBuilder<KginoItem, bool, QQueryOperations> subtitlesEnabledProperty() {
-    return addPropertyNameInternal('subtitlesEnabled');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'subtitlesEnabled');
+    });
   }
 
   QueryBuilder<KginoItem, String, QQueryOperations> voiceActingProperty() {
-    return addPropertyNameInternal('voiceActing');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'voiceActing');
+    });
   }
 }

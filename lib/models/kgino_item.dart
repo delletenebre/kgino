@@ -20,13 +20,11 @@ enum KginoProvider {
   hdrz,
 }
 
-@Collection()
+@collection
 class KginoItem {
 
   /// внутренний идентификатор в базе данных
-  @Id()
-  int? isarId;
-  // Id get isarId => fastHash(storageKey);
+  Id get isarId => fastHash(storageKey);
 
   /// идентификатор сервиса
   // @enumerated
@@ -54,7 +52,7 @@ class KginoItem {
   String voiceActing;
 
   /// текущая озвучка (срезанная)
-  @Ignore()
+  @ignore
   String get shortVoiceActing {
     if (voiceActing.length > 24) {
       return '${voiceActing.substring(0, 24)}...';
@@ -66,59 +64,59 @@ class KginoItem {
   int playableQuality;
 
   /// список сезонов
-  @Ignore()
+  @ignore
   List<SeasonItem> seasons;
 
   /// оригинальное название
-  @Ignore()
+  @ignore
   final String originalName;
   
   /// описание фильма или сериала
-  @Ignore()
+  @ignore
   final String description;
   
   /// год выхода в прокат
-  @Ignore()
+  @ignore
   final String year;
 
   /// жанры
-  @Ignore()
+  @ignore
   final List<String> genres;
 
   /// страны
-  @Ignore()
+  @ignore
   final List<String> countries;
 
   /// дополнительная информация (в основном вторая строка, после названия)
-  @Ignore()
+  @ignore
   final String subtitle;
 
   /// рейтинг IMDb
-  @Ignore()
+  @ignore
   final double imdbRating;
-  @Ignore()
+  @ignore
   bool get hasImdbRating => imdbRating > 0.0;
 
   /// рейтинг Кинопоиск
-  @Ignore()
+  @ignore
   final double kinopoiskRating;
-  @Ignore()
+  @ignore
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
   /// продолжительность
-  @Ignore()
+  @ignore
   final Duration duration;
 
   /// список доступных озвучек
-  @Ignore()
+  @ignore
   final Map<String, VoiceActing> voiceActings;
 
   /// аудио информация о наличии звуковой дорожки 5.1
-  @Ignore()
+  @ignore
   final bool hasSixChannels;
 
   /// является ли объект папкой
-  @Ignore()
+  @ignore
   final bool isFolder;
 
 
@@ -215,11 +213,11 @@ class KginoItem {
 
 
   /// хранилище данных
-  @Ignore()
+  @ignore
   final storage = GetIt.instance<KrsStorage>();
 
   Future<void> save() async {
-    storage.db.writeTxnSync((isar) async {
+    storage.db.writeTxnSync(() async {
       if (seenEpisodes.isNotEmpty) {
         storage.db.episodeItems.putAllSync(seenEpisodes.toList());
       }
@@ -228,7 +226,7 @@ class KginoItem {
     });
   }
 
-  @Ignore()
+  @ignore
   Stream<KginoItem?> get dbStream {
     return storage.db.kginoItems.watchObject(isarId ?? 0);
   }

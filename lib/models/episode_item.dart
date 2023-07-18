@@ -4,13 +4,11 @@ import 'kgino_item.dart';
 
 part 'episode_item.g.dart';
 
-@Collection()
+@collection
 class EpisodeItem {
 
   /// внутренний идентификатор в базе данных
-  @Id()
-  int? isarId;
-  //Id get isarId => fastHash(fullId);
+  Id get isarId => fastHash(fullId);
   
   /// идентификатор эпизода
   final String id;
@@ -70,14 +68,14 @@ class EpisodeItem {
   });
 
   /// просмотренная позиция в пределах от 0 до 1 (шаг 5%)
-  @Ignore()
+  @ignore
   double get percentPosition => ((position / duration) / 0.05).ceilToDouble() * 0.05;
 
   /// был ли эпизод полностью просмотрен
-  @Ignore()
+  @ignore
   bool get isSeen => percentPosition > 0.95;
 
-  @Ignore()
+  @ignore
   bool get hasShowNumbers => seasonNumber > 0 && episodeNumber > 0;
 
   static String getFullId(String provider, String itemId, String episodeId) {

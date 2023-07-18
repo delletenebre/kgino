@@ -26,21 +26,21 @@ class KrsStorage {
     }
 
     /// инициализируем базу данных
-    // db = await Isar.open(
-    //   [
-    //     KginoItemSchema,
-    //     EpisodeItemSchema,
-    //   ],
-    //   directory: directory.path,
-    // );
-
     db = await Isar.open(
-      schemas: [
+      [
         KginoItemSchema,
         EpisodeItemSchema,
       ],
       directory: directory.path,
     );
+
+    // db = await Isar.open(
+    //   schemas: [
+    //     KginoItemSchema,
+    //     EpisodeItemSchema,
+    //   ],
+    //   directory: directory.path,
+    // );
 
     return this;
   }

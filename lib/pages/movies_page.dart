@@ -39,7 +39,7 @@ class MoviesPage extends HookWidget {
       .sortByBookmarkedDesc()
       .build();
 
-    final stream = useMemoized(() => savedItemsQuery.watch(initialReturn: true));//fireImmediately: true));
+    final stream = useMemoized(() => savedItemsQuery.watch(fireImmediately: true));
     final savedItems = useStream(stream);
 
     final categories = [
