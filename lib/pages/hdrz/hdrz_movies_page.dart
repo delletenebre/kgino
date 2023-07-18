@@ -70,13 +70,13 @@ class HdrzMoviesPage extends HookWidget {
 
                 /// заголовок
                 const AppHeader(
-                  child: Text('Filmix / Фильмы'),
+                  child: Text('HDRezka / Фильмы'),
                 ),
 
                 /// детали фильма или сериала
                 BlocBuilder<KginoItemDetailsCubit, ApiResponse<KginoItem>>(
-                  builder: (context, state) {
-                    return KrsItemDetails(state);
+                  builder: (context, item) {
+                    return KrsItemDetails(item);
                   },
                 ),
 

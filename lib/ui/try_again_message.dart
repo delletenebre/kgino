@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../resources/krs_locale.dart';
 
@@ -32,12 +33,22 @@ class TryAgainMessage extends StatelessWidget {
             child: Text(locale.errorLoadingVideo),
           ),
 
+          Padding(
+            padding: const EdgeInsets.only(bottom: 24.0),
+            child: FilledButton.tonal(
+              autofocus: true,
+              onPressed: () {
+                onRetry();
+              },
+              child: Text(locale.tryAgain),
+            ),
+          ),
+
           FilledButton.tonal(
-            autofocus: true,
             onPressed: () {
-              onRetry();
+              context.pop();
             },
-            child: Text(locale.tryAgain),
+            child: Text(locale.back),
           ),
 
         ],

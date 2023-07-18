@@ -36,6 +36,8 @@ class KrsItemDetails extends HookWidget {
       opacity.value = 1.0;
     });
 
+    print('kginoItem.voiceActing: ${kginoItem.voiceActing}');
+
     return AnimatedOpacity(
       opacity: opacity.value,
       duration: KrsTheme.animationDuration,

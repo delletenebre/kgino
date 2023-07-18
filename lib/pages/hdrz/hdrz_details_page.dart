@@ -35,6 +35,8 @@ class HdrzDetailsPage extends HookWidget {
 
     final locale = KrsLocale.of(context);
 
+    final prefix = 'hdrz';
+
     /// размер экрана
     final screenSize = MediaQuery.of(context).size;
 
@@ -91,7 +93,7 @@ class HdrzDetailsPage extends HookWidget {
               children: [
                 /// заголовок
                 const AppHeader(
-                  child: Text('Filmix'),
+                  child: Text('HDRezka'),
                 ),
 
                 SizedBox(
