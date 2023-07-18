@@ -19,7 +19,7 @@ class HdrzApiProvider {
 
   /// cinema online
   final _dio = Dio(BaseOptions(
-    baseUrl: 'https://hdrzk.org',
+    baseUrl: 'http://hdrzk.org',
     sendTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
     headers: {
