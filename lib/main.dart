@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fvp/fvp.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
-import 'package:video_player_win/video_player_win.dart';
 
 import 'api/flmx_api_provider.dart';
 import 'api/hdrz_api_provider.dart';
@@ -20,20 +20,17 @@ import 'resources/krs_storage.dart';
 Future<void> main() async {
   // debugRepaintRainbowEnabled = true;
   // debugPaintLayerBordersEnabled = true;
-  
+
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (!kIsWeb && Platform.isWindows) {
-    WindowsVideoPlayer.registerWith();
-  }
+  // if (!kIsWeb && Platform.isWindows) {
+  //   WindowsVideoPlayer.registerWith();
+  // }
+  registerWith();
 
-  
   /// регистрируем [KrsStorage] как singleton
-  GetIt.instance.registerSingleton<KrsStorage>(
-    await KrsStorage().initialize()
-  );
-
+  GetIt.instance.registerSingleton<KrsStorage>(await KrsStorage().initialize());
 
   /// информация об устройстве
   final deviceInfo = DeviceInfoPlugin();
@@ -61,22 +58,15 @@ Future<void> main() async {
     deviceOsVersion = '${info.productName} ${info.buildNumber}';
   }
 
-
-  GetIt.instance.registerSingleton<DeviceDetails>(
-    DeviceDetails(
-      id: deviceId,
-      name: deviceModel,
-      vendor: deviceBrand,
-      osVersion: deviceOsVersion,
-    )
-  );
-  
-
+  GetIt.instance.registerSingleton<DeviceDetails>(DeviceDetails(
+    id: deviceId,
+    name: deviceModel,
+    vendor: deviceBrand,
+    osVersion: deviceOsVersion,
+  ));
 
   /// регистрируем [TabsCubit] как singleton
-  GetIt.instance.registerSingleton<TabsCubit>(
-    TabsCubit(1)
-  );
+  GetIt.instance.registerSingleton<TabsCubit>(TabsCubit(1));
 
   /// регистрируем провайдер запросов к REST API как singleton
   GetIt.instance.registerSingleton<FlmxApiProvider>(FlmxApiProvider());
@@ -94,7 +84,8 @@ Future<void> main() async {
   GetIt.instance.registerSingleton<HdrzApiProvider>(HdrzApiProvider());
 
   /// регистрируем контроллер для поискового запроса
-  GetIt.instance.registerSingleton<TextEditingController>(TextEditingController());
+  GetIt.instance
+      .registerSingleton<TextEditingController>(TextEditingController());
 
   runApp(const App());
 }
