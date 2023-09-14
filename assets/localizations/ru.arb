@@ -3,100 +3,40 @@
   "@@last_modified": "2021-08-20T00:00:00.000",
 
   "appTitle": "KGino",
-  "@appTitle": {
-    "type": "text"
-  },
+
+  "theme": "Тема оформления", "@theme": {"type": "text"},
+  "themeSystem": "Как в системе", "@themeSystem": {"type": "text"},
+  "themeDark": "Тёмная", "@themeDark": {"type": "text"},
+  "themeLight": "Светлая", "@themeLight": {"type": "text"},
 
   "search": "Поиск",
-  "@search": {
-    "type": "text"
-  },
-
   "searchHint": "Название фильма, сериала",
-  "@searchHint": {
-    "type": "text"
-  },
-
   "shows": "Сериалы",
-  "@shows": {
-    "type": "text"
-  },
-
   "movies": "Фильмы",
-  "@movies": {
-    "type": "text"
-  },
-
   "cameras": "Камеры",
-  "@cameras": {
-    "type": "text"
-  },
-
   "settings": "Настройки",
-  "@settings": {
-    "type": "text"
-  },
-
 
   "kinopoisk": "КиноПоиск",
-  "@kinopoisk": {
-    "type": "text"
-  },
 
 
   "errorLoadingVideo": "При загрузке видео произошла ошибка",
-  "@errorLoadingVideo": {
-    "type": "text"
-  },
-
   "tryAgain": "Попробовать ещё",
-  "@tryAgain": {
-    "type": "text"
-  },
-
-  
-
 
   "play": "Смотреть",
-  "@play": {
-    "type": "text"
-  },
-
   "trailer": "Трейлер",
-  "@trailer": {
-    "type": "text"
-  },
 
   "selectEpisode": "Выбрать серию",
-  "@selectEpisode": {
-    "type": "text"
-  },
 
   "selectSeason": "Выбрать сезон",
-  "@selectEpisode": {
-    "type": "text"
-  },
 
   "bookmarks": "Вы хотели посмотреть",
-  "@bookmarks": {
-    "type": "text"
-  },
 
   "addToBookmarks": "Добавить в закладки",
-  "@addToBookmarks": {
-    "type": "text"
-  },
 
   "removeFromBookmarks": "Удалить из закладок",
-  "@removeFromBookmarks": {
-    "type": "text"
-  },
 
 
   "continueWatching": "Продолжить просмотр",
-  "@continueWatching": {
-    "type": "text"
-  },
 
   "addedDate": "{date, select, today{Добавлено сегодня} yesterday{Добавлено вчера} other{Добавлено {date}} }",
   "@addedDate": {
@@ -126,61 +66,20 @@
   },
 
   "enableSubtitles": "Включить субтитры",
-  "@enableSubtitles": {
-    "type": "text"
-  },
-
   "disableSubtitles": "Выключить субтитры",
-  "@disableSubtitles": {
-    "type": "text"
-  },
 
 
   "previousEpisode": "Предыдущий эпизод",
-  "@previousEpisode": {
-    "type": "text"
-  },
-
   "nextEpisode": "Следующий эпизод",
-  "@nextEpisode": {
-    "type": "text"
-  },
-
   "startOver": "Начать сначала",
-  "@startOver": {
-    "type": "text"
-  },
 
   "genres": "Жанры",
-  "@genres": {
-    "type": "text"
-  },
-
-
   "latest": "Новое",
-  "@latest": {
-    "type": "text"
-  },
-
   "popular": "Популярное",
-  "@popular": {
-    "type": "text"
-  },
 
 
   "cancel": "Отмена",
-  "@cancel": {
-    "type": "text"
-  },
-  
   "back": "Назад",
-  "@back": {
-    "type": "text"
-  },
-
-  "close": "Закрыть",
-  "@close": {
-    "type": "text"
-  }
+  "close": "Закрыть"
 
 }

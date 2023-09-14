@@ -3,18 +3,12 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fvp/fvp.dart';
-import 'package:get_it/get_it.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-import 'api/flmx_api_provider.dart';
-import 'api/hdrz_api_provider.dart';
-import 'api/ockg_api_provider.dart';
-import 'api/tskg_api_provider.dart';
-import 'api/wcam_api_provider.dart';
 import 'app.dart';
-import 'controllers/tabs_cubit.dart';
 import 'models/device_details.dart';
+import 'providers/providers.dart';
 import 'resources/krs_storage.dart';
 
 Future<void> main() async {
@@ -23,14 +17,6 @@ Future<void> main() async {
 
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
-
-  // if (!kIsWeb && Platform.isWindows) {
-  //   WindowsVideoPlayer.registerWith();
-  // }
-  registerWith();
-
-  /// регистрируем [KrsStorage] как singleton
-  GetIt.instance.registerSingleton<KrsStorage>(await KrsStorage().initialize());
 
   /// информация об устройстве
   final deviceInfo = DeviceInfoPlugin();
@@ -57,35 +43,24 @@ Future<void> main() async {
     deviceBrand = info.registeredOwner;
     deviceOsVersion = '${info.productName} ${info.buildNumber}';
   }
-
-  GetIt.instance.registerSingleton<DeviceDetails>(DeviceDetails(
+  final deviceDetails = DeviceDetails(
     id: deviceId,
     name: deviceModel,
     vendor: deviceBrand,
     osVersion: deviceOsVersion,
+  );
+
+  /// инициализируем хранилище
+  final storage = await KrsStorage().initialize();
+
+  runApp(ProviderScope(
+    overrides: [
+      /// регистрируем [KrsStorage]
+      storageProvider.overrideWithValue(storage),
+
+      /// регистрируем [DeviceDetails]
+      deviceDetailsProvider.overrideWithValue(deviceDetails),
+    ],
+    child: const App(),
   ));
-
-  /// регистрируем [TabsCubit] как singleton
-  GetIt.instance.registerSingleton<TabsCubit>(TabsCubit(1));
-
-  /// регистрируем провайдер запросов к REST API как singleton
-  GetIt.instance.registerSingleton<FlmxApiProvider>(FlmxApiProvider());
-
-  /// регистрируем провайдер запросов к REST API как singleton
-  GetIt.instance.registerSingleton<OckgApiProvider>(OckgApiProvider());
-
-  /// регистрируем провайдер запросов к REST API как singleton
-  GetIt.instance.registerSingleton<TskgApiProvider>(TskgApiProvider());
-
-  /// регистрируем провайдер запросов веб-камер
-  GetIt.instance.registerSingleton<WcamApiProvider>(WcamApiProvider());
-
-  /// регистрируем провайдер запросов к REST API как singleton
-  GetIt.instance.registerSingleton<HdrzApiProvider>(HdrzApiProvider());
-
-  /// регистрируем контроллер для поискового запроса
-  GetIt.instance
-      .registerSingleton<TextEditingController>(TextEditingController());
-
-  runApp(const App());
 }

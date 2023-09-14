@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../constants.dart';
+import '../resources/constants.dart';
 
 class AppLogo extends StatelessWidget {
   const AppLogo({
@@ -18,6 +18,7 @@ class AppLogo extends StatelessWidget {
         width: appLogoWidth,
         height: 32.0,
         child: Material(
+          color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(48.0),
             canRequestFocus: false,
@@ -38,7 +39,6 @@ class AppLogo extends StatelessWidget {
                     color: theme.colorScheme.outline,
                     fontWeight: FontWeight.bold,
                   ),
-
                   children: const [
                     TextSpan(
                       text: 'ino',
@@ -46,7 +46,6 @@ class AppLogo extends StatelessWidget {
                         fontWeight: FontWeight.normal,
                       ),
                     ),
-
                     TextSpan(
                       text: '    3.2.7',
                       style: TextStyle(
