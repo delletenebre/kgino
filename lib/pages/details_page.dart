@@ -1,0 +1,270 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../resources/krs_locale.dart';
+import '../../resources/krs_theme.dart';
+import '../api/filmix_api_provider.dart';
+import '../models/media_item.dart';
+import '../ui/cards/featured_card.dart';
+import '../ui/krs_scroll_view.dart';
+import '../ui/try_again_message.dart';
+
+part 'details_page.g.dart';
+
+@riverpod
+class Details extends _$Details {
+  @override
+  Future<MediaItem?> build(MediaItem? mediaItem) async {
+    return fetch();
+  }
+
+  // Future<void> loadDetails(MediaItem? mediaItem) async {
+  //   state = AsyncData(mediaItem);
+
+  //   if (mediaItem != null) {
+  //     state = const AsyncLoading();
+
+  //     // final tmdb = (await AsyncValue.guard(() async {
+  //     //   /// запрашиваем данные на TMDB
+  //     //   return await mediaItem.loadTmdb(ref);
+  //     // }))
+  //     //     .valueOrNull;
+
+  //     final details = (await AsyncValue.guard(() async {
+  //       /// запрашиваем данные у сервиса
+  //       return await mediaItem.loadDetails(ref);
+  //     }))
+  //         .valueOrNull;
+
+  //     state = AsyncData(details);
+  //   }
+  // }
+
+  Future<MediaItem?> fetch() async {
+    return await mediaItem?.loadDetails(ref);
+  }
+
+  bool get hasItem => state.valueOrNull != null;
+}
+
+class DetailsPage extends HookConsumerWidget {
+  final MediaItem mediaItem;
+  final secondContainerKey = GlobalKey();
+
+  DetailsPage(
+    this.mediaItem, {
+    super.key,
+  });
+
+  @override
+  Widget build(context, ref) {
+    final locale = KrsLocale.of(context);
+
+    /// размер экрана
+    final screenSize = MediaQuery.of(context).size;
+
+    final details = ref.watch(detailsProvider(mediaItem));
+
+    final scrollController = useScrollController();
+    final isScrolling = useState(false);
+
+    final playButtonHasFocus = useState(false);
+    final secondContainerPosition = useState(0.0);
+
+    /// вычисляем позицию второго контейнера, если он есть
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final box = secondContainerKey.globalPaintBounds;
+      if (box != null) {
+        secondContainerPosition.value = box.top;
+      }
+    });
+
+    return Scaffold(
+      body: details.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => TryAgainMessage(
+          poster: mediaItem?.posterImage,
+          onRetry: () {},
+        ),
+        data: (item) => KrsScrollView(
+          scrollController: scrollController,
+          onStartScroll: (scrollMetrics) {
+            isScrolling.value = true;
+          },
+          onEndScroll: (scrollMetrics) {
+            isScrolling.value = false;
+          },
+          children: [
+            SizedBox(
+              height: screenSize.height - KrsTheme.appBarHeight,
+              child: Stack(
+                children: [
+                  FeaturedCard(mediaItem),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Focus(
+                      canRequestFocus: false,
+                      skipTraversal: true,
+                      onFocusChange: (hasFocus) {
+                        if (hasFocus && !isScrolling.value) {
+                          scrollController.animateTo(
+                            0.0,
+                            duration: KrsTheme.animationDuration,
+                            curve: Curves.easeIn,
+                          );
+                        }
+                      },
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 32.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                /// если кнопка Смотреть в фокусе
+                                // if (playButtonHasFocus.value)
+                                // PlayButtonTooltip(
+                                //   kginoItem,
+                                //   showEpisodeNumber: false,
+                                // ),
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              children: [
+                                // /// кнопка начала просмотра
+                                // PlayButton(
+                                //   kginoItem,
+                                //   routeName: 'flmxShowPlayer',
+                                //   onFocusChange: (hasFocus) {
+                                //     playButtonHasFocus.value = hasFocus;
+                                //   },
+                                // ),
+
+                                // /// если файлов несколько, показываем кнопку выбора
+                                // /// эпизода
+                                // if (kginoItem
+                                //         .seasons.first.episodes.length >
+                                //     1)
+                                //   Padding(
+                                //     padding:
+                                //         const EdgeInsets.only(right: 12.0),
+                                //     child: FilledButton.tonalIcon(
+                                //       onPressed: () {
+                                //         /// переходим на страницу выбора файла
+                                //         context.pushNamed(
+                                //           'flmxShowEpisodes',
+                                //           pathParameters: {
+                                //             'id': kginoItem.id,
+                                //           },
+                                //           extra: kginoItem,
+                                //         );
+                                //       },
+                                //       icon: const Icon(Icons.folder_open),
+                                //       label: Text(locale.selectEpisode),
+                                //     ),
+                                //   ),
+
+                                // /// кнопка добавления или удаления из закладок
+                                // Padding(
+                                //   padding:
+                                //       const EdgeInsets.only(right: 12.0),
+                                //   child: BookmarkButton(kginoItem),
+                                // ),
+
+                                // /// кнопка выбора озвучки
+                                // if (kginoItem.voiceActings.length > 1)
+                                //   Padding(
+                                //     padding:
+                                //         const EdgeInsets.only(right: 12.0),
+                                //     child: VoiceActingsButton(
+                                //       kginoItem,
+                                //       onVoiceActingChange:
+                                //           (voiceActing) async {
+                                //         kginoItem.voiceActing =
+                                //             voiceActing.id;
+                                //         await kginoItem.save();
+
+                                //         /// переходим на страницу деталей о сериале
+                                //         // TODO fix route to movie
+                                //         context.pushReplacementNamed(
+                                //           'flmxShowDetails',
+                                //           pathParameters: {
+                                //             'id': kginoItem.id,
+                                //           },
+                                //         );
+                                //       },
+                                //     ),
+                                //   ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Focus(
+            //   key: secondContainerKey,
+            //   canRequestFocus: false,
+            //   skipTraversal: true,
+            //   onFocusChange: (hasFocus) {
+            //     if (hasFocus && !isScrolling.value) {
+            //       scrollController.animateTo(secondContainerPosition.value,
+            //         duration: KrsTheme.animationDuration,
+            //         curve: Curves.easeIn,
+            //       );
+            //     }
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(24.0),
+            //     child: Column(
+            //       mainAxisSize: MainAxisSize.min,
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+
+            //         Container(
+            //           height: MediaQuery.of(context).size.height,
+            //           child: FilledButton(
+            //             onPressed: () {
+
+            //             },
+            //             child: Text('button 3'),
+            //           ),
+            //         ),
+
+            //       ],
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+extension GlobalKeyExtension on GlobalKey {
+  Rect? get globalPaintBounds {
+    final renderObject = currentContext?.findRenderObject();
+    final matrix = renderObject?.getTransformTo(null);
+
+    if (matrix != null && renderObject?.paintBounds != null) {
+      final rect = MatrixUtils.transformRect(matrix, renderObject!.paintBounds);
+      return rect;
+    } else {
+      return null;
+    }
+  }
+}

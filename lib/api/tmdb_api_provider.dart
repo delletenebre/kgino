@@ -1,23 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
-import '../models/tmdb_movie.dart';
+import '../models/tmdb_item.dart';
 import 'interceptors/logs_interceptor.dart';
 import 'models/api_request.dart';
-
-// import '../models/api_response.dart';
-// import '../models/device_details.dart';
-// import '../models/flmx/flmx_item.dart';
-// import '../models/flmx/flmx_profile.dart';
-// import '../models/flmx/flmx_token.dart';
-// import '../models/kgino_item.dart';
-// import '../providers/providers.dart';
-// import 'api_request.dart';
-// import 'logs_interceptor.dart';
 
 part 'tmdb_api_provider.g.dart';
 
@@ -45,29 +35,59 @@ class TmdbApi {
   }
 
   /// список с фильтрацией
-  Future<MediaItem?> searchMovie({
+  Future<TmdbItem?> searchMovie({
+    String originalTitle = '',
     String title = '',
     String year = '',
     CancelToken? cancelToken,
   }) async {
-    return ApiRequest<MediaItem?>().call(
+    return ApiRequest<TmdbItem?>().call(
       request: _dio.get(
         '/search/movie',
         queryParameters: {
-          'query': title,
+          'query': '$title $originalTitle',
           'language': 'ru',
           'primary_release_year': year,
         },
         cancelToken: cancelToken,
       ),
       decoder: (json) {
-        if (json['results'].length > 0) {
-          final tmdbMovie = TmdbMovie.fromJson(json['results'].first);
-          return tmdbMovie.toMediaItem();
+        final items = json['results'].where((item) =>
+            item['title'] == title || item['original_title'] == originalTitle);
+        debugPrint('tmdb movie $items');
+        if (items.length > 0) {
+          return TmdbItem.fromJson(items.first);
         }
-        // return json.map<MediaItem>((item) {
-        //   return FilmixItem.fromJson(item).toMediaItem();
-        // }).toList();
+
+        return null;
+      },
+    );
+  }
+
+  /// список с фильтрацией
+  Future<TmdbItem?> searchShow({
+    String originalTitle = '',
+    String title = '',
+    String year = '',
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<TmdbItem?>().call(
+      request: _dio.get(
+        '/search/tv',
+        queryParameters: {
+          'query': '$title $originalTitle',
+          'language': 'ru',
+          'first_air_date_year': year,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) {
+        final items = json['results'].where((item) =>
+            item['name'] == title || item['original_name'] == originalTitle);
+        debugPrint('tmdb show $items');
+        if (items.length > 0) {
+          return TmdbItem.fromJson(items.first);
+        }
 
         return null;
       },

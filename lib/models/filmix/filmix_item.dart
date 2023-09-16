@@ -43,7 +43,7 @@ class FilmixItem with _$FilmixItem {
   factory FilmixItem.fromJson(Map<String, Object?> json) =>
       _$FilmixItemFromJson(json);
 
-  MediaItem toMediaItem() {
+  MediaItem toMediaItem(MediaItemType type) {
     /// сезоны
     // List<SeasonItem> seasons = [];
 
@@ -236,8 +236,16 @@ class FilmixItem with _$FilmixItem {
     // );
 
     return MediaItem(
+      onlineService: OnlineService.filmix,
+      mediaItemType: type,
+      //id: id.toString(),
       title: title,
-      posterUrl: poster,
+      originalTitle: originalTitle,
+      posterImage: poster,
+      overview: shortStory,
+      genres: categories,
+      year: year.toString(),
+      countries: countries,
     );
   }
 }

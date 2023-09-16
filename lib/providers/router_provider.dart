@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../models/media_item.dart';
+import '../pages/details_page.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 
@@ -48,6 +50,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           return const HomePage();
         },
+
+        routes: [
+          GoRoute(
+            path: 'details',
+            name: 'details',
+            builder: (context, state) {
+              final mediaItem = state.extra as MediaItem;
+              return DetailsPage(mediaItem);
+            },
+          ),
+        ],
         // routes: [
         //   /// filmix сериалы
         //   GoRoute(

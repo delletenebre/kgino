@@ -32,6 +32,8 @@ class HorizontalListView<T> extends HookConsumerWidget {
 
   final double itemHeight;
 
+  final void Function(bool)? onFocusChange;
+
   const HorizontalListView({
     super.key,
     this.controller,
@@ -44,6 +46,7 @@ class HorizontalListView<T> extends HookConsumerWidget {
     this.spacing = TvUi.columnSpacing,
     this.padding = const EdgeInsets.symmetric(horizontal: TvUi.hPadding),
     required this.itemHeight,
+    this.onFocusChange,
   });
 
   @override
@@ -108,13 +111,13 @@ class HorizontalListView<T> extends HookConsumerWidget {
         return KeyEventResult.ignored;
       },
       onFocusChange: (hasFocus) {
-        //onFocusChange?.call(hasFocus);
-
         focused.value = hasFocus;
 
         if (hasFocus) {
           focusableListController.animateToCurrent();
         }
+
+        onFocusChange?.call(hasFocus);
       },
       child: AnimatedOpacity(
         duration: kThemeAnimationDuration,

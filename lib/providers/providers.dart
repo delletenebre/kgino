@@ -7,7 +7,7 @@ import '../resources/krs_storage.dart';
 export 'app_locale.dart';
 export 'app_theme.dart';
 export 'auth_provider.dart';
-export 'card_details.dart';
+export 'focused_media_item_provider.dart';
 export 'router_provider.dart';
 
 /// провайдер хранилища

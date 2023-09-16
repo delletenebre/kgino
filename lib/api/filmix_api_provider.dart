@@ -27,6 +27,8 @@ FilmixApi filmixApi(FilmixApiRef ref) => FilmixApi(ref);
 class FilmixApi {
   final FilmixApiRef ref;
 
+  CancelToken getCancelToken() => CancelToken();
+
   static const String _filmixAppVersion = '2.0.9';
 
   late final Map<String, String> _queryParams;
@@ -87,30 +89,32 @@ class FilmixApi {
   //   );
   // }
 
-  // /// детали фильма или сериала
-  // Future<ApiResponse<KginoItem>> getMovieDetails(
-  //   String id, {
-  //   CancelToken? cancelToken,
-  // }) async {
-  //   return ApiRequest<KginoItem>().call(
-  //     request: _dio.get(
-  //       '/post/$id',
-  //       queryParameters: {
-  //         ..._queryParams,
-  //       },
-  //       cancelToken: cancelToken,
-  //     ),
-  //     decoder: (json) async {
-  //       return FlmxItem.fromJson(json).toMovieItem();
-  //     },
-  //   );
-  // }
+  /// детали фильма или сериала
+  Future<MediaItem> getDetails({
+    required String id,
+    CancelToken? cancelToken,
+    required MediaItemType mediaItemType,
+  }) async {
+    return ApiRequest<MediaItem>().call(
+      request: _dio.get(
+        '/post/$id',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) {
+        return FilmixItem.fromJson(json).toMediaItem(mediaItemType);
+      },
+    );
+  }
 
   /// список с фильтрацией
   Future<List<MediaItem>> getFiltered(
     List<String> filter,
     int page, {
     CancelToken? cancelToken,
+    required MediaItemType mediaItemType,
   }) async {
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get(
@@ -126,7 +130,7 @@ class FilmixApi {
       ),
       decoder: (json) {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item).toMediaItem();
+          return FilmixItem.fromJson(item).toMediaItem(mediaItemType);
         }).toList();
       },
     );
@@ -134,7 +138,7 @@ class FilmixApi {
 
   /// список новых фильмов
   Future<List<MediaItem>> getLatestMovies() async {
-    return getFiltered(['s0', 's14'], 1);
+    return getFiltered(['s0', 's14'], 1, mediaItemType: MediaItemType.movie);
   }
 
   /// список популярных фильмов
@@ -146,7 +150,7 @@ class FilmixApi {
       }),
       decoder: (json) {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item).toMediaItem();
+          return FilmixItem.fromJson(item).toMediaItem(MediaItemType.movie);
         }).toList();
       },
     );
@@ -158,7 +162,11 @@ class FilmixApi {
     int page = 1,
     CancelToken? cancelToken,
   }) async {
-    return getFiltered(['s0', 's14', categoryId], page);
+    return getFiltered(
+      ['s0', 's14', categoryId],
+      page,
+      mediaItemType: MediaItemType.movie,
+    );
   }
 
   /// список сериалов по категории
@@ -167,12 +175,20 @@ class FilmixApi {
     int page = 1,
     CancelToken? cancelToken,
   }) async {
-    return getFiltered(['s7', 's93', categoryId], page);
+    return getFiltered(
+      ['s7', 's93', categoryId],
+      page,
+      mediaItemType: MediaItemType.show,
+    );
   }
 
   /// список новых сериалов
   Future<List<MediaItem>> getLatestShows({CancelToken? cancelToken}) async {
-    return getFiltered(['s7', 's93'], 1);
+    return getFiltered(
+      ['s7', 's93'],
+      1,
+      mediaItemType: MediaItemType.show,
+    );
   }
 
   /// список популярных сериалов
@@ -188,7 +204,7 @@ class FilmixApi {
       ),
       decoder: (json) {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item).toMediaItem();
+          return FilmixItem.fromJson(item).toMediaItem(MediaItemType.show);
         }).toList();
       },
     );

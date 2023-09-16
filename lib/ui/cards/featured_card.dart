@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../models/media_item.dart';
 import '../../resources/constants.dart';
 
 class FeaturedCard extends HookWidget {
-  final String title;
-  final String imageUrl;
+  final MediaItem mediaItem;
 
-  const FeaturedCard({
+  const FeaturedCard(
+    this.mediaItem, {
     super.key,
-    this.title = '',
-    this.imageUrl = '',
   });
 
   @override
@@ -64,27 +63,69 @@ class FeaturedCard extends HookWidget {
                       child: Row(
                         children: [
                           Text(
-                            'Superhero/Action • 2022 • 2h 15m',
+                            [
+                              mediaItem.genresString,
+                              mediaItem.year,
+                              mediaItem.countriesString,
+                            ].join(' • '),
+                            //'Superhero/Action • 2022 • 2h 15m'
                           ),
                         ],
                       ),
                     ),
                   ),
                   Text(
-                    title,
-                    style: TextStyle(
+                    mediaItem.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
                       fontSize: 32.0,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Text(
-                      'A dynamic duo of superhero siblings join forces to save their city from a sinister villain, redefining sisterhood in action.',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
+                  AnimatedSwitcher(
+                    duration: kThemeAnimationDuration,
+                    reverseDuration: Duration.zero,
+                    transitionBuilder: (child, animation) {
+                      final fadeAnimation = Tween<double>(
+                        begin: 0.0, // Fully transparent
+                        end: 1.0, // Fully opaque
+                      ).animate(animation);
+
+                      final slideAnimation = Tween<Offset>(
+                        begin: const Offset(
+                            0.0, 1.0), // Start from below the widget
+                        end: const Offset(
+                            0.0, 0.0), // End at its original position
+                      ).animate(animation);
+
+                      final sizeAnimation = Tween<double>(
+                        begin: 0.0, // Start with zero size
+                        end: 1.0, // End with full size
+                      ).animate(animation);
+
+                      return SizeTransition(
+                        sizeFactor: sizeAnimation,
+                        child: FadeTransition(
+                          opacity: fadeAnimation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: mediaItem.mayBeOverview.isNotEmpty
+                        ? Padding(
+                            key: UniqueKey(),
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: Text(
+                              mediaItem.mayBeOverview,
+                              maxLines: 4,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          )
+                        : null,
                   ),
                 ],
               ),
