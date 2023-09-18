@@ -6,7 +6,7 @@ part of 'focused_media_item_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$focusedMediaItemHash() => r'091fbd9590333065fe0785b118f6c2e0bcf6541e';
+String _$focusedMediaItemHash() => r'88e6c125e29877ea4e644232d076713550fa95bb';
 
 /// See also [FocusedMediaItem].
 @ProviderFor(FocusedMediaItem)

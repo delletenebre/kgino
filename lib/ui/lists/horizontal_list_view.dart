@@ -52,10 +52,10 @@ class HorizontalListView<T> extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     /// текущая страница элементов (при динамической загрузке)
-    final currentPage = useState(1);
+    //final currentPage = useState(1);
 
     /// была ли достигнута последняя страница
-    bool lastPageReached = false;
+    //bool lastPageReached = false;
 
     final asyncItemsReader = useMemoized(() => asyncItems);
     final snapshot = useFuture(asyncItemsReader);
@@ -67,15 +67,15 @@ class HorizontalListView<T> extends HookConsumerWidget {
     List<T> items = snapshot.data!;
     final itemCount = useState(items.length);
 
-    final pageLoading = useState(false);
-    final currentItemIndex = useState(0);
-    final needUpdateFocus = useState(false);
-
     if (items.isEmpty) {
       return const SizedBox();
     }
 
-    final provider = focusableListProvider(
+    //final pageLoading = useState(false);
+    // final currentItemIndex = useState(0);
+    //final needUpdateFocus = useState(false);
+
+    final provider = useState(focusableListProvider(
       key: key,
       itemCount: itemCount.value,
       offset: TvUi.hPadding,
@@ -83,21 +83,19 @@ class HorizontalListView<T> extends HookConsumerWidget {
       /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
       /// фокус не переходил на следующий список, ставим handled
       keyEventResult: KeyEventResult.handled,
-    );
-    final activeIndex = ref.watch(provider);
-    final focusableListController = ref.read(provider.notifier);
+    ));
+    //final activeIndex = ref.watch(provider);
+    final focusableListController = ref.read(provider.value.notifier);
 
-    if (needUpdateFocus.value) {
-      Future.microtask(() {
-        //focusableListController.megaJumpTo(currentItemIndex.value);
-        needUpdateFocus.value = false;
-      });
-    }
-
-    final focused = useState(false);
+    // if (needUpdateFocus.value) {
+    //   Future.microtask(() {
+    //     //focusableListController.megaJumpTo(currentItemIndex.value);
+    //     needUpdateFocus.value = false;
+    //   });
+    // }
 
     return Focus(
-      focusNode: focusableListController.focusNode,
+      focusNode: focusableListController.generalFocusNode,
       skipTraversal: true,
       onKey: (node, event) {
         if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
@@ -111,105 +109,100 @@ class HorizontalListView<T> extends HookConsumerWidget {
         return KeyEventResult.ignored;
       },
       onFocusChange: (hasFocus) {
-        focused.value = hasFocus;
-
         if (hasFocus) {
-          focusableListController.animateToCurrent();
+          focusableListController.jumpToCurrent();
         }
 
         onFocusChange?.call(hasFocus);
       },
-      child: AnimatedOpacity(
-        duration: kThemeAnimationDuration,
-        opacity: focused.value ? 1.0 : 0.36,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DefaultTextStyle(
-              style: const TextStyle(
-                fontSize: 16.0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// заголовок списка
+          DefaultTextStyle(
+            style: const TextStyle(
+              fontSize: 16.0,
+            ),
+            child: Container(
+              height: TvUi.cardListTitleHeight,
+              padding: EdgeInsetsDirectional.only(
+                start: padding.horizontal / 2,
+                end: padding.horizontal / 2,
               ),
-              child: Container(
-                height: TvUi.cardListTitleHeight,
-                padding: EdgeInsetsDirectional.only(
-                  start: padding.horizontal / 2,
-                  end: padding.horizontal / 2,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: title,
-                ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: title,
               ),
             ),
-            SizedBox(
-              height: itemHeight,
-              child: ListViewObserver(
-                controller: focusableListController.listObserverController,
-                child: ListView.separated(
-                  padding: padding,
-                  scrollDirection: Axis.horizontal,
-                  clipBehavior: Clip.none,
-                  controller: focusableListController.scrollController,
-                  itemCount: itemCount.value,
+          ),
+          SizedBox(
+            height: itemHeight,
+            child: ListViewObserver(
+              controller: focusableListController.listObserverController,
+              child: ListView.separated(
+                padding: padding,
+                scrollDirection: Axis.horizontal,
+                clipBehavior: Clip.none,
+                controller: focusableListController.scrollController,
+                itemCount: itemCount.value,
 
-                  /// разделитель
-                  separatorBuilder: (context, index) {
-                    return SizedBox(width: spacing);
-                  },
+                /// разделитель
+                separatorBuilder: (context, index) {
+                  return SizedBox(width: spacing);
+                },
 
-                  /// основной контент
-                  itemBuilder: (context, index) {
-                    return Focus(
-                      focusNode: focusableListController.focusNodes[index],
-                      canRequestFocus: true,
-                      onFocusChange: (hasFocus) async {
-                        if (hasFocus) {
-                          if (!pageLoading.value &&
-                              !lastPageReached &&
-                              index > itemCount.value - 7) {
-                            pageLoading.value = true;
-                            currentPage.value++;
-                            final newItems = await onLoadNextPage?.call(
-                                    currentPage.value, itemCount.value) ??
-                                [];
-                            if (newItems.isEmpty) {
-                              lastPageReached = true;
-                            } else {
-                              items.addAll(newItems);
-                              currentItemIndex.value = activeIndex;
-                              //itemCount = items.length;
-                              needUpdateFocus.value = true;
-                            }
-                            pageLoading.value = false;
-                          }
+                /// основной контент
+                itemBuilder: (context, index) {
+                  return Focus(
+                    focusNode: focusableListController.focusNodes[index],
+                    canRequestFocus: true,
+                    onFocusChange: (hasFocus) async {
+                      if (hasFocus) {
+                        // if (!pageLoading.value &&
+                        //     !lastPageReached &&
+                        //     index > itemCount.value - 7) {
+                        //   pageLoading.value = true;
+                        //   currentPage.value++;
+                        //   final newItems = await onLoadNextPage?.call(
+                        //           currentPage.value, itemCount.value) ??
+                        //       [];
+                        //   if (newItems.isEmpty) {
+                        //     lastPageReached = true;
+                        //   } else {
+                        //     items.addAll(newItems);
+                        //     //currentItemIndex.value = activeIndex;
+                        //     //itemCount = items.length;
+                        //     needUpdateFocus.value = true;
+                        //   }
+                        //   pageLoading.value = false;
+                        // }
 
-                          /// при быстрой перемотке, для экономии ресурсов,
-                          /// немного тормозим вызов [onItemFocused],
-                          /// в котором происходит загрузка дополнительных
-                          /// сведений о сериале или фильме
-                          // Future.delayed(const Duration(milliseconds: 100), () {
-                          //   if (currentFocusableIndex.value == index) {
-                          //     /// ^ если виджет ещё жив
+                        /// при быстрой перемотке, для экономии ресурсов,
+                        /// немного тормозим вызов [onItemFocused],
+                        /// в котором происходит загрузка дополнительных
+                        /// сведений о сериале или фильме
+                        // Future.delayed(const Duration(milliseconds: 100), () {
+                        //   if (currentFocusableIndex.value == index) {
+                        //     /// ^ если виджет ещё жив
 
-                          //     /// вызываем пользовательский обработчик
-                          //     //onItemFocused?.call(items[index]);
-                          //   }
-                          // });
-                        }
-                      },
-                      child: itemBuilder(
-                        context,
-                        index,
-                        items[index],
-                      ),
-                    );
-                  },
-                ),
+                        //     /// вызываем пользовательский обработчик
+                        //     //onItemFocused?.call(items[index]);
+                        //   }
+                        // });
+                      }
+                    },
+                    child: itemBuilder(
+                      context,
+                      index,
+                      items[index],
+                    ),
+                  );
+                },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class KrsTheme {
-
   /// высота контейнера с информацией о фильме
   static const movieDetailsHeight = 220.0;
   static const movieDetailsExpandedHeight = 320.0;
@@ -26,7 +25,6 @@ class KrsTheme {
   /// отступы обычные
   static const md = 24.0;
   static const paddingMd = EdgeInsets.all(md);
-  
 
   /// главный цвет
   static const seedColor = Color(0xff1a5dea);
@@ -37,7 +35,6 @@ class KrsTheme {
       brightness: Brightness.light,
       seedColor: seedColor,
     ),
-
     'dark': ColorScheme.fromSeed(
       brightness: Brightness.dark,
       seedColor: seedColor,
@@ -49,7 +46,6 @@ class KrsTheme {
     brightness: Brightness.light,
     useMaterial3: true,
     fontFamily: 'Golos UI',
-
     colorScheme: colorScheme['light']!.copyWith(
       primary: seedColor,
       //shadow: colorScheme['light']!.shadow,
@@ -58,12 +54,25 @@ class KrsTheme {
     /// Define FadeUpwardsPageTransitionsBuilder as the default transition on
     /// iOS also. But again this will break the swipe back gesture on iOS
     /// убирает ненужную тень в macOS между станицами
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-      }
+    pageTransitionsTheme: const PageTransitionsTheme(builders: {
+      TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+      TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+      TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+    }),
+
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        textStyle: MaterialStateProperty.resolveWith((states) {
+          return const TextStyle(fontSize: 14.0);
+        }),
+        foregroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return colorScheme['light']!.onPrimary;
+          }
+
+          return colorScheme['light']!.onSurface;
+        }),
+      ),
     ),
   );
 
@@ -72,20 +81,56 @@ class KrsTheme {
     brightness: Brightness.dark,
     useMaterial3: true,
     fontFamily: 'Golos UI',
-
     colorScheme: colorScheme['dark']!.copyWith(
-      //primary: seedColor,
-      // shadow: colorScheme['dark']!.shadow.withOpacity(0.33),
-    ),
+        // primary: seedColor,
+        // shadow: colorScheme['dark']!.shadow.withOpacity(0.33),
+        ),
+    pageTransitionsTheme: const PageTransitionsTheme(builders: {
+      TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+      TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+      TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+    }),
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        // textStyle: MaterialStateProperty.resolveWith((states) {
+        //   return const TextStyle(fontSize: 14.0);
+        // }),
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return colorScheme['dark']!.inverseSurface;
+          }
 
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-      }
-    ),
+          return colorScheme['dark']!.surfaceVariant;
+        }),
+        foregroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return colorScheme['dark']!.onInverseSurface;
+          }
 
+          return colorScheme['dark']!.inverseSurface;
+        }),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        // textStyle: MaterialStateProperty.resolveWith((states) {
+        //   return const TextStyle(fontSize: 14.0);
+        // }),
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return colorScheme['dark']!.inverseSurface;
+          }
+
+          return colorScheme['dark']!.onSurfaceVariant;
+        }),
+        foregroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return colorScheme['dark']!.onInverseSurface;
+          }
+
+          return colorScheme['dark']!.inverseSurface;
+        }),
+      ),
+    ),
   );
-
 }

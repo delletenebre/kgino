@@ -26,7 +26,7 @@ class VerticalListView extends ConsumerWidget {
     ).notifier);
 
     return Focus(
-      focusNode: focusableListController.focusNode,
+      focusNode: focusableListController.generalFocusNode,
       skipTraversal: true,
       onKey: (node, event) {
         if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
@@ -41,7 +41,7 @@ class VerticalListView extends ConsumerWidget {
       },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          focusableListController.animateToCurrent();
+          focusableListController.jumpToCurrent();
         }
 
         onFocusChange?.call(hasFocus);

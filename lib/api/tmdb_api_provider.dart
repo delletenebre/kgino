@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/media_item.dart';
 import '../models/tmdb_item.dart';
 import 'interceptors/logs_interceptor.dart';
 import 'models/api_request.dart';

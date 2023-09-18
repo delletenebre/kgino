@@ -4,6 +4,8 @@ const appLogoWidth = 84.0;
 const paddingSize = 24.0;
 
 class TvUi {
+  static const navigationBarSize = Size.fromHeight(32.0 + TvUi.vPadding * 2);
+
   static const columnWidth = 52.0;
   static const columnSpacing = 20.0;
 

@@ -9,9 +9,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../api/filmix_api_provider.dart';
-import '../models/media_item.dart';
+import '../models/test/media_item.dart';
+import '../resources/constants.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/krs_scroll_view.dart';
+import '../ui/play_button.dart';
 import '../ui/try_again_message.dart';
 
 part 'details_page.g.dart';
@@ -22,28 +24,6 @@ class Details extends _$Details {
   Future<MediaItem?> build(MediaItem? mediaItem) async {
     return fetch();
   }
-
-  // Future<void> loadDetails(MediaItem? mediaItem) async {
-  //   state = AsyncData(mediaItem);
-
-  //   if (mediaItem != null) {
-  //     state = const AsyncLoading();
-
-  //     // final tmdb = (await AsyncValue.guard(() async {
-  //     //   /// запрашиваем данные на TMDB
-  //     //   return await mediaItem.loadTmdb(ref);
-  //     // }))
-  //     //     .valueOrNull;
-
-  //     final details = (await AsyncValue.guard(() async {
-  //       /// запрашиваем данные у сервиса
-  //       return await mediaItem.loadDetails(ref);
-  //     }))
-  //         .valueOrNull;
-
-  //     state = AsyncData(details);
-  //   }
-  // }
 
   Future<MediaItem?> fetch() async {
     return await mediaItem?.loadDetails(ref);
@@ -63,6 +43,7 @@ class DetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     /// размер экрана
@@ -70,185 +51,188 @@ class DetailsPage extends HookConsumerWidget {
 
     final details = ref.watch(detailsProvider(mediaItem));
 
-    final scrollController = useScrollController();
-    final isScrolling = useState(false);
-
-    final playButtonHasFocus = useState(false);
-    final secondContainerPosition = useState(0.0);
-
-    /// вычисляем позицию второго контейнера, если он есть
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final box = secondContainerKey.globalPaintBounds;
-      if (box != null) {
-        secondContainerPosition.value = box.top;
-      }
-    });
-
     return Scaffold(
       body: details.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => TryAgainMessage(
-          imageUrl: mediaItem.posterImage,
+          imageUrl: mediaItem.poster,
           onRetry: () {},
         ),
-        data: (item) => KrsScrollView(
-          scrollController: scrollController,
-          onStartScroll: (scrollMetrics) {
-            isScrolling.value = true;
-          },
-          onEndScroll: (scrollMetrics) {
-            isScrolling.value = false;
-          },
-          children: [
-            SizedBox(
-              height: screenSize.height - KrsTheme.appBarHeight,
-              child: Stack(
-                children: [
-                  FeaturedCard(mediaItem),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Focus(
-                      canRequestFocus: false,
-                      skipTraversal: true,
-                      onFocusChange: (hasFocus) {
-                        if (hasFocus && !isScrolling.value) {
-                          scrollController.animateTo(
-                            0.0,
-                            duration: KrsTheme.animationDuration,
-                            curve: Curves.easeIn,
-                          );
-                        }
-                      },
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 32.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                /// если кнопка Смотреть в фокусе
-                                // if (playButtonHasFocus.value)
-                                // PlayButtonTooltip(
-                                //   kginoItem,
-                                //   showEpisodeNumber: false,
-                                // ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              children: [
-                                // /// кнопка начала просмотра
-                                // PlayButton(
-                                //   kginoItem,
-                                //   routeName: 'flmxShowPlayer',
-                                //   onFocusChange: (hasFocus) {
-                                //     playButtonHasFocus.value = hasFocus;
-                                //   },
-                                // ),
+        data: (item) => HookBuilder(
+          builder: (context) {
+            final scrollController = useScrollController();
+            final isScrolling = useState(false);
 
-                                // /// если файлов несколько, показываем кнопку выбора
-                                // /// эпизода
-                                // if (kginoItem
-                                //         .seasons.first.episodes.length >
-                                //     1)
-                                //   Padding(
-                                //     padding:
-                                //         const EdgeInsets.only(right: 12.0),
-                                //     child: FilledButton.tonalIcon(
-                                //       onPressed: () {
-                                //         /// переходим на страницу выбора файла
-                                //         context.pushNamed(
-                                //           'flmxShowEpisodes',
-                                //           pathParameters: {
-                                //             'id': kginoItem.id,
-                                //           },
-                                //           extra: kginoItem,
-                                //         );
-                                //       },
-                                //       icon: const Icon(Icons.folder_open),
-                                //       label: Text(locale.selectEpisode),
-                                //     ),
-                                //   ),
+            final playButtonHasFocus = useState(false);
+            final secondContainerPosition = useState(0.0);
 
-                                // /// кнопка добавления или удаления из закладок
-                                // Padding(
-                                //   padding:
-                                //       const EdgeInsets.only(right: 12.0),
-                                //   child: BookmarkButton(kginoItem),
-                                // ),
+            /// вычисляем позицию второго контейнера, если он есть
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              final box = secondContainerKey.globalPaintBounds;
+              if (box != null) {
+                secondContainerPosition.value = box.top;
+              }
+            });
 
-                                // /// кнопка выбора озвучки
-                                // if (kginoItem.voiceActings.length > 1)
-                                //   Padding(
-                                //     padding:
-                                //         const EdgeInsets.only(right: 12.0),
-                                //     child: VoiceActingsButton(
-                                //       kginoItem,
-                                //       onVoiceActingChange:
-                                //           (voiceActing) async {
-                                //         kginoItem.voiceActing =
-                                //             voiceActing.id;
-                                //         await kginoItem.save();
+            return KrsScrollView(
+              scrollController: scrollController,
+              onStartScroll: (scrollMetrics) {
+                isScrolling.value = true;
+              },
+              onEndScroll: (scrollMetrics) {
+                isScrolling.value = false;
+              },
+              children: [
+                SizedBox(
+                  height: screenSize.height,
+                  child: Column(
+                    children: [
+                      SizedBox(height: TvUi.navigationBarSize.height),
+                      FeaturedCard(mediaItem),
+                      const Expanded(
+                        child: SizedBox(),
+                      ),
+                      Focus(
+                        canRequestFocus: false,
+                        skipTraversal: true,
+                        onFocusChange: (hasFocus) {
+                          if (hasFocus && !isScrolling.value) {
+                            scrollController.animateTo(
+                              0.0,
+                              duration: KrsTheme.animationDuration,
+                              curve: Curves.easeIn,
+                            );
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: TvUi.hPadding,
+                            vertical: TvUi.vPadding,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  /// если кнопка Смотреть в фокусе
+                                  // if (playButtonHasFocus.value)
+                                  // PlayButtonTooltip(
+                                  //   kginoItem,
+                                  //   showEpisodeNumber: false,
+                                  // ),
+                                ],
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                children: [
+                                  /// кнопка начала просмотра
+                                  PlayButton(
+                                    mediaItem,
+                                    onFocusChange: (hasFocus) {
+                                      // playButtonHasFocus.value = hasFocus;
+                                    },
+                                  ),
 
-                                //         /// переходим на страницу деталей о сериале
-                                //         // TODO fix route to movie
-                                //         context.pushReplacementNamed(
-                                //           'flmxShowDetails',
-                                //           pathParameters: {
-                                //             'id': kginoItem.id,
-                                //           },
-                                //         );
-                                //       },
-                                //     ),
-                                //   ),
-                              ],
-                            ),
-                          ],
+                                  /// если файлов несколько, показываем кнопку выбора
+                                  /// эпизода
+                                  // if (mediaItem.seasons.first.episodes.length >
+                                  //     1)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 12.0),
+                                    child: FilledButton(
+                                      onPressed: () {
+                                        /// переходим на страницу выбора файла
+                                        context.pushNamed(
+                                          'playlist',
+                                          pathParameters: {
+                                            //'id': kginoItem.id,
+                                          },
+                                          extra: mediaItem,
+                                        );
+                                      },
+                                      child: Text(locale.selectEpisode),
+                                    ),
+                                  ),
+
+                                  // /// кнопка добавления или удаления из закладок
+                                  // Padding(
+                                  //   padding:
+                                  //       const EdgeInsets.only(right: 12.0),
+                                  //   child: BookmarkButton(kginoItem),
+                                  // ),
+
+                                  // /// кнопка выбора озвучки
+                                  // if (kginoItem.voiceActings.length > 1)
+                                  //   Padding(
+                                  //     padding:
+                                  //         const EdgeInsets.only(right: 12.0),
+                                  //     child: VoiceActingsButton(
+                                  //       kginoItem,
+                                  //       onVoiceActingChange:
+                                  //           (voiceActing) async {
+                                  //         kginoItem.voiceActing =
+                                  //             voiceActing.id;
+                                  //         await kginoItem.save();
+
+                                  //         /// переходим на страницу деталей о сериале
+                                  //         // TODO fix route to movie
+                                  //         context.pushReplacementNamed(
+                                  //           'flmxShowDetails',
+                                  //           pathParameters: {
+                                  //             'id': kginoItem.id,
+                                  //           },
+                                  //         );
+                                  //       },
+                                  //     ),
+                                  //   ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
 
-            // Focus(
-            //   key: secondContainerKey,
-            //   canRequestFocus: false,
-            //   skipTraversal: true,
-            //   onFocusChange: (hasFocus) {
-            //     if (hasFocus && !isScrolling.value) {
-            //       scrollController.animateTo(secondContainerPosition.value,
-            //         duration: KrsTheme.animationDuration,
-            //         curve: Curves.easeIn,
-            //       );
-            //     }
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(24.0),
-            //     child: Column(
-            //       mainAxisSize: MainAxisSize.min,
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
+                // Focus(
+                //   key: secondContainerKey,
+                //   canRequestFocus: false,
+                //   skipTraversal: true,
+                //   onFocusChange: (hasFocus) {
+                //     if (hasFocus && !isScrolling.value) {
+                //       scrollController.animateTo(secondContainerPosition.value,
+                //         duration: KrsTheme.animationDuration,
+                //         curve: Curves.easeIn,
+                //       );
+                //     }
+                //   },
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(24.0),
+                //     child: Column(
+                //       mainAxisSize: MainAxisSize.min,
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
 
-            //         Container(
-            //           height: MediaQuery.of(context).size.height,
-            //           child: FilledButton(
-            //             onPressed: () {
+                //         Container(
+                //           height: MediaQuery.of(context).size.height,
+                //           child: FilledButton(
+                //             onPressed: () {
 
-            //             },
-            //             child: Text('button 3'),
-            //           ),
-            //         ),
+                //             },
+                //             child: Text('button 3'),
+                //           ),
+                //         ),
 
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
+                //       ],
+                //     ),
+                //   ),
+                // ),
+              ],
+            );
+          },
         ),
       ),
     );

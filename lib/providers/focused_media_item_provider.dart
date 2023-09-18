@@ -1,8 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../api/tmdb_api_provider.dart';
-import '../models/media_item.dart';
-import '../models/tmdb_item.dart';
+import '../models/test/media_item.dart';
 
 part 'focused_media_item_provider.g.dart';
 
@@ -23,13 +21,14 @@ class FocusedMediaItem extends _$FocusedMediaItem {
     if (mediaItem != null) {
       state = const AsyncLoading();
 
-      final tmdb = (await AsyncValue.guard(() async {
-        /// запрашиваем данные на TMDB
-        return await mediaItem.loadTmdb(ref);
-      }))
-          .valueOrNull;
+      final detailed = await mediaItem.loadDetails(ref);
+      // final tmdb = (await AsyncValue.guard(() async {
+      //   /// запрашиваем данные на TMDB
+      //   return await mediaItem.loadTmdb(ref);
+      // }))
+      //     .valueOrNull;
 
-      state = AsyncData(mediaItem.copyWith(tmdb: tmdb));
+      state = AsyncData(detailed);
     }
   }
 

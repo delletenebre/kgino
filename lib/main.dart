@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:uuid/uuid.dart';
 
 import 'app.dart';
@@ -17,6 +18,9 @@ Future<void> main() async {
 
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
+
+  /// инициализируем видеоплеер
+  MediaKit.ensureInitialized();
 
   /// информация об устройстве
   final deviceInfo = DeviceInfoPlugin();

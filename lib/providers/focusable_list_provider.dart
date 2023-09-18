@@ -7,7 +7,7 @@ part 'focusable_list_provider.g.dart';
 
 @riverpod
 class FocusableList extends _$FocusableList {
-  final FocusNode focusNode = FocusNode();
+  final FocusNode generalFocusNode = FocusNode();
   final ListObserverController listObserverController = ListObserverController(
     controller: ScrollController(),
   );
@@ -27,7 +27,7 @@ class FocusableList extends _$FocusableList {
         focusNode.dispose();
       }
 
-      focusNode.dispose();
+      generalFocusNode.dispose();
       listObserverController.controller?.dispose();
 
       debugPrint('FocusableList disposed');
@@ -51,6 +51,7 @@ class FocusableList extends _$FocusableList {
   KeyEventResult goNext() {
     if (state < focusNodes.length - 1) {
       state++;
+      print('current state $state / ${focusNodes.length}');
       animateToCurrent();
 
       return KeyEventResult.handled;

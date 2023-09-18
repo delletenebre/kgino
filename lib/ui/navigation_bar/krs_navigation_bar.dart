@@ -123,5 +123,5 @@ class KrsNavigationBar extends HookConsumerWidget
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(32.0 + TvUi.vPadding * 2);
+  Size get preferredSize => TvUi.navigationBarSize;
 }

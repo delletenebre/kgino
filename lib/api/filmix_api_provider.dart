@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../models/filmix/filmix_item.dart';
-import '../models/media_item.dart';
+import '../models/test/filmix/filmix_item.dart';
+import '../models/test/media_item.dart';
 import '../providers/providers.dart';
 import 'interceptors/logs_interceptor.dart';
 import 'models/api_request.dart';
@@ -90,12 +90,12 @@ class FilmixApi {
   // }
 
   /// детали фильма или сериала
-  Future<MediaItem> getDetails({
+  Future<FilmixItem> getDetails({
     required String id,
     CancelToken? cancelToken,
-    required MediaItemType mediaItemType,
+    // required MediaItemType mediaItemType,
   }) async {
-    return ApiRequest<MediaItem>().call(
+    return ApiRequest<FilmixItem>().call(
       request: _dio.get(
         '/post/$id',
         queryParameters: {
@@ -104,7 +104,7 @@ class FilmixApi {
         cancelToken: cancelToken,
       ),
       decoder: (json) {
-        return FilmixItem.fromJson(json).toMediaItem(mediaItemType);
+        return FilmixItem.fromJson(json);
       },
     );
   }
@@ -114,7 +114,7 @@ class FilmixApi {
     List<String> filter,
     int page, {
     CancelToken? cancelToken,
-    required MediaItemType mediaItemType,
+    // required MediaItemType mediaItemType,
   }) async {
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get(
@@ -130,7 +130,7 @@ class FilmixApi {
       ),
       decoder: (json) {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item).toMediaItem(mediaItemType);
+          return FilmixItem.fromJson(item);
         }).toList();
       },
     );
@@ -138,7 +138,7 @@ class FilmixApi {
 
   /// список новых фильмов
   Future<List<MediaItem>> getLatestMovies() async {
-    return getFiltered(['s0', 's14'], 1, mediaItemType: MediaItemType.movie);
+    return getFiltered(['s0', 's14'], 1);
   }
 
   /// список популярных фильмов
@@ -150,7 +150,7 @@ class FilmixApi {
       }),
       decoder: (json) {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item).toMediaItem(MediaItemType.movie);
+          return FilmixItem.fromJson(item);
         }).toList();
       },
     );
@@ -165,7 +165,7 @@ class FilmixApi {
     return getFiltered(
       ['s0', 's14', categoryId],
       page,
-      mediaItemType: MediaItemType.movie,
+      // mediaItemType: MediaItemType.movie,
     );
   }
 
@@ -178,7 +178,7 @@ class FilmixApi {
     return getFiltered(
       ['s7', 's93', categoryId],
       page,
-      mediaItemType: MediaItemType.show,
+      // mediaItemType: MediaItemType.show,
     );
   }
 
@@ -187,7 +187,7 @@ class FilmixApi {
     return getFiltered(
       ['s7', 's93'],
       1,
-      mediaItemType: MediaItemType.show,
+      // mediaItemType: MediaItemType.show,
     );
   }
 
@@ -204,7 +204,7 @@ class FilmixApi {
       ),
       decoder: (json) {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item).toMediaItem(MediaItemType.show);
+          return FilmixItem.fromJson(item);
         }).toList();
       },
     );

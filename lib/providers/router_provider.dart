@@ -1,13 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../models/media_item.dart';
+import '../models/test/media_item.dart';
 import '../pages/details_page.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
+import '../pages/player_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final mainNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'main');
@@ -60,7 +59,30 @@ final routerProvider = Provider<GoRouter>((ref) {
               return DetailsPage(mediaItem);
             },
           ),
+          GoRoute(
+            path: 'player',
+            name: 'player',
+            builder: (context, state) {
+              final mediaItem = state.extra as MediaItem;
+              final seasonIndex = int.tryParse(
+                      state.uri.queryParameters['seasonIndex'] ?? '') ??
+                  0;
+              final episodeIndex = int.tryParse(
+                      state.uri.queryParameters['episodeIndex'] ?? '') ??
+                  0;
+              final initialPosition = int.tryParse(
+                      state.uri.queryParameters['initialPosition'] ?? '') ??
+                  0;
+              return PlayerPage(
+                mediaItem: mediaItem,
+                seasonIndex: seasonIndex,
+                episodeIndex: episodeIndex,
+                initialPosition: initialPosition,
+              );
+            },
+          ),
         ],
+
         // routes: [
         //   /// filmix сериалы
         //   GoRoute(
