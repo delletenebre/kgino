@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 import '../../resources/krs_locale.dart';
 
 class TryAgainMessage extends StatelessWidget {
-  final String? poster;
+  final String? imageUrl;
   final Function() onRetry;
 
   const TryAgainMessage({
     super.key,
-    this.poster,
+    this.imageUrl,
     required this.onRetry,
   });
 
@@ -23,25 +23,32 @@ class TryAgainMessage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.only(bottom: 48.0),
-            width: 256.0,
-            height: 256.0,
+            clipBehavior: Clip.antiAlias,
+            height: 200.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
             child: FittedBox(
               fit: BoxFit.fitHeight,
-              child: poster == null
+              child: imageUrl == null
                   ? Icon(
                       Icons.live_tv_outlined,
                       color: theme.colorScheme.outline.withOpacity(0.36),
                     )
                   : Image.network(
-                      poster!,
+                      imageUrl!,
                       alignment: Alignment.center,
                     ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 24.0),
-            child: Text(locale.errorLoadingVideo),
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
+            child: Text(
+              locale.errorLoadingVideo,
+              style: const TextStyle(
+                fontSize: 16.0,
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 24.0),

@@ -61,6 +61,16 @@ class MediaCard extends HookWidget {
 
         onFocusChange?.call(hasFocus);
       },
+      onKeyEvent: (focusNode, event) {
+        if ([LogicalKeyboardKey.enter, LogicalKeyboardKey.select]
+            .contains(event.logicalKey)) {
+          if (event is KeyUpEvent) {
+            onTap.call();
+          }
+        }
+
+        return KeyEventResult.ignored;
+      },
       child: GestureDetector(
         onTap: onTap,
         child: CallbackShortcuts(
@@ -124,7 +134,6 @@ class MediaCard extends HookWidget {
                         imageUrl,
                         fit: BoxFit.cover,
                         alignment: Alignment.topCenter,
-                        //'https://image.tmdb.org/t/p/w500/id0gCbEij0NItwKpoEhL2TR0KT6.jpg',
                       ),
                     ),
                   ),

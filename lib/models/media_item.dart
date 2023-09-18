@@ -20,6 +20,14 @@ enum MediaItemType {
   show,
 }
 
+abstract class Tmdb {
+  Future<TmdbItem> getTmdb();
+}
+
+abstract class Details {
+  Future<MediaItem> getDetails(String id);
+}
+
 @freezed
 class MediaItem with _$MediaItem {
   const MediaItem._();
@@ -41,6 +49,7 @@ class MediaItem with _$MediaItem {
   factory MediaItem.fromJson(Map<String, Object?> json) =>
       _$MediaItemFromJson(json);
 
+  @With<Details>()
   String get genresString => genres.take(2).join(' / ');
   String get countriesString => countries.take(2).join(' / ');
 

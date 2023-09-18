@@ -88,7 +88,7 @@ class DetailsPage extends HookConsumerWidget {
       body: details.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => TryAgainMessage(
-          poster: mediaItem?.posterImage,
+          imageUrl: mediaItem.posterImage,
           onRetry: () {},
         ),
         data: (item) => KrsScrollView(

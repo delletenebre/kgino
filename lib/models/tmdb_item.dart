@@ -24,7 +24,9 @@ class TmdbItem with _$TmdbItem {
   factory TmdbItem.fromJson(Map<String, Object?> json) =>
       _$TmdbItemFromJson(json);
 
-  String get backdropImage => 'https://image.tmdb.org/t/p/w500$backdropPath';
+  String? get backdropImage => backdropPath.isNotEmpty
+      ? 'https://image.tmdb.org/t/p/w500$backdropPath'
+      : null;
 
   String get titleOrName => title ?? name ?? '';
 }
