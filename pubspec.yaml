@@ -21,7 +21,6 @@ dependencies:
     sdk: flutter
   
   async: ^2.11.0
-  audio_video_progress_bar: ^1.0.1
   cached_network_image: ^3.2.3
   collection: ^1.17.0
   crypto: ^3.0.2
@@ -35,8 +34,8 @@ dependencies:
   hooks_riverpod: ^2.4.0
   json_annotation: ^4.8.1
   intl: ^0.18.0
-  isar: 4.0.0-dev.10
-  isar_flutter_libs: 4.0.0-dev.10
+  isar: 4.0.0-dev.14
+  isar_flutter_libs: 4.0.0-dev.14
   media_kit: ^1.1.7
   media_kit_video: ^1.1.8
   media_kit_libs_video: ^1.0.1
@@ -46,7 +45,7 @@ dependencies:
   scrollview_observer: ^1.16.4
   shared_preferences: ^2.2.1
   uuid: ^3.0.7
-  video_player: ^2.7.1
+  # video_player: ^2.7.1
   # video_player_macos: ^2.0.1
   # video_player_win: ^2.2.2
   wakelock_plus: ^1.1.1

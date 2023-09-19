@@ -40,6 +40,10 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
       kinopoiskRating: json['kinopoiskRating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['kinopoiskRating']),
+      seasons: (json['seasons'] as List<dynamic>?)
+              ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
@@ -58,4 +62,5 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'imdbRating': const DoubleConverter().toJson(instance.imdbRating),
       'kinopoiskRating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
+      'seasons': instance.seasons.map((e) => e.toJson()).toList(),
     };

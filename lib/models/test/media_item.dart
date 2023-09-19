@@ -6,7 +6,7 @@ import 'media_item_season.dart';
 
 part 'media_item.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MediaItem {
   @StringConverter()
   final String id;
@@ -45,7 +45,7 @@ class MediaItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
-  List<MediaItemSeason> seasons;
+  List<MediaItemSeason> seasons = [];
 
   MediaItem({
     this.id = '',

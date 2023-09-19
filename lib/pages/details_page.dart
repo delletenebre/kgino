@@ -58,7 +58,7 @@ class DetailsPage extends HookConsumerWidget {
           imageUrl: mediaItem.poster,
           onRetry: () {},
         ),
-        data: (item) => HookBuilder(
+        data: (mediaItem) => HookBuilder(
           builder: (context) {
             final scrollController = useScrollController();
             final isScrolling = useState(false);
@@ -129,7 +129,7 @@ class DetailsPage extends HookConsumerWidget {
                                 children: [
                                   /// кнопка начала просмотра
                                   PlayButton(
-                                    mediaItem,
+                                    mediaItem!,
                                     onFocusChange: (hasFocus) {
                                       // playButtonHasFocus.value = hasFocus;
                                     },
@@ -154,6 +154,13 @@ class DetailsPage extends HookConsumerWidget {
                                       },
                                       child: Text(locale.selectEpisode),
                                     ),
+                                  ),
+
+                                  TextButton(
+                                    onPressed: () {
+                                      context.pop();
+                                    },
+                                    child: Text('BACK'),
                                   ),
 
                                   // /// кнопка добавления или удаления из закладок

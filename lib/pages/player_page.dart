@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -28,9 +29,18 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
 
+  /// индекс текущего сезона
+  int currentSeasonIndex = 0;
+
+  /// индекс текущего эпизода
+  int currentEpisodeIndex = 0;
+
   @override
   void initState() {
     super.initState();
+
+    currentSeasonIndex = widget.seasonIndex;
+    currentEpisodeIndex = widget.episodeIndex;
 
     final playerConfiguration = PlayerConfiguration(
       // Supply your options:
@@ -42,13 +52,13 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     player = Player(
       configuration: playerConfiguration,
     );
-    // Play a [Media] or [Playlist].
 
     widget.mediaItem
         .loadEpisodeUrl(
-            ref: ref,
-            seasonIndex: widget.seasonIndex,
-            episodeIndex: widget.episodeIndex)
+      ref: ref,
+      seasonIndex: currentSeasonIndex,
+      episodeIndex: currentEpisodeIndex,
+    )
         .then((episodeUrl) {
       print('episodeUrl: $episodeUrl');
       player.open(Media(episodeUrl));
@@ -76,18 +86,28 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
         controller: controller,
         controls: (state) {
           return Center(
-            child: IconButton(
-              onPressed: () {
-                state.widget.controller.player.playOrPause();
-              },
-              icon: StreamBuilder(
-                stream: state.widget.controller.player.stream.playing,
-                builder: (context, playing) => Icon(
-                  playing.data == true ? Icons.pause : Icons.play_arrow,
+            child: Column(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    state.widget.controller.player.playOrPause();
+                  },
+                  icon: StreamBuilder(
+                    stream: state.widget.controller.player.stream.playing,
+                    builder: (context, playing) => Icon(
+                      playing.data == true ? Icons.pause : Icons.play_arrow,
+                    ),
+                  ),
+                  // It's not necessary to use [StreamBuilder] or to use [Player] & [VideoController] from [state].
+                  // [StreamSubscription]s can be made inside [initState] of this widget.
                 ),
-              ),
-              // It's not necessary to use [StreamBuilder] or to use [Player] & [VideoController] from [state].
-              // [StreamSubscription]s can be made inside [initState] of this widget.
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: Text('BACK'),
+                ),
+              ],
             ),
           );
         },

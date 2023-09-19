@@ -76,11 +76,7 @@ class PlayButton extends HookWidget {
           /// переходим на страницу плеера фильма
           context.pushNamed(
             'player',
-            queryParameters: {
-              'seasonIndex': '0',
-              'episodeIndex': '0',
-              'initialPosition': '0',
-            },
+            queryParameters: {},
             extra: mediaItem,
           );
         },

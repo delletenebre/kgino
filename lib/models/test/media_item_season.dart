@@ -5,14 +5,16 @@ import 'media_item_episode.dart';
 
 part 'media_item_season.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MediaItemSeason {
   @StringConverter()
   final String id;
+  final String name;
   final List<MediaItemEpisode> episodes;
 
   MediaItemSeason({
     this.id = '',
+    this.name = '',
     this.episodes = const [],
   });
 

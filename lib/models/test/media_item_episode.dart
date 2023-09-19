@@ -8,9 +8,13 @@ part 'media_item_episode.g.dart';
 class MediaItemEpisode {
   @StringConverter()
   final String id;
+  final String videoFileUrl;
+  final List<int> qualities;
 
   MediaItemEpisode({
     this.id = '',
+    this.videoFileUrl = '',
+    this.qualities = const [],
   });
 
   factory MediaItemEpisode.fromJson(Map<String, dynamic> json) =>

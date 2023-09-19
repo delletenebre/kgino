@@ -5,12 +5,14 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../../api/filmix_api_provider.dart';
 import '../../../extensions/json_converters.dart';
 import '../media_item.dart';
+import '../media_item_episode.dart';
+import '../media_item_season.dart';
 import 'flmx_player_links.dart';
 import 'flmx_show_link.dart';
 
 part 'filmix_item.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class FilmixItem extends MediaItem {
   final List<String> categories;
 
@@ -28,13 +30,13 @@ class FilmixItem extends MediaItem {
     super.poster,
     super.year,
     super.countries,
-    super.voiceActing,
-    super.voiceActings,
     super.subtitlesEnabled,
     super.bookmarked,
     super.imdbRating,
     super.kinopoiskRating,
-    //super.seasons,
+    super.seasons,
+    super.voiceActing,
+    super.voiceActings,
     this.categories = const [],
     this.shortStory = '',
     this.playerLinks = const FlmxPlayerLinks(),
@@ -86,6 +88,33 @@ class FilmixItem extends MediaItem {
       voiceActings = {
         for (final voiceActing in uniqueVoiceActings) voiceActing: voiceActing
       };
+
+      if (super.voiceActing.isEmpty) {
+        voiceActing = voiceActings.keys.first;
+      }
+
+      seasons = [];
+
+      for (final seasonEntry in playlist.entries) {
+        if (seasonEntry.value.containsKey(voiceActing)) {
+          final seasonNumber = seasonEntry.key;
+          final episodes = <MediaItemEpisode>[];
+          for (final episodeEntry
+              in (seasonEntry.value[voiceActing] as Map).entries) {
+            final episodeNumber = episodeEntry.key;
+            final showLink = episodeEntry.value as FlmxShowLink;
+            episodes.add(MediaItemEpisode(
+              id: '$seasonNumber/$episodeNumber',
+              videoFileUrl: showLink.link,
+              qualities: showLink.qualities,
+            ));
+          }
+          seasons.add(MediaItemSeason(
+            name: seasonEntry.key,
+            episodes: episodes,
+          ));
+        }
+      }
     }
   }
 
@@ -123,22 +152,14 @@ class FilmixItem extends MediaItem {
   }) async {
     final api = ref.read(filmixApiProvider);
 
-    if (seasons.length < seasonIndex) {
+    if (seasonIndex < seasons.length) {
       final season = seasons[seasonIndex];
-      if (season.episodes.length < episodeIndex) {
+      if (episodeIndex < season.episodes.length) {
         final episode = season.episodes[episodeIndex];
+        return episode.videoFileUrl.replaceFirst('_%s.', '_480.');
       }
     }
 
-    // /// отменяем выполнение запроса, если страница закрыта
-    // final cancelToken = api.getCancelToken();
-    // ref.onDispose(cancelToken.cancel);
-
-    // return await api.getDetails(
-    //   id: id,
-    //   cancelToken: cancelToken,
-    // );
-
-    return 'https://nl06.cdnsqu.com/s/FXFS0WN1567C5IozX8wnUXPAdkFBQUFBQUFBQUFBQjljRVZCUUJV/Deadliest-Catch/s17e22_480.mp4';
+    return '';
   }
 }
