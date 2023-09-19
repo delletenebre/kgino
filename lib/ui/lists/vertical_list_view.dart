@@ -11,6 +11,11 @@ class VerticalListView extends ConsumerWidget {
   final Widget Function(BuildContext context, int index) itemBuilder;
   final void Function(bool hasFocus)? onFocusChange;
   final KeyEventResult keyEventResult;
+  final ListObserverController? controller;
+
+  /// запрос индекса для смены фокуса
+  /// (при внешнем управлении, например, сезоны-эпизоды)
+  final int Function()? requestItemIndex;
 
   const VerticalListView({
     super.key,
@@ -18,6 +23,8 @@ class VerticalListView extends ConsumerWidget {
     required this.itemBuilder,
     this.onFocusChange,
     this.keyEventResult = KeyEventResult.ignored,
+    this.controller,
+    this.requestItemIndex,
   });
 
   @override
@@ -26,6 +33,7 @@ class VerticalListView extends ConsumerWidget {
       key: key,
       itemCount: itemCount,
       keyEventResult: keyEventResult,
+      controller: controller,
     ).notifier);
 
     return Focus(
@@ -44,7 +52,7 @@ class VerticalListView extends ConsumerWidget {
       },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          focusableListController.jumpToCurrent();
+          focusableListController.jumpToCurrent(requestItemIndex);
         }
 
         onFocusChange?.call(hasFocus);

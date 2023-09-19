@@ -6,7 +6,7 @@ part of 'focusable_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$focusableListHash() => r'401b06b271fe7e094e2ee33ae46012e18d6fc2e3';
+String _$focusableListHash() => r'115cebce93f27d44c97debccb29bea9e9710853b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,12 +34,14 @@ abstract class _$FocusableList extends BuildlessAutoDisposeNotifier<int> {
   late final int itemCount;
   late final double offset;
   late final KeyEventResult keyEventResult;
+  late final ListObserverController? controller;
 
   int build({
     Key? key,
     int itemCount = 0,
     double offset = 0.0,
     KeyEventResult keyEventResult = KeyEventResult.ignored,
+    ListObserverController? controller,
   });
 }
 
@@ -58,12 +60,14 @@ class FocusableListFamily extends Family<int> {
     int itemCount = 0,
     double offset = 0.0,
     KeyEventResult keyEventResult = KeyEventResult.ignored,
+    ListObserverController? controller,
   }) {
     return FocusableListProvider(
       key: key,
       itemCount: itemCount,
       offset: offset,
       keyEventResult: keyEventResult,
+      controller: controller,
     );
   }
 
@@ -76,6 +80,7 @@ class FocusableListFamily extends Family<int> {
       itemCount: provider.itemCount,
       offset: provider.offset,
       keyEventResult: provider.keyEventResult,
+      controller: provider.controller,
     );
   }
 
@@ -103,12 +108,14 @@ class FocusableListProvider
     int itemCount = 0,
     double offset = 0.0,
     KeyEventResult keyEventResult = KeyEventResult.ignored,
+    ListObserverController? controller,
   }) : this._internal(
           () => FocusableList()
             ..key = key
             ..itemCount = itemCount
             ..offset = offset
-            ..keyEventResult = keyEventResult,
+            ..keyEventResult = keyEventResult
+            ..controller = controller,
           from: focusableListProvider,
           name: r'focusableListProvider',
           debugGetCreateSourceHash:
@@ -122,6 +129,7 @@ class FocusableListProvider
           itemCount: itemCount,
           offset: offset,
           keyEventResult: keyEventResult,
+          controller: controller,
         );
 
   FocusableListProvider._internal(
@@ -135,12 +143,14 @@ class FocusableListProvider
     required this.itemCount,
     required this.offset,
     required this.keyEventResult,
+    required this.controller,
   }) : super.internal();
 
   final Key? key;
   final int itemCount;
   final double offset;
   final KeyEventResult keyEventResult;
+  final ListObserverController? controller;
 
   @override
   int runNotifierBuild(
@@ -151,6 +161,7 @@ class FocusableListProvider
       itemCount: itemCount,
       offset: offset,
       keyEventResult: keyEventResult,
+      controller: controller,
     );
   }
 
@@ -163,7 +174,8 @@ class FocusableListProvider
           ..key = key
           ..itemCount = itemCount
           ..offset = offset
-          ..keyEventResult = keyEventResult,
+          ..keyEventResult = keyEventResult
+          ..controller = controller,
         from: from,
         name: null,
         dependencies: null,
@@ -173,6 +185,7 @@ class FocusableListProvider
         itemCount: itemCount,
         offset: offset,
         keyEventResult: keyEventResult,
+        controller: controller,
       ),
     );
   }
@@ -188,7 +201,8 @@ class FocusableListProvider
         other.key == key &&
         other.itemCount == itemCount &&
         other.offset == offset &&
-        other.keyEventResult == keyEventResult;
+        other.keyEventResult == keyEventResult &&
+        other.controller == controller;
   }
 
   @override
@@ -198,6 +212,7 @@ class FocusableListProvider
     hash = _SystemHash.combine(hash, itemCount.hashCode);
     hash = _SystemHash.combine(hash, offset.hashCode);
     hash = _SystemHash.combine(hash, keyEventResult.hashCode);
+    hash = _SystemHash.combine(hash, controller.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -215,6 +230,9 @@ mixin FocusableListRef on AutoDisposeNotifierProviderRef<int> {
 
   /// The parameter `keyEventResult` of this provider.
   KeyEventResult get keyEventResult;
+
+  /// The parameter `controller` of this provider.
+  ListObserverController? get controller;
 }
 
 class _FocusableListProviderElement
@@ -231,6 +249,9 @@ class _FocusableListProviderElement
   @override
   KeyEventResult get keyEventResult =>
       (origin as FocusableListProvider).keyEventResult;
+  @override
+  ListObserverController? get controller =>
+      (origin as FocusableListProvider).controller;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

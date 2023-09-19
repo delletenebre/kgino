@@ -3,12 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../api/filmix_api_provider.dart';
+import '../hooks/list_observer_controller_hook.dart';
 import '../models/test/media_item.dart';
 import '../resources/constants.dart';
-import '../ui/cards/featured_card.dart';
-import '../ui/cards/media_card.dart';
-import '../ui/lists/horizontal_list_view.dart';
+import '../resources/krs_locale.dart';
 import '../ui/lists/vertical_list_view.dart';
 
 class PlaylistPage extends HookConsumerWidget {
@@ -22,6 +20,16 @@ class PlaylistPage extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
+
+    final episodes =
+        mediaItem.seasons.expand((season) => season.episodes).toList();
+
+    final seasonsListObserverController = useListObserverController();
+    final episodesListObserverController = useListObserverController();
+
+    final _selectedSeasonIndex = useState(0);
+    final _selectedEpisodeIndex = useState(0);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -46,17 +54,77 @@ class PlaylistPage extends HookConsumerWidget {
                       fontSize: 16.0,
                     ),
                   ),
+                  TextButton(
+                    onPressed: () {
+                      context.pop();
+                    },
+                    child: Text('BACK'),
+                  ),
                   const SizedBox(height: 24.0),
                   Expanded(
                     child: VerticalListView(
                       key: UniqueKey(),
+                      controller: seasonsListObserverController,
                       keyEventResult: KeyEventResult.handled,
-                      itemCount: mediaItem.seasons.length * 20,
+                      requestItemIndex: () => _selectedSeasonIndex.value,
+                      itemCount: mediaItem.seasons.length,
                       itemBuilder: (context, index) {
-                        //final season = mediaItem.seasons[index];
+                        final season = mediaItem.seasons[index];
                         return ListTile(
+                          onFocusChange: (hasFocus) {
+                            if (hasFocus) {
+                              final seasonIndex =
+                                  mediaItem.seasons.indexOf(season);
+                              int minIndex = 0;
+
+                              for (int i = 0; i < seasonIndex; i++) {
+                                /// текущий сезон
+                                final season = mediaItem.seasons[i];
+
+                                /// количество эпизодов в текущем сезоне
+                                final episodesCount = season.episodes.length;
+
+                                /// минимальный индекс эпизода в нужном сезоне
+                                minIndex += episodesCount;
+                              }
+
+                              /// максимальный индекс эпизода в нужном сезоне
+                              int maxIndex = minIndex + season.episodes.length;
+
+                              episodesListObserverController.animateTo(
+                                index: minIndex,
+                                isFixedHeight: true,
+                                offset: (offset) => 48.0,
+                                duration: const Duration(milliseconds: 50),
+                                curve: Curves.easeOut,
+                              );
+
+                              if (_selectedEpisodeIndex.value < minIndex ||
+                                  _selectedEpisodeIndex.value >= maxIndex) {
+                                /// ^ если текущий выбранный эпизод не в выбранном сезоне
+
+                                /// прокручиваем список к первому эпизоду выбранного сезона
+                                episodesListObserverController.animateTo(
+                                  index: minIndex,
+                                  isFixedHeight: true,
+                                  offset: (offset) => 48.0,
+                                  duration: const Duration(milliseconds: 50),
+                                  curve: Curves.easeIn,
+                                );
+
+                                /// обновляем индексы эпизода и сезона
+                                _selectedSeasonIndex.value = seasonIndex;
+                                _selectedEpisodeIndex.value = minIndex;
+                              } else {
+                                /// ^ если текущий выбранный эпизод из выбранного сезона
+
+                                /// обновляем индекс сезона
+                                _selectedSeasonIndex.value = seasonIndex;
+                              }
+                            }
+                          },
                           onTap: () {},
-                          title: Text('Season ${index}'),
+                          title: Text('${locale.season} ${season.name}'),
                         );
                       },
                     ),
@@ -71,7 +139,9 @@ class PlaylistPage extends HookConsumerWidget {
               child: VerticalListView(
                 key: UniqueKey(),
                 keyEventResult: KeyEventResult.handled,
-                itemCount: mediaItem.seasons.length * 20,
+                controller: episodesListObserverController,
+                requestItemIndex: () => _selectedEpisodeIndex.value,
+                itemCount: episodes.length,
                 itemBuilder: (context, index) {
                   //final season = mediaItem.seasons[index];
                   return ListTile(

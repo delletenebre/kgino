@@ -8,9 +8,7 @@ part 'focusable_list_provider.g.dart';
 @riverpod
 class FocusableList extends _$FocusableList {
   final FocusNode generalFocusNode = FocusNode();
-  final ListObserverController listObserverController = ListObserverController(
-    controller: ScrollController(),
-  );
+  late final ListObserverController listObserverController;
   List<FocusNode> focusNodes = [];
 
   @override
@@ -19,8 +17,14 @@ class FocusableList extends _$FocusableList {
     int itemCount = 0,
     double offset = 0.0,
     KeyEventResult keyEventResult = KeyEventResult.ignored,
+    ListObserverController? controller,
   }) {
     List.generate(itemCount, (index) => focusNodes.add(FocusNode()));
+
+    listObserverController = controller ??
+        ListObserverController(
+          controller: ScrollController(),
+        );
 
     ref.onCancel(() {
       for (final focusNode in focusNodes) {
