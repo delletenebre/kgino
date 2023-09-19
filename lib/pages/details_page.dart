@@ -8,7 +8,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
-import '../api/filmix_api_provider.dart';
 import '../models/test/media_item.dart';
 import '../resources/constants.dart';
 import '../ui/cards/featured_card.dart';
@@ -146,9 +145,6 @@ class DetailsPage extends HookConsumerWidget {
                                         /// переходим на страницу выбора файла
                                         context.pushNamed(
                                           'playlist',
-                                          pathParameters: {
-                                            //'id': kginoItem.id,
-                                          },
                                           extra: mediaItem,
                                         );
                                       },

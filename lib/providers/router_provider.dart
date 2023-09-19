@@ -7,6 +7,7 @@ import '../pages/details_page.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
+import '../pages/playlist_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final mainNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'main');
@@ -57,6 +58,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final mediaItem = state.extra as MediaItem;
               return DetailsPage(mediaItem);
+            },
+          ),
+          GoRoute(
+            path: 'playlist',
+            name: 'playlist',
+            builder: (context, state) {
+              final mediaItem = state.extra as MediaItem;
+              return PlaylistPage(mediaItem);
             },
           ),
           GoRoute(

@@ -10,12 +10,14 @@ class VerticalListView extends ConsumerWidget {
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final void Function(bool hasFocus)? onFocusChange;
+  final KeyEventResult keyEventResult;
 
   const VerticalListView({
     super.key,
     required this.itemCount,
     required this.itemBuilder,
     this.onFocusChange,
+    this.keyEventResult = KeyEventResult.ignored,
   });
 
   @override
@@ -23,6 +25,7 @@ class VerticalListView extends ConsumerWidget {
     final focusableListController = ref.read(focusableListProvider(
       key: key,
       itemCount: itemCount,
+      keyEventResult: keyEventResult,
     ).notifier);
 
     return Focus(
