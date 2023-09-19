@@ -46,7 +46,10 @@ class _ListObserverControllerHookState
   );
 
   @override
-  ListObserverController build(context) => controller;
+  ListObserverController build(context) {
+    print('======= rebuild scrol');
+    return controller;
+  }
 
   @override
   void dispose() => controller.controller?.dispose();

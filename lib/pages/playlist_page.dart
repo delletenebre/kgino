@@ -28,7 +28,7 @@ class PlaylistPage extends HookConsumerWidget {
     final seasonsListObserverController = useListObserverController();
     final episodesListObserverController = useListObserverController();
 
-    final _selectedSeasonIndex = useRef(0);
+    final _selectedSeasonIndex = useState(0);
     final _selectedEpisodeIndex = useState(0);
 
     return Scaffold(
@@ -69,6 +69,7 @@ class PlaylistPage extends HookConsumerWidget {
                       requestItemIndex: () => _selectedSeasonIndex.value,
                       itemCount: mediaItem.seasons.length,
                       itemBuilder: (context, index) {
+                        print('INDEX SEASON REBUILD: $index');
                         final season = mediaItem.seasons[index];
                         return ListTile(
                           onFocusChange: (hasFocus) {
@@ -109,6 +110,8 @@ class PlaylistPage extends HookConsumerWidget {
                                 /// обновляем индексы эпизода и сезона
                                 _selectedSeasonIndex.value = seasonIndex;
                                 _selectedEpisodeIndex.value = minIndex;
+                                print(
+                                    '_selectedEpisodeIndex minIndex: ${_selectedEpisodeIndex.value}');
                               } else {
                                 /// ^ если текущий выбранный эпизод из выбранного сезона
 
@@ -172,6 +175,7 @@ class PlaylistPage extends HookConsumerWidget {
                           }
                           episodesOffset += episodesCount;
                         }
+                        print('episodeIndex $episodeIndex');
 
                         /// обновляем индекс эпизода
                         _selectedEpisodeIndex.value = episodeIndex;

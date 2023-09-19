@@ -36,6 +36,13 @@ class VerticalListView extends ConsumerWidget {
       controller: controller,
     ).notifier);
 
+    ref.watch(focusableListProvider(
+      key: key,
+      itemCount: itemCount,
+      keyEventResult: keyEventResult,
+      controller: controller,
+    ));
+
     return Focus(
       focusNode: focusableListController.generalFocusNode,
       skipTraversal: true,
