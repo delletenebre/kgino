@@ -22,13 +22,13 @@ class PlaylistPage extends HookConsumerWidget {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
-    final episodes =
-        mediaItem.seasons.expand((season) => season.episodes).toList();
+    final episodes = useMemoized(
+        () => mediaItem.seasons.expand((season) => season.episodes).toList());
 
     final seasonsListObserverController = useListObserverController();
     final episodesListObserverController = useListObserverController();
 
-    final _selectedSeasonIndex = useState(0);
+    final _selectedSeasonIndex = useRef(0);
     final _selectedEpisodeIndex = useState(0);
 
     return Scaffold(
@@ -43,7 +43,7 @@ class PlaylistPage extends HookConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: 412.0,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,16 +54,16 @@ class PlaylistPage extends HookConsumerWidget {
                       fontSize: 16.0,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      context.pop();
-                    },
-                    child: Text('BACK'),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     context.pop();
+                  //   },
+                  //   child: Text('BACK'),
+                  // ),
                   const SizedBox(height: 24.0),
                   Expanded(
                     child: VerticalListView(
-                      key: UniqueKey(),
+                      key: const ValueKey('seasonsList'),
                       controller: seasonsListObserverController,
                       keyEventResult: KeyEventResult.handled,
                       requestItemIndex: () => _selectedSeasonIndex.value,
@@ -72,6 +72,8 @@ class PlaylistPage extends HookConsumerWidget {
                         final season = mediaItem.seasons[index];
                         return ListTile(
                           onFocusChange: (hasFocus) {
+                            print(
+                                '_selectedEpisodeIndex: ${_selectedEpisodeIndex.value}');
                             if (hasFocus) {
                               final seasonIndex =
                                   mediaItem.seasons.indexOf(season);
@@ -91,14 +93,6 @@ class PlaylistPage extends HookConsumerWidget {
                               /// максимальный индекс эпизода в нужном сезоне
                               int maxIndex = minIndex + season.episodes.length;
 
-                              episodesListObserverController.animateTo(
-                                index: minIndex,
-                                isFixedHeight: true,
-                                offset: (offset) => 48.0,
-                                duration: const Duration(milliseconds: 50),
-                                curve: Curves.easeOut,
-                              );
-
                               if (_selectedEpisodeIndex.value < minIndex ||
                                   _selectedEpisodeIndex.value >= maxIndex) {
                                 /// ^ если текущий выбранный эпизод не в выбранном сезоне
@@ -107,7 +101,7 @@ class PlaylistPage extends HookConsumerWidget {
                                 episodesListObserverController.animateTo(
                                   index: minIndex,
                                   isFixedHeight: true,
-                                  offset: (offset) => 48.0,
+                                  offset: (offset) => 0.0,
                                   duration: const Duration(milliseconds: 50),
                                   curve: Curves.easeIn,
                                 );
@@ -137,14 +131,52 @@ class PlaylistPage extends HookConsumerWidget {
             ),
             Expanded(
               child: VerticalListView(
-                key: UniqueKey(),
+                key: const ValueKey('episodesList'),
                 keyEventResult: KeyEventResult.handled,
                 controller: episodesListObserverController,
                 requestItemIndex: () => _selectedEpisodeIndex.value,
                 itemCount: episodes.length,
                 itemBuilder: (context, index) {
-                  //final season = mediaItem.seasons[index];
+                  final episode = episodes[index];
                   return ListTile(
+                    onFocusChange: (hasFocus) {
+                      if (hasFocus) {
+                        final episodeIndex = episodes.indexOf(episode);
+                        int episodesOffset = 0;
+
+                        for (int i = 0; i < mediaItem.seasons.length; i++) {
+                          /// текущий сезон
+                          final season = mediaItem.seasons[i];
+
+                          /// количество эпизодов в текущем сезоне
+                          final episodesCount = season.episodes.length;
+
+                          /// относительный индекс эпизода в нужном сезоне
+                          final index = episodeIndex - episodesOffset;
+
+                          if (episodesCount > index) {
+                            /// обновляем индекс сезона
+
+                            _selectedSeasonIndex.value = i;
+
+                            /// прокручиваем список сезонов к выбранному сезону
+                            seasonsListObserverController.animateTo(
+                              index: _selectedSeasonIndex.value,
+                              isFixedHeight: true,
+                              offset: (offset) => 0.0,
+                              duration: const Duration(milliseconds: 50),
+                              curve: Curves.easeIn,
+                            );
+
+                            break;
+                          }
+                          episodesOffset += episodesCount;
+                        }
+
+                        /// обновляем индекс эпизода
+                        _selectedEpisodeIndex.value = episodeIndex;
+                      }
+                    },
                     onTap: () {},
                     title: Text('Episode ${index}'),
                   );
