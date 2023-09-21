@@ -33,8 +33,6 @@ class FocusableList extends _$FocusableList {
 
       generalFocusNode.dispose();
       listObserverController.controller?.dispose();
-
-      debugPrint('FocusableList disposed');
     });
 
     return 0;
@@ -55,7 +53,6 @@ class FocusableList extends _$FocusableList {
   KeyEventResult goNext() {
     if (state < focusNodes.length - 1) {
       state++;
-      print('current state $state / ${focusNodes.length}');
       animateToCurrent();
 
       return KeyEventResult.handled;
@@ -65,11 +62,13 @@ class FocusableList extends _$FocusableList {
   }
 
   /// переход к текущему элементу без анимации
-  void jumpToCurrent([int Function()? requestItemIndex]) {
+  int jumpToCurrent([int Function()? requestItemIndex]) {
     if (requestItemIndex != null) {
       state = requestItemIndex();
     }
     jumpTo(state);
+
+    return state;
   }
 
   void jumpTo(int index) {

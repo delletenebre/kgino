@@ -6,7 +6,7 @@ part of 'focusable_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$focusableListHash() => r'115cebce93f27d44c97debccb29bea9e9710853b';
+String _$focusableListHash() => r'8b23405bd7216462f651825be71c5e438a64e129';
 
 /// Copied from Dart SDK
 class _SystemHash {

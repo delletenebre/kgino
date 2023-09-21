@@ -29,8 +29,6 @@ class KrsNavigationBar extends HookConsumerWidget
         canRequestFocus: false,
         skipTraversal: true,
         onFocusChange: (hasFocus) {
-          debugPrint('Navigation bar onFocusChange: $hasFocus');
-
           focused.value = hasFocus;
 
           if (hasFocus) {

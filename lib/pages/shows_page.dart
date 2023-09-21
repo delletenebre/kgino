@@ -55,26 +55,29 @@ class ShowsPage extends HookConsumerWidget {
             },
             itemCount: items.length,
             itemBuilder: (context, index) {
-              return HorizontalListView<MediaItem>(
-                key: UniqueKey(),
-                itemHeight: TvUi.horizontalCardSize.height,
-                title: Text('Популярные'),
-                asyncItems: items[index],
-                itemBuilder: (context, index, item) {
-                  return MediaCard(
-                    onFocusChange: (hasFocus) {
-                      if (hasFocus) {
-                        focusedMediaItem.value = item;
-                      }
-                    },
-                    onTap: () {
-                      /// переходим на страницу деталей о сериале
-                      context.goNamed('details', extra: item);
-                    },
-                    title: item.title,
-                    imageUrl: item.poster,
-                  );
-                },
+              return Padding(
+                padding: const EdgeInsets.only(bottom: TvUi.vPadding),
+                child: HorizontalListView<MediaItem>(
+                  key: UniqueKey(),
+                  itemHeight: TvUi.horizontalCardSize.height,
+                  title: Text('Популярные'),
+                  asyncItems: items[index],
+                  itemBuilder: (context, index, item) {
+                    return MediaCard(
+                      onFocusChange: (hasFocus) {
+                        if (hasFocus) {
+                          focusedMediaItem.value = item;
+                        }
+                      },
+                      onTap: () {
+                        /// переходим на страницу деталей о сериале
+                        context.goNamed('details', extra: item);
+                      },
+                      title: item.title,
+                      imageUrl: item.poster,
+                    );
+                  },
+                ),
               );
             },
           ),

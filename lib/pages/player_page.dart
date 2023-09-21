@@ -60,7 +60,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
       episodeIndex: currentEpisodeIndex,
     )
         .then((episodeUrl) {
-      print('episodeUrl: $episodeUrl');
+      debugPrint('Loaded episode url: $episodeUrl');
       player.open(Media(episodeUrl));
     });
 

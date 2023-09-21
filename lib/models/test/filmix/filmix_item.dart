@@ -64,7 +64,7 @@ class FilmixItem extends MediaItem {
                 } else {
                   return MapEntry(
                     k,
-                    (e as List<dynamic>).mapIndexed((k, e) {
+                    (e as List<dynamic>).asMap().map((k, e) {
                       return MapEntry(
                         k + 1,
                         FlmxShowLink.fromJson(e as Map<String, dynamic>),
@@ -95,16 +95,18 @@ class FilmixItem extends MediaItem {
 
       seasons = [];
 
-      for (final seasonEntry in playlist.entries) {
+      for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
         if (seasonEntry.value.containsKey(voiceActing)) {
           final seasonNumber = seasonEntry.key;
           final episodes = <MediaItemEpisode>[];
-          for (final episodeEntry
-              in (seasonEntry.value[voiceActing] as Map).entries) {
+          for (final (episodeIndex, episodeEntry)
+              in (seasonEntry.value[voiceActing] as Map).entries.indexed) {
             final episodeNumber = episodeEntry.key;
             final showLink = episodeEntry.value as FlmxShowLink;
             episodes.add(MediaItemEpisode(
               id: '$seasonNumber/$episodeNumber',
+              seasonNumber: seasonIndex + 1,
+              episodeNumber: episodeIndex + 1,
               videoFileUrl: showLink.link,
               qualities: showLink.qualities,
             ));

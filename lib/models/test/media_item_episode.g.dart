@@ -11,6 +11,9 @@ MediaItemEpisode _$MediaItemEpisodeFromJson(Map<String, dynamic> json) =>
       id: json['id'] == null
           ? ''
           : const StringConverter().fromJson(json['id']),
+      name: json['name'] as String? ?? '',
+      seasonNumber: json['seasonNumber'] as int? ?? 0,
+      episodeNumber: json['episodeNumber'] as int? ?? 0,
       videoFileUrl: json['videoFileUrl'] as String? ?? '',
       qualities: (json['qualities'] as List<dynamic>?)
               ?.map((e) => e as int)
@@ -21,6 +24,9 @@ MediaItemEpisode _$MediaItemEpisodeFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MediaItemEpisodeToJson(MediaItemEpisode instance) =>
     <String, dynamic>{
       'id': const StringConverter().toJson(instance.id),
+      'name': instance.name,
+      'seasonNumber': instance.seasonNumber,
+      'episodeNumber': instance.episodeNumber,
       'videoFileUrl': instance.videoFileUrl,
       'qualities': instance.qualities,
     };

@@ -18,9 +18,9 @@ class FocusedMediaItem extends _$FocusedMediaItem {
     //   debugPrint('navigationProvider disposed');
     // });
 
-    loadDetails();
+    // loadDetails();
 
-    return mediaItem;
+    return fetchDetails();
   }
 
   Future<void> loadDetails() async {
@@ -36,6 +36,16 @@ class FocusedMediaItem extends _$FocusedMediaItem {
 
       state = AsyncData(detailed);
     }
+  }
+
+  Future<MediaItem?> fetchDetails() async {
+    if (mediaItem != null) {
+      final detailed = await mediaItem!.loadDetails(ref);
+
+      return detailed;
+    }
+
+    return mediaItem;
   }
 
   void reset() {
@@ -145,53 +155,68 @@ class FeaturedCard extends HookConsumerWidget {
                               fontSize: 32.0,
                             ),
                           ),
-                          AnimatedSwitcher(
-                            duration: kThemeAnimationDuration,
-                            reverseDuration: Duration.zero,
-                            transitionBuilder: (child, animation) {
-                              final fadeAnimation = Tween<double>(
-                                begin: 0.0, // Fully transparent
-                                end: 1.0, // Fully opaque
-                              ).animate(animation);
-
-                              final slideAnimation = Tween<Offset>(
-                                begin: const Offset(
-                                    0.0, 1.0), // Start from below the widget
-                                end: const Offset(
-                                    0.0, 0.0), // End at its original position
-                              ).animate(animation);
-
-                              final sizeAnimation = Tween<double>(
-                                begin: 0.0, // Start with zero size
-                                end: 1.0, // End with full size
-                              ).animate(animation);
-
-                              return SizeTransition(
-                                sizeFactor: sizeAnimation,
-                                child: FadeTransition(
-                                  opacity: fadeAnimation,
-                                  child: child,
+                          if (currentMediaItem.overview.isNotEmpty)
+                            Padding(
+                              key: ValueKey(
+                                  'overview:${currentMediaItem.overview}'),
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: Text(
+                                currentMediaItem.overview,
+                                maxLines: 6,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: theme.colorScheme.onSurfaceVariant,
                                 ),
-                              );
-                            },
-                            child: currentMediaItem.overview.isNotEmpty
-                                ? Padding(
-                                    key: ValueKey(
-                                        'overview:${currentMediaItem.overview}'),
-                                    padding: const EdgeInsets.only(top: 12.0),
-                                    child: Text(
-                                      currentMediaItem.overview,
-                                      maxLines: 6,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color:
-                                            theme.colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                          ),
+                              ),
+                            ),
+                          // AnimatedSwitcher(
+                          //   duration: kThemeAnimationDuration,
+                          //   reverseDuration: Duration.zero,
+                          //   transitionBuilder: (child, animation) {
+                          //     final fadeAnimation = Tween<double>(
+                          //       begin: 0.0, // Fully transparent
+                          //       end: 1.0, // Fully opaque
+                          //     ).animate(animation);
+
+                          //     final slideAnimation = Tween<Offset>(
+                          //       begin: const Offset(
+                          //           0.0, 1.0), // Start from below the widget
+                          //       end: const Offset(
+                          //           0.0, 0.0), // End at its original position
+                          //     ).animate(animation);
+
+                          //     final sizeAnimation = Tween<double>(
+                          //       begin: 0.0, // Start with zero size
+                          //       end: 1.0, // End with full size
+                          //     ).animate(animation);
+
+                          //     return SizeTransition(
+                          //       sizeFactor: sizeAnimation,
+                          //       child: FadeTransition(
+                          //         opacity: fadeAnimation,
+                          //         child: child,
+                          //       ),
+                          //     );
+                          //   },
+                          //   child: currentMediaItem.overview.isNotEmpty
+                          //       ? Padding(
+                          //           key: ValueKey(
+                          //               'overview:${currentMediaItem.overview}'),
+                          //           padding: const EdgeInsets.only(top: 20.0),
+                          //           child: Text(
+                          //             currentMediaItem.overview,
+                          //             maxLines: 6,
+                          //             overflow: TextOverflow.ellipsis,
+                          //             style: TextStyle(
+                          //               fontSize: 16.0,
+                          //               color:
+                          //                   theme.colorScheme.onSurfaceVariant,
+                          //             ),
+                          //           ),
+                          //         )
+                          //       : null,
+                          // ),
                         ],
                       ),
                     ),

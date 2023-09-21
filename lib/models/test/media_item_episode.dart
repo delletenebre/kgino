@@ -8,11 +8,17 @@ part 'media_item_episode.g.dart';
 class MediaItemEpisode {
   @StringConverter()
   final String id;
+  final String name;
+  final int seasonNumber;
+  final int episodeNumber;
   final String videoFileUrl;
   final List<int> qualities;
 
   MediaItemEpisode({
     this.id = '',
+    this.name = '',
+    this.seasonNumber = 0,
+    this.episodeNumber = 0,
     this.videoFileUrl = '',
     this.qualities = const [],
   });

@@ -6,7 +6,7 @@ part of 'featured_card.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$focusedMediaItemHash() => r'72139f85aa774f681ded31508498871abd5822c7';
+String _$focusedMediaItemHash() => r'ea421bc1d820d5aeab6e77b244ffdd03ecb68fb0';
 
 /// Copied from Dart SDK
 class _SystemHash {

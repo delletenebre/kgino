@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../providers/focusable_list_provider.dart';
-import '../../resources/constants.dart';
 
 class VerticalListView extends ConsumerWidget {
   final int itemCount;
@@ -12,6 +11,7 @@ class VerticalListView extends ConsumerWidget {
   final void Function(bool hasFocus)? onFocusChange;
   final KeyEventResult keyEventResult;
   final ListObserverController? controller;
+  final Clip clipBehavior;
 
   /// запрос индекса для смены фокуса
   /// (при внешнем управлении, например, сезоны-эпизоды)
@@ -25,23 +25,25 @@ class VerticalListView extends ConsumerWidget {
     this.keyEventResult = KeyEventResult.ignored,
     this.controller,
     this.requestItemIndex,
+    this.clipBehavior = Clip.hardEdge,
   });
 
   @override
   Widget build(context, ref) {
-    final focusableListController = ref.read(focusableListProvider(
+    final provider = focusableListProvider(
       key: key,
       itemCount: itemCount,
       keyEventResult: keyEventResult,
       controller: controller,
-    ).notifier);
+    );
+    final focusableListController = ref.read(provider.notifier);
 
-    ref.watch(focusableListProvider(
-      key: key,
-      itemCount: itemCount,
-      keyEventResult: keyEventResult,
-      controller: controller,
-    ));
+    // ref.watch(focusableListProvider(
+    //   key: key,
+    //   itemCount: itemCount,
+    //   keyEventResult: keyEventResult,
+    //   controller: controller,
+    // ));
 
     return Focus(
       focusNode: focusableListController.generalFocusNode,
@@ -66,21 +68,22 @@ class VerticalListView extends ConsumerWidget {
       },
       child: ListViewObserver(
         controller: focusableListController.listObserverController,
-        child: ListView.builder(
-          clipBehavior: Clip.antiAlias,
-          controller: focusableListController.scrollController,
-          itemCount: itemCount,
+        child: ScrollConfiguration(
+          /// убираем scrollbar
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView.builder(
+            clipBehavior: clipBehavior,
+            controller: focusableListController.scrollController,
+            itemCount: itemCount,
 
-          /// основной контент
-          itemBuilder: (context, index) {
-            return Focus(
-              focusNode: focusableListController.focusNodes[index],
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: TvUi.vPadding),
+            /// основной контент
+            itemBuilder: (context, index) {
+              return Focus(
+                focusNode: focusableListController.focusNodes[index],
                 child: itemBuilder(context, index),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
