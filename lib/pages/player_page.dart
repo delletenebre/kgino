@@ -5,6 +5,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 import '../models/test/media_item.dart';
+import '../ui/player/player_controls_overlay.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
   final MediaItem mediaItem;
@@ -80,38 +81,14 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Center(
       child: Video(
         controller: controller,
         controls: (state) {
-          return Center(
-            child: Column(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    state.widget.controller.player.playOrPause();
-                  },
-                  icon: StreamBuilder(
-                    stream: state.widget.controller.player.stream.playing,
-                    builder: (context, playing) => Icon(
-                      playing.data == true ? Icons.pause : Icons.play_arrow,
-                    ),
-                  ),
-                  // It's not necessary to use [StreamBuilder] or to use [Player] & [VideoController] from [state].
-                  // [StreamSubscription]s can be made inside [initState] of this widget.
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  child: Text('BACK'),
-                ),
-              ],
-            ),
-          );
+          return PlayerControlsOverlay(state);
         },
-        //controls: MaterialVideoControls,
+        // controls: MaterialVideoControls,
       ),
     );
   }

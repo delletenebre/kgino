@@ -31,7 +31,6 @@ class VideoPlayerView extends StatefulWidget {
   final Future<EpisodeItem> Function()? onSkipNext;
   final Future<EpisodeItem> Function(int quality) onQualityChanged;
 
-
   /// при обновлении времени просмотра
   final Function(
     EpisodeItem episode,
@@ -83,7 +82,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   void _updatePageState(VideoPlayerState state) {
     if (mounted && _pageState != state) {
       /// ^ если виджет всё ещё активен
-      
+
       /// обновляем его состояние
       setState(() {
         _pageState = state;
@@ -102,14 +101,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _changeVideo(widget.onInitialPlayableItem);
 
     /// инициализируем таймер скрытия панели управления плеером
-    _showControlsOverlayTimer = RestartableTimer(const Duration(seconds: 5), () {
+    _showControlsOverlayTimer =
+        RestartableTimer(const Duration(seconds: 5), () {
       if (mounted && (_playerController?.value.isPlaying ?? false)) {
         setState(() {
           _isControlOverlayVisible = false;
         });
       }
     });
-    
   }
 
   @override
@@ -181,7 +180,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
           forceHD: true,
         ),
       );
-      _youtubeController?.updateValue(_youtubeController!.value.copyWith(isFullScreen: true));
+      _youtubeController
+          ?.updateValue(_youtubeController!.value.copyWith(isFullScreen: true));
 
       /// обновляем состояние UI
       _updatePageState(VideoPlayerState.initialized);
@@ -194,7 +194,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       closedCaptionFile = _loadSubtitle(_episode!.subtitlesFileUrl);
     }
 
-    _playerController = VideoPlayerController.network(_episode!.videoFileUrl,
+    _playerController = VideoPlayerController.network(
+      _episode!.videoFileUrl,
       closedCaptionFile: closedCaptionFile,
     );
 
@@ -204,10 +205,11 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         /// проверяем нужную позицию
         if (_videoQualityChangedAt > 0) {
           /// перематываем на нужную позицию и запускаем видео
-          _playerController!.seekTo(Duration(seconds: _videoQualityChangedAt))
-            .then((_) {
-              _playerController!.play();
-            });
+          _playerController!
+              .seekTo(Duration(seconds: _videoQualityChangedAt))
+              .then((_) {
+            _playerController!.play();
+          });
           _videoQualityChangedAt = 0;
         } else if (_episode!.position < 60) {
           /// запускаем видео
@@ -220,10 +222,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         /// обновляем состояние UI
         _updatePageState(VideoPlayerState.initialized);
       });
-
     } catch (exception) {
       /// ^ если при загрузке видео произошла ошибка
-      
+
       debugPrint('$exception');
 
       /// обновляем состояние UI
@@ -234,7 +235,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   @override
   Widget build(context) {
     final locale = KrsLocale.of(context);
-    
+
     if (_pageState == VideoPlayerState.initialized) {
       if (_youtubeController != null) {
         return Scaffold(
@@ -250,21 +251,19 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       if (!_initialize && _episode!.position >= 60) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           final result = await Utils.showModal<bool?>(
-            context: context,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-
+              context: context,
+              child: ListView(shrinkWrap: true, children: [
                 /// кнопка продолжить просмотр
                 FilledButton.tonal(
                   autofocus: true,
                   onPressed: () {
                     if (mounted) {
                       /// перематываем на нужную позицию и запускаем видео
-                      _playerController?.seekTo(Duration(seconds: _episode!.position - 5))
-                        .then((_) {
-                          _playerController?.play();
-                        });
+                      _playerController
+                          ?.seekTo(Duration(seconds: _episode!.position - 5))
+                          .then((_) {
+                        _playerController?.play();
+                      });
 
                       /// закрываем диалоговое окно
                       Navigator.pop(context, true);
@@ -286,10 +285,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                   },
                   child: Text(locale.startOver),
                 )
-
-              ]
-            )
-          );
+              ]));
 
           /// если при выборе нажали кнопку назад - закрываем плеер
           if (result == null) {
@@ -297,10 +293,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               Navigator.pop(context);
             }
           }
-          
         });
       }
-      
+
       _initialize = true;
     }
 
@@ -308,10 +303,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       backgroundColor: Colors.black,
       body: Builder(
         builder: (context) {
-
           /// если загрузка видео
           if (_pageState == VideoPlayerState.loading) {
-            
             /// показываем индикатор загрузки
             return const LoadingIndicator(
               size: 64.0,
@@ -320,19 +313,17 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
           /// если произошла ошибка
           if (_pageState == VideoPlayerState.error) {
-            
             /// показываем экран с текстом ошибки
             return TryAgainMessage(
               onRetry: _initializeVideo,
             );
           }
-          
+
           /// контейнер с видео
           return Stack(
             fit: StackFit.expand,
             alignment: Alignment.center,
             children: [
-
               /// видео плеер
               Center(
                 child: AspectRatio(
@@ -342,105 +333,116 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
               ),
 
               /// субтитры
-              if (_subtitlesEnabled) Positioned(
-                bottom: 12.0,
-                child: ValueListenableBuilder(
-                  valueListenable: _playerController!,
-                  builder: (context, video, child) {
-                    return ClosedCaption(
-                      text: video.caption.text,
-                      textStyle: const TextStyle(
-                        fontSize: 24.0,
-                      ),
-                    );
-                  }
+              if (_subtitlesEnabled)
+                Positioned(
+                  bottom: 12.0,
+                  child: ValueListenableBuilder(
+                      valueListenable: _playerController!,
+                      builder: (context, video, child) {
+                        return ClosedCaption(
+                          text: video.caption.text,
+                          textStyle: const TextStyle(
+                            fontSize: 24.0,
+                          ),
+                        );
+                      }),
                 ),
-              ),
 
               /// оверлей с панелью управления видео
-              if (!widget.isLiveStream) SafeArea(
-                child: VideoPlayerControlsOverlay(
-                  titleText: widget.titleText,
-                  subtitleText: _episode!.hasShowNumbers
-                    ? '${_episode!.seasonNumber}x${_episode!.episodeNumber} ${_episode!.name}'
-                    : _episode!.name.isNotEmpty ? _episode!.name : '',
-                  isVisible: _isControlOverlayVisible,
-                  playerController: _playerController,
-                  onPlayPause: () {
-                    if (_playerController!.value.isPlaying) {
-                      _playerController?.pause();
-                    } else {
-                      _playerController?.play();
-                    }
-
-                    /// обновляем время показа панели управления плеером
-                    updateContolOverlayVisibilityTimer();
-                  },
-
-                  onSeek: (duration) {
-                    /// перематываем видео
-                    _playerController!.seekTo(duration);
-
-                    /// обновляем время показа панели управления плеером
-                    updateContolOverlayVisibilityTimer();
-                  },
-                  
-                  onShowOverlay: () {
-                    /// показываем панель управления плеером
-                    showControlOverlay();
-                  },
-                  
-                  onSkipNext: widget.onSkipNext == null ? null : () async {
-                    /// запрашиваем следующее видео
-                    _changeVideo(widget.onSkipNext!);
-                  },
-                  
-                  onSkipPrevious: widget.onSkipPrevious == null ? null : () async {
-                    /// запрашиваем предыдущее видео
-                    _changeVideo(widget.onSkipPrevious!);
-                  },
-
-                  subtitlesEnabled: _subtitlesEnabled,
-                  onSubtitleToggle: (subtitlesEnabled) {
-                    setState(() {
-                      _subtitlesEnabled = subtitlesEnabled;
-                    });
-                  },
-
-                  quality: _episode?.quality ?? 0,
-                  onChangeQuality: _episode == null || _episode!.playableQualities.length < 2 ? null : () async {
-                    final result = await Utils.showModal<int?>(
-                      context: context,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: _episode!.playableQualities.map((quality) {
-                          return FilledButton.tonalIcon(
-                            autofocus: true,
-                            onPressed: () async {
-                              /// закрываем диалоговое окно
-                              Navigator.pop(context, quality);
-
-                              final item = await widget.onQualityChanged.call(quality);
-                              _videoQualityChangedAt = (_playerController?.value.position.inSeconds ?? 0) - 3;
-                              _changeVideo(() async { return item; });
-                            },
-                            icon: const SizedBox(),
-                            label: Text('$quality'),
-                          );
-                        }).toList(),
-                      )
-                    );
-
-                    /// если при выборе нажали кнопку назад - закрываем плеер
-                    if (result == null) {
-                      if (mounted) {
-                        Navigator.pop(context);
+              if (!widget.isLiveStream)
+                SafeArea(
+                  child: VideoPlayerControlsOverlay(
+                    titleText: widget.titleText,
+                    subtitleText: _episode!.hasShowNumbers
+                        ? '${_episode!.seasonNumber}x${_episode!.episodeNumber} ${_episode!.name}'
+                        : _episode!.name.isNotEmpty
+                            ? _episode!.name
+                            : '',
+                    isVisible: _isControlOverlayVisible,
+                    playerController: _playerController,
+                    onPlayPause: () {
+                      if (_playerController!.value.isPlaying) {
+                        _playerController?.pause();
+                      } else {
+                        _playerController?.play();
                       }
-                    }
-                  },
-                  
+
+                      /// обновляем время показа панели управления плеером
+                      updateContolOverlayVisibilityTimer();
+                    },
+                    onSeek: (duration) {
+                      /// перематываем видео
+                      _playerController!.seekTo(duration);
+
+                      /// обновляем время показа панели управления плеером
+                      updateContolOverlayVisibilityTimer();
+                    },
+                    onShowOverlay: () {
+                      /// показываем панель управления плеером
+                      showControlOverlay();
+                    },
+                    onSkipNext: widget.onSkipNext == null
+                        ? null
+                        : () async {
+                            /// запрашиваем следующее видео
+                            _changeVideo(widget.onSkipNext!);
+                          },
+                    onSkipPrevious: widget.onSkipPrevious == null
+                        ? null
+                        : () async {
+                            /// запрашиваем предыдущее видео
+                            _changeVideo(widget.onSkipPrevious!);
+                          },
+                    subtitlesEnabled: _subtitlesEnabled,
+                    onSubtitleToggle: (subtitlesEnabled) {
+                      setState(() {
+                        _subtitlesEnabled = subtitlesEnabled;
+                      });
+                    },
+                    quality: _episode?.quality ?? 0,
+                    onChangeQuality: _episode == null ||
+                            _episode!.playableQualities.length < 2
+                        ? null
+                        : () async {
+                            final result = await Utils.showModal<int?>(
+                                context: context,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: _episode!.playableQualities
+                                      .map((quality) {
+                                    return FilledButton.tonalIcon(
+                                      autofocus: true,
+                                      onPressed: () async {
+                                        /// закрываем диалоговое окно
+                                        Navigator.pop(context, quality);
+
+                                        final item = await widget
+                                            .onQualityChanged
+                                            .call(quality);
+                                        _videoQualityChangedAt =
+                                            (_playerController?.value.position
+                                                        .inSeconds ??
+                                                    0) -
+                                                3;
+                                        _changeVideo(() async {
+                                          return item;
+                                        });
+                                      },
+                                      icon: const SizedBox(),
+                                      label: Text('$quality'),
+                                    );
+                                  }).toList(),
+                                ));
+
+                            /// если при выборе нажали кнопку назад - закрываем плеер
+                            if (result == null) {
+                              if (mounted) {
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                  ),
                 ),
-              ),
             ],
           );
         },
@@ -468,18 +470,17 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     }
   }
 
-
   int _lastPosition = 0;
+
   /// слушатель изменения позиции просмотра виде
   void _changeVideoPositionListener() {
-
     /// текущая позиция просмотра видео
     final position = _playerController?.value.position.inSeconds ?? 0;
 
     if (_lastPosition == position) {
       return;
     }
-    
+
     _lastPosition = position;
 
     /// общая продолжительность видео
@@ -489,6 +490,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
       _episode!.position = position;
       _episode!.duration = duration;
       _episode!.updatedAt = DateTime.now();
+
       /// сохраняем информацию о времени просмотра эпизода
       widget.onUpdatePosition(_episode!, _subtitlesEnabled);
     }
@@ -500,35 +502,30 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
 
     if (position == duration) {
       /// ^ если видео закончилось
-      
+
       if (widget.onSkipNext != null) {
         /// ^ если есть следующее видео
 
         /// запрашиваем следующее видео
         _changeVideo(widget.onSkipNext!);
-      
       } else {
         /// ^ если следующего видео нет
 
         /// закрываем плеер
         context.pop();
-
       }
     }
-
   }
 
   Future<void> _changeVideo(
-    Future<EpisodeItem> Function() playableItemGetter
-  ) async {
+      Future<EpisodeItem> Function() playableItemGetter) async {
     /// завершаем работу текущего плеера
     _disposeVideoController();
-    
+
     /// запрашиваем новое видео
     _episode = await playableItemGetter();
-    
+
     /// инициализируем новый плеер
     _initializeVideo();
   }
-
 }
