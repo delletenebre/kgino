@@ -223,7 +223,7 @@ class PlaylistPage extends HookConsumerWidget {
                       },
                       onTap: () {
                         /// переходим на страницу плеера фильма
-                        context.pushNamed(
+                        context.pushReplacementNamed(
                           'player',
                           queryParameters: {
                             'episodeIndex': '$index',

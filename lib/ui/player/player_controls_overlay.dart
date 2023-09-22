@@ -38,7 +38,7 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
 
 class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   Timer? _visibilityTimer;
-  bool _visible = true;
+  bool _visible = false;
   final _progressBarFocusNode = FocusNode();
 
   @override
@@ -59,6 +59,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   void showOverlay() {
     if (!_visible) {
       setState(() {
+        _progressBarFocusNode.requestFocus();
         _visible = true;
       });
     }
@@ -75,76 +76,69 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
   @override
   Widget build(context) {
-    return GestureDetector(
-      onTap: () {
-        /// вызываем обработчик нажатия на play/pause
-        // widget.onPlayPause.call();
+    final theme = Theme.of(context);
 
-        // /// ставим фокус на ProgressBar
-        // _progressBarFocusNode.requestFocus();
+    return Focus(
+      autofocus: true,
+      skipTraversal: true,
+      onKey: (node, event) {
+        if (!_visible) {
+          /// ^ если оверлей не был виден пользователю
+
+          if (event.isKeyPressed(LogicalKeyboardKey.select) ||
+              event.isKeyPressed(LogicalKeyboardKey.enter)) {
+            /// ^ если был нажат Enter
+
+            // /// вызываем обработчик нажатия на play/pause
+            // widget.onPlayPause.call();
+
+            return KeyEventResult.handled;
+          }
+        }
+
+        if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
+            event.isKeyPressed(LogicalKeyboardKey.backspace)) {
+          // if (widget.playerController == null || !widget.playerController!.value.isPlaying) {
+          //   Navigator.of(context).pop();
+          // } else {
+          //   widget.playerController?.pause();
+          // }
+        }
+
+        if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+          controller(context).player.playOrPause();
+        }
+
+        // if (widget.playerController != null) {
+
+        //   if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+        //     if (widget.playerController!.value.isPlaying) {
+        //       widget.playerController?.pause();
+        //     } else {
+        //       widget.playerController?.play();
+        //     }
+        //   }
+
+        //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+        //     widget.playerController!.position.then((position) {
+        //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds + 10));
+        //     });
+        //   }
+
+        //   if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+        //     widget.playerController!.position.then((position) {
+        //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds - 10));
+        //     });
+        //   }
+        // }
 
         showOverlay();
+
+        return KeyEventResult.ignored;
       },
-      child: Focus(
-        autofocus: true,
-        skipTraversal: true,
-        onKey: (node, event) {
-          if (!_visible) {
-            /// ^ если оверлей не был виден пользователю
-
-            if (event.isKeyPressed(LogicalKeyboardKey.select) ||
-                event.isKeyPressed(LogicalKeyboardKey.enter)) {
-              /// ^ если был нажат Enter
-
-              // /// вызываем обработчик нажатия на play/pause
-              // widget.onPlayPause.call();
-
-              /// ставим фокус на ProgressBar
-              _progressBarFocusNode.requestFocus();
-
-              return KeyEventResult.handled;
-            }
-          }
-
-          if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
-              event.isKeyPressed(LogicalKeyboardKey.backspace)) {
-            // if (widget.playerController == null || !widget.playerController!.value.isPlaying) {
-            //   Navigator.of(context).pop();
-            // } else {
-            //   widget.playerController?.pause();
-            // }
-          }
-
-          if (event.isKeyPressed(LogicalKeyboardKey.space)) {
-            controller(context).player.playOrPause();
-          }
-
-          // if (widget.playerController != null) {
-
-          //   if (event.isKeyPressed(LogicalKeyboardKey.space)) {
-          //     if (widget.playerController!.value.isPlaying) {
-          //       widget.playerController?.pause();
-          //     } else {
-          //       widget.playerController?.play();
-          //     }
-          //   }
-
-          //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-          //     widget.playerController!.position.then((position) {
-          //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds + 10));
-          //     });
-          //   }
-
-          //   if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-          //     widget.playerController!.position.then((position) {
-          //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds - 10));
-          //     });
-          //   }
-          // }
-
+      child: GestureDetector(
+        onTap: () {
           showOverlay();
-
-          return KeyEventResult.ignored;
         },
         child: AnimatedOpacity(
           duration: kThemeAnimationDuration,
@@ -153,27 +147,22 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           child: Stack(
             children: [
               // Fallback from the controls to the video & show/hide controls on tap.
-
-              Center(
-                child: StreamBuilder(
-                  stream: controller(context).player.stream.playing,
-                  builder: (context, playing) => PlayPauseButton(
-                    isPlaying: playing.data == true,
+              Positioned.fill(
+                  child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      _visible ? theme.colorScheme.surface : Colors.transparent,
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.36],
                   ),
                 ),
-                // IconButton(
-                //   onPressed: () {
-                //     videoState.widget.controller.player.playOrPause();
-                //   },
-                //   icon: StreamBuilder(
-                //     stream: videoState.widget.controller.player.stream.playing,
-                //     builder: (context, playing) => Icon(
-                //       playing.data == true ? Icons.pause : Icons.play_arrow,
-                //     ),
-                //   ),
-                //   // It's not necessary to use [StreamBuilder] or to use [Player] & [VideoController] from [state].
-                //   // [StreamSubscription]s can be made inside [initState] of this widget.
-                // ),
+              )),
+              const Center(
+                child: PlayPauseButton(),
               ),
               Positioned(
                   bottom: TvUi.vPadding,
@@ -184,6 +173,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                     children: [
                       PlayerProgressBar(
                         focusNode: _progressBarFocusNode,
+                        onSkipNext: widget.onSkipNext,
                       ),
                       TextButton(
                         onPressed: () {
@@ -197,18 +187,21 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                             child: SizedBox(),
                           ),
                           if (widget.onSkipPrevious != null)
-                            FilledButton(
+                            OutlinedButton(
                               onPressed: () {
                                 widget.onSkipPrevious?.call();
                               },
-                              child: Icon(Icons.skip_previous_outlined),
+                              child: const Icon(Icons.skip_previous_outlined),
                             ),
+                          if (widget.onSkipPrevious != null &&
+                              widget.onSkipNext != null)
+                            const SizedBox(width: 12.0),
                           if (widget.onSkipNext != null)
-                            FilledButton(
+                            OutlinedButton(
                               onPressed: () {
                                 widget.onSkipNext?.call();
                               },
-                              child: Icon(Icons.skip_next_outlined),
+                              child: const Icon(Icons.skip_next_outlined),
                             ),
                         ],
                       ),

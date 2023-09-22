@@ -80,6 +80,34 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     super.dispose();
   }
 
+  bool get hasPreviousEpisode => (currentEpisodeIndex - 1 > 0);
+  bool get hasNextEpisode => (currentEpisodeIndex + 1 < episodes.length);
+
+  void skipNext() {
+    currentEpisodeIndex++;
+
+    /// переходим на страницу плеера фильма
+    updateEpisode();
+  }
+
+  void skipPrevious() {
+    currentEpisodeIndex--;
+
+    /// переходим на страницу плеера фильма
+    updateEpisode();
+  }
+
+  void updateEpisode() {
+    /// переходим на страницу плеера фильма
+    context.pushReplacementNamed(
+      'player',
+      queryParameters: {
+        'episodeIndex': '$currentEpisodeIndex',
+      },
+      extra: widget.mediaItem,
+    );
+  }
+
   @override
   Widget build(context) {
     return Center(
@@ -87,34 +115,8 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
         controller: controller,
         controls: (state) {
           return PlayerControlsOverlay(
-            onSkipPrevious: 0 >= currentEpisodeIndex - 1
-                ? null
-                : () {
-                    currentEpisodeIndex--;
-
-                    /// переходим на страницу плеера фильма
-                    context.pushReplacementNamed(
-                      'player',
-                      queryParameters: {
-                        'episodeIndex': '$currentEpisodeIndex',
-                      },
-                      extra: widget.mediaItem,
-                    );
-                  },
-            onSkipNext: episodes.length <= currentEpisodeIndex + 1
-                ? null
-                : () {
-                    currentEpisodeIndex++;
-
-                    /// переходим на страницу плеера фильма
-                    context.pushReplacementNamed(
-                      'player',
-                      queryParameters: {
-                        'episodeIndex': '$currentEpisodeIndex',
-                      },
-                      extra: widget.mediaItem,
-                    );
-                  },
+            onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
+            onSkipNext: hasNextEpisode ? skipNext : null,
           );
         },
         // controls: MaterialVideoControls,

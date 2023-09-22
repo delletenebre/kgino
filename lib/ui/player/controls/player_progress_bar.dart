@@ -8,10 +8,12 @@ import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/vi
 
 class PlayerProgressBar extends StatefulWidget {
   final FocusNode? focusNode;
+  final void Function()? onSkipNext;
 
   const PlayerProgressBar({
     super.key,
     this.focusNode,
+    this.onSkipNext,
   });
 
   @override
@@ -50,9 +52,9 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
             });
           }),
           controller(context).player.stream.completed.listen((event) {
-            setState(() {
-              position = Duration.zero;
-            });
+            if (position > Duration.zero) {
+              widget.onSkipNext?.call();
+            }
           }),
           controller(context).player.stream.position.listen((event) {
             setState(() {
@@ -113,9 +115,12 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
           }
 
           /// вызываем пользовательский обработчик перемотки видео
-          controller(context)
-              .player
-              .seek(Duration(seconds: position.inSeconds - _seekRepeatDelta));
+          Duration duration =
+              Duration(seconds: position.inSeconds - _seekRepeatDelta);
+          if (duration < Duration.zero) {
+            duration = Duration.zero;
+          }
+          controller(context).player.seek(duration);
 
           return KeyEventResult.handled;
         } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
@@ -134,7 +139,6 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
 
           return KeyEventResult.handled;
         }
-
         _seekRepeatDelta = 10;
 
         return KeyEventResult.ignored;

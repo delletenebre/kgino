@@ -121,7 +121,7 @@ class KrsTheme {
             return colorScheme['dark']!.inverseSurface;
           }
 
-          return colorScheme['dark']!.onSurfaceVariant;
+          return null;
         }),
         foregroundColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.focused)) {
