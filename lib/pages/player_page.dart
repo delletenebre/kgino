@@ -110,17 +110,15 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
   @override
   Widget build(context) {
-    return Center(
-      child: Video(
-        controller: controller,
-        controls: (state) {
-          return PlayerControlsOverlay(
-            onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
-            onSkipNext: hasNextEpisode ? skipNext : null,
-          );
-        },
-        // controls: MaterialVideoControls,
-      ),
+    return Video(
+      controller: controller,
+      controls: (state) {
+        return PlayerControlsOverlay(
+          onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
+          onSkipNext: hasNextEpisode ? skipNext : null,
+        );
+      },
+      // controls: MaterialVideoControls,
     );
   }
 }

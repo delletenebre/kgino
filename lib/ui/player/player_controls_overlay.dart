@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -41,19 +42,41 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   bool _visible = false;
   final _progressBarFocusNode = FocusNode();
 
+  StreamSubscription? playingSubscription;
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showOverlay();
-    });
     super.initState();
   }
 
   @override
   void dispose() {
+    playingSubscription?.cancel();
     _visibilityTimer?.cancel();
     _progressBarFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    showOverlay();
+    playingSubscription ??=
+        controller(context).player.stream.position.listen((position) {
+      final playing = controller(context).player.state.playing;
+      if (_visible && playing) {
+        if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
+          _visibilityTimer?.cancel();
+          _visibilityTimer = Timer(const Duration(seconds: 5), () {
+            setState(() {
+              _visible = false;
+            });
+          });
+        }
+      } else {
+        _visibilityTimer?.cancel();
+      }
+    });
+    super.didChangeDependencies();
   }
 
   void showOverlay() {
@@ -64,14 +87,6 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
       });
     }
     _visibilityTimer?.cancel();
-
-    if (controller(context).player.state.playing) {
-      _visibilityTimer = Timer(const Duration(seconds: 3), () {
-        setState(() {
-          _visible = false;
-        });
-      });
-    }
   }
 
   @override
@@ -82,42 +97,18 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
       autofocus: true,
       skipTraversal: true,
       onKey: (node, event) {
-        if (!_visible) {
-          /// ^ если оверлей не был виден пользователю
-
-          if (event.isKeyPressed(LogicalKeyboardKey.select) ||
-              event.isKeyPressed(LogicalKeyboardKey.enter)) {
-            /// ^ если был нажат Enter
-
-            // /// вызываем обработчик нажатия на play/pause
-            // widget.onPlayPause.call();
-
-            return KeyEventResult.handled;
-          }
-        }
-
         if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
             event.isKeyPressed(LogicalKeyboardKey.backspace)) {
-          // if (widget.playerController == null || !widget.playerController!.value.isPlaying) {
-          //   Navigator.of(context).pop();
-          // } else {
-          //   widget.playerController?.pause();
-          // }
+          if (controller(context).player.state.playing) {
+            controller(context).player.pause();
+          } else {
+            context.pop();
+          }
         }
 
         if (event.isKeyPressed(LogicalKeyboardKey.space)) {
           controller(context).player.playOrPause();
         }
-
-        // if (widget.playerController != null) {
-
-        //   if (event.isKeyPressed(LogicalKeyboardKey.space)) {
-        //     if (widget.playerController!.value.isPlaying) {
-        //       widget.playerController?.pause();
-        //     } else {
-        //       widget.playerController?.play();
-        //     }
-        //   }
 
         //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
         //     widget.playerController!.position.then((position) {
@@ -130,7 +121,6 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds - 10));
         //     });
         //   }
-        // }
 
         showOverlay();
 
