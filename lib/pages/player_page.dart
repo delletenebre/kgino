@@ -5,18 +5,17 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 import '../models/test/media_item.dart';
+import '../models/test/media_item_episode.dart';
 import '../ui/player/player_controls_overlay.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
   final MediaItem mediaItem;
-  final int seasonIndex;
   final int episodeIndex;
   final int initialPosition;
 
   const PlayerPage({
     super.key,
     required this.mediaItem,
-    this.seasonIndex = 0,
     this.episodeIndex = 0,
     this.initialPosition = 0,
   });
@@ -30,6 +29,8 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
 
+  late List<MediaItemEpisode> episodes;
+
   /// индекс текущего сезона
   int currentSeasonIndex = 0;
 
@@ -40,7 +41,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   void initState() {
     super.initState();
 
-    currentSeasonIndex = widget.seasonIndex;
+    episodes = widget.mediaItem.episodes();
     currentEpisodeIndex = widget.episodeIndex;
 
     final playerConfiguration = PlayerConfiguration(
@@ -57,7 +58,6 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     widget.mediaItem
         .loadEpisodeUrl(
       ref: ref,
-      seasonIndex: currentSeasonIndex,
       episodeIndex: currentEpisodeIndex,
     )
         .then((episodeUrl) {
@@ -86,7 +86,36 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
       child: Video(
         controller: controller,
         controls: (state) {
-          return PlayerControlsOverlay(state);
+          return PlayerControlsOverlay(
+            onSkipPrevious: 0 >= currentEpisodeIndex - 1
+                ? null
+                : () {
+                    currentEpisodeIndex--;
+
+                    /// переходим на страницу плеера фильма
+                    context.pushReplacementNamed(
+                      'player',
+                      queryParameters: {
+                        'episodeIndex': '$currentEpisodeIndex',
+                      },
+                      extra: widget.mediaItem,
+                    );
+                  },
+            onSkipNext: episodes.length <= currentEpisodeIndex + 1
+                ? null
+                : () {
+                    currentEpisodeIndex++;
+
+                    /// переходим на страницу плеера фильма
+                    context.pushReplacementNamed(
+                      'player',
+                      queryParameters: {
+                        'episodeIndex': '$currentEpisodeIndex',
+                      },
+                      extra: widget.mediaItem,
+                    );
+                  },
+          );
         },
         // controls: MaterialVideoControls,
       ),

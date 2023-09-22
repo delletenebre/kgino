@@ -7,7 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 class PlayerProgressBar extends StatefulWidget {
-  const PlayerProgressBar({super.key});
+  final FocusNode? focusNode;
+
+  const PlayerProgressBar({
+    super.key,
+    this.focusNode,
+  });
 
   @override
   PlayerProgressBarState createState() => PlayerProgressBarState();
@@ -84,7 +89,7 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
     final theme = Theme.of(context);
 
     return Focus(
-      //focusNode: focusNode,
+      focusNode: widget.focusNode,
       onFocusChange: (hasFocus) {
         setState(() {
           _focused = hasFocus;

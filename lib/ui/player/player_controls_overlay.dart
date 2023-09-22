@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/constants.dart';
 import 'controls/play_pause_button.dart';
@@ -22,9 +22,14 @@ import 'controls/player_progress_bar.dart';
 // }
 
 class PlayerControlsOverlay extends StatefulHookConsumerWidget {
-  final VideoState videoState;
+  final Function()? onSkipNext;
+  final Function()? onSkipPrevious;
 
-  const PlayerControlsOverlay(this.videoState, {super.key});
+  const PlayerControlsOverlay({
+    super.key,
+    this.onSkipNext,
+    this.onSkipPrevious,
+  });
 
   @override
   ConsumerState<PlayerControlsOverlay> createState() =>
@@ -34,13 +39,12 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
 class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   Timer? _visibilityTimer;
   bool _visible = true;
+  final _progressBarFocusNode = FocusNode();
 
   @override
   void initState() {
-    _visibilityTimer = Timer(const Duration(seconds: 3), () {
-      setState(() {
-        _visible = false;
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showOverlay();
     });
     super.initState();
   }
@@ -48,21 +52,25 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   @override
   void dispose() {
     _visibilityTimer?.cancel();
+    _progressBarFocusNode.dispose();
     super.dispose();
   }
 
-  void onShowOverlay() {
+  void showOverlay() {
     if (!_visible) {
       setState(() {
         _visible = true;
       });
     }
     _visibilityTimer?.cancel();
-    _visibilityTimer = Timer(const Duration(seconds: 3), () {
-      setState(() {
-        _visible = false;
+
+    if (controller(context).player.state.playing) {
+      _visibilityTimer = Timer(const Duration(seconds: 3), () {
+        setState(() {
+          _visible = false;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -75,7 +83,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         // /// ставим фокус на ProgressBar
         // _progressBarFocusNode.requestFocus();
 
-        onShowOverlay();
+        showOverlay();
       },
       child: Focus(
         autofocus: true,
@@ -91,8 +99,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
               // /// вызываем обработчик нажатия на play/pause
               // widget.onPlayPause.call();
 
-              // /// ставим фокус на ProgressBar
-              // _progressBarFocusNode.requestFocus();
+              /// ставим фокус на ProgressBar
+              _progressBarFocusNode.requestFocus();
 
               return KeyEventResult.handled;
             }
@@ -105,6 +113,10 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
             // } else {
             //   widget.playerController?.pause();
             // }
+          }
+
+          if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+            controller(context).player.playOrPause();
           }
 
           // if (widget.playerController != null) {
@@ -130,7 +142,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           //   }
           // }
 
-          onShowOverlay();
+          showOverlay();
 
           return KeyEventResult.ignored;
         },
@@ -144,8 +156,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
               Center(
                 child: StreamBuilder(
-                  stream:
-                      widget.videoState.widget.controller.player.stream.playing,
+                  stream: controller(context).player.stream.playing,
                   builder: (context, playing) => PlayPauseButton(
                     isPlaying: playing.data == true,
                   ),
@@ -171,12 +182,35 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const PlayerProgressBar(),
+                      PlayerProgressBar(
+                        focusNode: _progressBarFocusNode,
+                      ),
                       TextButton(
                         onPressed: () {
                           context.pop();
                         },
                         child: Text('BACK'),
+                      ),
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: SizedBox(),
+                          ),
+                          if (widget.onSkipPrevious != null)
+                            FilledButton(
+                              onPressed: () {
+                                widget.onSkipPrevious?.call();
+                              },
+                              child: Icon(Icons.skip_previous_outlined),
+                            ),
+                          if (widget.onSkipNext != null)
+                            FilledButton(
+                              onPressed: () {
+                                widget.onSkipNext?.call();
+                              },
+                              child: Icon(Icons.skip_next_outlined),
+                            ),
+                        ],
                       ),
                     ],
                   ))

@@ -73,9 +73,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'player',
             builder: (context, state) {
               final mediaItem = state.extra as MediaItem;
-              final seasonIndex = int.tryParse(
-                      state.uri.queryParameters['seasonIndex'] ?? '') ??
-                  0;
               final episodeIndex = int.tryParse(
                       state.uri.queryParameters['episodeIndex'] ?? '') ??
                   0;
@@ -84,7 +81,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   0;
               return PlayerPage(
                 mediaItem: mediaItem,
-                seasonIndex: seasonIndex,
                 episodeIndex: episodeIndex,
                 initialPosition: initialPosition,
               );

@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../extensions/json_converters.dart';
+import 'media_item_episode.dart';
 import 'media_item_season.dart';
 
 part 'media_item.g.dart';
@@ -80,9 +81,12 @@ class MediaItem {
   /// загрузка эпизода
   Future<String> loadEpisodeUrl({
     required WidgetRef ref,
-    required int seasonIndex,
     required int episodeIndex,
   }) {
     throw UnimplementedError();
+  }
+
+  List<MediaItemEpisode> episodes() {
+    return seasons.expand((season) => season.episodes).toList();
   }
 }

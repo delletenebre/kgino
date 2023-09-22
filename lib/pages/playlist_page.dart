@@ -23,17 +23,13 @@ class PlaylistPage extends HookConsumerWidget {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
-    final episodes = useMemoized(
-        () => mediaItem.seasons.expand((season) => season.episodes).toList());
+    final episodes = useMemoized(() => mediaItem.episodes());
 
     final seasonsListObserverController = useListObserverController();
     final episodesListObserverController = useListObserverController();
 
-    final seasonListFocused = useRef(false);
-    // final episodesListFocused = useRef(false);
     final selectedSeasonIndex = useValueNotifier(0);
     final selectedEpisodeIndex = useRef(0);
-    final a = useRef(0);
     final ignoreFocusUpdate = useRef(false);
 
     return Scaffold(
@@ -230,8 +226,7 @@ class PlaylistPage extends HookConsumerWidget {
                         context.pushNamed(
                           'player',
                           queryParameters: {
-                            'seasonIndex': '${selectedSeasonIndex.value}',
-                            'episodeIndex': '${selectedEpisodeIndex.value}',
+                            'episodeIndex': '$index',
                           },
                           extra: mediaItem,
                         );
