@@ -114,6 +114,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
       controller: controller,
       controls: (state) {
         return PlayerControlsOverlay(
+          title: widget.mediaItem.title,
+          subtitle:
+              'Сезон ${episodes[currentEpisodeIndex].seasonNumber} Эпизод ${episodes[currentEpisodeIndex].episodeNumber}',
           onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
           onSkipNext: hasNextEpisode ? skipNext : null,
         );

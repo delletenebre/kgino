@@ -2,32 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/constants.dart';
 import 'controls/play_pause_button.dart';
 import 'controls/player_progress_bar.dart';
 
-// void useInterval(VoidCallback callback, Duration delay) {
-//   final savedCallback = useRef(callback);
-//   savedCallback.value = callback;
-
-//   useEffect(() {
-//     final timer = Timer.periodic(delay, (_) => savedCallback.value());
-//     return timer.cancel;
-//   }, [delay]);
-// }
-
 class PlayerControlsOverlay extends StatefulHookConsumerWidget {
+  final String title;
+  final String subtitle;
   final Function()? onSkipNext;
   final Function()? onSkipPrevious;
 
   const PlayerControlsOverlay({
     super.key,
+    this.title = '',
+    this.subtitle = '',
     this.onSkipNext,
     this.onSkipPrevious,
   });
@@ -134,27 +126,47 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           duration: kThemeAnimationDuration,
           curve: Curves.easeInOut,
           opacity: _visible ? 1.0 : 0.0,
-          child: Stack(
-            children: [
-              // Fallback from the controls to the video & show/hide controls on tap.
-              Positioned.fill(
+          child: Material(
+            child: Stack(
+              children: [
+                // Fallback from the controls to the video & show/hide controls on tap.
+                Positioned.fill(
                   child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      _visible ? theme.colorScheme.surface : Colors.transparent,
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.36],
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          theme.colorScheme.surface,
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.36],
+                      ),
+                    ),
                   ),
                 ),
-              )),
-              const Center(
-                child: PlayPauseButton(),
-              ),
-              Positioned(
+                Positioned(
+                  top: TvUi.navigationBarSize.height + TvUi.vPadding,
+                  left: TvUi.hPadding,
+                  right: TvUi.hPadding,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _TitleText(
+                        widget.title,
+                        fontSize: 32.0,
+                      ),
+                      _TitleText(
+                        widget.subtitle,
+                        fontSize: 16.0,
+                      ),
+                    ],
+                  ),
+                ),
+                const Center(
+                  child: PlayPauseButton(),
+                ),
+                Positioned(
                   bottom: TvUi.vPadding,
                   left: TvUi.hPadding,
                   right: TvUi.hPadding,
@@ -196,10 +208,54 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                         ],
                       ),
                     ],
-                  ))
-            ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _TitleText extends StatelessWidget {
+  final String text;
+  final double fontSize;
+
+  const _TitleText(
+    this.text, {
+    required this.fontSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final shadowColor = theme.colorScheme.surface;
+
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: fontSize,
+        shadows: [
+          Shadow(
+            color: shadowColor,
+            blurRadius: 4.0,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: fontSize,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: fontSize,
+          ),
+          Shadow(
+            color: shadowColor,
+            blurRadius: fontSize,
+          ),
+        ],
       ),
     );
   }
