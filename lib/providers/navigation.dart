@@ -33,7 +33,6 @@ class Navigation extends _$Navigation {
   }
 
   void changePage(int pageIndex) {
-    debugPrint('navigationProvider changePage $pageIndex');
     state = pageIndex;
     pageController.animateToPage(
       pageIndex,
@@ -43,7 +42,6 @@ class Navigation extends _$Navigation {
   }
 
   void requestCurrentActiveTabFocus() {
-    print('requestTabFocus state: $state');
     focusNode.children
         .where((element) => element.canRequestFocus)
         .elementAtOrNull(state)

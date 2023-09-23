@@ -13,6 +13,7 @@ class FlmxPlayerLinks with _$FlmxPlayerLinks {
     //@Default([]) List<FlmxMovieLink> trailer,
   }) = _FlmxPlayerLinks;
 
-  factory FlmxPlayerLinks.fromJson(Map<String, Object?> json) =>
-      _$FlmxPlayerLinksFromJson(json);
+  factory FlmxPlayerLinks.fromJson(Map<String, Object?> json)
+      => _$FlmxPlayerLinksFromJson(json);
+  
 }

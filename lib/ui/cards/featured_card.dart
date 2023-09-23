@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kgino/extensions/list_extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../models/test/media_item.dart';
+import '../../models/media_item.dart';
 import '../../resources/constants.dart';
 import 'backdrop_image.dart';
 
@@ -94,8 +94,6 @@ class FeaturedCard extends HookConsumerWidget {
     final focusedMediaItem = ref.watch(focusedMediaItemProvider(mediaItem));
 
     final currentMediaItem = focusedMediaItem.valueOrNull;
-
-    print('BUILED ${currentMediaItem?.id}');
 
     return AnimatedContainer(
       duration: kThemeAnimationDuration,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../models/test/media_item.dart';
+import '../models/media_item.dart';
 import '../pages/details_page.dart';
 import '../pages/error_page.dart';
 import '../pages/home_page.dart';

@@ -4,8 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
-import '../models/test/media_item.dart';
-import '../models/test/media_item_episode.dart';
+import '../models/media_item.dart';
 import '../ui/player/player_controls_overlay.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
@@ -45,7 +44,6 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     currentEpisodeIndex = widget.episodeIndex;
 
     final playerConfiguration = PlayerConfiguration(
-      // Supply your options:
       title: 'My awesome package:media_kit application',
       ready: () {
         print('The initialization is complete.');

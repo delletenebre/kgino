@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../api/filmix_api_provider.dart';
-import '../models/test/media_item.dart';
+import '../models/category_list_item.dart';
+import '../models/media_item.dart';
 import '../resources/constants.dart';
+import '../resources/krs_locale.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/cards/media_card.dart';
 import '../ui/lists/horizontal_list_view.dart';
@@ -18,7 +20,7 @@ class ShowsPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
 
     final api = ref.read(filmixApiProvider);
 
@@ -28,11 +30,15 @@ class ShowsPage extends HookConsumerWidget {
     /// популярные
     final asyncPopular = useMemoized(() => api.getPopularShows());
 
-    final items = [
-      asyncLatest,
-      asyncPopular,
-      asyncLatest,
-      asyncPopular,
+    final categories = [
+      CategoryListItem(
+        title: '[ Filmix ] ${locale.latest}',
+        apiResponse: asyncLatest,
+      ),
+      CategoryListItem(
+        title: '[ Filmix ] ${locale.popular}',
+        apiResponse: asyncPopular,
+      ),
     ];
 
     final focusedMediaItem = useValueNotifier<MediaItem?>(null);
@@ -53,15 +59,17 @@ class ShowsPage extends HookConsumerWidget {
                 focusedMediaItem.value = null;
               }
             },
-            itemCount: items.length,
+            itemCount: categories.length,
             itemBuilder: (context, index) {
+              final category = categories[index];
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: TvUi.vPadding),
                 child: HorizontalListView<MediaItem>(
                   key: UniqueKey(),
                   itemHeight: TvUi.horizontalCardSize.height,
-                  title: Text('Популярные'),
-                  asyncItems: items[index],
+                  title: Text(category.title),
+                  asyncItems: category.itemsFuture,
                   itemBuilder: (context, index, item) {
                     return MediaCard(
                       onFocusChange: (hasFocus) {

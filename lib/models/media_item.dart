@@ -5,6 +5,9 @@ import '../../extensions/json_converters.dart';
 import 'media_item_episode.dart';
 import 'media_item_season.dart';
 
+export 'media_item_season.dart';
+export 'media_item_episode.dart';
+
 part 'media_item.g.dart';
 
 @JsonSerializable(explicitToJson: true)

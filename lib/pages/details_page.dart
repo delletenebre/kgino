@@ -8,7 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
-import '../models/test/media_item.dart';
+import '../models/media_item.dart';
 import '../resources/constants.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/krs_scroll_view.dart';

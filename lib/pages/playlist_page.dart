@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../hooks/list_observer_controller_hook.dart';
-import '../models/test/media_item.dart';
+import '../models/media_item.dart';
 import '../resources/constants.dart';
 import '../resources/krs_locale.dart';
 import '../ui/cards/krs_list_tile.dart';

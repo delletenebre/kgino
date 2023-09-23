@@ -6,88 +6,69 @@ part of 'filmix_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_FilmixItem _$$_FilmixItemFromJson(Map<String, dynamic> json) =>
-    _$_FilmixItem(
-      id: json['id'] == null ? 0 : const IntConverter().fromJson(json['id']),
-      section: json['section'] == null
-          ? 0
-          : const IntConverter().fromJson(json['section']),
-      year: json['year'] == null
-          ? 0
-          : const IntConverter().fromJson(json['year']),
-      yearEnd: json['year_end'] == null
-          ? 0
-          : const IntConverter().fromJson(json['year_end']),
-      duration: json['duration'] == null
-          ? 0
-          : const IntConverter().fromJson(json['duration']),
-      poster: json['poster'] as String? ?? '',
+FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
+      id: json['id'] == null
+          ? ''
+          : const StringConverter().fromJson(json['id']),
       title: json['title'] as String? ?? '',
       originalTitle: json['original_title'] as String? ?? '',
-      dateAtom: json['date_atom'] == null
-          ? null
-          : DateTime.parse(json['date_atom'] as String),
-      favorited: json['favorited'] as bool? ?? false,
-      watchLater: json['watch_later'] as bool? ?? false,
-      shortStory: json['short_story'] == null
+      poster: json['poster'] as String? ?? '',
+      year: json['year'] == null
           ? ''
-          : const HtmlRemoveConverter().fromJson(json['short_story'] as String),
-      rip: json['rip'] as String? ?? '',
-      quality: json['quality'] as String? ?? '',
-      categories: (json['categories'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      actors: (json['actors'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      directors: (json['directors'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : const StringConverter().fromJson(json['year']),
       countries: (json['countries'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      kpRating: json['kp_rating'] == null
-          ? 0.0
-          : const DoubleConverter().fromJson(json['kp_rating']),
+      subtitlesEnabled: json['subtitles_enabled'] as bool? ?? false,
+      bookmarked: json['bookmarked'] == null
+          ? null
+          : DateTime.parse(json['bookmarked'] as String),
       imdbRating: json['imdb_rating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['imdb_rating']),
+      kinopoiskRating: json['kinopoisk_rating'] == null
+          ? 0.0
+          : const DoubleConverter().fromJson(json['kinopoisk_rating']),
+      seasons: (json['seasons'] as List<dynamic>?)
+              ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      voiceActing: json['voice_acting'] as String? ?? '',
+      voiceActings: (json['voice_actings'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as String),
+          ) ??
+          const {},
+      categories: (json['categories'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      shortStory: json['short_story'] == null
+          ? ''
+          : const HtmlRemoveConverter().fromJson(json['short_story'] as String),
       playerLinks: json['player_links'] == null
           ? const FlmxPlayerLinks()
           : FlmxPlayerLinks.fromJson(
               json['player_links'] as Map<String, dynamic>),
-      lastEpisode: json['last_episode'] == null
-          ? null
-          : FlmxLastEpisode.fromJson(
-              json['last_episode'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$_FilmixItemToJson(_$_FilmixItem instance) =>
+Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
-      'id': const IntConverter().toJson(instance.id),
-      'section': const IntConverter().toJson(instance.section),
-      'year': const IntConverter().toJson(instance.year),
-      'year_end': const IntConverter().toJson(instance.yearEnd),
-      'duration': const IntConverter().toJson(instance.duration),
-      'poster': instance.poster,
+      'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'original_title': instance.originalTitle,
-      'date_atom': instance.dateAtom?.toIso8601String(),
-      'favorited': instance.favorited,
-      'watch_later': instance.watchLater,
-      'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
-      'rip': instance.rip,
-      'quality': instance.quality,
-      'categories': instance.categories,
-      'actors': instance.actors,
-      'directors': instance.directors,
+      'poster': instance.poster,
+      'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,
-      'kp_rating': const DoubleConverter().toJson(instance.kpRating),
+      'voice_acting': instance.voiceActing,
+      'voice_actings': instance.voiceActings,
+      'subtitles_enabled': instance.subtitlesEnabled,
+      'bookmarked': instance.bookmarked?.toIso8601String(),
       'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
-      'player_links': instance.playerLinks,
-      'last_episode': instance.lastEpisode,
+      'kinopoisk_rating':
+          const DoubleConverter().toJson(instance.kinopoiskRating),
+      'seasons': instance.seasons.map((e) => e.toJson()).toList(),
+      'categories': instance.categories,
+      'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
+      'player_links': instance.playerLinks?.toJson(),
     };

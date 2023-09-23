@@ -126,29 +126,30 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           duration: kThemeAnimationDuration,
           curve: Curves.easeInOut,
           opacity: _visible ? 1.0 : 0.0,
-          child: Material(
-            child: Stack(
-              children: [
-                // Fallback from the controls to the video & show/hide controls on tap.
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          theme.colorScheme.surface,
-                          Colors.transparent,
-                        ],
-                        stops: const [0.0, 0.36],
-                      ),
+          child: Stack(
+            children: [
+              // Fallback from the controls to the video & show/hide controls on tap.
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        theme.colorScheme.surface,
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.36],
                     ),
                   ),
                 ),
-                Positioned(
-                  top: TvUi.navigationBarSize.height + TvUi.vPadding,
-                  left: TvUi.hPadding,
-                  right: TvUi.hPadding,
+              ),
+              Positioned(
+                top: TvUi.navigationBarSize.height + TvUi.vPadding,
+                left: TvUi.hPadding,
+                right: TvUi.hPadding,
+                child: Material(
+                  color: Colors.transparent,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -163,55 +164,55 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                     ],
                   ),
                 ),
-                const Center(
-                  child: PlayPauseButton(),
-                ),
-                Positioned(
-                  bottom: TvUi.vPadding,
-                  left: TvUi.hPadding,
-                  right: TvUi.hPadding,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      PlayerProgressBar(
-                        focusNode: _progressBarFocusNode,
-                        onSkipNext: widget.onSkipNext,
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          context.pop();
-                        },
-                        child: Text('BACK'),
-                      ),
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: SizedBox(),
+              ),
+              const Center(
+                child: PlayPauseButton(),
+              ),
+              Positioned(
+                bottom: TvUi.vPadding,
+                left: TvUi.hPadding,
+                right: TvUi.hPadding,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    PlayerProgressBar(
+                      focusNode: _progressBarFocusNode,
+                      onSkipNext: widget.onSkipNext,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      child: Text('BACK'),
+                    ),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: SizedBox(),
+                        ),
+                        if (widget.onSkipPrevious != null)
+                          OutlinedButton(
+                            onPressed: () {
+                              widget.onSkipPrevious?.call();
+                            },
+                            child: const Icon(Icons.skip_previous_outlined),
                           ),
-                          if (widget.onSkipPrevious != null)
-                            OutlinedButton(
-                              onPressed: () {
-                                widget.onSkipPrevious?.call();
-                              },
-                              child: const Icon(Icons.skip_previous_outlined),
-                            ),
-                          if (widget.onSkipPrevious != null &&
-                              widget.onSkipNext != null)
-                            const SizedBox(width: 12.0),
-                          if (widget.onSkipNext != null)
-                            OutlinedButton(
-                              onPressed: () {
-                                widget.onSkipNext?.call();
-                              },
-                              child: const Icon(Icons.skip_next_outlined),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        if (widget.onSkipPrevious != null &&
+                            widget.onSkipNext != null)
+                          const SizedBox(width: 12.0),
+                        if (widget.onSkipNext != null)
+                          OutlinedButton(
+                            onPressed: () {
+                              widget.onSkipNext?.call();
+                            },
+                            child: const Icon(Icons.skip_next_outlined),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

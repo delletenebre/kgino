@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/test/media_item.dart';
+import '../models/media_item.dart';
 
 part 'focused_media_item_provider.g.dart';
 

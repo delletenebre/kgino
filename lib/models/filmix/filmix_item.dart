@@ -1,250 +1,162 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:collection/collection.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../../api/filmix_api_provider.dart';
 import '../../extensions/json_converters.dart';
-import 'flmx_last_episode.dart';
+import '../media_item.dart';
 import 'flmx_player_links.dart';
 import 'flmx_show_link.dart';
 
-part 'filmix_item.freezed.dart';
 part 'filmix_item.g.dart';
 
-@freezed
-class FilmixItem with _$FilmixItem {
-  const FilmixItem._();
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class FilmixItem extends MediaItem {
+  final List<String> categories;
 
-  // ignore: invalid_annotation_target
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory FilmixItem({
-    @IntConverter() @Default(0) int id,
-    @IntConverter() @Default(0) int section,
-    @IntConverter() @Default(0) int year,
-    @IntConverter() @Default(0) int yearEnd,
-    @IntConverter() @Default(0) int duration,
-    @Default('') String poster,
-    @Default('') String title,
-    @Default('') String originalTitle,
-    DateTime? dateAtom,
-    @Default(false) bool favorited,
-    @Default(false) bool watchLater,
-    @HtmlRemoveConverter() @Default('') String shortStory,
-    @Default('') String rip,
-    @Default('') String quality,
-    @Default([]) List<String> categories,
-    @Default([]) List<String> actors,
-    @Default([]) List<String> directors,
-    @Default([]) List<String> countries,
-    @DoubleConverter() @Default(0.0) double kpRating,
-    @DoubleConverter() @Default(0.0) double imdbRating,
-    @Default(FlmxPlayerLinks()) FlmxPlayerLinks playerLinks,
-    FlmxLastEpisode? lastEpisode,
-  }) = _FilmixItem;
+  /// описание
+  @HtmlRemoveConverter()
+  final String shortStory;
 
-  factory FilmixItem.fromJson(Map<String, Object?> json) =>
+  /// ссылки на проигрываемые файлы
+  final FlmxPlayerLinks? playerLinks;
+
+  FilmixItem({
+    super.id,
+    super.title,
+    super.originalTitle = '',
+    super.poster,
+    super.year,
+    super.countries,
+    super.subtitlesEnabled,
+    super.bookmarked,
+    super.imdbRating,
+    super.kinopoiskRating,
+    super.seasons,
+    super.voiceActing,
+    super.voiceActings,
+    this.categories = const [],
+    this.shortStory = '',
+    this.playerLinks = const FlmxPlayerLinks(),
+  }) {
+    voiceActings = {};
+
+    if (playerLinks != null && playerLinks!.playlist is Map) {
+      /// парсим плейлист
+      final playlist = (playerLinks!.playlist as Map<String, dynamic>).map(
+        (k, e) {
+          return MapEntry(
+            k,
+            (e as Map<String, dynamic>).map((k, e) {
+              try {
+                if (e is Map) {
+                  return MapEntry(
+                    k,
+                    (e as Map<String, dynamic>).map((k, e) {
+                      return MapEntry(
+                        k,
+                        FlmxShowLink.fromJson(e as Map<String, dynamic>),
+                      );
+                    }),
+                  );
+                } else {
+                  return MapEntry(
+                    k,
+                    (e as List<dynamic>).asMap().map((k, e) {
+                      return MapEntry(
+                        k + 1,
+                        FlmxShowLink.fromJson(e as Map<String, dynamic>),
+                      );
+                    }),
+                  );
+                }
+              } catch (exception) {
+                return const MapEntry('', <String, FlmxShowLink>{});
+              }
+            }),
+          );
+        },
+      );
+
+      /// очищаем варианты озвучки от дубликатов
+      final uniqueVoiceActings =
+          playlist.entries.map((e) => e.value.keys).flattened.toSet();
+
+      /// доступный варианты озвучки
+      voiceActings = {
+        for (final voiceActing in uniqueVoiceActings) voiceActing: voiceActing
+      };
+
+      if (super.voiceActing.isEmpty) {
+        voiceActing = voiceActings.keys.first;
+      }
+
+      seasons = [];
+
+      for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
+        if (seasonEntry.value.containsKey(voiceActing)) {
+          final seasonNumber = seasonEntry.key;
+          final episodes = <MediaItemEpisode>[];
+          for (final (episodeIndex, episodeEntry)
+              in (seasonEntry.value[voiceActing] as Map).entries.indexed) {
+            final episodeNumber = episodeEntry.key;
+            final showLink = episodeEntry.value as FlmxShowLink;
+            episodes.add(MediaItemEpisode(
+              id: '$seasonNumber/$episodeNumber',
+              seasonNumber: seasonIndex + 1,
+              episodeNumber: episodeIndex + 1,
+              videoFileUrl: showLink.link,
+              qualities: showLink.qualities,
+            ));
+          }
+          seasons.add(MediaItemSeason(
+            name: seasonEntry.key,
+            episodes: episodes,
+          ));
+        }
+      }
+    }
+  }
+
+  factory FilmixItem.fromJson(Map<String, dynamic> json) =>
       _$FilmixItemFromJson(json);
 
-  // MediaItem toMediaItem(MediaItemType type) {
-  //   /// сезоны
-  //   // List<SeasonItem> seasons = [];
+  @override
+  Map<String, dynamic> toJson() => _$FilmixItemToJson(this);
 
-  //   // KginoProvider provider = KginoProvider.flmxMovie;
+  @override
+  List<String> get genres => categories;
 
-  //   // String voiceActing = '';
-  //   // Map<String, VoiceActing> voiceActings = {};
-  //   // Map<String, List<SeasonItem>> voiceActingSeasons = {};
+  @override
+  String get overview => shortStory;
 
-  //   // if (playerLinks.movie.isNotEmpty) {
-  //   //   /// ^ если это фильм
+  @override
+  Future<MediaItem> loadDetails(Ref ref) async {
+    final api = ref.read(filmixApiProvider);
 
-  //   //   for (final movie in playerLinks.movie) {
-  //   //     final playableQualities = <int>[];
+    /// отменяем выполнение запроса, если страница закрыта
+    final cancelToken = api.getCancelToken();
+    ref.onDispose(cancelToken.cancel);
 
-  //   //     final qualityRegExp = RegExp(r'\[([,\d]+)\]');
-  //   //     final qualities =
-  //   //         qualityRegExp.allMatches(movie.link).map((m) => m.group(0));
+    return await api.getDetails(
+      id: id,
+      cancelToken: cancelToken,
+    );
+  }
 
-  //   //     if (qualities.isNotEmpty) {
-  //   //       final variants = qualities.first.toString().split(',');
-  //   //       variants.removeWhere((element) => int.tryParse(element) == null);
-  //   //       playableQualities.addAll(variants.map((v) => int.tryParse(v) ?? 0));
-  //   //     }
+  @override
+  Future<String> loadEpisodeUrl({
+    required WidgetRef ref,
+    required int episodeIndex,
+  }) async {
+    final api = ref.read(filmixApiProvider);
+    final episodes = this.episodes();
 
-  //   //     final videoUrl = movie.link.replaceFirst(RegExp(r'(\[[,\d]+\])'), '%s');
+    if (episodeIndex < episodes.length) {
+      final episode = episodes[episodeIndex];
+      return episode.videoFileUrl.replaceFirst('_%s.', '_480.');
+    }
 
-  //   //     voiceActings[movie.translation] = VoiceActing(
-  //   //       id: movie.translation,
-  //   //       name: movie.translation,
-  //   //       seasons: [
-  //   //         SeasonItem(
-  //   //           episodes: [
-  //   //             EpisodeItem(
-  //   //               id: '0/0',
-  //   //               fullId: EpisodeItem.getFullId(
-  //   //                   provider.name, id.toString(), '0/0'),
-  //   //               playableQualities: playableQualities,
-  //   //               videoFileUrl: videoUrl,
-  //   //               duration: duration,
-  //   //             ),
-  //   //           ],
-  //   //         )
-  //   //       ],
-  //   //     );
-  //   //   }
-
-  //   //   voiceActing = playerLinks.movie.first.translation;
-  //   //   seasons = voiceActings[voiceActing]!.seasons;
-  //   // }
-
-  //   // /// playlist as Map<String, Map<String, Map<String, FlmxShowLink>>>
-  //   // if (playerLinks.playlist is Map && playerLinks.playlist.isNotEmpty) {
-  //   //   /// ^ если это сериал
-
-  //   //   provider = KginoProvider.flmxShow;
-
-  //   //   /// парсим как [Map<String, Map<String, Map<String, FlmxShowLink>>>]
-  //   //   // final playlist = (playerLinks.playlist as Map<String, dynamic>).map(
-  //   //   //   (k, e) => MapEntry(
-  //   //   //     k, (e as Map<String, dynamic>).map(
-  //   //   //       (k, e) => MapEntry(
-  //   //   //         k, (e as Map<String, dynamic>).map(
-  //   //   //           (k, e) => MapEntry(k,
-  //   //   //               FlmxShowLink.fromJson(e as Map<String, dynamic>)),
-  //   //   //         )),
-  //   //   //     )),
-  //   //   // );
-
-  //   //   final playlist = (playerLinks.playlist as Map<String, dynamic>).map(
-  //   //     (k, e) {
-  //   //       // print('k $k');
-  //   //       return MapEntry(
-  //   //           k,
-  //   //           (e as Map<String, dynamic>).map((k, e) {
-  //   //             // print('kkk $k');
-
-  //   //             try {
-  //   //               return MapEntry(
-  //   //                   k,
-  //   //                   (e as Map<String, dynamic>).map((k, e) {
-  //   //                     // print('kkkkk $k');
-  //   //                     return MapEntry(k,
-  //   //                         FlmxShowLink.fromJson(e as Map<String, dynamic>));
-  //   //                   }));
-  //   //             } catch (exception) {
-  //   //               return const MapEntry('', <String, FlmxShowLink>{});
-  //   //             }
-  //   //           }));
-  //   //     },
-  //   //   );
-
-  //   //   /// список всех доступных озвучек
-  //   //   final translationsMap =
-  //   //       <String, Map<String, Map<String, FlmxShowLink>>>{};
-
-  //   //   for (final seasonNumber in playlist.keys) {
-  //   //     /// сезон со всеми вариантами озвучек
-  //   //     final translationMap = playlist[seasonNumber]!;
-
-  //   //     /// если были проблемы с парсингом, удаляем пустую озвучку
-  //   //     translationMap.remove('');
-
-  //   //     for (final translationName in translationMap.keys) {
-  //   //       /// добавляем вариант озвучки в общий список, если его ещё нет
-  //   //       translationsMap.putIfAbsent(translationName, () => {});
-
-  //   //       /// эпизоды сезона текущим вариантом озвучки
-  //   //       final episodes = translationMap[translationName]!;
-
-  //   //       /// добавляем эпизоды сезона
-  //   //       translationsMap[translationName]![seasonNumber] = episodes;
-  //   //     }
-  //   //   }
-
-  //   //   for (final entry in translationsMap.entries) {
-  //   //     final translationName = entry.key;
-  //   //     final seasonsMap = entry.value;
-
-  //   //     /// список сезонов
-  //   //     final seasons = <SeasonItem>[];
-
-  //   //     /// формируем список сезонов
-  //   //     for (final seasonEntry in seasonsMap.entries) {
-  //   //       final seasonNumber = seasonEntry.key;
-  //   //       final episodesMap = seasonEntry.value;
-
-  //   //       /// список эпизодов
-  //   //       final episodes = <EpisodeItem>[];
-
-  //   //       /// формируем список эпизодов сезона
-  //   //       for (final episodeEntry in episodesMap.entries) {
-  //   //         final episodeNumber = episodeEntry.key;
-  //   //         final episodeValue = episodeEntry.value;
-
-  //   //         final episodeId = '$seasonNumber/$episodeNumber';
-
-  //   //         /// формируем эпизод
-  //   //         episodes.add(
-  //   //           EpisodeItem(
-  //   //             id: episodeId,
-  //   //             fullId: EpisodeItem.getFullId(
-  //   //                 provider.name, id.toString(), episodeId),
-  //   //             name: episodeNumber,
-  //   //             seasonNumber: int.tryParse(seasonNumber) ?? 0,
-  //   //             episodeNumber: int.tryParse(episodeNumber) ?? 0,
-  //   //             videoFileUrl: episodeValue.link,
-  //   //             playableQualities: episodeValue.qualities,
-  //   //           ),
-  //   //         );
-  //   //       }
-
-  //   //       /// формируем сезон
-  //   //       seasons.add(SeasonItem(
-  //   //         name: seasonNumber,
-  //   //         episodes: episodes,
-  //   //       ));
-
-  //   //       voiceActingSeasons[translationName] = seasons;
-  //   //     }
-
-  //   //     voiceActings[translationName] = VoiceActing(
-  //   //       id: translationName,
-  //   //       name: translationName,
-  //   //       seasons: voiceActingSeasons[translationName]!,
-  //   //     );
-  //   //   }
-
-  //   //   /// первый вариант озвучки
-  //   //   voiceActing = translationsMap.keys.first;
-  //   //   seasons = voiceActingSeasons[voiceActing]!;
-  //   // }
-
-  //   // return MediaItem(
-  //   //   // provider: provider.name,
-  //   //   // id: id.toString(),
-  //   //   // name: title,
-  //   //   // originalName: originalTitle,
-  //   //   // posterUrl: poster,
-  //   //   // description: shortStory,
-  //   //   // year: year.toString(),
-  //   //   // genres: categories,
-  //   //   // countries: countries,
-  //   //   // imdbRating: imdbRating,
-  //   //   // kinopoiskRating: kpRating,
-  //   //   // duration: Duration(minutes: duration),
-  //   //   // voiceActing: voiceActing,
-  //   //   // voiceActings: voiceActings,
-  //   //   // seasons: seasons,
-  //   // );
-
-  //   return MediaItem(
-  //     onlineService: OnlineService.filmix,
-  //     mediaItemType: type,
-  //     //id: id.toString(),
-  //     title: title,
-  //     originalTitle: originalTitle,
-  //     posterImage: poster,
-  //     overview: shortStory,
-  //     genres: categories,
-  //     year: year.toString(),
-  //     countries: countries,
-  //   );
-  // }
+    return '';
+  }
 }

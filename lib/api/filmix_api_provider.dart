@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../models/test/filmix/filmix_item.dart';
-import '../models/test/media_item.dart';
+import '../models/filmix/filmix_item.dart';
+import '../models/media_item.dart';
 import '../providers/providers.dart';
 import 'interceptors/logs_interceptor.dart';
 import 'models/api_request.dart';
@@ -76,18 +76,27 @@ class FilmixApi {
     };
   }
 
-  // /// поиск
-  // Future<List<KginoItem>> search(String searchQuery) async {
-  //   return ApiRequest<List<KginoItem>>().call(
-  //     request: _dio.get('/search',
-  //         queryParameters: {..._queryParams, 'story': searchQuery}),
-  //     decoder: (json) async {
-  //       return json.map<KginoItem>((item) {
-  //         return FlmxItem.fromJson(item).toMovieItem();
-  //       }).toList();
-  //     },
-  //   );
-  // }
+  /// поиск
+  Future<List<MediaItem>> search({
+    required String searchQuery,
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<List<MediaItem>>().call(
+      request: _dio.get(
+        '/search',
+        queryParameters: {
+          ..._queryParams,
+          'story': searchQuery,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) {
+        return json.map<MediaItem>((item) {
+          return FilmixItem.fromJson(item);
+        }).toList();
+      },
+    );
+  }
 
   /// детали фильма или сериала
   Future<FilmixItem> getDetails({
