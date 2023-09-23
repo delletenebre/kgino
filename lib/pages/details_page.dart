@@ -42,7 +42,6 @@ class DetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     /// размер экрана
@@ -62,7 +61,7 @@ class DetailsPage extends HookConsumerWidget {
             final scrollController = useScrollController();
             final isScrolling = useState(false);
 
-            final playButtonHasFocus = useState(false);
+            // final playButtonHasFocus = useState(false);
             final secondContainerPosition = useState(0.0);
 
             /// вычисляем позицию второго контейнера, если он есть

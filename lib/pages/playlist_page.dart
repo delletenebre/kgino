@@ -20,7 +20,6 @@ class PlaylistPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     final episodes = useMemoized(() => mediaItem.episodes());
