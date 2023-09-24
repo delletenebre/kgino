@@ -29,6 +29,8 @@ class BookmarkButton extends HookConsumerWidget {
 
     final dbItem = mediaItemStream.data!;
 
+    print(mediaItem.onlineService);
+
     if (dbItem.bookmarked != null) {
       /// кнопка удаления из избранного
       return FilledButton.tonalIcon(

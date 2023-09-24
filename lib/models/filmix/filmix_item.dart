@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/filmix_api_provider.dart';
@@ -14,7 +13,6 @@ import 'filmix_show_link.dart';
 part 'filmix_item.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
-@embedded
 class FilmixItem extends MediaItem {
   final List<String> categories;
 
@@ -39,6 +37,7 @@ class FilmixItem extends MediaItem {
     super.voiceActing,
     super.voiceActings,
     super.bookmarked,
+    super.onlineService = OnlineService.filmix,
     super.type = MediaItemType.none,
     this.categories = const [],
     this.shortStory = '',
@@ -140,9 +139,6 @@ class FilmixItem extends MediaItem {
 
   @override
   String get overview => shortStory;
-
-  @override
-  OnlineService get onlineService => OnlineService.filmix;
 
   @override
   Future<MediaItem> loadDetails(Ref ref) async {

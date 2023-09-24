@@ -63,6 +63,8 @@ class MediaItem {
 
   List<MediaItemSeason> seasons = [];
 
+  final OnlineService onlineService;
+
   MediaItem({
     required this.id,
     required this.title,
@@ -80,14 +82,13 @@ class MediaItem {
     this.seasons = const [],
     this.bookmarked,
     this.type = MediaItemType.none,
+    this.onlineService = OnlineService.none,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
       _$MediaItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MediaItemToJson(this);
-
-  OnlineService get onlineService => OnlineService.none;
 
   String get backdrop => poster;
 

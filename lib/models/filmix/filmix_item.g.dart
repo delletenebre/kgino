@@ -39,6 +39,9 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       bookmarked: json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String),
+      onlineService:
+          $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
+              OnlineService.filmix,
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -68,7 +71,13 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'kinopoisk_rating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
+      'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
       'categories': instance.categories,
       'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
       'player_links': instance.playerLinks?.toJson(),
     };
+
+const _$OnlineServiceEnumMap = {
+  OnlineService.none: 'none',
+  OnlineService.filmix: 'filmix',
+};
