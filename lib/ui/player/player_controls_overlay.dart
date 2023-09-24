@@ -175,21 +175,20 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    /// прогресс бар
                     PlayerProgressBar(
                       focusNode: _progressBarFocusNode,
                       onSkipNext: widget.onSkipNext,
                     ),
-                    TextButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      child: Text('BACK'),
-                    ),
+
+                    /// кнопки управления
                     Row(
                       children: [
                         const Expanded(
                           child: SizedBox(),
                         ),
+
+                        /// кнопка перехода к предыдущему эпизоду
                         if (widget.onSkipPrevious != null)
                           OutlinedButton(
                             onPressed: () {
@@ -197,9 +196,13 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                             },
                             child: const Icon(Icons.skip_previous_outlined),
                           ),
+
+                        /// разделитель
                         if (widget.onSkipPrevious != null &&
                             widget.onSkipNext != null)
                           const SizedBox(width: 12.0),
+
+                        /// кнопка перехода к следующему эпизоду
                         if (widget.onSkipNext != null)
                           OutlinedButton(
                             onPressed: () {

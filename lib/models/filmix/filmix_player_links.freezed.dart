@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'flmx_player_links.dart';
+part of 'filmix_player_links.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,34 +14,34 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-FlmxPlayerLinks _$FlmxPlayerLinksFromJson(Map<String, dynamic> json) {
-  return _FlmxPlayerLinks.fromJson(json);
+FilmixPlayerLinks _$FilmixPlayerLinksFromJson(Map<String, dynamic> json) {
+  return _FilmixPlayerLinks.fromJson(json);
 }
 
 /// @nodoc
-mixin _$FlmxPlayerLinks {
-  List<FlmxMovieLink> get movie => throw _privateConstructorUsedError;
+mixin _$FilmixPlayerLinks {
+  List<FilmixMovieLink> get movie => throw _privateConstructorUsedError;
   dynamic get playlist => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $FlmxPlayerLinksCopyWith<FlmxPlayerLinks> get copyWith =>
+  $FilmixPlayerLinksCopyWith<FilmixPlayerLinks> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FlmxPlayerLinksCopyWith<$Res> {
-  factory $FlmxPlayerLinksCopyWith(
-          FlmxPlayerLinks value, $Res Function(FlmxPlayerLinks) then) =
-      _$FlmxPlayerLinksCopyWithImpl<$Res, FlmxPlayerLinks>;
+abstract class $FilmixPlayerLinksCopyWith<$Res> {
+  factory $FilmixPlayerLinksCopyWith(
+          FilmixPlayerLinks value, $Res Function(FilmixPlayerLinks) then) =
+      _$FilmixPlayerLinksCopyWithImpl<$Res, FilmixPlayerLinks>;
   @useResult
-  $Res call({List<FlmxMovieLink> movie, dynamic playlist});
+  $Res call({List<FilmixMovieLink> movie, dynamic playlist});
 }
 
 /// @nodoc
-class _$FlmxPlayerLinksCopyWithImpl<$Res, $Val extends FlmxPlayerLinks>
-    implements $FlmxPlayerLinksCopyWith<$Res> {
-  _$FlmxPlayerLinksCopyWithImpl(this._value, this._then);
+class _$FilmixPlayerLinksCopyWithImpl<$Res, $Val extends FilmixPlayerLinks>
+    implements $FilmixPlayerLinksCopyWith<$Res> {
+  _$FilmixPlayerLinksCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -58,7 +58,7 @@ class _$FlmxPlayerLinksCopyWithImpl<$Res, $Val extends FlmxPlayerLinks>
       movie: null == movie
           ? _value.movie
           : movie // ignore: cast_nullable_to_non_nullable
-              as List<FlmxMovieLink>,
+              as List<FilmixMovieLink>,
       playlist: freezed == playlist
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
@@ -68,22 +68,22 @@ class _$FlmxPlayerLinksCopyWithImpl<$Res, $Val extends FlmxPlayerLinks>
 }
 
 /// @nodoc
-abstract class _$$_FlmxPlayerLinksCopyWith<$Res>
-    implements $FlmxPlayerLinksCopyWith<$Res> {
-  factory _$$_FlmxPlayerLinksCopyWith(
-          _$_FlmxPlayerLinks value, $Res Function(_$_FlmxPlayerLinks) then) =
-      __$$_FlmxPlayerLinksCopyWithImpl<$Res>;
+abstract class _$$_FilmixPlayerLinksCopyWith<$Res>
+    implements $FilmixPlayerLinksCopyWith<$Res> {
+  factory _$$_FilmixPlayerLinksCopyWith(_$_FilmixPlayerLinks value,
+          $Res Function(_$_FilmixPlayerLinks) then) =
+      __$$_FilmixPlayerLinksCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<FlmxMovieLink> movie, dynamic playlist});
+  $Res call({List<FilmixMovieLink> movie, dynamic playlist});
 }
 
 /// @nodoc
-class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
-    extends _$FlmxPlayerLinksCopyWithImpl<$Res, _$_FlmxPlayerLinks>
-    implements _$$_FlmxPlayerLinksCopyWith<$Res> {
-  __$$_FlmxPlayerLinksCopyWithImpl(
-      _$_FlmxPlayerLinks _value, $Res Function(_$_FlmxPlayerLinks) _then)
+class __$$_FilmixPlayerLinksCopyWithImpl<$Res>
+    extends _$FilmixPlayerLinksCopyWithImpl<$Res, _$_FilmixPlayerLinks>
+    implements _$$_FilmixPlayerLinksCopyWith<$Res> {
+  __$$_FilmixPlayerLinksCopyWithImpl(
+      _$_FilmixPlayerLinks _value, $Res Function(_$_FilmixPlayerLinks) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,11 +92,11 @@ class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
     Object? movie = null,
     Object? playlist = freezed,
   }) {
-    return _then(_$_FlmxPlayerLinks(
+    return _then(_$_FilmixPlayerLinks(
       movie: null == movie
           ? _value._movie
           : movie // ignore: cast_nullable_to_non_nullable
-              as List<FlmxMovieLink>,
+              as List<FilmixMovieLink>,
       playlist: freezed == playlist
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
@@ -107,18 +107,18 @@ class __$$_FlmxPlayerLinksCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
-  const _$_FlmxPlayerLinks(
-      {final List<FlmxMovieLink> movie = const [], this.playlist})
+class _$_FilmixPlayerLinks implements _FilmixPlayerLinks {
+  const _$_FilmixPlayerLinks(
+      {final List<FilmixMovieLink> movie = const [], this.playlist})
       : _movie = movie;
 
-  factory _$_FlmxPlayerLinks.fromJson(Map<String, dynamic> json) =>
-      _$$_FlmxPlayerLinksFromJson(json);
+  factory _$_FilmixPlayerLinks.fromJson(Map<String, dynamic> json) =>
+      _$$_FilmixPlayerLinksFromJson(json);
 
-  final List<FlmxMovieLink> _movie;
+  final List<FilmixMovieLink> _movie;
   @override
   @JsonKey()
-  List<FlmxMovieLink> get movie {
+  List<FilmixMovieLink> get movie {
     if (_movie is EqualUnmodifiableListView) return _movie;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_movie);
@@ -129,14 +129,14 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
 
   @override
   String toString() {
-    return 'FlmxPlayerLinks(movie: $movie, playlist: $playlist)';
+    return 'FilmixPlayerLinks(movie: $movie, playlist: $playlist)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_FlmxPlayerLinks &&
+            other is _$_FilmixPlayerLinks &&
             const DeepCollectionEquality().equals(other._movie, _movie) &&
             const DeepCollectionEquality().equals(other.playlist, playlist));
   }
@@ -151,31 +151,32 @@ class _$_FlmxPlayerLinks implements _FlmxPlayerLinks {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_FlmxPlayerLinksCopyWith<_$_FlmxPlayerLinks> get copyWith =>
-      __$$_FlmxPlayerLinksCopyWithImpl<_$_FlmxPlayerLinks>(this, _$identity);
+  _$$_FilmixPlayerLinksCopyWith<_$_FilmixPlayerLinks> get copyWith =>
+      __$$_FilmixPlayerLinksCopyWithImpl<_$_FilmixPlayerLinks>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_FlmxPlayerLinksToJson(
+    return _$$_FilmixPlayerLinksToJson(
       this,
     );
   }
 }
 
-abstract class _FlmxPlayerLinks implements FlmxPlayerLinks {
-  const factory _FlmxPlayerLinks(
-      {final List<FlmxMovieLink> movie,
-      final dynamic playlist}) = _$_FlmxPlayerLinks;
+abstract class _FilmixPlayerLinks implements FilmixPlayerLinks {
+  const factory _FilmixPlayerLinks(
+      {final List<FilmixMovieLink> movie,
+      final dynamic playlist}) = _$_FilmixPlayerLinks;
 
-  factory _FlmxPlayerLinks.fromJson(Map<String, dynamic> json) =
-      _$_FlmxPlayerLinks.fromJson;
+  factory _FilmixPlayerLinks.fromJson(Map<String, dynamic> json) =
+      _$_FilmixPlayerLinks.fromJson;
 
   @override
-  List<FlmxMovieLink> get movie;
+  List<FilmixMovieLink> get movie;
   @override
   dynamic get playlist;
   @override
   @JsonKey(ignore: true)
-  _$$_FlmxPlayerLinksCopyWith<_$_FlmxPlayerLinks> get copyWith =>
+  _$$_FilmixPlayerLinksCopyWith<_$_FilmixPlayerLinks> get copyWith =>
       throw _privateConstructorUsedError;
 }

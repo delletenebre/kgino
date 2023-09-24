@@ -3,8 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// import '../models/episode_item.dart';
-// import '../models/kgino_item.dart';
+import '../models/media_item.dart';
 
 class KrsStorage {
   late final SharedPreferences sharedStorage;
@@ -21,16 +20,16 @@ class KrsStorage {
     //   directory = await getApplicationDocumentsDirectory();
     // }
 
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      db = Isar.open(
-        schemas: [
-          // KginoItemSchema,
-          // EpisodeItemSchema,
-        ],
-        directory: dir.path,
-      );
-    } catch (exception) {}
+    // try {
+    final dir = await getApplicationDocumentsDirectory();
+    db = Isar.open(
+      schemas: [
+        MediaItemSchema,
+        // EpisodeItemSchema,
+      ],
+      directory: dir.path,
+    );
+    // } catch (exception) {}
 
     return this;
   }

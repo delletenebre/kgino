@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'media_item_season.dart';
+part of 'voice_acting.dart';
 
 // **************************************************************************
 // _IsarEmbeddedGenerator
@@ -10,9 +10,9 @@ part of 'media_item_season.dart';
 // ignore_for_file: duplicate_ignore, invalid_use_of_protected_member, lines_longer_than_80_chars, constant_identifier_names, avoid_js_rounded_ints, no_leading_underscores_for_local_identifiers, require_trailing_commas, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_in_if_null_operators, library_private_types_in_public_api, prefer_const_constructors
 // ignore_for_file: type=lint
 
-const MediaItemSeasonSchema = IsarGeneratedSchema(
+const VoiceActingSchema = IsarGeneratedSchema(
   schema: IsarSchema(
-    name: 'MediaItemSeason',
+    name: 'VoiceActing',
     embedded: true,
     properties: [
       IsarPropertySchema(
@@ -23,85 +23,38 @@ const MediaItemSeasonSchema = IsarGeneratedSchema(
         name: 'name',
         type: IsarType.string,
       ),
-      IsarPropertySchema(
-        name: 'episodes',
-        type: IsarType.objectList,
-        target: 'MediaItemEpisode',
-      ),
     ],
     indexes: [],
   ),
-  converter: IsarObjectConverter<void, MediaItemSeason>(
-    serialize: serializeMediaItemSeason,
-    deserialize: deserializeMediaItemSeason,
+  converter: IsarObjectConverter<void, VoiceActing>(
+    serialize: serializeVoiceActing,
+    deserialize: deserializeVoiceActing,
   ),
 );
 
 @isarProtected
-int serializeMediaItemSeason(IsarWriter writer, MediaItemSeason object) {
+int serializeVoiceActing(IsarWriter writer, VoiceActing object) {
   IsarCore.writeString(writer, 1, object.id);
   IsarCore.writeString(writer, 2, object.name);
-  {
-    final list = object.episodes;
-    final listWriter = IsarCore.beginList(writer, 3, list.length);
-    for (var i = 0; i < list.length; i++) {
-      {
-        final value = list[i];
-        final objectWriter = IsarCore.beginObject(listWriter, i);
-        serializeMediaItemEpisode(objectWriter, value);
-        IsarCore.endObject(listWriter, objectWriter);
-      }
-    }
-    IsarCore.endList(writer, listWriter);
-  }
   return 0;
 }
 
 @isarProtected
-MediaItemSeason deserializeMediaItemSeason(IsarReader reader) {
+VoiceActing deserializeVoiceActing(IsarReader reader) {
   final String _id;
   _id = IsarCore.readString(reader, 1) ?? '';
   final String _name;
   _name = IsarCore.readString(reader, 2) ?? '';
-  final List<MediaItemEpisode> _episodes;
-  {
-    final length = IsarCore.readList(reader, 3, IsarCore.readerPtrPtr);
-    {
-      final reader = IsarCore.readerPtr;
-      if (reader.isNull) {
-        _episodes = const [];
-      } else {
-        final list = List<MediaItemEpisode>.filled(length, MediaItemEpisode(),
-            growable: true);
-        for (var i = 0; i < length; i++) {
-          {
-            final objectReader = IsarCore.readObject(reader, i);
-            if (objectReader.isNull) {
-              list[i] = MediaItemEpisode();
-            } else {
-              final embedded = deserializeMediaItemEpisode(objectReader);
-              IsarCore.freeReader(objectReader);
-              list[i] = embedded;
-            }
-          }
-        }
-        IsarCore.freeReader(reader);
-        _episodes = list;
-      }
-    }
-  }
-  final object = MediaItemSeason(
+  final object = VoiceActing(
     id: _id,
     name: _name,
-    episodes: _episodes,
   );
   return object;
 }
 
-extension MediaItemSeasonQueryFilter
-    on QueryBuilder<MediaItemSeason, MediaItemSeason, QFilterCondition> {
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idEqualTo(
+extension VoiceActingQueryFilter
+    on QueryBuilder<VoiceActing, VoiceActing, QFilterCondition> {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -116,8 +69,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idGreaterThan(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idGreaterThan(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -132,7 +84,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition>
       idGreaterThanOrEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -148,8 +100,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idLessThan(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idLessThan(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -164,7 +115,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition>
       idLessThanOrEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -180,8 +131,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idBetween(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idBetween(
     String lower,
     String upper, {
     bool caseSensitive = true,
@@ -198,8 +148,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idStartsWith(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -214,8 +163,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idEndsWith(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -230,8 +178,9 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idContains(
+      String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
@@ -243,8 +192,9 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
@@ -256,8 +206,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idIsEmpty() {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
@@ -268,8 +217,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      idIsNotEmpty() {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> idIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
@@ -280,8 +228,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameEqualTo(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -296,8 +243,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameGreaterThan(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -312,7 +258,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition>
       nameGreaterThanOrEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -328,8 +274,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameLessThan(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameLessThan(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -344,7 +289,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition>
       nameLessThanOrEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -360,8 +305,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameBetween(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool caseSensitive = true,
@@ -378,8 +322,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameStartsWith(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -394,8 +337,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameEndsWith(
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -410,8 +352,9 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameContains(
+      String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
@@ -423,8 +366,9 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
@@ -436,8 +380,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      nameIsEmpty() {
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
@@ -448,7 +391,7 @@ extension MediaItemSeasonQueryFilter
     });
   }
 
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
+  QueryBuilder<VoiceActing, VoiceActing, QAfterFilterCondition>
       nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -459,44 +402,23 @@ extension MediaItemSeasonQueryFilter
       );
     });
   }
-
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      episodesIsEmpty() {
-    return not().episodesIsNotEmpty();
-  }
-
-  QueryBuilder<MediaItemSeason, MediaItemSeason, QAfterFilterCondition>
-      episodesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterOrEqualCondition(property: 3, value: null),
-      );
-    });
-  }
 }
 
-extension MediaItemSeasonQueryObject
-    on QueryBuilder<MediaItemSeason, MediaItemSeason, QFilterCondition> {}
+extension VoiceActingQueryObject
+    on QueryBuilder<VoiceActing, VoiceActing, QFilterCondition> {}
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-MediaItemSeason _$MediaItemSeasonFromJson(Map<String, dynamic> json) =>
-    MediaItemSeason(
-      id: json['id'] == null
-          ? ''
-          : const StringConverter().fromJson(json['id']),
+_$_VoiceActing _$$_VoiceActingFromJson(Map<String, dynamic> json) =>
+    _$_VoiceActing(
+      id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
-      episodes: (json['episodes'] as List<dynamic>?)
-              ?.map((e) => MediaItemEpisode.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
     );
 
-Map<String, dynamic> _$MediaItemSeasonToJson(MediaItemSeason instance) =>
+Map<String, dynamic> _$$_VoiceActingToJson(_$_VoiceActing instance) =>
     <String, dynamic>{
-      'id': const StringConverter().toJson(instance.id),
+      'id': instance.id,
       'name': instance.name,
-      'episodes': instance.episodes.map((e) => e.toJson()).toList(),
     };

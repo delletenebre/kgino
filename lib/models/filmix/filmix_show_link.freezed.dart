@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'flmx_show_link.dart';
+part of 'filmix_show_link.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,34 +14,34 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-FlmxShowLink _$FlmxShowLinkFromJson(Map<String, dynamic> json) {
-  return _FlmxShowLink.fromJson(json);
+FilmixShowLink _$FilmixShowLinkFromJson(Map<String, dynamic> json) {
+  return _FilmixShowLink.fromJson(json);
 }
 
 /// @nodoc
-mixin _$FlmxShowLink {
+mixin _$FilmixShowLink {
   String get link => throw _privateConstructorUsedError;
   List<int> get qualities => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $FlmxShowLinkCopyWith<FlmxShowLink> get copyWith =>
+  $FilmixShowLinkCopyWith<FilmixShowLink> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FlmxShowLinkCopyWith<$Res> {
-  factory $FlmxShowLinkCopyWith(
-          FlmxShowLink value, $Res Function(FlmxShowLink) then) =
-      _$FlmxShowLinkCopyWithImpl<$Res, FlmxShowLink>;
+abstract class $FilmixShowLinkCopyWith<$Res> {
+  factory $FilmixShowLinkCopyWith(
+          FilmixShowLink value, $Res Function(FilmixShowLink) then) =
+      _$FilmixShowLinkCopyWithImpl<$Res, FilmixShowLink>;
   @useResult
   $Res call({String link, List<int> qualities});
 }
 
 /// @nodoc
-class _$FlmxShowLinkCopyWithImpl<$Res, $Val extends FlmxShowLink>
-    implements $FlmxShowLinkCopyWith<$Res> {
-  _$FlmxShowLinkCopyWithImpl(this._value, this._then);
+class _$FilmixShowLinkCopyWithImpl<$Res, $Val extends FilmixShowLink>
+    implements $FilmixShowLinkCopyWith<$Res> {
+  _$FilmixShowLinkCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -68,22 +68,22 @@ class _$FlmxShowLinkCopyWithImpl<$Res, $Val extends FlmxShowLink>
 }
 
 /// @nodoc
-abstract class _$$_FlmxShowLinkCopyWith<$Res>
-    implements $FlmxShowLinkCopyWith<$Res> {
-  factory _$$_FlmxShowLinkCopyWith(
-          _$_FlmxShowLink value, $Res Function(_$_FlmxShowLink) then) =
-      __$$_FlmxShowLinkCopyWithImpl<$Res>;
+abstract class _$$_FilmixShowLinkCopyWith<$Res>
+    implements $FilmixShowLinkCopyWith<$Res> {
+  factory _$$_FilmixShowLinkCopyWith(
+          _$_FilmixShowLink value, $Res Function(_$_FilmixShowLink) then) =
+      __$$_FilmixShowLinkCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String link, List<int> qualities});
 }
 
 /// @nodoc
-class __$$_FlmxShowLinkCopyWithImpl<$Res>
-    extends _$FlmxShowLinkCopyWithImpl<$Res, _$_FlmxShowLink>
-    implements _$$_FlmxShowLinkCopyWith<$Res> {
-  __$$_FlmxShowLinkCopyWithImpl(
-      _$_FlmxShowLink _value, $Res Function(_$_FlmxShowLink) _then)
+class __$$_FilmixShowLinkCopyWithImpl<$Res>
+    extends _$FilmixShowLinkCopyWithImpl<$Res, _$_FilmixShowLink>
+    implements _$$_FilmixShowLinkCopyWith<$Res> {
+  __$$_FilmixShowLinkCopyWithImpl(
+      _$_FilmixShowLink _value, $Res Function(_$_FilmixShowLink) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +92,7 @@ class __$$_FlmxShowLinkCopyWithImpl<$Res>
     Object? link = null,
     Object? qualities = null,
   }) {
-    return _then(_$_FlmxShowLink(
+    return _then(_$_FilmixShowLink(
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -107,12 +107,13 @@ class __$$_FlmxShowLinkCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FlmxShowLink implements _FlmxShowLink {
-  const _$_FlmxShowLink({this.link = '', final List<int> qualities = const []})
+class _$_FilmixShowLink implements _FilmixShowLink {
+  const _$_FilmixShowLink(
+      {this.link = '', final List<int> qualities = const []})
       : _qualities = qualities;
 
-  factory _$_FlmxShowLink.fromJson(Map<String, dynamic> json) =>
-      _$$_FlmxShowLinkFromJson(json);
+  factory _$_FilmixShowLink.fromJson(Map<String, dynamic> json) =>
+      _$$_FilmixShowLinkFromJson(json);
 
   @override
   @JsonKey()
@@ -128,14 +129,14 @@ class _$_FlmxShowLink implements _FlmxShowLink {
 
   @override
   String toString() {
-    return 'FlmxShowLink(link: $link, qualities: $qualities)';
+    return 'FilmixShowLink(link: $link, qualities: $qualities)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_FlmxShowLink &&
+            other is _$_FilmixShowLink &&
             (identical(other.link, link) || other.link == link) &&
             const DeepCollectionEquality()
                 .equals(other._qualities, _qualities));
@@ -149,23 +150,23 @@ class _$_FlmxShowLink implements _FlmxShowLink {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_FlmxShowLinkCopyWith<_$_FlmxShowLink> get copyWith =>
-      __$$_FlmxShowLinkCopyWithImpl<_$_FlmxShowLink>(this, _$identity);
+  _$$_FilmixShowLinkCopyWith<_$_FilmixShowLink> get copyWith =>
+      __$$_FilmixShowLinkCopyWithImpl<_$_FilmixShowLink>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_FlmxShowLinkToJson(
+    return _$$_FilmixShowLinkToJson(
       this,
     );
   }
 }
 
-abstract class _FlmxShowLink implements FlmxShowLink {
-  const factory _FlmxShowLink({final String link, final List<int> qualities}) =
-      _$_FlmxShowLink;
+abstract class _FilmixShowLink implements FilmixShowLink {
+  const factory _FilmixShowLink(
+      {final String link, final List<int> qualities}) = _$_FilmixShowLink;
 
-  factory _FlmxShowLink.fromJson(Map<String, dynamic> json) =
-      _$_FlmxShowLink.fromJson;
+  factory _FilmixShowLink.fromJson(Map<String, dynamic> json) =
+      _$_FilmixShowLink.fromJson;
 
   @override
   String get link;
@@ -173,6 +174,6 @@ abstract class _FlmxShowLink implements FlmxShowLink {
   List<int> get qualities;
   @override
   @JsonKey(ignore: true)
-  _$$_FlmxShowLinkCopyWith<_$_FlmxShowLink> get copyWith =>
+  _$$_FilmixShowLinkCopyWith<_$_FilmixShowLink> get copyWith =>
       throw _privateConstructorUsedError;
 }

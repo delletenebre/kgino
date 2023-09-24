@@ -1,0 +1,4 @@
+enum OnlineService {
+  none,
+  filmix,
+}

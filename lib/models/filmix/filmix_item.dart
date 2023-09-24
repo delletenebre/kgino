@@ -1,16 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/filmix_api_provider.dart';
+import '../../enums/online_service.dart';
 import '../../extensions/json_converters.dart';
 import '../media_item.dart';
-import 'flmx_player_links.dart';
-import 'flmx_show_link.dart';
+import '../voice_acting.dart';
+import 'filmix_player_links.dart';
+import 'filmix_show_link.dart';
 
 part 'filmix_item.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+@embedded
 class FilmixItem extends MediaItem {
   final List<String> categories;
 
@@ -19,29 +23,32 @@ class FilmixItem extends MediaItem {
   final String shortStory;
 
   /// ссылки на проигрываемые файлы
-  final FlmxPlayerLinks? playerLinks;
+  final FilmixPlayerLinks? playerLinks;
 
   FilmixItem({
-    super.id,
-    super.title,
+    required super.id,
+    required super.title,
+    required super.poster,
     super.originalTitle = '',
-    super.poster,
     super.year,
     super.countries,
     super.subtitlesEnabled,
-    super.bookmarked,
     super.imdbRating,
     super.kinopoiskRating,
     super.seasons,
     super.voiceActing,
     super.voiceActings,
+    super.bookmarked,
+    super.type = MediaItemType.none,
     this.categories = const [],
     this.shortStory = '',
-    this.playerLinks = const FlmxPlayerLinks(),
+    this.playerLinks = const FilmixPlayerLinks(),
   }) {
-    voiceActings = {};
+    voiceActings = [];
 
     if (playerLinks != null && playerLinks!.playlist is Map) {
+      type = MediaItemType.show;
+
       /// парсим плейлист
       final playlist = (playerLinks!.playlist as Map<String, dynamic>).map(
         (k, e) {
@@ -55,7 +62,7 @@ class FilmixItem extends MediaItem {
                     (e as Map<String, dynamic>).map((k, e) {
                       return MapEntry(
                         k,
-                        FlmxShowLink.fromJson(e as Map<String, dynamic>),
+                        FilmixShowLink.fromJson(e as Map<String, dynamic>),
                       );
                     }),
                   );
@@ -65,13 +72,13 @@ class FilmixItem extends MediaItem {
                     (e as List<dynamic>).asMap().map((k, e) {
                       return MapEntry(
                         k + 1,
-                        FlmxShowLink.fromJson(e as Map<String, dynamic>),
+                        FilmixShowLink.fromJson(e as Map<String, dynamic>),
                       );
                     }),
                   );
                 }
               } catch (exception) {
-                return const MapEntry('', <String, FlmxShowLink>{});
+                return const MapEntry('', <String, FilmixShowLink>{});
               }
             }),
           );
@@ -83,12 +90,16 @@ class FilmixItem extends MediaItem {
           playlist.entries.map((e) => e.value.keys).flattened.toSet();
 
       /// доступный варианты озвучки
-      voiceActings = {
-        for (final voiceActing in uniqueVoiceActings) voiceActing: voiceActing
-      };
+      voiceActings = [
+        for (final voiceActing in uniqueVoiceActings)
+          VoiceActing(
+            id: voiceActing,
+            name: voiceActing,
+          )
+      ];
 
-      if (super.voiceActing.isEmpty) {
-        voiceActing = voiceActings.keys.first;
+      if (super.voiceActing.id.isEmpty) {
+        voiceActing = voiceActings.first;
       }
 
       seasons = [];
@@ -100,7 +111,7 @@ class FilmixItem extends MediaItem {
           for (final (episodeIndex, episodeEntry)
               in (seasonEntry.value[voiceActing] as Map).entries.indexed) {
             final episodeNumber = episodeEntry.key;
-            final showLink = episodeEntry.value as FlmxShowLink;
+            final showLink = episodeEntry.value as FilmixShowLink;
             episodes.add(MediaItemEpisode(
               id: '$seasonNumber/$episodeNumber',
               seasonNumber: seasonIndex + 1,
@@ -131,6 +142,9 @@ class FilmixItem extends MediaItem {
   String get overview => shortStory;
 
   @override
+  OnlineService get onlineService => OnlineService.filmix;
+
+  @override
   Future<MediaItem> loadDetails(Ref ref) async {
     final api = ref.read(filmixApiProvider);
 
@@ -149,7 +163,6 @@ class FilmixItem extends MediaItem {
     required WidgetRef ref,
     required int episodeIndex,
   }) async {
-    final api = ref.read(filmixApiProvider);
     final episodes = this.episodes();
 
     if (episodeIndex < episodes.length) {

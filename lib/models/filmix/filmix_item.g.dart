@@ -7,12 +7,10 @@ part of 'filmix_item.dart';
 // **************************************************************************
 
 FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
-      id: json['id'] == null
-          ? ''
-          : const StringConverter().fromJson(json['id']),
-      title: json['title'] as String? ?? '',
+      id: const StringConverter().fromJson(json['id']),
+      title: json['title'] as String,
+      poster: json['poster'] as String,
       originalTitle: json['original_title'] as String? ?? '',
-      poster: json['poster'] as String? ?? '',
       year: json['year'] == null
           ? ''
           : const StringConverter().fromJson(json['year']),
@@ -21,9 +19,6 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
               .toList() ??
           const [],
       subtitlesEnabled: json['subtitles_enabled'] as bool? ?? false,
-      bookmarked: json['bookmarked'] == null
-          ? null
-          : DateTime.parse(json['bookmarked'] as String),
       imdbRating: json['imdb_rating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['imdb_rating']),
@@ -34,11 +29,16 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
               ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      voiceActing: json['voice_acting'] as String? ?? '',
-      voiceActings: (json['voice_actings'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as String),
-          ) ??
-          const {},
+      voiceActing: json['voice_acting'] == null
+          ? const VoiceActing()
+          : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
+      voiceActings: (json['voice_actings'] as List<dynamic>?)
+              ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      bookmarked: json['bookmarked'] == null
+          ? null
+          : DateTime.parse(json['bookmarked'] as String),
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -47,8 +47,8 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           ? ''
           : const HtmlRemoveConverter().fromJson(json['short_story'] as String),
       playerLinks: json['player_links'] == null
-          ? const FlmxPlayerLinks()
-          : FlmxPlayerLinks.fromJson(
+          ? const FilmixPlayerLinks()
+          : FilmixPlayerLinks.fromJson(
               json['player_links'] as Map<String, dynamic>),
     );
 
@@ -60,8 +60,8 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'poster': instance.poster,
       'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,
-      'voice_acting': instance.voiceActing,
-      'voice_actings': instance.voiceActings,
+      'voice_acting': instance.voiceActing.toJson(),
+      'voice_actings': instance.voiceActings.map((e) => e.toJson()).toList(),
       'subtitles_enabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),

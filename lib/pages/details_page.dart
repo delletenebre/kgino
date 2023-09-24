@@ -11,8 +11,9 @@ import '../../resources/krs_theme.dart';
 import '../models/media_item.dart';
 import '../resources/constants.dart';
 import '../ui/cards/featured_card.dart';
+import '../ui/details_page/bookmark_button.dart';
+import '../ui/details_page/play_button.dart';
 import '../ui/krs_scroll_view.dart';
-import '../ui/play_button.dart';
 import '../ui/try_again_message.dart';
 
 part 'details_page.g.dart';
@@ -158,12 +159,11 @@ class DetailsPage extends HookConsumerWidget {
                                     child: Text('BACK'),
                                   ),
 
-                                  // /// кнопка добавления или удаления из закладок
-                                  // Padding(
-                                  //   padding:
-                                  //       const EdgeInsets.only(right: 12.0),
-                                  //   child: BookmarkButton(kginoItem),
-                                  // ),
+                                  /// кнопка добавления или удаления из закладок
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 12.0),
+                                    child: BookmarkButton(mediaItem),
+                                  ),
 
                                   // /// кнопка выбора озвучки
                                   // if (kginoItem.voiceActings.length > 1)
