@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../extensions/json_converters.dart';
 import '../enums/online_service.dart';
 import '../resources/krs_storage.dart';
+import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
 import 'media_item_season.dart';
 import 'voice_acting.dart';
@@ -25,7 +26,7 @@ enum MediaItemType {
 @collection
 class MediaItem {
   @Id()
-  String get isarDb => '$onlineService|$type|$id';
+  String get isarId => '$onlineService|$id';
 
   /// название онлайн-сервиса
   final OnlineService onlineService;
@@ -152,6 +153,18 @@ class MediaItem {
       isar.mediaItems.put(this);
       //seenEpisodes.saveSync();
     });
+  }
+
+  MediaItem? findSaved(KrsStorage storage) {
+    final savedItem = storage.db.mediaItems.get(isarId);
+    if (savedItem != null) {
+      switch (savedItem.onlineService) {
+        case OnlineService.none:
+          return savedItem;
+        case OnlineService.filmix:
+          return FilmixItem.fromJson(savedItem.toJson());
+      }
+    }
   }
 
   // Stream<MediaItem?> dbStream(KrsStorage storage) {

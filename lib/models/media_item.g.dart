@@ -17,7 +17,7 @@ extension GetMediaItemCollection on Isar {
 const MediaItemSchema = IsarGeneratedSchema(
   schema: IsarSchema(
     name: 'MediaItem',
-    idName: 'isarDb',
+    idName: 'isarId',
     embedded: false,
     properties: [
       IsarPropertySchema(
@@ -60,7 +60,7 @@ const MediaItemSchema = IsarGeneratedSchema(
         type: IsarType.dateTime,
       ),
       IsarPropertySchema(
-        name: 'isarDb',
+        name: 'isarId',
         type: IsarType.string,
       ),
       IsarPropertySchema(
@@ -98,9 +98,9 @@ int serializeMediaItem(IsarWriter writer, MediaItem object) {
       9,
       object.bookmarked?.toUtc().microsecondsSinceEpoch ??
           -9223372036854775808);
-  IsarCore.writeString(writer, 10, object.isarDb);
+  IsarCore.writeString(writer, 10, object.isarId);
   IsarCore.writeString(writer, 11, object.backdrop);
-  return Isar.fastHash(object.isarDb);
+  return Isar.fastHash(object.isarId);
 }
 
 @isarProtected
@@ -231,7 +231,7 @@ dynamic deserializeMediaItemProp(IsarReader reader, int property) {
 
 sealed class _MediaItemUpdate {
   bool call({
-    required String isarDb,
+    required String isarId,
     OnlineService? onlineService,
     MediaItemType? type,
     String? id,
@@ -251,7 +251,7 @@ class _MediaItemUpdateImpl implements _MediaItemUpdate {
 
   @override
   bool call({
-    required String isarDb,
+    required String isarId,
     Object? onlineService = ignore,
     Object? type = ignore,
     Object? id = ignore,
@@ -263,7 +263,7 @@ class _MediaItemUpdateImpl implements _MediaItemUpdate {
     Object? backdrop = ignore,
   }) {
     return collection.updateProperties([
-          isarDb
+          isarId
         ], {
           if (onlineService != ignore) 1: onlineService as OnlineService?,
           if (type != ignore) 2: type as MediaItemType?,
@@ -281,7 +281,7 @@ class _MediaItemUpdateImpl implements _MediaItemUpdate {
 
 sealed class _MediaItemUpdateAll {
   int call({
-    required List<String> isarDb,
+    required List<String> isarId,
     OnlineService? onlineService,
     MediaItemType? type,
     String? id,
@@ -301,7 +301,7 @@ class _MediaItemUpdateAllImpl implements _MediaItemUpdateAll {
 
   @override
   int call({
-    required List<String> isarDb,
+    required List<String> isarId,
     Object? onlineService = ignore,
     Object? type = ignore,
     Object? id = ignore,
@@ -312,7 +312,7 @@ class _MediaItemUpdateAllImpl implements _MediaItemUpdateAll {
     Object? bookmarked = ignore,
     Object? backdrop = ignore,
   }) {
-    return collection.updateProperties(isarDb, {
+    return collection.updateProperties(isarId, {
       if (onlineService != ignore) 1: onlineService as OnlineService?,
       if (type != ignore) 2: type as MediaItemType?,
       if (id != ignore) 3: id as String?,
@@ -1421,7 +1421,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbEqualTo(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1436,7 +1436,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbGreaterThan(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdGreaterThan(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1452,7 +1452,7 @@ extension MediaItemQueryFilter
   }
 
   QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition>
-      isarDbGreaterThanOrEqualTo(
+      isarIdGreaterThanOrEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1467,7 +1467,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbLessThan(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdLessThan(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1483,7 +1483,7 @@ extension MediaItemQueryFilter
   }
 
   QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition>
-      isarDbLessThanOrEqualTo(
+      isarIdLessThanOrEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1498,7 +1498,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbBetween(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdBetween(
     String lower,
     String upper, {
     bool caseSensitive = true,
@@ -1515,7 +1515,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbStartsWith(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1530,7 +1530,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbEndsWith(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1545,7 +1545,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbContains(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1559,7 +1559,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbMatches(
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1573,7 +1573,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbIsEmpty() {
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
@@ -1584,7 +1584,7 @@ extension MediaItemQueryFilter
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarDbIsNotEmpty() {
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
@@ -1915,7 +1915,7 @@ extension MediaItemQuerySortBy on QueryBuilder<MediaItem, MediaItem, QSortBy> {
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByIsarDb(
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByIsarId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -1925,7 +1925,7 @@ extension MediaItemQuerySortBy on QueryBuilder<MediaItem, MediaItem, QSortBy> {
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByIsarDbDesc(
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByIsarIdDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -2065,14 +2065,14 @@ extension MediaItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByIsarDb(
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByIsarId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(10, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByIsarDbDesc(
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByIsarIdDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(10, sort: Sort.desc, caseSensitive: caseSensitive);
@@ -2214,7 +2214,7 @@ extension MediaItemQueryProperty1
     });
   }
 
-  QueryBuilder<MediaItem, String, QAfterProperty> isarDbProperty() {
+  QueryBuilder<MediaItem, String, QAfterProperty> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });
@@ -2286,7 +2286,7 @@ extension MediaItemQueryProperty2<R>
     });
   }
 
-  QueryBuilder<MediaItem, (R, String), QAfterProperty> isarDbProperty() {
+  QueryBuilder<MediaItem, (R, String), QAfterProperty> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });
@@ -2360,7 +2360,7 @@ extension MediaItemQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<MediaItem, (R1, R2, String), QOperations> isarDbProperty() {
+  QueryBuilder<MediaItem, (R1, R2, String), QOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });

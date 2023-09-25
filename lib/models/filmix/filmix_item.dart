@@ -34,7 +34,7 @@ class FilmixItem extends MediaItem {
     super.imdbRating,
     super.kinopoiskRating,
     super.seasons,
-    super.voiceActing,
+    super.voiceActing = const VoiceActing(),
     super.voiceActings,
     super.bookmarked,
     super.onlineService = OnlineService.filmix,
@@ -97,18 +97,19 @@ class FilmixItem extends MediaItem {
           )
       ];
 
-      if (super.voiceActing.id.isEmpty) {
+      print('zzzzzz: ${voiceActing.toJson()}');
+      if (voiceActing.id.isEmpty && voiceActings.isNotEmpty) {
         voiceActing = voiceActings.first;
       }
 
       seasons = [];
 
       for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
-        if (seasonEntry.value.containsKey(voiceActing)) {
+        if (seasonEntry.value.containsKey(voiceActing.id)) {
           final seasonNumber = seasonEntry.key;
           final episodes = <MediaItemEpisode>[];
           for (final (episodeIndex, episodeEntry)
-              in (seasonEntry.value[voiceActing] as Map).entries.indexed) {
+              in (seasonEntry.value[voiceActing.id] as Map).entries.indexed) {
             final episodeNumber = episodeEntry.key;
             final showLink = episodeEntry.value as FilmixShowLink;
             episodes.add(MediaItemEpisode(

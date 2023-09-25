@@ -23,7 +23,7 @@ class BookmarkButton extends HookConsumerWidget {
 
     /// сохранённый в базе данных элемент
     final mediaItemStream = useStream(
-      storage.db.mediaItems.watchObject(mediaItem.isarDb),
+      storage.db.mediaItems.watchObject(mediaItem.isarId),
       initialData: mediaItem,
     );
 

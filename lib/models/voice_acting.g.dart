@@ -411,13 +411,12 @@ extension VoiceActingQueryObject
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_VoiceActing _$$_VoiceActingFromJson(Map<String, dynamic> json) =>
-    _$_VoiceActing(
+VoiceActing _$VoiceActingFromJson(Map<String, dynamic> json) => VoiceActing(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
     );
 
-Map<String, dynamic> _$$_VoiceActingToJson(_$_VoiceActing instance) =>
+Map<String, dynamic> _$VoiceActingToJson(VoiceActing instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

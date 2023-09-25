@@ -37,11 +37,20 @@ class ShowsPage extends HookConsumerWidget {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
-    final asyncBookmarks = useMemoized(() => storage.db.mediaItems
-        .where()
-        .typeEqualTo(MediaItemType.show)
-        .bookmarkedIsNotNull()
-        .findAllAsync());
+    final asyncBookmarks = useMemoized(() async {
+      final items = await storage.db.mediaItems
+          .where()
+          .typeEqualTo(MediaItemType.show)
+          .bookmarkedIsNotNull()
+          .findAllAsync();
+      return items.map((item) {
+        print('zzzzz: item: ${item.voiceActing.toJson()}');
+        if (item.onlineService == OnlineService.filmix) {
+          return FilmixItem.fromJson(item.toJson());
+        }
+        throw Exception();
+      }).toList();
+    });
 
     final categories = [
       CategoryListItem(
@@ -95,13 +104,8 @@ class ShowsPage extends HookConsumerWidget {
                         }
                       },
                       onTap: () {
-                        var mediaItem;
-                        if (item.onlineService == OnlineService.filmix) {
-                          mediaItem = FilmixItem.fromJson(item.toJson());
-                        }
-
                         /// переходим на страницу деталей о сериале
-                        context.goNamed('details', extra: mediaItem);
+                        context.goNamed('details', extra: item);
                       },
                       title: item.title,
                       imageUrl: item.poster,

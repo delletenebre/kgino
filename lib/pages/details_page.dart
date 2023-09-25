@@ -9,10 +9,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../models/media_item.dart';
+import '../providers/providers.dart';
 import '../resources/constants.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/details_page/bookmark_button.dart';
 import '../ui/details_page/play_button.dart';
+import '../ui/details_page/voice_actings_button.dart';
 import '../ui/krs_scroll_view.dart';
 import '../ui/try_again_message.dart';
 
@@ -26,7 +28,11 @@ class Details extends _$Details {
   }
 
   Future<MediaItem?> fetch() async {
-    return await mediaItem?.loadDetails(ref);
+    final storage = ref.read(storageProvider);
+    final savedItem = mediaItem?.findSaved(storage) ?? mediaItem;
+    print('savedItem: ${savedItem?.toJson()}');
+
+    return await savedItem?.loadDetails(ref);
   }
 
   bool get hasItem => state.valueOrNull != null;
@@ -47,6 +53,8 @@ class DetailsPage extends HookConsumerWidget {
 
     /// размер экрана
     final screenSize = MediaQuery.of(context).size;
+
+    final storage = ref.read(storageProvider);
 
     final details = ref.watch(detailsProvider(mediaItem));
 
@@ -165,30 +173,25 @@ class DetailsPage extends HookConsumerWidget {
                                     child: BookmarkButton(mediaItem),
                                   ),
 
-                                  // /// кнопка выбора озвучки
-                                  // if (kginoItem.voiceActings.length > 1)
-                                  //   Padding(
-                                  //     padding:
-                                  //         const EdgeInsets.only(right: 12.0),
-                                  //     child: VoiceActingsButton(
-                                  //       kginoItem,
-                                  //       onVoiceActingChange:
-                                  //           (voiceActing) async {
-                                  //         kginoItem.voiceActing =
-                                  //             voiceActing.id;
-                                  //         await kginoItem.save();
+                                  /// кнопка выбора озвучки
+                                  if (mediaItem.voiceActings.length > 1)
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 12.0),
+                                      child: VoiceActingsButton(
+                                        mediaItem,
+                                        onVoiceActingChange:
+                                            (voiceActing) async {
+                                          mediaItem.voiceActing = voiceActing;
 
-                                  //         /// переходим на страницу деталей о сериале
-                                  //         // TODO fix route to movie
-                                  //         context.pushReplacementNamed(
-                                  //           'flmxShowDetails',
-                                  //           pathParameters: {
-                                  //             'id': kginoItem.id,
-                                  //           },
-                                  //         );
-                                  //       },
-                                  //     ),
-                                  //   ),
+                                          await mediaItem.save(storage);
+
+                                          /// обновляем страницу деталей
+                                          context.goNamed('details',
+                                              extra: mediaItem);
+                                        },
+                                      ),
+                                    ),
                                 ],
                               ),
                             ],
