@@ -57,6 +57,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
+      'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'original_title': instance.originalTitle,
@@ -71,7 +72,6 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'kinopoisk_rating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
-      'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
       'categories': instance.categories,
       'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
       'player_links': instance.playerLinks?.toJson(),

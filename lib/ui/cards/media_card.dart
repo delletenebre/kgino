@@ -7,6 +7,7 @@ import '../../resources/constants.dart';
 
 class MediaCard extends HookWidget {
   final String title;
+  final String subtitle;
   final String imageUrl;
   final void Function(bool hasFocus)? onFocusChange;
   final void Function() onTap;
@@ -14,6 +15,7 @@ class MediaCard extends HookWidget {
   const MediaCard({
     super.key,
     this.title = '',
+    this.subtitle = '',
     this.imageUrl = '',
     this.onFocusChange,
     required this.onTap,
@@ -152,13 +154,15 @@ class MediaCard extends HookWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          Text(
-                            'Subtitle • 2023',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: theme.colorScheme.outline,
+                          if (subtitle.isNotEmpty)
+                            Text(
+                              subtitle,
+                              //'Subtitle • 2023',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: theme.colorScheme.outline,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),

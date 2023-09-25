@@ -96,7 +96,6 @@ class ShowsPage extends HookConsumerWidget {
                       },
                       onTap: () {
                         var mediaItem;
-                        print(item.onlineService);
                         if (item.onlineService == OnlineService.filmix) {
                           mediaItem = FilmixItem.fromJson(item.toJson());
                         }

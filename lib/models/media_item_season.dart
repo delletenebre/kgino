@@ -1,4 +1,3 @@
-import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../extensions/json_converters.dart';
@@ -7,7 +6,6 @@ import 'media_item_episode.dart';
 part 'media_item_season.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-@embedded
 class MediaItemSeason {
   @StringConverter()
   final String id;
