@@ -162,8 +162,7 @@ class FeaturedCard extends HookConsumerWidget {
                           if (currentMediaItem.overview.isNotEmpty)
                             Text(
                               currentMediaItem.overview,
-                              key: ValueKey(
-                                  'overview:${currentMediaItem.overview}'),
+                              key: ValueKey('overview'),
                               maxLines: 6,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
