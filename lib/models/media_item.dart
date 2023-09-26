@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../extensions/json_converters.dart';
 import '../enums/online_service.dart';
+import '../resources/krs_locale.dart';
 import '../resources/krs_storage.dart';
 import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
@@ -169,6 +171,21 @@ class MediaItem {
         case OnlineService.filmix:
           return FilmixItem.fromJson(savedItem.toJson());
       }
+    }
+  }
+
+  /// продолжительность для информации
+  String overviewDuration(BuildContext context) {
+    final locale = KrsLocale.of(context);
+    switch (type) {
+      case MediaItemType.none:
+        return '';
+      case MediaItemType.show:
+        return seasons.length > 1
+            ? locale.seasonsCount(seasons.length)
+            : locale.episodesCount(episodes().length);
+      case MediaItemType.movie:
+        return '';
     }
   }
 

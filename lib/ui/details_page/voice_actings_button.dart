@@ -20,11 +20,9 @@ class VoiceActingsButton extends HookWidget {
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
-    print('zzzz mediaItem: ${mediaItem.voice.toJson()}');
-
     return FilledButton.tonalIcon(
       onPressed: () {
-        Utils.showModal(
+        Utils.showModalRight(
           context: context,
           titleText: 'Выбор аудио',
           child: ListView(

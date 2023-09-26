@@ -138,6 +138,8 @@ class FeaturedCard extends HookConsumerWidget {
                                       currentMediaItem.genres.joinFirstTwo(),
                                       currentMediaItem.year,
                                       currentMediaItem.countries.joinFirstTwo(),
+                                      currentMediaItem
+                                          .overviewDuration(context),
                                     ].removeEmpty().join(' • '),
                                     //'Superhero/Action • 2022 • 2h 15m'
                                   ),
@@ -163,7 +165,7 @@ class FeaturedCard extends HookConsumerWidget {
                             Text(
                               currentMediaItem.overview,
                               key: ValueKey('overview'),
-                              maxLines: 6,
+                              maxLines: 4,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 16.0,

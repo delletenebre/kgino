@@ -146,7 +146,8 @@ class FilmixItem extends MediaItem {
       true;
 
   @override
-  List<String> get genres => categories;
+  List<String> get genres =>
+      categories..removeWhere((element) => element == 'Сериалы');
 
   @override
   String get overview => shortStory;
