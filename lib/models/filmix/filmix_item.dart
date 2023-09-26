@@ -107,15 +107,12 @@ class FilmixItem extends MediaItem {
 
       for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
         if (seasonEntry.value.containsKey(voice.id)) {
-          final seasonNumber = seasonEntry.key;
-
           final episodes = <MediaItemEpisode>[];
           for (final (episodeIndex, episodeEntry)
               in (seasonEntry.value[voice.id] as Map).entries.indexed) {
-            final episodeNumber = episodeEntry.key;
             final showLink = episodeEntry.value as FilmixShowLink;
             episodes.add(MediaItemEpisode(
-              id: '$seasonNumber/$episodeNumber',
+              id: '$isarId|${seasonIndex + 1}|${episodeIndex + 1}',
               seasonNumber: seasonIndex + 1,
               episodeNumber: episodeIndex + 1,
               videoFileUrl: showLink.link,

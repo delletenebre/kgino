@@ -50,6 +50,18 @@ const MediaItemEpisodeSchema = IsarGeneratedSchema(
         type: IsarType.longList,
       ),
       IsarPropertySchema(
+        name: 'updatedAt',
+        type: IsarType.dateTime,
+      ),
+      IsarPropertySchema(
+        name: 'position',
+        type: IsarType.long,
+      ),
+      IsarPropertySchema(
+        name: 'duration',
+        type: IsarType.long,
+      ),
+      IsarPropertySchema(
         name: 'isarDb',
         type: IsarType.string,
       ),
@@ -80,7 +92,11 @@ int serializeMediaItemEpisode(IsarWriter writer, MediaItemEpisode object) {
     }
     IsarCore.endList(writer, listWriter);
   }
-  IsarCore.writeString(writer, 8, object.isarDb);
+  IsarCore.writeLong(writer, 8,
+      object.updatedAt?.toUtc().microsecondsSinceEpoch ?? -9223372036854775808);
+  IsarCore.writeLong(writer, 9, object.position);
+  IsarCore.writeLong(writer, 10, object.duration);
+  IsarCore.writeString(writer, 11, object.isarDb);
   return Isar.fastHash(object.isarDb);
 }
 
@@ -130,6 +146,34 @@ MediaItemEpisode deserializeMediaItemEpisode(IsarReader reader) {
       }
     }
   }
+  final DateTime? _updatedAt;
+  {
+    final value = IsarCore.readLong(reader, 8);
+    if (value == -9223372036854775808) {
+      _updatedAt = null;
+    } else {
+      _updatedAt =
+          DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
+    }
+  }
+  final int _position;
+  {
+    final value = IsarCore.readLong(reader, 9);
+    if (value == -9223372036854775808) {
+      _position = 0;
+    } else {
+      _position = value;
+    }
+  }
+  final int _duration;
+  {
+    final value = IsarCore.readLong(reader, 10);
+    if (value == -9223372036854775808) {
+      _duration = 0;
+    } else {
+      _duration = value;
+    }
+  }
   final object = MediaItemEpisode(
     id: _id,
     name: _name,
@@ -138,6 +182,9 @@ MediaItemEpisode deserializeMediaItemEpisode(IsarReader reader) {
     videoFileUrl: _videoFileUrl,
     subtitlesFileUrl: _subtitlesFileUrl,
     qualities: _qualities,
+    updatedAt: _updatedAt,
+    position: _position,
+    duration: _duration,
   );
   return object;
 }
@@ -190,7 +237,35 @@ dynamic deserializeMediaItemEpisodeProp(IsarReader reader, int property) {
         }
       }
     case 8:
-      return IsarCore.readString(reader, 8) ?? '';
+      {
+        final value = IsarCore.readLong(reader, 8);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true)
+              .toLocal();
+        }
+      }
+    case 9:
+      {
+        final value = IsarCore.readLong(reader, 9);
+        if (value == -9223372036854775808) {
+          return 0;
+        } else {
+          return value;
+        }
+      }
+    case 10:
+      {
+        final value = IsarCore.readLong(reader, 10);
+        if (value == -9223372036854775808) {
+          return 0;
+        } else {
+          return value;
+        }
+      }
+    case 11:
+      return IsarCore.readString(reader, 11) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -205,6 +280,9 @@ sealed class _MediaItemEpisodeUpdate {
     int? episodeNumber,
     String? videoFileUrl,
     String? subtitlesFileUrl,
+    DateTime? updatedAt,
+    int? position,
+    int? duration,
   });
 }
 
@@ -222,6 +300,9 @@ class _MediaItemEpisodeUpdateImpl implements _MediaItemEpisodeUpdate {
     Object? episodeNumber = ignore,
     Object? videoFileUrl = ignore,
     Object? subtitlesFileUrl = ignore,
+    Object? updatedAt = ignore,
+    Object? position = ignore,
+    Object? duration = ignore,
   }) {
     return collection.updateProperties([
           isarDb
@@ -232,6 +313,9 @@ class _MediaItemEpisodeUpdateImpl implements _MediaItemEpisodeUpdate {
           if (episodeNumber != ignore) 4: episodeNumber as int?,
           if (videoFileUrl != ignore) 5: videoFileUrl as String?,
           if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
+          if (updatedAt != ignore) 8: updatedAt as DateTime?,
+          if (position != ignore) 9: position as int?,
+          if (duration != ignore) 10: duration as int?,
         }) >
         0;
   }
@@ -246,6 +330,9 @@ sealed class _MediaItemEpisodeUpdateAll {
     int? episodeNumber,
     String? videoFileUrl,
     String? subtitlesFileUrl,
+    DateTime? updatedAt,
+    int? position,
+    int? duration,
   });
 }
 
@@ -263,6 +350,9 @@ class _MediaItemEpisodeUpdateAllImpl implements _MediaItemEpisodeUpdateAll {
     Object? episodeNumber = ignore,
     Object? videoFileUrl = ignore,
     Object? subtitlesFileUrl = ignore,
+    Object? updatedAt = ignore,
+    Object? position = ignore,
+    Object? duration = ignore,
   }) {
     return collection.updateProperties(isarDb, {
       if (id != ignore) 1: id as String?,
@@ -271,6 +361,9 @@ class _MediaItemEpisodeUpdateAllImpl implements _MediaItemEpisodeUpdateAll {
       if (episodeNumber != ignore) 4: episodeNumber as int?,
       if (videoFileUrl != ignore) 5: videoFileUrl as String?,
       if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
+      if (updatedAt != ignore) 8: updatedAt as DateTime?,
+      if (position != ignore) 9: position as int?,
+      if (duration != ignore) 10: duration as int?,
     });
   }
 }
@@ -290,6 +383,9 @@ sealed class _MediaItemEpisodeQueryUpdate {
     int? episodeNumber,
     String? videoFileUrl,
     String? subtitlesFileUrl,
+    DateTime? updatedAt,
+    int? position,
+    int? duration,
   });
 }
 
@@ -307,6 +403,9 @@ class _MediaItemEpisodeQueryUpdateImpl implements _MediaItemEpisodeQueryUpdate {
     Object? episodeNumber = ignore,
     Object? videoFileUrl = ignore,
     Object? subtitlesFileUrl = ignore,
+    Object? updatedAt = ignore,
+    Object? position = ignore,
+    Object? duration = ignore,
   }) {
     return query.updateProperties(limit: limit, {
       if (id != ignore) 1: id as String?,
@@ -315,6 +414,9 @@ class _MediaItemEpisodeQueryUpdateImpl implements _MediaItemEpisodeQueryUpdate {
       if (episodeNumber != ignore) 4: episodeNumber as int?,
       if (videoFileUrl != ignore) 5: videoFileUrl as String?,
       if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
+      if (updatedAt != ignore) 8: updatedAt as DateTime?,
+      if (position != ignore) 9: position as int?,
+      if (duration != ignore) 10: duration as int?,
     });
   }
 }
@@ -342,6 +444,9 @@ class _MediaItemEpisodeQueryBuilderUpdateImpl
     Object? episodeNumber = ignore,
     Object? videoFileUrl = ignore,
     Object? subtitlesFileUrl = ignore,
+    Object? updatedAt = ignore,
+    Object? position = ignore,
+    Object? duration = ignore,
   }) {
     final q = query.build();
     try {
@@ -352,6 +457,9 @@ class _MediaItemEpisodeQueryBuilderUpdateImpl
         if (episodeNumber != ignore) 4: episodeNumber as int?,
         if (videoFileUrl != ignore) 5: videoFileUrl as String?,
         if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
+        if (updatedAt != ignore) 8: updatedAt as DateTime?,
+        if (position != ignore) 9: position as int?,
+        if (duration != ignore) 10: duration as int?,
       });
     } finally {
       q.close();
@@ -1363,6 +1471,278 @@ extension MediaItemEpisodeQueryFilter
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtEqualTo(
+    DateTime? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 8,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 8,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtGreaterThanOrEqualTo(
+    DateTime? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 8,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 8,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtLessThanOrEqualTo(
+    DateTime? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 8,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime? lower,
+    DateTime? upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 8,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      positionEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 9,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      positionGreaterThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 9,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      positionGreaterThanOrEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 9,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      positionLessThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 9,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      positionLessThanOrEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 9,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      positionBetween(
+    int lower,
+    int upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 9,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      durationEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      durationGreaterThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      durationGreaterThanOrEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      durationLessThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      durationLessThanOrEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
+      durationBetween(
+    int lower,
+    int upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 10,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
       isarDbEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1370,7 +1750,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1386,7 +1766,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1402,7 +1782,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1418,7 +1798,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1434,7 +1814,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1451,7 +1831,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 8,
+          property: 11,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -1468,7 +1848,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1484,7 +1864,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1497,7 +1877,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 8,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1510,7 +1890,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 8,
+          property: 11,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1523,7 +1903,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 8,
+          property: 11,
           value: '',
         ),
       );
@@ -1535,7 +1915,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 8,
+          property: 11,
           value: '',
         ),
       );
@@ -1660,11 +2040,53 @@ extension MediaItemEpisodeQuerySortBy
     });
   }
 
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(8);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(8, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      sortByPosition() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(9);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      sortByPositionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(9, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      sortByDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      sortByDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy> sortByIsarDb(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        8,
+        11,
         caseSensitive: caseSensitive,
       );
     });
@@ -1674,7 +2096,7 @@ extension MediaItemEpisodeQuerySortBy
       sortByIsarDbDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        8,
+        11,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1768,17 +2190,59 @@ extension MediaItemEpisodeQuerySortThenBy
     });
   }
 
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(8);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(8, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      thenByPosition() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(9);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      thenByPositionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(9, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      thenByDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
+      thenByDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy> thenByIsarDb(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, caseSensitive: caseSensitive);
+      return query.addSortBy(11, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByIsarDbDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(11, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -1833,6 +2297,27 @@ extension MediaItemEpisodeQueryWhereDistinct
       return query.addDistinctBy(7);
     });
   }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
+      distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(8);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
+      distinctByPosition() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(9);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
+      distinctByDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(10);
+    });
+  }
 }
 
 extension MediaItemEpisodeQueryProperty1
@@ -1882,9 +2367,28 @@ extension MediaItemEpisodeQueryProperty1
     });
   }
 
-  QueryBuilder<MediaItemEpisode, String, QAfterProperty> isarDbProperty() {
+  QueryBuilder<MediaItemEpisode, DateTime?, QAfterProperty>
+      updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(8);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, int, QAfterProperty> positionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, int, QAfterProperty> durationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, String, QAfterProperty> isarDbProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(11);
     });
   }
 }
@@ -1938,9 +2442,28 @@ extension MediaItemEpisodeQueryProperty2<R>
     });
   }
 
-  QueryBuilder<MediaItemEpisode, (R, String), QAfterProperty> isarDbProperty() {
+  QueryBuilder<MediaItemEpisode, (R, DateTime?), QAfterProperty>
+      updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(8);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, (R, int), QAfterProperty> positionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, (R, int), QAfterProperty> durationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, (R, String), QAfterProperty> isarDbProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(11);
     });
   }
 }
@@ -1994,10 +2517,31 @@ extension MediaItemEpisodeQueryProperty3<R1, R2>
     });
   }
 
+  QueryBuilder<MediaItemEpisode, (R1, R2, DateTime?), QOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(8);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, (R1, R2, int), QOperations>
+      positionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<MediaItemEpisode, (R1, R2, int), QOperations>
+      durationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
+    });
+  }
+
   QueryBuilder<MediaItemEpisode, (R1, R2, String), QOperations>
       isarDbProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
+      return query.addProperty(11);
     });
   }
 }
@@ -2020,6 +2564,11 @@ MediaItemEpisode _$MediaItemEpisodeFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       subtitlesFileUrl: json['subtitlesFileUrl'] as String? ?? '',
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      position: json['position'] as int? ?? 0,
+      duration: json['duration'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$MediaItemEpisodeToJson(MediaItemEpisode instance) =>
@@ -2031,4 +2580,7 @@ Map<String, dynamic> _$MediaItemEpisodeToJson(MediaItemEpisode instance) =>
       'videoFileUrl': instance.videoFileUrl,
       'subtitlesFileUrl': instance.subtitlesFileUrl,
       'qualities': instance.qualities,
+      'updatedAt': instance.updatedAt?.toIso8601String(),
+      'position': instance.position,
+      'duration': instance.duration,
     };

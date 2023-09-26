@@ -25,7 +25,7 @@ class KrsStorage {
     db = Isar.open(
       schemas: [
         MediaItemSchema,
-        // EpisodeItemSchema,
+        MediaItemEpisodeSchema,
       ],
       directory: dir.path,
     );

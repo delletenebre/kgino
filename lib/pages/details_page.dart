@@ -31,7 +31,6 @@ class Details extends _$Details {
   Future<MediaItem?> fetch() async {
     final storage = ref.read(storageProvider);
     final savedItem = mediaItem?.findSaved(storage) ?? mediaItem;
-    print('zzzz savedItem: ${savedItem?.toJson()}');
     return await savedItem?.loadDetails(ref);
   }
 
