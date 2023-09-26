@@ -1,15 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'filmix_movie_link.freezed.dart';
 part 'filmix_movie_link.g.dart';
 
-@freezed
-class FilmixMovieLink with _$FilmixMovieLink {
-  const factory FilmixMovieLink({
-    @Default('') String link,
-    @Default('') String translation,
-  }) = _FilmixMovieLink;
+@JsonSerializable(explicitToJson: true)
+class FilmixMovieLink {
+  final String link;
+  final String translation;
 
-  factory FilmixMovieLink.fromJson(Map<String, Object?> json) =>
+  const FilmixMovieLink({
+    this.link = '',
+    this.translation = '',
+  });
+
+  factory FilmixMovieLink.fromJson(Map<String, dynamic> json) =>
       _$FilmixMovieLinkFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FilmixMovieLinkToJson(this);
 }

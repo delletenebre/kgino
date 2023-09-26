@@ -30,20 +30,22 @@ class FilmixItem extends MediaItem {
     super.originalTitle = '',
     super.year,
     super.countries,
-    super.subtitlesEnabled,
     super.imdbRating,
     super.kinopoiskRating,
     super.seasons,
-    super.voiceActing = const VoiceActing(),
-    super.voiceActings,
-    super.bookmarked,
+    super.voices,
     super.onlineService = OnlineService.filmix,
     super.type = MediaItemType.none,
     this.categories = const [],
     this.shortStory = '',
     this.playerLinks = const FilmixPlayerLinks(),
+
+    ///
+    super.bookmarked,
+    super.subtitles,
+    super.voice,
   }) {
-    voiceActings = [];
+    voices = [];
 
     if (playerLinks != null && playerLinks!.playlist is Map) {
       type = MediaItemType.show;
@@ -88,8 +90,8 @@ class FilmixItem extends MediaItem {
       final uniqueVoiceActings =
           playlist.entries.map((e) => e.value.keys).flattened.toSet();
 
-      /// доступный варианты озвучки
-      voiceActings = [
+      /// доступные варианты озвучки
+      voices = [
         for (final voiceActing in uniqueVoiceActings)
           VoiceActing(
             id: voiceActing,
@@ -97,19 +99,19 @@ class FilmixItem extends MediaItem {
           )
       ];
 
-      print('zzzzzz: ${voiceActing.toJson()}');
-      if (voiceActing.id.isEmpty && voiceActings.isNotEmpty) {
-        voiceActing = voiceActings.first;
+      if (voice.id.isEmpty && voices.isNotEmpty) {
+        voice = voices.first;
       }
 
       seasons = [];
 
       for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
-        if (seasonEntry.value.containsKey(voiceActing.id)) {
+        if (seasonEntry.value.containsKey(voice.id)) {
           final seasonNumber = seasonEntry.key;
+
           final episodes = <MediaItemEpisode>[];
           for (final (episodeIndex, episodeEntry)
-              in (seasonEntry.value[voiceActing.id] as Map).entries.indexed) {
+              in (seasonEntry.value[voice.id] as Map).entries.indexed) {
             final episodeNumber = episodeEntry.key;
             final showLink = episodeEntry.value as FilmixShowLink;
             episodes.add(MediaItemEpisode(
@@ -136,6 +138,14 @@ class FilmixItem extends MediaItem {
   Map<String, dynamic> toJson() => _$FilmixItemToJson(this);
 
   @override
+  bool get blocked =>
+      playerLinks
+          ?.toJson()
+          .toString()
+          .contains('Заблокировано правообладателем') ==
+      true;
+
+  @override
   List<String> get genres => categories;
 
   @override
@@ -149,10 +159,17 @@ class FilmixItem extends MediaItem {
     final cancelToken = api.getCancelToken();
     ref.onDispose(cancelToken.cancel);
 
-    return await api.getDetails(
+    final detailedItem = await api.getDetails(
       id: id,
       cancelToken: cancelToken,
     );
+
+    final json = detailedItem.toJson();
+    json['subtitles'] = subtitles;
+    json['voice'] = voice.toJson();
+    json['bookmarked'] = bookmarked?.toString();
+
+    return FilmixItem.fromJson(json);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -30,8 +31,7 @@ class Details extends _$Details {
   Future<MediaItem?> fetch() async {
     final storage = ref.read(storageProvider);
     final savedItem = mediaItem?.findSaved(storage) ?? mediaItem;
-    print('savedItem: ${savedItem?.toJson()}');
-
+    print('zzzz savedItem: ${savedItem?.toJson()}');
     return await savedItem?.loadDetails(ref);
   }
 
@@ -67,6 +67,7 @@ class DetailsPage extends HookConsumerWidget {
         ),
         data: (mediaItem) => HookBuilder(
           builder: (context) {
+            print('zzzz mediaItem1: ${mediaItem?.voice.toJson()}');
             final scrollController = useScrollController();
             final isScrolling = useState(false);
 
@@ -93,6 +94,7 @@ class DetailsPage extends HookConsumerWidget {
                 SizedBox(
                   height: screenSize.height,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: TvUi.navigationBarSize.height),
                       FeaturedCard(mediaItem),
@@ -132,23 +134,23 @@ class DetailsPage extends HookConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 8.0),
-                              Row(
+                              Wrap(
+                                alignment: WrapAlignment.start,
+                                spacing: 24.0,
                                 children: [
                                   /// кнопка начала просмотра
-                                  PlayButton(
-                                    mediaItem!,
-                                    onFocusChange: (hasFocus) {
-                                      // playButtonHasFocus.value = hasFocus;
-                                    },
-                                  ),
+                                  if (mediaItem!.blocked == false)
+                                    PlayButton(
+                                      mediaItem,
+                                      onFocusChange: (hasFocus) {
+                                        // playButtonHasFocus.value = hasFocus;
+                                      },
+                                    ),
 
-                                  /// если файлов несколько, показываем кнопку выбора
-                                  /// эпизода
-                                  // if (mediaItem.seasons.first.episodes.length >
-                                  //     1)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 12.0),
-                                    child: FilledButton(
+                                  /// если файлов несколько, показываем кнопку
+                                  /// выбора эпизода
+                                  if (mediaItem.episodes().length > 1)
+                                    FilledButton(
                                       onPressed: () {
                                         /// переходим на страницу выбора файла
                                         context.pushNamed(
@@ -158,39 +160,31 @@ class DetailsPage extends HookConsumerWidget {
                                       },
                                       child: Text(locale.selectEpisode),
                                     ),
-                                  ),
-
-                                  TextButton(
-                                    onPressed: () {
-                                      context.pop();
-                                    },
-                                    child: Text('BACK'),
-                                  ),
 
                                   /// кнопка добавления или удаления из закладок
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 12.0),
-                                    child: BookmarkButton(mediaItem),
-                                  ),
+                                  BookmarkButton(mediaItem),
 
                                   /// кнопка выбора озвучки
-                                  if (mediaItem.voiceActings.length > 1)
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 12.0),
-                                      child: VoiceActingsButton(
-                                        mediaItem,
-                                        onVoiceActingChange:
-                                            (voiceActing) async {
-                                          mediaItem.voiceActing = voiceActing;
+                                  if (mediaItem.voices.length > 1)
+                                    VoiceActingsButton(
+                                      mediaItem,
+                                      onVoiceActingChange: (voiceActing) async {
+                                        mediaItem.voice = voiceActing;
 
-                                          await mediaItem.save(storage);
+                                        await mediaItem.save(storage);
 
-                                          /// обновляем страницу деталей
-                                          context.goNamed('details',
-                                              extra: mediaItem);
-                                        },
-                                      ),
+                                        /// обновляем страницу деталей
+                                        context.goNamed('details',
+                                            extra: mediaItem);
+                                      },
+                                    ),
+
+                                  if (kDebugMode)
+                                    TextButton(
+                                      onPressed: () {
+                                        context.pop();
+                                      },
+                                      child: Text('BACK'),
                                     ),
                                 ],
                               ),

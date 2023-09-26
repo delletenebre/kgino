@@ -65,18 +65,9 @@ class MediaItem {
   @ignore
   final List<String> countries;
 
-  /// выбранная озвучка
-  VoiceActing voiceActing;
-
   /// варианты озвучки
   @ignore
-  List<VoiceActing> voiceActings;
-
-  /// включены или выключены субтитры
-  bool subtitlesEnabled;
-
-  /// дата добавления в закладки
-  DateTime? bookmarked;
+  List<VoiceActing> voices;
 
   /// рейтинг IMDb
   @DoubleConverter()
@@ -98,6 +89,15 @@ class MediaItem {
   @ignore
   List<MediaItemSeason> seasons = [];
 
+  /// дата добавления в закладки
+  DateTime? bookmarked;
+
+  /// включены или выключены субтитры
+  bool subtitles;
+
+  /// выбранная озвучка
+  VoiceActing voice;
+
   MediaItem({
     required this.id,
     required this.title,
@@ -107,21 +107,26 @@ class MediaItem {
     this.year = '',
     this.genres = const [],
     this.countries = const [],
-    this.voiceActing = const VoiceActing(),
-    this.voiceActings = const [],
-    this.subtitlesEnabled = false,
+    this.voices = const [],
     this.imdbRating = 0.0,
     this.kinopoiskRating = 0.0,
     this.seasons = const [],
-    this.bookmarked,
     this.type = MediaItemType.none,
     this.onlineService = OnlineService.none,
+
+    ///
+    this.bookmarked,
+    this.subtitles = false,
+    this.voice = const VoiceActing(),
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
       _$MediaItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MediaItemToJson(this);
+
+  ///
+  bool get blocked => throw UnimplementedError();
 
   /// изображение на фон
   String get backdrop => poster;

@@ -20,6 +20,8 @@ class VoiceActingsButton extends HookWidget {
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
+    print('zzzz mediaItem: ${mediaItem.voice.toJson()}');
+
     return FilledButton.tonalIcon(
       onPressed: () {
         Utils.showModal(
@@ -27,8 +29,8 @@ class VoiceActingsButton extends HookWidget {
           titleText: 'Выбор аудио',
           child: ListView(
             shrinkWrap: true,
-            children: mediaItem.voiceActings.map((voiceActing) {
-              if (voiceActing.id == mediaItem.voiceActing.id) {
+            children: mediaItem.voices.map((voiceActing) {
+              if (voiceActing.id == mediaItem.voice.id) {
                 /// ^ если озвучка совпадает с текущей
 
                 return FilledButton.tonalIcon(

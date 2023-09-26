@@ -145,6 +145,8 @@ class FeaturedCard extends HookConsumerWidget {
                               ),
                             ),
                           ),
+
+                          /// название
                           Text(
                             currentMediaItem.title,
                             maxLines: 2,
@@ -153,21 +155,41 @@ class FeaturedCard extends HookConsumerWidget {
                               fontSize: 32.0,
                             ),
                           ),
+
+                          const SizedBox(height: 20.0),
+
+                          /// описание
                           if (currentMediaItem.overview.isNotEmpty)
-                            Padding(
+                            Text(
+                              currentMediaItem.overview,
                               key: ValueKey(
                                   'overview:${currentMediaItem.overview}'),
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: Text(
-                                currentMediaItem.overview,
-                                maxLines: 6,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
+                              maxLines: 6,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
+
+                          const SizedBox(height: 28.0),
+
+                          if (mediaItem?.blocked == true)
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  color: theme.colorScheme.error,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Text(
+                                  'Заблокировано правообладателем',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.error,
+                                  ),
+                                ),
+                              ],
+                            )
                           // AnimatedSwitcher(
                           //   duration: kThemeAnimationDuration,
                           //   reverseDuration: Duration.zero,

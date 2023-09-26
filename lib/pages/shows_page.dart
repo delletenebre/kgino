@@ -41,10 +41,10 @@ class ShowsPage extends HookConsumerWidget {
       final items = await storage.db.mediaItems
           .where()
           .typeEqualTo(MediaItemType.show)
+          .and()
           .bookmarkedIsNotNull()
           .findAllAsync();
       return items.map((item) {
-        print('zzzzz: item: ${item.voiceActing.toJson()}');
         if (item.onlineService == OnlineService.filmix) {
           return FilmixItem.fromJson(item.toJson());
         }

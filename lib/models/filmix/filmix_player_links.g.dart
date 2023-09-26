@@ -6,8 +6,8 @@ part of 'filmix_player_links.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_FilmixPlayerLinks _$$_FilmixPlayerLinksFromJson(Map<String, dynamic> json) =>
-    _$_FilmixPlayerLinks(
+FilmixPlayerLinks _$FilmixPlayerLinksFromJson(Map<String, dynamic> json) =>
+    FilmixPlayerLinks(
       movie: (json['movie'] as List<dynamic>?)
               ?.map((e) => FilmixMovieLink.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -15,9 +15,8 @@ _$_FilmixPlayerLinks _$$_FilmixPlayerLinksFromJson(Map<String, dynamic> json) =>
       playlist: json['playlist'],
     );
 
-Map<String, dynamic> _$$_FilmixPlayerLinksToJson(
-        _$_FilmixPlayerLinks instance) =>
+Map<String, dynamic> _$FilmixPlayerLinksToJson(FilmixPlayerLinks instance) =>
     <String, dynamic>{
-      'movie': instance.movie,
+      'movie': instance.movie.map((e) => e.toJson()).toList(),
       'playlist': instance.playlist,
     };

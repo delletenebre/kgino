@@ -19,6 +19,7 @@ class PlayButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     // /// сохранённый в базе данных элемент
@@ -67,22 +68,19 @@ class PlayButton extends HookWidget {
     // }
 
     /// кнопка начала просмотра
-    return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
-      child: FilledButton.icon(
-        autofocus: true,
-        onFocusChange: onFocusChange,
-        onPressed: () {
-          /// переходим на страницу плеера фильма
-          context.pushNamed(
-            'player',
-            queryParameters: {},
-            extra: mediaItem,
-          );
-        },
-        icon: const Icon(Icons.play_arrow),
-        label: Text(locale.play),
-      ),
+    return FilledButton.icon(
+      autofocus: true,
+      onFocusChange: onFocusChange,
+      onPressed: () {
+        /// переходим на страницу плеера фильма
+        context.pushNamed(
+          'player',
+          queryParameters: {},
+          extra: mediaItem,
+        );
+      },
+      icon: const Icon(Icons.play_arrow),
+      label: Text(locale.play),
     );
   }
 }

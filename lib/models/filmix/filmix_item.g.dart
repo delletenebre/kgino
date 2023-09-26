@@ -18,7 +18,6 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      subtitlesEnabled: json['subtitles_enabled'] as bool? ?? false,
       imdbRating: json['imdb_rating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['imdb_rating']),
@@ -29,16 +28,10 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
               ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      voiceActing: json['voice_acting'] == null
-          ? const VoiceActing()
-          : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
-      voiceActings: (json['voice_actings'] as List<dynamic>?)
+      voices: (json['voices'] as List<dynamic>?)
               ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      bookmarked: json['bookmarked'] == null
-          ? null
-          : DateTime.parse(json['bookmarked'] as String),
       onlineService:
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
               OnlineService.filmix,
@@ -53,6 +46,13 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           ? const FilmixPlayerLinks()
           : FilmixPlayerLinks.fromJson(
               json['player_links'] as Map<String, dynamic>),
+      bookmarked: json['bookmarked'] == null
+          ? null
+          : DateTime.parse(json['bookmarked'] as String),
+      subtitles: json['subtitles'] as bool? ?? false,
+      voice: json['voice'] == null
+          ? const VoiceActing()
+          : VoiceActing.fromJson(json['voice'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
@@ -64,14 +64,14 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'poster': instance.poster,
       'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,
-      'voice_acting': instance.voiceActing.toJson(),
-      'voice_actings': instance.voiceActings.map((e) => e.toJson()).toList(),
-      'subtitles_enabled': instance.subtitlesEnabled,
-      'bookmarked': instance.bookmarked?.toIso8601String(),
+      'voices': instance.voices.map((e) => e.toJson()).toList(),
       'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
       'kinopoisk_rating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
+      'bookmarked': instance.bookmarked?.toIso8601String(),
+      'subtitles': instance.subtitles,
+      'voice': instance.voice.toJson(),
       'categories': instance.categories,
       'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
       'player_links': instance.playerLinks?.toJson(),
