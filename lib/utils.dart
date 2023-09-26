@@ -65,6 +65,7 @@ class Utils {
           alignment: Alignment.bottomRight,
           child: Container(
             padding: const EdgeInsets.all(20.0),
+            margin: const EdgeInsets.all(24.0),
             width: 280.0,
             decoration: BoxDecoration(
               color: theme.colorScheme.secondaryContainer,

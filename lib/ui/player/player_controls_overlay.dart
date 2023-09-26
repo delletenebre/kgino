@@ -59,6 +59,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
           _visibilityTimer?.cancel();
           _visibilityTimer = Timer(const Duration(seconds: 5), () {
+            _progressBarFocusNode.requestFocus();
             setState(() {
               _visible = false;
             });
@@ -73,8 +74,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
   void showOverlay() {
     if (!_visible) {
+      _progressBarFocusNode.requestFocus();
       setState(() {
-        _progressBarFocusNode.requestFocus();
         _visible = true;
       });
     }
@@ -91,6 +92,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
       onKey: (node, event) {
         if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
             event.isKeyPressed(LogicalKeyboardKey.backspace)) {
+          debugPrint('$event');
           if (controller(context).player.state.playing) {
             controller(context).player.pause();
           } else {
@@ -180,6 +182,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                       focusNode: _progressBarFocusNode,
                       onSkipNext: widget.onSkipNext,
                     ),
+
+                    const SizedBox(height: 24.0),
 
                     /// кнопки управления
                     Row(
