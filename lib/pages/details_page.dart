@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
+import '../enums/online_service.dart';
 import '../models/media_item.dart';
 import '../providers/providers.dart';
 import '../resources/constants.dart';
@@ -48,6 +49,7 @@ class DetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     /// размер экрана
@@ -66,7 +68,6 @@ class DetailsPage extends HookConsumerWidget {
         ),
         data: (mediaItem) => HookBuilder(
           builder: (context) {
-            print('zzzz mediaItem1: ${mediaItem?.voice.toJson()}');
             final scrollController = useScrollController();
             final isScrolling = useState(false);
 
@@ -95,11 +96,68 @@ class DetailsPage extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: TvUi.navigationBarSize.height),
+                      /// отступ навигационной панели
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: TvUi.hPadding),
+                        height: TvUi.navigationBarSize.height,
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          spacing: 24.0,
+                          children: [
+                            /// онлайн-кинотеатр
+                            if (mediaItem?.onlineService ==
+                                OnlineService.filmix)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.smart_display_outlined,
+                                    size: 16.0,
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    'Filmix',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.outline,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            /// озвучка
+                            if (mediaItem?.voice.name.isNotEmpty == true)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.mic_outlined,
+                                    size: 16.0,
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    mediaItem!.voice.name,
+                                    style: TextStyle(
+                                      color: theme.colorScheme.outline,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      /// основная информация
                       FeaturedCard(mediaItem),
+
+                      /// пустой отступ
                       const Expanded(
                         child: SizedBox(),
                       ),
+
+                      /// кнопки управления
                       Focus(
                         canRequestFocus: false,
                         skipTraversal: true,

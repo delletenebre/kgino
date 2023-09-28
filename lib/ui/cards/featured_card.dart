@@ -131,19 +131,15 @@ class FeaturedCard extends HookConsumerWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    [
-                                      currentMediaItem.genres.joinFirstTwo(),
-                                      currentMediaItem.year,
-                                      currentMediaItem.countries.joinFirstTwo(),
-                                      currentMediaItem
-                                          .overviewDuration(context),
-                                    ].removeEmpty().join(' • '),
-                                    //'Superhero/Action • 2022 • 2h 15m'
-                                  ),
-                                ],
+                              child: Text(
+                                [
+                                  currentMediaItem.genres.joinFirstTwo(),
+                                  currentMediaItem.year,
+                                  currentMediaItem.countries.joinFirstTwo(),
+                                  currentMediaItem.overviewDuration(context),
+                                  currentMediaItem.ratingStars,
+                                ].removeEmpty().join(' • '),
+                                //'Superhero/Action • 2022 • 2h 15m'
                               ),
                             ),
                           ),
@@ -175,22 +171,30 @@ class FeaturedCard extends HookConsumerWidget {
 
                           const SizedBox(height: 28.0),
 
-                          if (mediaItem?.blocked == true)
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  color: theme.colorScheme.error,
+                          Wrap(
+                            spacing: 24.0,
+                            children: [
+                              /// забликирован ли контент
+                              if (mediaItem?.blocked == true)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      color: theme.colorScheme.error,
+                                    ),
+                                    const SizedBox(width: 4.0),
+                                    Text(
+                                      'Заблокировано правообладателем',
+                                      style: TextStyle(
+                                        color: theme.colorScheme.error,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 4.0),
-                                Text(
-                                  'Заблокировано правообладателем',
-                                  style: TextStyle(
-                                    color: theme.colorScheme.error,
-                                  ),
-                                ),
-                              ],
-                            )
+                            ],
+                          ),
+
                           // AnimatedSwitcher(
                           //   duration: kThemeAnimationDuration,
                           //   reverseDuration: Duration.zero,

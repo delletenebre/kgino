@@ -133,6 +133,38 @@ class MediaItem {
   /// изображение на фон
   String get backdrop => poster;
 
+  ///
+  double get averageRating {
+    int ratingsCount = 0;
+    if (hasImdbRating) {
+      ratingsCount++;
+    }
+
+    if (hasKinopoiskRating) {
+      ratingsCount++;
+    }
+
+    if (ratingsCount == 0) {
+      return 0.0;
+    }
+
+    return (imdbRating + kinopoiskRating) / ratingsCount;
+  }
+
+  String get ratingStars {
+    if (averageRating == 0.0) {
+      return '';
+    } else if (averageRating < 4.5) {
+      return '☆☆☆';
+    } else if (averageRating < 6.0) {
+      return '★☆☆';
+    } else if (averageRating < 7.7) {
+      return '★★☆';
+    } else {
+      return '★★★';
+    }
+  }
+
   /// загрузка подробных данных о сериале или фильме
   Future<MediaItem> loadDetails(Ref ref) {
     throw UnimplementedError();
