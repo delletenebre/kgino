@@ -20,7 +20,7 @@ class VoiceActingsButton extends HookWidget {
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
 
-    return FilledButton.tonalIcon(
+    return FilledButton.tonal(
       onPressed: () {
         Utils.showModalRight(
           context: context,
@@ -53,8 +53,8 @@ class VoiceActingsButton extends HookWidget {
           ),
         );
       },
-      icon: const Icon(Icons.mic),
-      label: const Text('Выбрать озвучку'),
+      // icon: const Icon(Icons.mic),
+      child: const Text('Выбрать озвучку'),
     );
   }
 }
