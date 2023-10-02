@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../../resources/constants.dart';
-
 class KrsListTile extends HookWidget {
   final String title;
   final String subtitle;
@@ -11,6 +9,7 @@ class KrsListTile extends HookWidget {
   final void Function(bool hasFocus)? onFocusChange;
   final void Function() onTap;
   final bool selected;
+  final bool showSelectedIcon;
 
   const KrsListTile({
     super.key,
@@ -20,6 +19,7 @@ class KrsListTile extends HookWidget {
     this.onFocusChange,
     required this.onTap,
     this.selected = false,
+    this.showSelectedIcon = false,
   });
 
   @override
@@ -53,7 +53,6 @@ class KrsListTile extends HookWidget {
           child: AnimatedContainer(
             duration: kThemeAnimationDuration,
             clipBehavior: Clip.antiAlias,
-            width: TvUi.horizontalCardSize.width,
             padding: const EdgeInsets.symmetric(
               vertical: 12.0,
               horizontal: 16.0,
@@ -63,7 +62,7 @@ class KrsListTile extends HookWidget {
                   ? theme.colorScheme.inverseSurface
                   : selected
                       ? theme.colorScheme.secondaryContainer
-                      : theme.colorScheme.surface,
+                      : Colors.transparent,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: AnimatedDefaultTextStyle(
@@ -75,32 +74,46 @@ class KrsListTile extends HookWidget {
                         ? theme.colorScheme.onSecondaryContainer
                         : theme.colorScheme.onSurface,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              child: Row(
                 children: [
-                  SizedBox(
-                    height: 24.0,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 24.0,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              title,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        if (subtitle.isNotEmpty)
+                          Opacity(
+                            opacity: 0.8,
+                            child: Text(
+                              subtitle,
+                              style: const TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          )
+                      ],
                     ),
                   ),
-                  if (subtitle.isNotEmpty)
-                    Opacity(
-                      opacity: 0.8,
-                      child: Text(
-                        subtitle,
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                        ),
-                      ),
+                  if (showSelectedIcon && selected)
+                    Icon(
+                      Icons.check_outlined,
+                      size: 18.0,
+                      color: focused.value
+                          ? theme.colorScheme.surface
+                          : theme.colorScheme.onSecondaryContainer,
                     )
                 ],
               ),

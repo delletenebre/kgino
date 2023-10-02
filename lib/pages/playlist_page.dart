@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../hooks/list_observer_controller_hook.dart';
 import '../models/media_item.dart';
-import '../providers/providers.dart';
 import '../resources/constants.dart';
 import '../resources/krs_locale.dart';
 import '../ui/cards/krs_list_tile.dart';
@@ -240,12 +240,13 @@ class PlaylistPage extends HookConsumerWidget {
                 },
               ),
             ),
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: Text('BACK'),
-            ),
+            if (kDebugMode)
+              TextButton(
+                onPressed: () {
+                  context.pop();
+                },
+                child: Text('BACK'),
+              ),
           ],
         ),
       ),

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/constants.dart';
+import '../details_page/krs_menu_button.dart';
 import 'controls/play_pause_button.dart';
 import 'controls/player_progress_bar.dart';
 
@@ -15,8 +16,12 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
   final String subtitle;
   final Function()? onSkipNext;
   final Function()? onSkipPrevious;
+  final Function(int quality)? onQualityChanged;
 
   final Function(int position)? onSavePositionRequested;
+
+  final List<int> qualities;
+  final int quality;
 
   const PlayerControlsOverlay({
     super.key,
@@ -25,6 +30,9 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
     this.onSkipNext,
     this.onSkipPrevious,
     this.onSavePositionRequested,
+    this.qualities = const [],
+    this.quality = 0,
+    this.onQualityChanged,
   });
 
   @override
@@ -196,6 +204,20 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                     /// кнопки управления
                     Row(
                       children: [
+                        if (widget.qualities.isNotEmpty)
+                          KrsMenuButton(
+                            items: widget.qualities,
+                            textBuilder: (item) => item.toString(),
+                            valueBuilder: (item) => item,
+                            selectedValue: widget.quality,
+                            onSelected: (value) {
+                              widget.onQualityChanged?.call(value);
+                            },
+                            child: Text(
+                              '${widget.quality}',
+                            ),
+                          ),
+
                         const Expanded(
                           child: SizedBox(),
                         ),

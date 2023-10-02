@@ -101,6 +101,9 @@ class MediaItem {
   /// выбранная озвучка
   VoiceActing voice;
 
+  /// выбранное качество видео
+  int quality;
+
   MediaItem({
     required this.id,
     required this.title,
@@ -121,6 +124,7 @@ class MediaItem {
     this.bookmarked,
     this.subtitles = false,
     this.voice = const VoiceActing(),
+    this.quality = 0,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
@@ -190,12 +194,8 @@ class MediaItem {
 
   /// сохранение в базу данных
   Future<void> save(KrsStorage storage) async {
-    storage.db.write((isar) async {
-      // if (seenEpisodes.isNotEmpty) {
-      //   storage.db.episodeItems.putAllSync(seenEpisodes.toList());
-      // }
+    storage.db.writeAsync((isar) async {
       isar.mediaItems.put(this);
-      //seenEpisodes.saveSync();
     });
   }
 
@@ -209,6 +209,8 @@ class MediaItem {
           return FilmixItem.fromJson(savedItem.toJson());
       }
     }
+
+    return null;
   }
 
   /// продолжительность для информации

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -31,6 +32,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
   late List<MediaItemEpisode> episodes;
 
+  /// проигрываемый эпизод
+  late MediaItemEpisode episode;
+
   /// индекс текущего сезона
   int currentSeasonIndex = 0;
 
@@ -43,6 +47,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
     episodes = widget.mediaItem.episodes();
     currentEpisodeIndex = widget.episodeIndex;
+    episode = episodes[currentEpisodeIndex];
 
     final playerConfiguration = PlayerConfiguration(
       title: 'My awesome package:media_kit application',
@@ -112,27 +117,33 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     return Video(
       controller: controller,
       controls: (state) {
-        return PlayerControlsOverlay(
-          title: widget.mediaItem.title,
-          subtitle:
-              'Сезон ${episodes[currentEpisodeIndex].seasonNumber} Эпизод ${episodes[currentEpisodeIndex].episodeNumber}',
-          onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
-          onSkipNext: hasNextEpisode ? skipNext : null,
-          onSavePositionRequested: (position) {
-            /// проигрываемый эпизод
-            final episode = episodes[currentEpisodeIndex];
+        return Material(
+          color: Colors.transparent,
+          child: PlayerControlsOverlay(
+            title: widget.mediaItem.title,
+            subtitle:
+                'Сезон ${episode.seasonNumber} Эпизод ${episode.episodeNumber}',
+            qualities: episode.qualities.sorted((a, b) => b - a),
+            quality: widget.mediaItem.quality,
+            onQualityChanged: (quality) {
+              widget.mediaItem.quality = quality;
+              widget.mediaItem.save(ref.read(storageProvider));
+            },
+            onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
+            onSkipNext: hasNextEpisode ? skipNext : null,
+            onSavePositionRequested: (position) {
+              /// обновляем (если нужно) продолжительность эпизода
+              if (episode.duration == 0) {
+                episode.duration = controller.player.state.duration.inSeconds;
+              }
 
-            /// обновляем (если нужно) продолжительность эпизода
-            if (episode.duration == 0) {
-              episode.duration = controller.player.state.duration.inSeconds;
-            }
+              /// обновляем позицию просмотра для проигрываемого эпизода
+              episode.position = position;
 
-            /// обновляем позицию просмотра для проигрываемого эпизода
-            episode.position = position;
-
-            /// сохраняем параметры проигрываемого эпизода
-            episode.save(ref.read(storageProvider));
-          },
+              /// сохраняем параметры проигрываемого эпизода
+              episode.save(ref.read(storageProvider));
+            },
+          ),
         );
       },
       // controls: MaterialVideoControls,

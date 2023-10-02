@@ -32,9 +32,9 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
     final seenEpisode = episode.saved(ref.read(storageProvider));
     final seen = seenEpisode?.viewed ?? 0.0;
 
-    final title = episode.name.isNotEmpty ? episode.name : 'Нет названия';
-    final subtitle =
+    final title =
         'Сезон ${episode.seasonNumber} Эпизод ${episode.episodeNumber}';
+    final subtitle = episode.name.isNotEmpty ? episode.name : 'Нет названия';
 
     return Focus(
       onFocusChange: (hasFocus) {

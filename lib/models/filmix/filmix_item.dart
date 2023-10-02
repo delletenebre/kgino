@@ -44,6 +44,7 @@ class FilmixItem extends MediaItem {
     super.bookmarked,
     super.subtitles,
     super.voice,
+    super.quality = 480,
   }) {
     voices = [];
 
@@ -179,7 +180,7 @@ class FilmixItem extends MediaItem {
 
     if (episodeIndex < episodes.length) {
       final episode = episodes[episodeIndex];
-      return episode.videoFileUrl.replaceFirst('_%s.', '_480.');
+      return episode.videoFileUrl.replaceFirst('_%s.', '_$quality.');
     }
 
     return '';
