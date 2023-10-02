@@ -66,12 +66,11 @@ class MediaItemEpisode {
 
   /// просмотренная позиция в пределах от 0 до 1 (шаг 5%)
   @ignore
-  double get percentPosition =>
-      ((position / duration) / 0.05).ceilToDouble() * 0.05;
+  double get viewed => ((position / duration) / 0.05).ceilToDouble() * 0.05;
 
   /// был ли эпизод полностью просмотрен
   @ignore
-  bool get isSeen => percentPosition > 0.95;
+  bool get isSeen => viewed > 0.95;
 
   @ignore
   bool get hasShowNumbers => seasonNumber > 0 && episodeNumber > 0;
@@ -84,5 +83,14 @@ class MediaItemEpisode {
       updatedAt = DateTime.now();
       isar.mediaItemEpisodes.put(this);
     });
+  }
+
+  /// сохранение в базу данных
+  int savedPosition(KrsStorage storage) {
+    return storage.db.mediaItemEpisodes.get(isarDb)?.position ?? 0;
+  }
+
+  MediaItemEpisode? saved(KrsStorage storage) {
+    return storage.db.mediaItemEpisodes.get(isarDb);
   }
 }

@@ -6,9 +6,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../hooks/list_observer_controller_hook.dart';
 import '../models/media_item.dart';
+import '../providers/providers.dart';
 import '../resources/constants.dart';
 import '../resources/krs_locale.dart';
 import '../ui/cards/krs_list_tile.dart';
+import '../ui/cards/playlist_episode_tile.dart';
 import '../ui/lists/vertical_list_view.dart';
 
 class PlaylistPage extends HookConsumerWidget {
@@ -180,9 +182,11 @@ class PlaylistPage extends HookConsumerWidget {
                 itemCount: episodes.length,
                 itemBuilder: (context, index) {
                   final episode = episodes[index];
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
-                    child: KrsListTile(
+                    child: PlaylistEpisodeTile(
+                      episode: episode,
                       onFocusChange: (hasFocus) {
                         if (hasFocus) {
                           final episodeIndex = index;
@@ -231,9 +235,6 @@ class PlaylistPage extends HookConsumerWidget {
                           extra: mediaItem,
                         );
                       },
-                      title: 'Эпизод ${index + 1}',
-                      subtitle:
-                          '${episode.seasonNumber}x${episode.episodeNumber}',
                     ),
                   );
                 },
