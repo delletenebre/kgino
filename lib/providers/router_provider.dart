@@ -79,10 +79,16 @@ final routerProvider = Provider<GoRouter>((ref) {
               final initialPosition = int.tryParse(
                       state.uri.queryParameters['initialPosition'] ?? '') ??
                   0;
+
+              final forcePositionUpdate = bool.tryParse(
+                      state.uri.queryParameters['forcePositionUpdate'] ?? '') ??
+                  false;
+
               return PlayerPage(
                 mediaItem: mediaItem,
                 episodeIndex: episodeIndex,
                 initialPosition: initialPosition,
+                forcePositionUpdate: forcePositionUpdate,
               );
             },
           ),

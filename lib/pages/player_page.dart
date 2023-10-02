@@ -12,13 +12,20 @@ import '../ui/player/player_controls_overlay.dart';
 class PlayerPage extends ConsumerStatefulWidget {
   final MediaItem mediaItem;
   final int episodeIndex;
+
+  /// начальная позиция просмотра видео
   final int initialPosition;
+
+  /// обновление позиции без вопроса пользователю
+  /// например, при смене качества видео
+  final bool forcePositionUpdate;
 
   const PlayerPage({
     super.key,
     required this.mediaItem,
     this.episodeIndex = 0,
     this.initialPosition = 0,
+    this.forcePositionUpdate = false,
   });
   @override
   ConsumerState createState() => _PlayerPageState();
@@ -26,7 +33,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
   // Create a [Player] to control playback.
-  late final player;
+  late final Player player;
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
 
@@ -66,8 +73,23 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     )
         .then((episodeUrl) {
       debugPrint('Loaded episode url: $episodeUrl');
-      player.open(Media(episodeUrl));
+      player.open(Media(episodeUrl)).then((value) async {
+        if (widget.initialPosition > 0 && widget.forcePositionUpdate) {
+          /// ^ если задана позиция просмотра и быстрая перемотка
+
+          /// дожидаемся буферизации
+          await player.stream.buffer.first;
+
+          /// перематываем с небольшой отмоткой назад
+          await player.seek(Duration(
+              seconds: widget.initialPosition > 2
+                  ? widget.initialPosition - 2
+                  : widget.initialPosition));
+        }
+      });
     });
+
+    player.stream.buffering;
 
     // player.setSubtitleTrack(
     //   SubtitleTrack.uri(
@@ -101,12 +123,17 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     updateEpisode();
   }
 
-  void updateEpisode() {
+  void updateEpisode({
+    int position = 0,
+    bool forcePositionUpdate = false,
+  }) {
     /// переходим на страницу плеера фильма
     context.pushReplacementNamed(
       'player',
       queryParameters: {
         'episodeIndex': '$currentEpisodeIndex',
+        'initialPosition': '$position',
+        'forcePositionUpdate': '$forcePositionUpdate',
       },
       extra: widget.mediaItem,
     );
@@ -126,9 +153,15 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             qualities: episode.qualities.sorted((a, b) => b - a),
             quality: widget.mediaItem.quality,
             onQualityChanged: (quality) {
+              /// обновляем информацию о качестве видео
               widget.mediaItem.quality = quality;
               widget.mediaItem.save(ref.read(storageProvider));
-              updateEpisode();
+
+              /// перезапускаем эпизод
+              updateEpisode(
+                position: controller.player.state.position.inSeconds,
+                forcePositionUpdate: true,
+              );
             },
             onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
             onSkipNext: hasNextEpisode ? skipNext : null,
