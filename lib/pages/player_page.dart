@@ -33,7 +33,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
   // Create a [Player] to control playback.
-  late final Player player;
+  final Player player = Player();
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
 
@@ -55,16 +55,6 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     episodes = widget.mediaItem.episodes();
     currentEpisodeIndex = widget.episodeIndex;
     episode = episodes[currentEpisodeIndex];
-
-    final playerConfiguration = PlayerConfiguration(
-      title: 'My awesome package:media_kit application',
-      ready: () {
-        print('The initialization is complete.');
-      },
-    );
-    player = Player(
-      configuration: playerConfiguration,
-    );
 
     widget.mediaItem
         .loadEpisodeUrl(

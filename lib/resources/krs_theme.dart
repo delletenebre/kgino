@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_color_utilities/material_color_utilities.dart';
 
 class KrsTheme {
   /// высота контейнера с информацией о фильме
@@ -40,6 +41,12 @@ class KrsTheme {
       seedColor: seedColor,
     ),
   };
+
+  static Color getSurfaceContainer(BuildContext context) {
+    final theme = Theme.of(context);
+    CorePalette p = CorePalette.of(seedColor.value);
+    return Color(p.neutral.get(theme.brightness == Brightness.dark ? 12 : 94));
+  }
 
   /// светлая тема оформления
   static final light = ThemeData(

@@ -219,11 +219,14 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                           KrsMenuButton(
                             items: widget.qualities,
                             textBuilder: (item) => item.toString(),
-                            valueBuilder: (item) => item,
                             selectedValue: widget.quality,
                             onSelected: (value) {
                               widget.onQualityChanged?.call(value);
                             },
+                            icon: const Icon(
+                              Icons.videocam_outlined,
+                              size: 18.0,
+                            ),
                             child: Text(
                               '${widget.quality}',
                             ),

@@ -5,6 +5,7 @@ import '../../models/media_item.dart';
 import '../../models/voice_acting.dart';
 import '../../resources/krs_locale.dart';
 import '../../utils.dart';
+import 'krs_menu_button.dart';
 
 class VoiceActingsButton extends HookWidget {
   final MediaItem mediaItem;
@@ -19,6 +20,19 @@ class VoiceActingsButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final locale = KrsLocale.of(context);
+
+    return KrsMenuButton<VoiceActing>(
+      filled: true,
+      items: mediaItem.voices,
+      textBuilder: (item) => item.name,
+      selectedValue: mediaItem.voice,
+      onSelected: (voiceActing) {
+        onVoiceActingChange(voiceActing);
+      },
+      child: Text(
+        'Выбор аудио',
+      ),
+    );
 
     return FilledButton.tonal(
       onPressed: () {

@@ -71,7 +71,7 @@ class KrsListTile extends HookWidget {
                   ? theme.colorScheme.inverseSurface
                   : selected
                       ? theme.colorScheme.secondaryContainer
-                      : theme.colorScheme.surface,
+                      : Colors.transparent,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: AnimatedDefaultTextStyle(
