@@ -24,7 +24,7 @@ dependencies:
   
   async: ^2.11.0
   audio_video_progress_bar: ^2.0.0
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.0
   collection: ^1.17.0
   crypto: ^3.0.2
   device_info_plus: 8.2.2
@@ -48,9 +48,6 @@ dependencies:
   scrollview_observer: ^1.16.4
   shared_preferences: ^2.2.1
   uuid: ^3.0.7
-  # video_player: ^2.7.1
-  # video_player_macos: ^2.0.1
-  # video_player_win: ^2.2.2
   wakelock_plus: ^1.1.1
   youtube_player_flutter: ^8.1.2
 

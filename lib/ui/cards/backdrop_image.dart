@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../resources/constants.dart';
@@ -31,15 +32,12 @@ class BackdropImage extends StatelessWidget {
         },
 
         /// постер фильма
-        child: Opacity(
-          opacity: 1.0,
-          child: SizedBox.fromSize(
-            size: TvUi.backdropImageSize,
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-            ),
+        child: SizedBox.fromSize(
+          size: TvUi.backdropImageSize,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
           ),
         ),
       ),

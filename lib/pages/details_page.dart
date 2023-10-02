@@ -194,6 +194,7 @@ class DetailsPage extends HookConsumerWidget {
                               Wrap(
                                 alignment: WrapAlignment.start,
                                 spacing: 24.0,
+                                runSpacing: 12.0,
                                 children: [
                                   /// кнопка начала просмотра
                                   if (mediaItem!.blocked == false)

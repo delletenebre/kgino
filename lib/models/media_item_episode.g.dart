@@ -38,18 +38,6 @@ const MediaItemEpisodeSchema = IsarGeneratedSchema(
         type: IsarType.long,
       ),
       IsarPropertySchema(
-        name: 'videoFileUrl',
-        type: IsarType.string,
-      ),
-      IsarPropertySchema(
-        name: 'subtitlesFileUrl',
-        type: IsarType.string,
-      ),
-      IsarPropertySchema(
-        name: 'qualities',
-        type: IsarType.longList,
-      ),
-      IsarPropertySchema(
         name: 'updatedAt',
         type: IsarType.dateTime,
       ),
@@ -82,21 +70,11 @@ int serializeMediaItemEpisode(IsarWriter writer, MediaItemEpisode object) {
   IsarCore.writeString(writer, 2, object.name);
   IsarCore.writeLong(writer, 3, object.seasonNumber);
   IsarCore.writeLong(writer, 4, object.episodeNumber);
-  IsarCore.writeString(writer, 5, object.videoFileUrl);
-  IsarCore.writeString(writer, 6, object.subtitlesFileUrl);
-  {
-    final list = object.qualities;
-    final listWriter = IsarCore.beginList(writer, 7, list.length);
-    for (var i = 0; i < list.length; i++) {
-      IsarCore.writeLong(listWriter, i, list[i]);
-    }
-    IsarCore.endList(writer, listWriter);
-  }
-  IsarCore.writeLong(writer, 8,
+  IsarCore.writeLong(writer, 5,
       object.updatedAt?.toUtc().microsecondsSinceEpoch ?? -9223372036854775808);
-  IsarCore.writeLong(writer, 9, object.position);
-  IsarCore.writeLong(writer, 10, object.duration);
-  IsarCore.writeString(writer, 11, object.isarDb);
+  IsarCore.writeLong(writer, 6, object.position);
+  IsarCore.writeLong(writer, 7, object.duration);
+  IsarCore.writeString(writer, 8, object.isarDb);
   return Isar.fastHash(object.isarDb);
 }
 
@@ -124,31 +102,9 @@ MediaItemEpisode deserializeMediaItemEpisode(IsarReader reader) {
       _episodeNumber = value;
     }
   }
-  final String _videoFileUrl;
-  _videoFileUrl = IsarCore.readString(reader, 5) ?? '';
-  final String _subtitlesFileUrl;
-  _subtitlesFileUrl = IsarCore.readString(reader, 6) ?? '';
-  final List<int> _qualities;
-  {
-    final length = IsarCore.readList(reader, 7, IsarCore.readerPtrPtr);
-    {
-      final reader = IsarCore.readerPtr;
-      if (reader.isNull) {
-        _qualities = const [];
-      } else {
-        final list =
-            List<int>.filled(length, -9223372036854775808, growable: true);
-        for (var i = 0; i < length; i++) {
-          list[i] = IsarCore.readLong(reader, i);
-        }
-        IsarCore.freeReader(reader);
-        _qualities = list;
-      }
-    }
-  }
   final DateTime? _updatedAt;
   {
-    final value = IsarCore.readLong(reader, 8);
+    final value = IsarCore.readLong(reader, 5);
     if (value == -9223372036854775808) {
       _updatedAt = null;
     } else {
@@ -158,7 +114,7 @@ MediaItemEpisode deserializeMediaItemEpisode(IsarReader reader) {
   }
   final int _position;
   {
-    final value = IsarCore.readLong(reader, 9);
+    final value = IsarCore.readLong(reader, 6);
     if (value == -9223372036854775808) {
       _position = 0;
     } else {
@@ -167,7 +123,7 @@ MediaItemEpisode deserializeMediaItemEpisode(IsarReader reader) {
   }
   final int _duration;
   {
-    final value = IsarCore.readLong(reader, 10);
+    final value = IsarCore.readLong(reader, 7);
     if (value == -9223372036854775808) {
       _duration = 0;
     } else {
@@ -179,9 +135,6 @@ MediaItemEpisode deserializeMediaItemEpisode(IsarReader reader) {
     name: _name,
     seasonNumber: _seasonNumber,
     episodeNumber: _episodeNumber,
-    videoFileUrl: _videoFileUrl,
-    subtitlesFileUrl: _subtitlesFileUrl,
-    qualities: _qualities,
     updatedAt: _updatedAt,
     position: _position,
     duration: _duration,
@@ -215,30 +168,8 @@ dynamic deserializeMediaItemEpisodeProp(IsarReader reader, int property) {
         }
       }
     case 5:
-      return IsarCore.readString(reader, 5) ?? '';
-    case 6:
-      return IsarCore.readString(reader, 6) ?? '';
-    case 7:
       {
-        final length = IsarCore.readList(reader, 7, IsarCore.readerPtrPtr);
-        {
-          final reader = IsarCore.readerPtr;
-          if (reader.isNull) {
-            return const [];
-          } else {
-            final list =
-                List<int>.filled(length, -9223372036854775808, growable: true);
-            for (var i = 0; i < length; i++) {
-              list[i] = IsarCore.readLong(reader, i);
-            }
-            IsarCore.freeReader(reader);
-            return list;
-          }
-        }
-      }
-    case 8:
-      {
-        final value = IsarCore.readLong(reader, 8);
+        final value = IsarCore.readLong(reader, 5);
         if (value == -9223372036854775808) {
           return null;
         } else {
@@ -246,26 +177,26 @@ dynamic deserializeMediaItemEpisodeProp(IsarReader reader, int property) {
               .toLocal();
         }
       }
-    case 9:
+    case 6:
       {
-        final value = IsarCore.readLong(reader, 9);
+        final value = IsarCore.readLong(reader, 6);
         if (value == -9223372036854775808) {
           return 0;
         } else {
           return value;
         }
       }
-    case 10:
+    case 7:
       {
-        final value = IsarCore.readLong(reader, 10);
+        final value = IsarCore.readLong(reader, 7);
         if (value == -9223372036854775808) {
           return 0;
         } else {
           return value;
         }
       }
-    case 11:
-      return IsarCore.readString(reader, 11) ?? '';
+    case 8:
+      return IsarCore.readString(reader, 8) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -278,8 +209,6 @@ sealed class _MediaItemEpisodeUpdate {
     String? name,
     int? seasonNumber,
     int? episodeNumber,
-    String? videoFileUrl,
-    String? subtitlesFileUrl,
     DateTime? updatedAt,
     int? position,
     int? duration,
@@ -298,8 +227,6 @@ class _MediaItemEpisodeUpdateImpl implements _MediaItemEpisodeUpdate {
     Object? name = ignore,
     Object? seasonNumber = ignore,
     Object? episodeNumber = ignore,
-    Object? videoFileUrl = ignore,
-    Object? subtitlesFileUrl = ignore,
     Object? updatedAt = ignore,
     Object? position = ignore,
     Object? duration = ignore,
@@ -311,11 +238,9 @@ class _MediaItemEpisodeUpdateImpl implements _MediaItemEpisodeUpdate {
           if (name != ignore) 2: name as String?,
           if (seasonNumber != ignore) 3: seasonNumber as int?,
           if (episodeNumber != ignore) 4: episodeNumber as int?,
-          if (videoFileUrl != ignore) 5: videoFileUrl as String?,
-          if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
-          if (updatedAt != ignore) 8: updatedAt as DateTime?,
-          if (position != ignore) 9: position as int?,
-          if (duration != ignore) 10: duration as int?,
+          if (updatedAt != ignore) 5: updatedAt as DateTime?,
+          if (position != ignore) 6: position as int?,
+          if (duration != ignore) 7: duration as int?,
         }) >
         0;
   }
@@ -328,8 +253,6 @@ sealed class _MediaItemEpisodeUpdateAll {
     String? name,
     int? seasonNumber,
     int? episodeNumber,
-    String? videoFileUrl,
-    String? subtitlesFileUrl,
     DateTime? updatedAt,
     int? position,
     int? duration,
@@ -348,8 +271,6 @@ class _MediaItemEpisodeUpdateAllImpl implements _MediaItemEpisodeUpdateAll {
     Object? name = ignore,
     Object? seasonNumber = ignore,
     Object? episodeNumber = ignore,
-    Object? videoFileUrl = ignore,
-    Object? subtitlesFileUrl = ignore,
     Object? updatedAt = ignore,
     Object? position = ignore,
     Object? duration = ignore,
@@ -359,11 +280,9 @@ class _MediaItemEpisodeUpdateAllImpl implements _MediaItemEpisodeUpdateAll {
       if (name != ignore) 2: name as String?,
       if (seasonNumber != ignore) 3: seasonNumber as int?,
       if (episodeNumber != ignore) 4: episodeNumber as int?,
-      if (videoFileUrl != ignore) 5: videoFileUrl as String?,
-      if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
-      if (updatedAt != ignore) 8: updatedAt as DateTime?,
-      if (position != ignore) 9: position as int?,
-      if (duration != ignore) 10: duration as int?,
+      if (updatedAt != ignore) 5: updatedAt as DateTime?,
+      if (position != ignore) 6: position as int?,
+      if (duration != ignore) 7: duration as int?,
     });
   }
 }
@@ -381,8 +300,6 @@ sealed class _MediaItemEpisodeQueryUpdate {
     String? name,
     int? seasonNumber,
     int? episodeNumber,
-    String? videoFileUrl,
-    String? subtitlesFileUrl,
     DateTime? updatedAt,
     int? position,
     int? duration,
@@ -401,8 +318,6 @@ class _MediaItemEpisodeQueryUpdateImpl implements _MediaItemEpisodeQueryUpdate {
     Object? name = ignore,
     Object? seasonNumber = ignore,
     Object? episodeNumber = ignore,
-    Object? videoFileUrl = ignore,
-    Object? subtitlesFileUrl = ignore,
     Object? updatedAt = ignore,
     Object? position = ignore,
     Object? duration = ignore,
@@ -412,11 +327,9 @@ class _MediaItemEpisodeQueryUpdateImpl implements _MediaItemEpisodeQueryUpdate {
       if (name != ignore) 2: name as String?,
       if (seasonNumber != ignore) 3: seasonNumber as int?,
       if (episodeNumber != ignore) 4: episodeNumber as int?,
-      if (videoFileUrl != ignore) 5: videoFileUrl as String?,
-      if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
-      if (updatedAt != ignore) 8: updatedAt as DateTime?,
-      if (position != ignore) 9: position as int?,
-      if (duration != ignore) 10: duration as int?,
+      if (updatedAt != ignore) 5: updatedAt as DateTime?,
+      if (position != ignore) 6: position as int?,
+      if (duration != ignore) 7: duration as int?,
     });
   }
 }
@@ -442,8 +355,6 @@ class _MediaItemEpisodeQueryBuilderUpdateImpl
     Object? name = ignore,
     Object? seasonNumber = ignore,
     Object? episodeNumber = ignore,
-    Object? videoFileUrl = ignore,
-    Object? subtitlesFileUrl = ignore,
     Object? updatedAt = ignore,
     Object? position = ignore,
     Object? duration = ignore,
@@ -455,11 +366,9 @@ class _MediaItemEpisodeQueryBuilderUpdateImpl
         if (name != ignore) 2: name as String?,
         if (seasonNumber != ignore) 3: seasonNumber as int?,
         if (episodeNumber != ignore) 4: episodeNumber as int?,
-        if (videoFileUrl != ignore) 5: videoFileUrl as String?,
-        if (subtitlesFileUrl != ignore) 6: subtitlesFileUrl as String?,
-        if (updatedAt != ignore) 8: updatedAt as DateTime?,
-        if (position != ignore) 9: position as int?,
-        if (duration != ignore) 10: duration as int?,
+        if (updatedAt != ignore) 5: updatedAt as DateTime?,
+        if (position != ignore) 6: position as int?,
+        if (duration != ignore) 7: duration as int?,
       });
     } finally {
       q.close();
@@ -1011,476 +920,16 @@ extension MediaItemEpisodeQueryFilter
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlGreaterThan(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlGreaterThanOrEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlLessThan(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlLessThanOrEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 5,
-          lower: lower,
-          upper: upper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        StartsWithCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EndsWithCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        ContainsCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        MatchesCondition(
-          property: 5,
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const EqualCondition(
-          property: 5,
-          value: '',
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      videoFileUrlIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterCondition(
-          property: 5,
-          value: '',
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlGreaterThan(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlGreaterThanOrEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlLessThan(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlLessThanOrEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 6,
-          lower: lower,
-          upper: upper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        StartsWithCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EndsWithCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        ContainsCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        MatchesCondition(
-          property: 6,
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const EqualCondition(
-          property: 6,
-          value: '',
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      subtitlesFileUrlIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterCondition(
-          property: 6,
-          value: '',
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesElementEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 7,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesElementGreaterThan(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 7,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesElementGreaterThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 7,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesElementLessThan(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 7,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesElementLessThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 7,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesElementBetween(
-    int lower,
-    int upper,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 7,
-          lower: lower,
-          upper: upper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesIsEmpty() {
-    return not().qualitiesIsNotEmpty();
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
-      qualitiesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterOrEqualCondition(property: 7, value: null),
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
       updatedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 8));
+      return query.addFilterCondition(const IsNullCondition(property: 5));
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterFilterCondition>
       updatedAtIsNotNull() {
     return QueryBuilder.apply(not(), (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 8));
+      return query.addFilterCondition(const IsNullCondition(property: 5));
     });
   }
 
@@ -1491,7 +940,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 8,
+          property: 5,
           value: value,
         ),
       );
@@ -1505,7 +954,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 8,
+          property: 5,
           value: value,
         ),
       );
@@ -1519,7 +968,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 8,
+          property: 5,
           value: value,
         ),
       );
@@ -1533,7 +982,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 8,
+          property: 5,
           value: value,
         ),
       );
@@ -1547,7 +996,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 8,
+          property: 5,
           value: value,
         ),
       );
@@ -1562,7 +1011,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 8,
+          property: 5,
           lower: lower,
           upper: upper,
         ),
@@ -1577,7 +1026,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 9,
+          property: 6,
           value: value,
         ),
       );
@@ -1591,7 +1040,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 9,
+          property: 6,
           value: value,
         ),
       );
@@ -1605,7 +1054,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 9,
+          property: 6,
           value: value,
         ),
       );
@@ -1619,7 +1068,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 9,
+          property: 6,
           value: value,
         ),
       );
@@ -1633,7 +1082,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 9,
+          property: 6,
           value: value,
         ),
       );
@@ -1648,7 +1097,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 9,
+          property: 6,
           lower: lower,
           upper: upper,
         ),
@@ -1663,7 +1112,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 10,
+          property: 7,
           value: value,
         ),
       );
@@ -1677,7 +1126,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 10,
+          property: 7,
           value: value,
         ),
       );
@@ -1691,7 +1140,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 10,
+          property: 7,
           value: value,
         ),
       );
@@ -1705,7 +1154,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 10,
+          property: 7,
           value: value,
         ),
       );
@@ -1719,7 +1168,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 10,
+          property: 7,
           value: value,
         ),
       );
@@ -1734,7 +1183,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 10,
+          property: 7,
           lower: lower,
           upper: upper,
         ),
@@ -1750,7 +1199,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1766,7 +1215,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1782,7 +1231,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1798,7 +1247,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1814,7 +1263,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1831,7 +1280,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 11,
+          property: 8,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -1848,7 +1297,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1864,7 +1313,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1877,7 +1326,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 11,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1890,7 +1339,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 11,
+          property: 8,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1903,7 +1352,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 11,
+          property: 8,
           value: '',
         ),
       );
@@ -1915,7 +1364,7 @@ extension MediaItemEpisodeQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 11,
+          property: 8,
           value: '',
         ),
       );
@@ -1999,86 +1448,44 @@ extension MediaItemEpisodeQuerySortBy
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      sortByVideoFileUrl({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        5,
-        caseSensitive: caseSensitive,
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      sortByVideoFileUrlDesc({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        5,
-        sort: Sort.desc,
-        caseSensitive: caseSensitive,
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      sortBySubtitlesFileUrl({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        6,
-        caseSensitive: caseSensitive,
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      sortBySubtitlesFileUrlDesc({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        6,
-        sort: Sort.desc,
-        caseSensitive: caseSensitive,
-      );
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8);
+      return query.addSortBy(5);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc);
+      return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       sortByPosition() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9);
+      return query.addSortBy(6);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       sortByPositionDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9, sort: Sort.desc);
+      return query.addSortBy(6, sort: Sort.desc);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       sortByDuration() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10);
+      return query.addSortBy(7);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       sortByDurationDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc);
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
@@ -2086,7 +1493,7 @@ extension MediaItemEpisodeQuerySortBy
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        11,
+        8,
         caseSensitive: caseSensitive,
       );
     });
@@ -2096,7 +1503,7 @@ extension MediaItemEpisodeQuerySortBy
       sortByIsarDbDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        11,
+        8,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -2163,86 +1570,58 @@ extension MediaItemEpisodeQuerySortThenBy
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      thenByVideoFileUrl({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      thenByVideoFileUrlDesc({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, sort: Sort.desc, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      thenBySubtitlesFileUrl({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
-      thenBySubtitlesFileUrlDesc({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8);
+      return query.addSortBy(5);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc);
+      return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByPosition() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9);
+      return query.addSortBy(6);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByPositionDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9, sort: Sort.desc);
+      return query.addSortBy(6, sort: Sort.desc);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByDuration() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10);
+      return query.addSortBy(7);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByDurationDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc);
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy> thenByIsarDb(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11, caseSensitive: caseSensitive);
+      return query.addSortBy(8, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterSortBy>
       thenByIsarDbDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(8, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -2278,44 +1657,23 @@ extension MediaItemEpisodeQueryWhereDistinct
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
-      distinctByVideoFileUrl({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(5, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
-      distinctBySubtitlesFileUrl({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(6, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
-      distinctByQualities() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(7);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
       distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(8);
+      return query.addDistinctBy(5);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
       distinctByPosition() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(9);
+      return query.addDistinctBy(6);
     });
   }
 
   QueryBuilder<MediaItemEpisode, MediaItemEpisode, QAfterDistinct>
       distinctByDuration() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(10);
+      return query.addDistinctBy(7);
     });
   }
 }
@@ -2346,49 +1704,28 @@ extension MediaItemEpisodeQueryProperty1
     });
   }
 
-  QueryBuilder<MediaItemEpisode, String, QAfterProperty>
-      videoFileUrlProperty() {
+  QueryBuilder<MediaItemEpisode, DateTime?, QAfterProperty>
+      updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
     });
   }
 
-  QueryBuilder<MediaItemEpisode, String, QAfterProperty>
-      subtitlesFileUrlProperty() {
+  QueryBuilder<MediaItemEpisode, int, QAfterProperty> positionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
   }
 
-  QueryBuilder<MediaItemEpisode, List<int>, QAfterProperty>
-      qualitiesProperty() {
+  QueryBuilder<MediaItemEpisode, int, QAfterProperty> durationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(7);
     });
   }
 
-  QueryBuilder<MediaItemEpisode, DateTime?, QAfterProperty>
-      updatedAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, int, QAfterProperty> positionProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(9);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, int, QAfterProperty> durationProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
-    });
-  }
-
   QueryBuilder<MediaItemEpisode, String, QAfterProperty> isarDbProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(11);
+      return query.addProperty(8);
     });
   }
 }
@@ -2421,49 +1758,28 @@ extension MediaItemEpisodeQueryProperty2<R>
     });
   }
 
-  QueryBuilder<MediaItemEpisode, (R, String), QAfterProperty>
-      videoFileUrlProperty() {
+  QueryBuilder<MediaItemEpisode, (R, DateTime?), QAfterProperty>
+      updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
     });
   }
 
-  QueryBuilder<MediaItemEpisode, (R, String), QAfterProperty>
-      subtitlesFileUrlProperty() {
+  QueryBuilder<MediaItemEpisode, (R, int), QAfterProperty> positionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
   }
 
-  QueryBuilder<MediaItemEpisode, (R, List<int>), QAfterProperty>
-      qualitiesProperty() {
+  QueryBuilder<MediaItemEpisode, (R, int), QAfterProperty> durationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(7);
     });
   }
 
-  QueryBuilder<MediaItemEpisode, (R, DateTime?), QAfterProperty>
-      updatedAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, (R, int), QAfterProperty> positionProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(9);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, (R, int), QAfterProperty> durationProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
-    });
-  }
-
   QueryBuilder<MediaItemEpisode, (R, String), QAfterProperty> isarDbProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(11);
+      return query.addProperty(8);
     });
   }
 }
@@ -2496,52 +1812,31 @@ extension MediaItemEpisodeQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<MediaItemEpisode, (R1, R2, String), QOperations>
-      videoFileUrlProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(5);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, (R1, R2, String), QOperations>
-      subtitlesFileUrlProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(6);
-    });
-  }
-
-  QueryBuilder<MediaItemEpisode, (R1, R2, List<int>), QOperations>
-      qualitiesProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(7);
-    });
-  }
-
   QueryBuilder<MediaItemEpisode, (R1, R2, DateTime?), QOperations>
       updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
+      return query.addProperty(5);
     });
   }
 
   QueryBuilder<MediaItemEpisode, (R1, R2, int), QOperations>
       positionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(9);
+      return query.addProperty(6);
     });
   }
 
   QueryBuilder<MediaItemEpisode, (R1, R2, int), QOperations>
       durationProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
+      return query.addProperty(7);
     });
   }
 
   QueryBuilder<MediaItemEpisode, (R1, R2, String), QOperations>
       isarDbProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(11);
+      return query.addProperty(8);
     });
   }
 }

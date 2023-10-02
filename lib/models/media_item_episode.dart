@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../extensions/json_converters.dart';
+import '../resources/krs_storage.dart';
 
 part 'media_item_episode.g.dart';
 
@@ -25,12 +26,15 @@ class MediaItemEpisode {
   final int episodeNumber;
 
   /// ссылка на проигрываемый файл
+  @ignore
   final String videoFileUrl;
 
   /// ссылка на файл субтитров
+  @ignore
   final String subtitlesFileUrl;
 
   /// варианты качества видео
+  @ignore
   final List<int> qualities;
 
   /// дата последнего просмотра
@@ -71,4 +75,14 @@ class MediaItemEpisode {
 
   @ignore
   bool get hasShowNumbers => seasonNumber > 0 && episodeNumber > 0;
+
+  /// сохранение в базу данных
+  Future<void> save(KrsStorage storage) async {
+    // TODO see restrictions listed at`SendPort.send()` documentation for more information
+    // https://github.com/isar/isar/issues/1393
+    storage.db.writeAsync((isar) async {
+      updatedAt = DateTime.now();
+      isar.mediaItemEpisodes.put(this);
+    });
+  }
 }

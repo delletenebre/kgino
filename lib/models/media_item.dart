@@ -28,7 +28,7 @@ enum MediaItemType {
 @collection
 class MediaItem {
   @Id()
-  String get isarId => '$onlineService|$id';
+  String get isarId => '${onlineService.name}|$id';
 
   /// название онлайн-сервиса
   final OnlineService onlineService;
@@ -45,6 +45,7 @@ class MediaItem {
   final String title;
 
   /// оригинальное название
+  @ignore
   final String originalTitle;
 
   /// описание
@@ -127,13 +128,15 @@ class MediaItem {
 
   Map<String, dynamic> toJson() => _$MediaItemToJson(this);
 
-  ///
+  /// заблокирован ли контент правообладателем
+  @ignore
   bool get blocked => throw UnimplementedError();
 
   /// изображение на фон
   String get backdrop => poster;
 
-  ///
+  /// усреднённый рейтинг
+  @ignore
   double get averageRating {
     int ratingsCount = 0;
     if (hasImdbRating) {
@@ -151,6 +154,8 @@ class MediaItem {
     return (imdbRating + kinopoiskRating) / ratingsCount;
   }
 
+  /// отображаемый рейтинг
+  @ignore
   String get ratingStars {
     if (averageRating == 0.0) {
       return '';

@@ -16,12 +16,15 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
   final Function()? onSkipNext;
   final Function()? onSkipPrevious;
 
+  final Function(int position)? onSavePositionRequested;
+
   const PlayerControlsOverlay({
     super.key,
     this.title = '',
     this.subtitle = '',
     this.onSkipNext,
     this.onSkipPrevious,
+    this.onSavePositionRequested,
   });
 
   @override
@@ -33,6 +36,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   Timer? _visibilityTimer;
   bool _visible = false;
   final _progressBarFocusNode = FocusNode();
+
+  int _lastSavedPosition = -1;
 
   StreamSubscription? playingSubscription;
 
@@ -46,6 +51,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     playingSubscription?.cancel();
     _visibilityTimer?.cancel();
     _progressBarFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -67,6 +73,15 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         }
       } else {
         _visibilityTimer?.cancel();
+      }
+
+      if (playing) {
+        final positionInSeconds = position.inSeconds;
+        if (positionInSeconds % 10 == 0 &&
+            _lastSavedPosition != positionInSeconds) {
+          _lastSavedPosition = positionInSeconds;
+          widget.onSavePositionRequested?.call(positionInSeconds);
+        }
       }
     });
     super.didChangeDependencies();
@@ -92,7 +107,6 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
       onKey: (node, event) {
         if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
             event.isKeyPressed(LogicalKeyboardKey.backspace)) {
-          debugPrint('$event');
           if (controller(context).player.state.playing) {
             controller(context).player.pause();
           } else {
@@ -103,18 +117,6 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         if (event.isKeyPressed(LogicalKeyboardKey.space)) {
           controller(context).player.playOrPause();
         }
-
-        //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-        //     widget.playerController!.position.then((position) {
-        //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds + 10));
-        //     });
-        //   }
-
-        //   if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-        //     widget.playerController!.position.then((position) {
-        //       widget.playerController?.seekTo(Duration(seconds: position!.inSeconds - 10));
-        //     });
-        //   }
 
         showOverlay();
 
@@ -130,7 +132,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           opacity: _visible ? 1.0 : 0.0,
           child: Stack(
             children: [
-              // Fallback from the controls to the video & show/hide controls on tap.
+              /// подложка
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -146,6 +148,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                   ),
                 ),
               ),
+
+              /// название
               Positioned(
                 top: TvUi.navigationBarSize.height + TvUi.vPadding,
                 left: TvUi.hPadding,
@@ -167,9 +171,13 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                   ),
                 ),
               ),
+
+              /// кнопка остановить/продолжить воспроизведение
               const Center(
                 child: PlayPauseButton(),
               ),
+
+              /// прогресс бар, дополнительные кнопки управления
               Positioned(
                 bottom: TvUi.vPadding,
                 left: TvUi.hPadding,

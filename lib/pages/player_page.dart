@@ -5,6 +5,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 import '../models/media_item.dart';
+import '../providers/providers.dart';
 import '../ui/player/player_controls_overlay.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
@@ -117,6 +118,21 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
               'Сезон ${episodes[currentEpisodeIndex].seasonNumber} Эпизод ${episodes[currentEpisodeIndex].episodeNumber}',
           onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
           onSkipNext: hasNextEpisode ? skipNext : null,
+          onSavePositionRequested: (position) {
+            /// проигрываемый эпизод
+            final episode = episodes[currentEpisodeIndex];
+
+            /// обновляем (если нужно) продолжительность эпизода
+            if (episode.duration == 0) {
+              episode.duration = controller.player.state.duration.inSeconds;
+            }
+
+            /// обновляем позицию просмотра для проигрываемого эпизода
+            episode.position = position;
+
+            /// сохраняем параметры проигрываемого эпизода
+            episode.save(ref.read(storageProvider));
+          },
         );
       },
       // controls: MaterialVideoControls,
