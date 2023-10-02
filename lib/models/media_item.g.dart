@@ -2313,7 +2313,9 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
       voice: json['voice'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice'] as Map<String, dynamic>),
-      quality: json['quality'] as int? ?? 0,
+      quality: json['quality'] == null
+          ? 0
+          : const IntConverter().fromJson(json['quality']),
     );
 
 Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
@@ -2334,7 +2336,7 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'subtitles': instance.subtitles,
       'voice': instance.voice.toJson(),
-      'quality': instance.quality,
+      'quality': const IntConverter().toJson(instance.quality),
     };
 
 const _$OnlineServiceEnumMap = {

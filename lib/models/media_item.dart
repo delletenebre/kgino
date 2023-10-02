@@ -102,6 +102,7 @@ class MediaItem {
   VoiceActing voice;
 
   /// выбранное качество видео
+  @IntConverter()
   int quality;
 
   MediaItem({

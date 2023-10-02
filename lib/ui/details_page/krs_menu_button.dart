@@ -9,6 +9,8 @@ class KrsMenuButton<T> extends StatelessWidget {
   final String Function(T item) textBuilder;
   final T Function(T item) valueBuilder;
   final void Function(T value) onSelected;
+  final void Function()? onMenuOpen;
+  final void Function()? onMenuClose;
 
   const KrsMenuButton({
     super.key,
@@ -18,6 +20,8 @@ class KrsMenuButton<T> extends StatelessWidget {
     required this.items,
     this.child,
     this.selectedValue,
+    this.onMenuOpen,
+    this.onMenuClose,
   });
 
   @override
@@ -58,30 +62,53 @@ class KrsMenuButton<T> extends StatelessWidget {
 
         // Only show the menu if there is something to show
         if (menuItems.isNotEmpty) {
-          showMenu(
-            color: theme.colorScheme.surface,
+          onMenuOpen?.call();
+          showDialog<T>(
             context: context,
-            elevation: 0.0,
-            // shadowColor: widget.shadowColor ??
-            //     popupMenuTheme.shadowColor,
-            // surfaceTintColor: widget.surfaceTintColor ??
-            //     popupMenuTheme.surfaceTintColor,
-            items: menuItems,
-            //initialValue: selectedValue,
-            position: position,
-            // shape: widget.shape ?? popupMenuTheme.shape,
-            // color: widget.color ?? popupMenuTheme.color,
-            // constraints: widget.constraints,
-            // clipBehavior: widget.clipBehavior,
-          ).then<void>((newValue) {
-            // if (!mounted) {
-            //   return null;
-            // }
-            if (newValue == null) {
-              // widget.onCanceled?.call();
-              return null;
+            barrierColor: theme.colorScheme.surface.withOpacity(0.5),
+            barrierDismissible: true,
+            builder: (context) => Stack(
+              children: [
+                Positioned(
+                  left: position.left,
+                  bottom: position.bottom,
+                  child: Container(
+                    padding: const EdgeInsets.all(12.0),
+                    width: 280.0,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        final value = valueBuilder(item);
+
+                        return KrsListTile(
+                          dense: true,
+                          onTap: () {
+                            /// закрываем диалоговое окно
+                            Navigator.of(context).pop(value);
+                          },
+                          selected: (value == selectedValue),
+                          showSelectedIcon: true,
+                          title: textBuilder(item),
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 4.0),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ).then((value) {
+            if (value != null) {
+              onSelected.call(value);
             }
-            // widget.onSelected?.call(newValue);
+            onMenuClose?.call();
           });
         }
       },

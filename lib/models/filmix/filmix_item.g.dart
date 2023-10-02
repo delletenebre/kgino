@@ -53,7 +53,10 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       voice: json['voice'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice'] as Map<String, dynamic>),
-    )..quality = json['quality'] as int;
+      quality: json['quality'] == null
+          ? 480
+          : const IntConverter().fromJson(json['quality']),
+    );
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
@@ -72,7 +75,7 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'subtitles': instance.subtitles,
       'voice': instance.voice.toJson(),
-      'quality': instance.quality,
+      'quality': const IntConverter().toJson(instance.quality),
       'categories': instance.categories,
       'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
       'player_links': instance.playerLinks?.toJson(),

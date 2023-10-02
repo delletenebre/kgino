@@ -49,6 +49,10 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
   StreamSubscription? playingSubscription;
 
+  /// какое-либо меню, которое запрещает убирать интерфейс с экрана
+  /// например, выбор качества видео
+  bool _menuOpened = false;
+
   @override
   void initState() {
     super.initState();
@@ -69,7 +73,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     playingSubscription ??=
         controller(context).player.stream.position.listen((position) {
       final playing = controller(context).player.state.playing;
-      if (_visible && playing) {
+      if (_visible && playing && !_menuOpened) {
         if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
           _visibilityTimer?.cancel();
           _visibilityTimer = Timer(const Duration(seconds: 5), () {
@@ -196,7 +200,14 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                     /// прогресс бар
                     PlayerProgressBar(
                       focusNode: _progressBarFocusNode,
-                      onSkipNext: widget.onSkipNext,
+                      onSkipNext: () {
+                        if (!_menuOpened) {
+                          /// ^ если нет открытого блокирующего меню
+
+                          /// запускаем следующий эпизод
+                          widget.onSkipNext?.call();
+                        }
+                      },
                     ),
 
                     const SizedBox(height: 24.0),
@@ -216,6 +227,12 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                             child: Text(
                               '${widget.quality}',
                             ),
+                            onMenuOpen: () {
+                              _menuOpened = true;
+                            },
+                            onMenuClose: () {
+                              _menuOpened = false;
+                            },
                           ),
 
                         const Expanded(

@@ -128,6 +128,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             onQualityChanged: (quality) {
               widget.mediaItem.quality = quality;
               widget.mediaItem.save(ref.read(storageProvider));
+              updateEpisode();
             },
             onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
             onSkipNext: hasNextEpisode ? skipNext : null,
