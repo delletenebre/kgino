@@ -506,8 +506,8 @@ class TskgApi {
   }
 
   /// поиск сериала
-  Future<List<MediaItem>> searchShows(
-    String searchQuery, {
+  Future<List<MediaItem>> search({
+    required String searchQuery,
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<List<MediaItem>>().call(

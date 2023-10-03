@@ -64,7 +64,7 @@ class HorizontalListView<T> extends HookConsumerWidget {
       return const LinearProgressIndicator();
     }
 
-    List<T> items = snapshot.data!;
+    List<T> items = snapshot.data ?? [];
     final itemCount = useState(items.length);
 
     if (items.isEmpty) {

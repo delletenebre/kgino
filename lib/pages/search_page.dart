@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../api/filmix_api_provider.dart';
+import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/media_item.dart';
 import '../providers/providers.dart';
@@ -22,6 +23,9 @@ class SearchPage extends HookConsumerWidget {
     // провайдер запросов к API
     final filmixApi = ref.read(filmixApiProvider);
 
+    // провайдер запросов к API
+    final tskgApi = ref.read(tskgApiProvider);
+
     /// контроллер поискового запроса
     final searchController = ref.read(searchProvider);
     useValueListenable(searchController);
@@ -33,10 +37,21 @@ class SearchPage extends HookConsumerWidget {
       );
     }, [searchController.text]);
 
+    final asyncTskgSearchResults = useMemoized(() {
+      return tskgApi.search(
+        searchQuery: searchController.text,
+        cancelToken: tskgApi.getCancelToken(),
+      );
+    }, [searchController.text]);
+
     final categories = [
       CategoryListItem(
         title: 'Filmix',
         apiResponse: asyncFilmixSearchResults,
+      ),
+      CategoryListItem(
+        title: 'TS.KG',
+        apiResponse: asyncTskgSearchResults,
       ),
     ];
 
@@ -55,11 +70,6 @@ class SearchPage extends HookConsumerWidget {
             asyncItems: category.itemsFuture,
             itemBuilder: (context, index, item) {
               return MediaCard(
-                // onFocusChange: (hasFocus) {
-                //   if (hasFocus) {
-                //     focusedMediaItem.value = item;
-                //   }
-                // },
                 onTap: () {
                   /// переходим на страницу деталей о сериале
                   context.goNamed('details', extra: item);
