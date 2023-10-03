@@ -61,237 +61,253 @@ class DetailsPage extends HookConsumerWidget {
 
     return Scaffold(
       body: details.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => TryAgainMessage(
-          imageUrl: mediaItem.poster,
-          onRetry: () {},
-        ),
-        data: (mediaItem) => HookBuilder(
-          builder: (context) {
-            final scrollController = useScrollController();
-            final isScrolling = useState(false);
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => TryAgainMessage(
+                imageUrl: mediaItem.poster,
+                onRetry: () {},
+              ),
+          data: (mediaItem) => HookBuilder(
+                builder: (context) {
+                  final scrollController = useScrollController();
+                  final isScrolling = useState(false);
 
-            // final playButtonHasFocus = useState(false);
-            final secondContainerPosition = useState(0.0);
+                  // final playButtonHasFocus = useState(false);
+                  final secondContainerPosition = useState(0.0);
 
-            /// вычисляем позицию второго контейнера, если он есть
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              final box = secondContainerKey.globalPaintBounds;
-              if (box != null) {
-                secondContainerPosition.value = box.top;
-              }
-            });
+                  /// вычисляем позицию второго контейнера, если он есть
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    final box = secondContainerKey.globalPaintBounds;
+                    if (box != null) {
+                      secondContainerPosition.value = box.top;
+                    }
+                  });
 
-            return KrsScrollView(
-              scrollController: scrollController,
-              onStartScroll: (scrollMetrics) {
-                isScrolling.value = true;
-              },
-              onEndScroll: (scrollMetrics) {
-                isScrolling.value = false;
-              },
-              children: [
-                SizedBox(
-                  height: screenSize.height,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  return KrsScrollView(
+                    scrollController: scrollController,
+                    onStartScroll: (scrollMetrics) {
+                      isScrolling.value = true;
+                    },
+                    onEndScroll: (scrollMetrics) {
+                      isScrolling.value = false;
+                    },
                     children: [
-                      /// отступ навигационной панели
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: TvUi.hPadding),
-                        height: TvUi.navigationBarSize.height,
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                          spacing: 24.0,
+                      SizedBox(
+                        height: screenSize.height,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /// онлайн-кинотеатр
-                            if (mediaItem?.onlineService ==
-                                OnlineService.filmix)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                            /// отступ навигационной панели
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: TvUi.hPadding),
+                              height: TvUi.navigationBarSize.height,
+                              alignment: Alignment.centerLeft,
+                              child: Wrap(
+                                spacing: 24.0,
                                 children: [
-                                  Icon(
-                                    Icons.smart_display_outlined,
-                                    size: 16.0,
-                                    color: theme.colorScheme.outline,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Text(
-                                    'Filmix',
-                                    style: TextStyle(
-                                      color: theme.colorScheme.outline,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                  /// онлайн-кинотеатр
 
-                            /// озвучка
-                            if (mediaItem?.voice.name.isNotEmpty == true)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.mic_outlined,
-                                    size: 16.0,
-                                    color: theme.colorScheme.outline,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.smart_display_outlined,
+                                        size: 16.0,
+                                        color: theme.colorScheme.outline,
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (mediaItem?.onlineService ==
+                                                OnlineService.filmix)
+                                            ? 'Filmix'
+                                            : 'TS.KG',
+                                        style: TextStyle(
+                                          color: theme.colorScheme.outline,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 4.0),
-                                  Text(
-                                    mediaItem!.voice.name,
-                                    style: TextStyle(
-                                      color: theme.colorScheme.outline,
+
+                                  /// озвучка
+                                  if (mediaItem?.voice.name.isNotEmpty == true)
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.mic_outlined,
+                                          size: 16.0,
+                                          color: theme.colorScheme.outline,
+                                        ),
+                                        const SizedBox(width: 4.0),
+                                        Text(
+                                          mediaItem!.voice.name,
+                                          style: TextStyle(
+                                            color: theme.colorScheme.outline,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
                                 ],
                               ),
+                            ),
+
+                            /// основная информация
+                            FeaturedCard(mediaItem),
+
+                            /// пустой отступ
+                            const Expanded(
+                              child: SizedBox(),
+                            ),
+
+                            /// кнопки управления
+                            Focus(
+                              canRequestFocus: false,
+                              skipTraversal: true,
+                              onFocusChange: (hasFocus) {
+                                if (hasFocus && !isScrolling.value) {
+                                  scrollController.animateTo(
+                                    0.0,
+                                    duration: KrsTheme.animationDuration,
+                                    curve: Curves.easeIn,
+                                  );
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: TvUi.hPadding,
+                                  vertical: TvUi.vPadding,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        /// если кнопка Смотреть в фокусе
+                                        // if (playButtonHasFocus.value)
+                                        // PlayButtonTooltip(
+                                        //   kginoItem,
+                                        //   showEpisodeNumber: false,
+                                        // ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Wrap(
+                                      alignment: WrapAlignment.start,
+                                      spacing: 24.0,
+                                      runSpacing: 12.0,
+                                      children: [
+                                        /// кнопка начала просмотра
+                                        if (mediaItem!.blocked == false)
+                                          PlayButton(
+                                            mediaItem,
+                                            onFocusChange: (hasFocus) {
+                                              // playButtonHasFocus.value = hasFocus;
+                                            },
+                                          ),
+
+                                        /// если файлов несколько, показываем кнопку
+                                        /// выбора эпизода
+                                        if (mediaItem.episodes().length > 1)
+                                          FilledButton(
+                                            onPressed: () {
+                                              /// переходим на страницу выбора файла
+                                              context.pushNamed(
+                                                'playlist',
+                                                extra: mediaItem,
+                                              );
+                                            },
+                                            child: Text(locale.selectEpisode),
+                                          ),
+
+                                        /// кнопка добавления или удаления из закладок
+                                        BookmarkButton(mediaItem),
+
+                                        /// кнопка выбора озвучки
+                                        if (mediaItem.voices.length > 1)
+                                          VoiceActingsButton(
+                                            mediaItem,
+                                            onVoiceActingChange:
+                                                (voiceActing) async {
+                                              MediaItem updatedMediaItem =
+                                                  mediaItem.copyWith(
+                                                voice: voiceActing,
+                                              );
+
+                                              if (mediaItem.onlineService ==
+                                                  OnlineService.tskg) {
+                                                updatedMediaItem =
+                                                    updatedMediaItem.copyWith(
+                                                  id: voiceActing.id,
+                                                );
+                                              }
+
+                                              updatedMediaItem.save(storage);
+
+                                              /// обновляем страницу деталей
+                                              // ignore: use_build_context_synchronously
+                                              context.pushReplacementNamed(
+                                                'details',
+                                                extra: updatedMediaItem,
+                                              );
+                                            },
+                                          ),
+
+                                        if (kDebugMode)
+                                          TextButton(
+                                            onPressed: () {
+                                              context.pop();
+                                            },
+                                            child: Text(locale.back),
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
 
-                      /// основная информация
-                      FeaturedCard(mediaItem),
+                      // Focus(
+                      //   key: secondContainerKey,
+                      //   canRequestFocus: false,
+                      //   skipTraversal: true,
+                      //   onFocusChange: (hasFocus) {
+                      //     if (hasFocus && !isScrolling.value) {
+                      //       scrollController.animateTo(secondContainerPosition.value,
+                      //         duration: KrsTheme.animationDuration,
+                      //         curve: Curves.easeIn,
+                      //       );
+                      //     }
+                      //   },
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.all(24.0),
+                      //     child: Column(
+                      //       mainAxisSize: MainAxisSize.min,
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
 
-                      /// пустой отступ
-                      const Expanded(
-                        child: SizedBox(),
-                      ),
+                      //         Container(
+                      //           height: MediaQuery.of(context).size.height,
+                      //           child: FilledButton(
+                      //             onPressed: () {
 
-                      /// кнопки управления
-                      Focus(
-                        canRequestFocus: false,
-                        skipTraversal: true,
-                        onFocusChange: (hasFocus) {
-                          if (hasFocus && !isScrolling.value) {
-                            scrollController.animateTo(
-                              0.0,
-                              duration: KrsTheme.animationDuration,
-                              curve: Curves.easeIn,
-                            );
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: TvUi.hPadding,
-                            vertical: TvUi.vPadding,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  /// если кнопка Смотреть в фокусе
-                                  // if (playButtonHasFocus.value)
-                                  // PlayButtonTooltip(
-                                  //   kginoItem,
-                                  //   showEpisodeNumber: false,
-                                  // ),
-                                ],
-                              ),
-                              const SizedBox(height: 8.0),
-                              Wrap(
-                                alignment: WrapAlignment.start,
-                                spacing: 24.0,
-                                runSpacing: 12.0,
-                                children: [
-                                  /// кнопка начала просмотра
-                                  if (mediaItem!.blocked == false)
-                                    PlayButton(
-                                      mediaItem,
-                                      onFocusChange: (hasFocus) {
-                                        // playButtonHasFocus.value = hasFocus;
-                                      },
-                                    ),
+                      //             },
+                      //             child: Text('button 3'),
+                      //           ),
+                      //         ),
 
-                                  /// если файлов несколько, показываем кнопку
-                                  /// выбора эпизода
-                                  if (mediaItem.episodes().length > 1)
-                                    FilledButton(
-                                      onPressed: () {
-                                        /// переходим на страницу выбора файла
-                                        context.pushNamed(
-                                          'playlist',
-                                          extra: mediaItem,
-                                        );
-                                      },
-                                      child: Text(locale.selectEpisode),
-                                    ),
-
-                                  /// кнопка добавления или удаления из закладок
-                                  BookmarkButton(mediaItem),
-
-                                  /// кнопка выбора озвучки
-                                  if (mediaItem.voices.length > 1)
-                                    VoiceActingsButton(
-                                      mediaItem,
-                                      onVoiceActingChange: (voiceActing) async {
-                                        mediaItem.voice = voiceActing;
-
-                                        await mediaItem.save(storage);
-
-                                        /// обновляем страницу деталей
-                                        context.goNamed('details',
-                                            extra: mediaItem);
-                                      },
-                                    ),
-
-                                  if (kDebugMode)
-                                    TextButton(
-                                      onPressed: () {
-                                        context.pop();
-                                      },
-                                      child: Text('BACK'),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     ],
-                  ),
-                ),
-
-                // Focus(
-                //   key: secondContainerKey,
-                //   canRequestFocus: false,
-                //   skipTraversal: true,
-                //   onFocusChange: (hasFocus) {
-                //     if (hasFocus && !isScrolling.value) {
-                //       scrollController.animateTo(secondContainerPosition.value,
-                //         duration: KrsTheme.animationDuration,
-                //         curve: Curves.easeIn,
-                //       );
-                //     }
-                //   },
-                //   child: Padding(
-                //     padding: const EdgeInsets.all(24.0),
-                //     child: Column(
-                //       mainAxisSize: MainAxisSize.min,
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-
-                //         Container(
-                //           height: MediaQuery.of(context).size.height,
-                //           child: FilledButton(
-                //             onPressed: () {
-
-                //             },
-                //             child: Text('button 3'),
-                //           ),
-                //         ),
-
-                //       ],
-                //     ),
-                //   ),
-                // ),
-              ],
-            );
-          },
-        ),
-      ),
+                  );
+                },
+              )),
     );
   }
 }

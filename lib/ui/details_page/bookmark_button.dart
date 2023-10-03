@@ -35,7 +35,7 @@ class BookmarkButton extends HookConsumerWidget {
         onPressed: () async {
           /// убираем из избранного
           mediaItem.bookmarked = null;
-          await mediaItem.save(storage);
+          mediaItem.save(storage);
         },
         icon: const Icon(Icons.bookmark_remove),
         label: Text(locale.removeFromBookmarks),
@@ -46,7 +46,7 @@ class BookmarkButton extends HookConsumerWidget {
         onPressed: () async {
           //// добавляем в избранное
           mediaItem.bookmarked = DateTime.now();
-          await mediaItem.save(storage);
+          mediaItem.save(storage);
         },
         icon: const Icon(Icons.bookmark_add_outlined),
         label: Text(locale.addToBookmarks),

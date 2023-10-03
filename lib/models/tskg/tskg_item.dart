@@ -38,9 +38,7 @@ class TskgItem extends MediaItem {
     super.subtitles,
     super.voice,
     super.quality = 0,
-  }) {
-    voices = [];
-  }
+  });
 
   factory TskgItem.fromJson(Map<String, dynamic> json) =>
       _$TskgItemFromJson(json);
@@ -92,12 +90,10 @@ class TskgItem extends MediaItem {
       cancelToken: cancelToken,
     );
 
-    final json = detailedItem.toJson();
-    json['subtitles'] = subtitles;
-    json['voice'] = voice.toJson();
-    json['bookmarked'] = bookmarked?.toString();
+    detailedItem.subtitles = subtitles;
+    detailedItem.bookmarked = bookmarked;
 
-    return TskgItem.fromJson(json);
+    return detailedItem;
   }
 
   @override

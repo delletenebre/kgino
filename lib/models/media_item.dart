@@ -197,8 +197,8 @@ class MediaItem {
   }
 
   /// сохранение в базу данных
-  Future<void> save(KrsStorage storage) async {
-    storage.db.writeAsync((isar) async {
+  void save(KrsStorage storage) {
+    storage.db.write((isar) {
       isar.mediaItems.put(this);
     });
   }
@@ -233,6 +233,27 @@ class MediaItem {
         return '';
     }
   }
+
+  MediaItem copyWith({String? id, VoiceActing? voice}) => MediaItem(
+        id: id ?? this.id,
+        title: title,
+        originalTitle: originalTitle,
+        overview: overview,
+        poster: poster,
+        year: year,
+        genres: genres,
+        countries: countries,
+        voices: voices,
+        imdbRating: imdbRating,
+        kinopoiskRating: kinopoiskRating,
+        seasons: seasons,
+        type: type,
+        onlineService: onlineService,
+        bookmarked: bookmarked,
+        subtitles: subtitles,
+        voice: voice ?? this.voice,
+        quality: quality,
+      );
 
   // Stream<MediaItem?> dbStream(KrsStorage storage) {
   //   return storage.db.mediaItems.watchObject(id);

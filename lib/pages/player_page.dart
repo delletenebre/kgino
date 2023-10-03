@@ -81,14 +81,18 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
         }
       });
 
-      /// загружаем субтитры
-      player.setSubtitleTrack(
-        SubtitleTrack.uri(
-          mediaItemUrl.subtitles,
-          // title: 'English',
-          // language: 'en',
-        ),
-      );
+      if (mediaItemUrl.subtitles.isNotEmpty) {
+        /// ^ если есть файл субтитров
+
+        /// загружаем субтитры
+        player.setSubtitleTrack(
+          SubtitleTrack.uri(
+            mediaItemUrl.subtitles,
+            // title: 'English',
+            // language: 'en',
+          ),
+        );
+      }
     });
   }
 

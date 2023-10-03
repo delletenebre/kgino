@@ -438,7 +438,7 @@ class TskgApi {
             if (item.attributes['disabled'] != null) {
               /// обновляем текущую озвучку
               voiceActing = VoiceActing(
-                id: TskgItem.getShowIdFromUrl(showId),
+                id: showId,
                 name: item.text.trim(),
               );
             } else {
