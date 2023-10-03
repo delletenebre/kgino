@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../api/filmix_api_provider.dart';
+import '../api/tskg_api_provider.dart';
 import '../enums/online_service.dart';
 import '../models/category_list_item.dart';
 import '../models/filmix/filmix_item.dart';
@@ -26,16 +27,26 @@ class ShowsPage extends HookConsumerWidget {
   Widget build(context, ref) {
     final locale = KrsLocale.of(context);
 
-    final api = ref.read(filmixApiProvider);
-
-    /// список последний добавлений
-    final asyncLatest = useMemoized(() => api.getLatestShows());
-
-    /// популярные
-    final asyncPopular = useMemoized(() => api.getPopularShows());
-
     /// хранилище данных
     final storage = ref.read(storageProvider);
+
+    /// filmix провайдер запросов к API
+    final filmixApi = ref.read(filmixApiProvider);
+
+    /// filmix список последний добавлений
+    final asyncLatest = useMemoized(() => filmixApi.getLatestShows());
+
+    /// filmix популярные
+    final asyncPopular = useMemoized(() => filmixApi.getPopularShows());
+
+    /// tskg провайдер запросов к API
+    final tskgApi = ref.read(tskgApiProvider);
+
+    /// tskg список последний добавлений
+    final asyncTskgLatest = useMemoized(() => tskgApi.getLatestShows());
+
+    /// tskg популярные
+    final asyncTskgPopular = useMemoized(() => tskgApi.getPopularShows());
 
     final asyncBookmarks = useMemoized(() async {
       final items = await storage.db.mediaItems
@@ -62,8 +73,16 @@ class ShowsPage extends HookConsumerWidget {
         apiResponse: asyncLatest,
       ),
       CategoryListItem(
+        title: '[ TS.KG ] ${locale.latest}',
+        apiResponse: asyncTskgLatest,
+      ),
+      CategoryListItem(
         title: '[ Filmix ] ${locale.popular}',
         apiResponse: asyncPopular,
+      ),
+      CategoryListItem(
+        title: '[ TS.KG ] ${locale.popular}',
+        apiResponse: asyncTskgPopular,
       ),
     ];
 

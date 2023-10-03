@@ -257,8 +257,8 @@ class TskgApi {
   }
 
   /// получение информации о сериале
-  Future<MediaItem> getShowDetails(
-    String showId, {
+  Future<MediaItem> getDetails({
+    required String showId,
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<MediaItem>().call(

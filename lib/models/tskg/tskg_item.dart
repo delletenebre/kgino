@@ -1,8 +1,6 @@
-import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../api/filmix_api_provider.dart';
 import '../../api/tskg_api_provider.dart';
 import '../../enums/online_service.dart';
 import '../../extensions/json_converters.dart';
@@ -73,13 +71,9 @@ class TskgItem extends MediaItem {
       ? 'https://www.ts.kg/posters2/$id.png'
       : 'https://www.ts.kg/posters/$id.png';
 
-  // @override
-  // bool get blocked =>
-  //     playerLinks
-  //         ?.toJson()
-  //         .toString()
-  //         .contains('Заблокировано правообладателем') ==
-  //     true;
+  /// заблокирован ли контент правообладателем
+  @override
+  bool get blocked => false;
 
   // @override
   // List<String> get genres =>
@@ -94,7 +88,7 @@ class TskgItem extends MediaItem {
     ref.onDispose(cancelToken.cancel);
 
     final detailedItem = await api.getDetails(
-      id: id,
+      showId: id,
       cancelToken: cancelToken,
     );
 
