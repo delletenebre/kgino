@@ -48,6 +48,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   /// индекс текущего эпизода
   int currentEpisodeIndex = 0;
 
+  /// null - нет субтитров, true - включены, false - выключены
+  bool? hasSubtitles;
+
   @override
   void initState() {
     super.initState();
@@ -84,14 +87,19 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
       if (mediaItemUrl.subtitles.isNotEmpty) {
         /// ^ если есть файл субтитров
 
+        setState(() {
+          hasSubtitles = widget.mediaItem.subtitles;
+        });
+
         /// загружаем субтитры
-        player.setSubtitleTrack(
-          SubtitleTrack.uri(
-            mediaItemUrl.subtitles,
-            // title: 'English',
-            // language: 'en',
-          ),
-        );
+        if (hasSubtitles == true) {
+          player.setSubtitleTrack(
+            SubtitleTrack.uri(
+              mediaItemUrl.subtitles,
+              language: 'ru',
+            ),
+          );
+        }
       }
     });
   }
@@ -177,6 +185,18 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
               /// сохраняем параметры проигрываемого эпизода
               episode.save(ref.read(storageProvider));
+            },
+            hasSubtitles: hasSubtitles,
+            onSubtitlesChanged: (enabled) {
+              /// обновляем информацию о субтитрах
+              widget.mediaItem.subtitles = enabled;
+              widget.mediaItem.save(ref.read(storageProvider));
+
+              /// перезапускаем эпизод
+              updateEpisode(
+                position: controller.player.state.position.inSeconds,
+                forcePositionUpdate: true,
+              );
             },
           ),
         );

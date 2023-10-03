@@ -245,7 +245,7 @@ class PlaylistPage extends HookConsumerWidget {
                 onPressed: () {
                   context.pop();
                 },
-                child: Text('BACK'),
+                child: Text(locale.back),
               ),
           ],
         ),

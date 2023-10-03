@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/constants.dart';
+import '../../resources/krs_locale.dart';
 import '../details_page/krs_menu_button.dart';
 import 'controls/play_pause_button.dart';
 import 'controls/player_progress_bar.dart';
@@ -17,11 +19,15 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
   final Function()? onSkipNext;
   final Function()? onSkipPrevious;
   final Function(int quality)? onQualityChanged;
+  final Function(bool enabled)? onSubtitlesChanged;
 
   final Function(int position)? onSavePositionRequested;
 
   final List<int> qualities;
   final int quality;
+
+  /// null - нет субтитров, true - включены, false - выключены
+  final bool? hasSubtitles;
 
   const PlayerControlsOverlay({
     super.key,
@@ -29,10 +35,12 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
     this.subtitle = '',
     this.onSkipNext,
     this.onSkipPrevious,
+    this.onSubtitlesChanged,
     this.onSavePositionRequested,
     this.qualities = const [],
     this.quality = 0,
     this.onQualityChanged,
+    this.hasSubtitles,
   });
 
   @override
@@ -96,6 +104,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         }
       }
     });
+
     super.didChangeDependencies();
   }
 
@@ -112,6 +121,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   @override
   Widget build(context) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
 
     return Focus(
       autofocus: true,
@@ -237,6 +247,49 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                               _menuOpened = false;
                             },
                           ),
+
+                        /// кнопка включения субтитров
+                        if (widget.hasSubtitles == false)
+                          OutlinedButton.icon(
+                            onPressed: () async {
+                              /// вызываем пользовательский обработчик включения
+                              /// субтитров
+                              widget.onSubtitlesChanged?.call(true);
+                            },
+                            icon: const Icon(Icons.subtitles),
+                            label: Text(locale.enableSubtitles),
+                          ),
+                        if (widget.hasSubtitles == true)
+                          OutlinedButton.icon(
+                            onPressed: () async {
+                              /// вызываем пользовательский обработчик
+                              /// выключения субтитров
+                              widget.onSubtitlesChanged?.call(false);
+                            },
+                            icon: const Icon(Icons.subtitles_off),
+                            label: Text(locale.disableSubtitles),
+                          ),
+                        //   VideoPlayerControlsButton(
+                        //     onPressed: () {
+                        //       /// вызываем пользовательский обработчик включения
+                        //       /// субтитров
+                        //       widget.onSubtitleToggle(true);
+                        //     },
+                        //     icon: const Icon(Icons.subtitles),
+                        //     child: Text(locale.enableSubtitles),
+                        //   ),
+
+                        // /// кнопка выключения субтитров
+                        // if (hasSubtitles && widget.subtitlesEnabled)
+                        //   VideoPlayerControlsButton(
+                        //     onPressed: () {
+                        //       /// вызываем пользовательский обработчик выключения
+                        //       /// субтитров
+                        //       widget.onSubtitleToggle.call(false);
+                        //     },
+                        //     icon: const Icon(Icons.subtitles_off),
+                        //     child: Text(locale.disableSubtitles),
+                        //   ),
 
                         const Expanded(
                           child: SizedBox(),
