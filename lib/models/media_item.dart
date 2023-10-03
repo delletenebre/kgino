@@ -10,6 +10,7 @@ import '../resources/krs_storage.dart';
 import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
 import 'media_item_season.dart';
+import 'tskg/tskg_item.dart';
 import 'voice_acting.dart';
 
 export 'media_item_season.dart';
@@ -110,7 +111,7 @@ class MediaItem {
     required this.title,
     this.originalTitle = '',
     this.overview = '',
-    required this.poster,
+    this.poster = '',
     this.year = '',
     this.genres = const [],
     this.countries = const [],
@@ -208,6 +209,8 @@ class MediaItem {
           return savedItem;
         case OnlineService.filmix:
           return FilmixItem.fromJson(savedItem.toJson());
+        case OnlineService.tskg:
+          return TskgItem.fromJson(savedItem.toJson());
       }
     }
 

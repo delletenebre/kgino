@@ -1,16 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'filmix_item.dart';
+part of 'tskg_item.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
+TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       id: const StringConverter().fromJson(json['id']),
       title: json['title'] as String,
-      poster: json['poster'] as String? ?? '',
       originalTitle: json['original_title'] as String? ?? '',
+      overview: json['overview'] as String? ?? '',
+      genres: (json['genres'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       year: json['year'] == null
           ? ''
           : const StringConverter().fromJson(json['year']),
@@ -34,18 +38,13 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           const [],
       onlineService:
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
-              OnlineService.filmix,
-      categories: (json['categories'] as List<dynamic>?)
+              OnlineService.tskg,
+      date:
+          json['date'] == null ? null : DateTime.parse(json['date'] as String),
+      badges: (json['badges'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      shortStory: json['short_story'] == null
-          ? ''
-          : const HtmlRemoveConverter().fromJson(json['short_story'] as String),
-      playerLinks: json['player_links'] == null
-          ? const FilmixPlayerLinks()
-          : FilmixPlayerLinks.fromJson(
-              json['player_links'] as Map<String, dynamic>),
       bookmarked: json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String),
@@ -54,18 +53,18 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice'] as Map<String, dynamic>),
       quality: json['quality'] == null
-          ? 480
+          ? 0
           : const IntConverter().fromJson(json['quality']),
     );
 
-Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'original_title': instance.originalTitle,
-      'poster': instance.poster,
+      'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),
+      'genres': instance.genres,
       'countries': instance.countries,
       'voices': instance.voices.map((e) => e.toJson()).toList(),
       'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
@@ -76,9 +75,8 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'subtitles': instance.subtitles,
       'voice': instance.voice.toJson(),
       'quality': const IntConverter().toJson(instance.quality),
-      'categories': instance.categories,
-      'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
-      'player_links': instance.playerLinks?.toJson(),
+      'date': instance.date?.toIso8601String(),
+      'badges': instance.badges,
     };
 
 const _$OnlineServiceEnumMap = {
