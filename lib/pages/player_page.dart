@@ -152,6 +152,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   Widget build(context) {
     return Video(
       controller: controller,
+      // controls: AdaptiveVideoControls,
       controls: (state) {
         return Material(
           color: Colors.transparent,
