@@ -10,11 +10,13 @@ import '../resources/krs_storage.dart';
 import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
 import 'media_item_season.dart';
+import 'media_item_url.dart';
 import 'tskg/tskg_item.dart';
 import 'voice_acting.dart';
 
-export 'media_item_season.dart';
 export 'media_item_episode.dart';
+export 'media_item_season.dart';
+export 'media_item_url.dart';
 
 part 'media_item.g.dart';
 
@@ -182,7 +184,7 @@ class MediaItem {
   }
 
   /// загрузка эпизода
-  Future<String> loadEpisodeUrl({
+  Future<MediaItemUrl> loadEpisodeUrl({
     required WidgetRef ref,
     required int episodeIndex,
   }) {

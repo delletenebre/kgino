@@ -29,7 +29,7 @@ class TskgItem extends MediaItem {
     super.seasons,
     super.voices,
     super.onlineService = OnlineService.tskg,
-    super.type = MediaItemType.none,
+    super.type = MediaItemType.show,
     this.date,
     this.badges = const [],
 
@@ -101,17 +101,23 @@ class TskgItem extends MediaItem {
   }
 
   @override
-  Future<String> loadEpisodeUrl({
+  Future<MediaItemUrl> loadEpisodeUrl({
     required WidgetRef ref,
     required int episodeIndex,
   }) async {
     final episodes = this.episodes();
 
-    if (episodeIndex < episodes.length) {
-      final episode = episodes[episodeIndex];
-      return episode.videoFileUrl.replaceFirst('_%s.', '_$quality.');
+    final episode = episodes.elementAtOrNull(episodeIndex);
+    if (episode != null) {
+      final episodeId = episode.id.split('@')[1];
+
+      /// провайдер запросов к API
+      final api = ref.read(tskgApiProvider);
+
+      /// получаем данные эпизода
+      return await api.getEpisodePlayableUrl(episodeId);
     }
 
-    return '';
+    return MediaItemUrl();
   }
 }

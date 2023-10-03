@@ -56,14 +56,17 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     currentEpisodeIndex = widget.episodeIndex;
     episode = episodes[currentEpisodeIndex];
 
+    /// загружаем видео и субтитры
     widget.mediaItem
         .loadEpisodeUrl(
       ref: ref,
       episodeIndex: currentEpisodeIndex,
     )
-        .then((episodeUrl) {
-      debugPrint('Loaded episode url: $episodeUrl');
-      player.open(Media(episodeUrl)).then((value) async {
+        .then((mediaItemUrl) {
+      debugPrint('Loaded episode url: $mediaItemUrl');
+
+      /// открываем ссылку на проигрываемый файл
+      player.open(Media(mediaItemUrl.video)).then((value) async {
         if (widget.initialPosition > 0 && widget.forcePositionUpdate) {
           /// ^ если задана позиция просмотра и быстрая перемотка
 
@@ -77,17 +80,16 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                   : widget.initialPosition));
         }
       });
+
+      /// загружаем субтитры
+      player.setSubtitleTrack(
+        SubtitleTrack.uri(
+          mediaItemUrl.subtitles,
+          // title: 'English',
+          // language: 'en',
+        ),
+      );
     });
-
-    player.stream.buffering;
-
-    // player.setSubtitleTrack(
-    //   SubtitleTrack.uri(
-    //     'https://www.iandevlin.com/html5test/webvtt/upc-video-subtitles-en.vtt',
-    //     title: 'English',
-    //     language: 'en',
-    //   ),
-    // );
   }
 
   @override
@@ -96,18 +98,23 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     super.dispose();
   }
 
-  bool get hasPreviousEpisode => (currentEpisodeIndex - 1 > 0);
+  /// есть ли предыдущие эпизоды
+  bool get hasPreviousEpisode => (currentEpisodeIndex > 0);
+
+  /// есть ли следующий эпизод
   bool get hasNextEpisode => (currentEpisodeIndex + 1 < episodes.length);
 
-  void skipNext() {
-    currentEpisodeIndex++;
+  /// обработчик переключения на предыдущий эпизод
+  void skipPrevious() {
+    currentEpisodeIndex--;
 
     /// переходим на страницу плеера фильма
     updateEpisode();
   }
 
-  void skipPrevious() {
-    currentEpisodeIndex--;
+  /// обработчик переключения на следующий эпизод
+  void skipNext() {
+    currentEpisodeIndex++;
 
     /// переходим на страницу плеера фильма
     updateEpisode();
@@ -170,7 +177,6 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
           ),
         );
       },
-      // controls: MaterialVideoControls,
     );
   }
 }

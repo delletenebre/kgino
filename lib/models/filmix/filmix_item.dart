@@ -172,7 +172,7 @@ class FilmixItem extends MediaItem {
   }
 
   @override
-  Future<String> loadEpisodeUrl({
+  Future<MediaItemUrl> loadEpisodeUrl({
     required WidgetRef ref,
     required int episodeIndex,
   }) async {
@@ -180,9 +180,12 @@ class FilmixItem extends MediaItem {
 
     if (episodeIndex < episodes.length) {
       final episode = episodes[episodeIndex];
-      return episode.videoFileUrl.replaceFirst('_%s.', '_$quality.');
+      return MediaItemUrl(
+        video: episode.videoFileUrl.replaceFirst('_%s.', '_$quality.'),
+        subtitles: episode.subtitlesFileUrl,
+      );
     }
 
-    return '';
+    return MediaItemUrl();
   }
 }

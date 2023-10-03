@@ -10,6 +10,7 @@ import '../enums/online_service.dart';
 import '../models/category_list_item.dart';
 import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
+import '../models/tskg/tskg_item.dart';
 import '../providers/providers.dart';
 import '../resources/constants.dart';
 import '../resources/krs_locale.dart';
@@ -48,26 +49,33 @@ class ShowsPage extends HookConsumerWidget {
     /// tskg популярные
     final asyncTskgPopular = useMemoized(() => tskgApi.getPopularShows());
 
+    final bookmarksQuery = storage.db.mediaItems
+        .where()
+        .typeEqualTo(MediaItemType.show)
+        .and()
+        .bookmarkedIsNotNull();
+
+    final hasBookmarks = bookmarksQuery.count() > 0;
+
     final asyncBookmarks = useMemoized(() async {
-      final items = await storage.db.mediaItems
-          .where()
-          .typeEqualTo(MediaItemType.show)
-          .and()
-          .bookmarkedIsNotNull()
-          .findAllAsync();
+      final items = await bookmarksQuery.findAllAsync();
       return items.map((item) {
         if (item.onlineService == OnlineService.filmix) {
           return FilmixItem.fromJson(item.toJson());
+        }
+        if (item.onlineService == OnlineService.tskg) {
+          return TskgItem.fromJson(item.toJson());
         }
         throw Exception();
       }).toList();
     });
 
     final categories = [
-      CategoryListItem(
-        title: locale.bookmarks,
-        apiResponse: asyncBookmarks,
-      ),
+      if (hasBookmarks)
+        CategoryListItem(
+          title: locale.bookmarks,
+          apiResponse: asyncBookmarks,
+        ),
       CategoryListItem(
         title: '[ Filmix ] ${locale.latest}',
         apiResponse: asyncLatest,

@@ -472,7 +472,7 @@ class TskgApi {
   }
 
   /// получение информации об эпизоде
-  Future<MediaItemEpisode?> getEpisodeDetails(String episodeId) async {
+  Future<MediaItemUrl> getEpisodePlayableUrl(String episodeId) async {
     try {
       /// запрашиваем данные
       final response = await _dio.get(
@@ -491,7 +491,10 @@ class TskgApi {
         /// ^ если запрос выполнен успешно
 
         /// возвращаем информацио об эпизоде
-        return MediaItemEpisode.fromJson(response.data);
+        return MediaItemUrl(
+          video: response.data['video']['url'],
+          subtitles: response.data['video']['subtitles'] ?? '',
+        );
       }
     } catch (exception) {
       /// ^ если прозошла сетевая ошибка
@@ -499,7 +502,7 @@ class TskgApi {
       debugPrint('exception: $exception');
     }
 
-    return null;
+    return MediaItemUrl();
   }
 
   /// поиск сериала
