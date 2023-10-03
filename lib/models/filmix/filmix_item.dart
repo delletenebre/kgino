@@ -164,6 +164,7 @@ class FilmixItem extends MediaItem {
     );
 
     final json = detailedItem.toJson();
+    json['quality'] = quality;
     json['subtitles'] = subtitles;
     json['voice'] = voice.toJson();
     json['bookmarked'] = bookmarked?.toString();
@@ -180,6 +181,7 @@ class FilmixItem extends MediaItem {
 
     if (episodeIndex < episodes.length) {
       final episode = episodes[episodeIndex];
+
       return MediaItemUrl(
         video: episode.videoFileUrl.replaceFirst('_%s.', '_$quality.'),
         subtitles: episode.subtitlesFileUrl,
