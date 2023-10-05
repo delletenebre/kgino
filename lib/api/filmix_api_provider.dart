@@ -102,7 +102,7 @@ class FilmixApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) {
+      decoder: (json) async {
         return FilmixItem.fromJson(json);
       },
     );

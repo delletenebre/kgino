@@ -31,39 +31,44 @@ class PlayButton extends HookConsumerWidget {
 
     final focused = useState(false);
 
-    final query = storage.db.mediaItemEpisodes
+    /// список эпизодов
+    final episodes = mediaItem.episodes();
+
+    final seenEpisodes = storage.db.mediaItemEpisodes
         .where()
         .idStartsWith('${mediaItem.isarId}@')
-        .sortByUpdatedAtDesc();
+        .sortByUpdatedAtDesc()
+        .findAll();
 
-    /// сохранённый в базе данных элемент
-    final seenEpisodesStream = useStream<List<MediaItemEpisode>>(
-      query.watch(),
-      initialData: query.findAll(),
-    );
-
-    final seenEpisodes = seenEpisodesStream.data ?? <MediaItemEpisode>[];
     MediaItemEpisode playingEpisode = mediaItem.episodes().first;
     if (seenEpisodes.isNotEmpty) {
       /// ^ если у сериала есть просмотреные серии
 
       /// получаем эпизод, с которого нужно продолжить просмотр
       playingEpisode = seenEpisodes.first;
+
       if (playingEpisode.isSeen) {
-        final episodes = mediaItem.episodes();
+        /// ^ если эпизод был просмотрен
+
+        /// находим его индекс в общем списке эпизодов
         final episodeIndex =
             episodes.indexWhere((element) => element.id == playingEpisode.id);
 
-        if (episodeIndex < episodes.length - 2) {
+        if (episodeIndex < episodes.length - 1) {
+          /// ^ если есть следующий эпизод
+
+          /// продолжаем просмотр со следующего эпизода
           playingEpisode = episodes[episodeIndex + 1];
         }
       }
     }
+    final episodeIndex =
+        episodes.indexWhere((element) => element.id == playingEpisode.id);
 
-    /// кнопка начала просмотра
     return Stack(
       clipBehavior: Clip.none,
       children: [
+        /// всплывающая подсказка по эпизоду
         Positioned(
           top: -40.0 - ((playingEpisode.position > 0) ? 16.0 : 0.0),
           child: AnimatedSwitcher(
@@ -75,16 +80,21 @@ class PlayButton extends HookConsumerWidget {
                 : null,
           ),
         ),
+
+        /// кнопка начала просмотра
         FilledButton.icon(
           autofocus: true,
           onFocusChange: (hasFocus) {
             focused.value = hasFocus;
           },
           onPressed: () {
-            /// переходим на страницу плеера фильма
+            /// переходим на страницу плеера
             context.pushNamed(
               'player',
-              queryParameters: {},
+              queryParameters: {
+                'episodeIndex': '$episodeIndex',
+                'initialPosition': '${playingEpisode.position}',
+              },
               extra: mediaItem,
             );
           },
@@ -166,31 +176,5 @@ class PlayButtonTooltip extends HookWidget {
           ),
       ],
     );
-
-    // if (kginoItem.seasons.first.episodes.length > 1) {
-    //   final episode = kginoItem.seasons.first.episodes.first;
-    //   return Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Text(
-    //         '${episode.seasonNumber} сезон, ${episode.episodeNumber} серия',
-    //         style: const TextStyle(
-    //           fontSize: 12.0,
-    //           fontWeight: FontWeight.bold,
-    //         ),
-    //       ),
-    //       if (episode.name.isNotEmpty)
-    //         Text(
-    //           episode.name,
-    //           style: const TextStyle(
-    //             fontSize: 10.0,
-    //           ),
-    //         ),
-    //     ],
-    //   );
-    // }
-
-    return const SizedBox();
   }
 }

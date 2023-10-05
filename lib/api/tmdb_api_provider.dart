@@ -50,7 +50,7 @@ class TmdbApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) {
+      decoder: (json) async {
         final items = json['results'].where((item) =>
             item['title'] == title || item['original_title'] == originalTitle);
         debugPrint('tmdb movie $items');
@@ -80,7 +80,7 @@ class TmdbApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) {
+      decoder: (json) async {
         final items = json['results'].where((item) =>
             item['name'] == title || item['original_name'] == originalTitle);
         debugPrint('tmdb show $items');

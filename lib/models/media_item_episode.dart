@@ -70,7 +70,7 @@ class MediaItemEpisode {
 
   /// был ли эпизод полностью просмотрен
   @ignore
-  bool get isSeen => viewed > 0.95;
+  bool get isSeen => viewed > 0.9;
 
   @ignore
   bool get hasShowNumbers => seasonNumber > 0 && episodeNumber > 0;

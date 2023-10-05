@@ -8,7 +8,7 @@ import 'api_error.dart';
 class ApiRequest<T> {
   Future<T> call({
     required Future<Response<dynamic>> request,
-    required T Function(dynamic json) decoder,
+    required Future<T> Function(dynamic json) decoder,
   }) async {
     try {
       final response = await request;
