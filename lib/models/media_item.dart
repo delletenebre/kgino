@@ -255,6 +255,16 @@ class MediaItem {
         quality: quality,
       );
 
+  factory MediaItem.skeleton() => MediaItem(
+        id: '',
+        title: 'Item title for skeleton',
+        overview:
+            'orem ipsum dolor sit amet, consectetur adipiscing elit. Proin rhoncus suscipit nisi et convallis. Morbi ex libero, mollis mattis scelerisque ut, vulputate lacinia ligula ligu',
+        genres: ['Lorem', 'Ipsum'],
+        year: 'Lorem ip',
+        countries: ['Lorem ipsum', 'Dolor sit amet'],
+      );
+
   // Stream<MediaItem?> dbStream(KrsStorage storage) {
   //   return storage.db.mediaItems.watchObject(id);
   // }

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kgino/extensions/list_extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../models/media_item.dart';
 import '../../resources/constants.dart';
@@ -14,12 +15,6 @@ part 'featured_card.g.dart';
 class FocusedMediaItem extends _$FocusedMediaItem {
   @override
   FutureOr<MediaItem?> build(MediaItem? mediaItem) async {
-    // ref.onClose(() {
-    //   debugPrint('navigationProvider disposed');
-    // });
-
-    // loadDetails();
-
     return fetchDetails();
   }
 
@@ -93,162 +88,119 @@ class FeaturedCard extends HookConsumerWidget {
 
     final focusedMediaItem = ref.watch(focusedMediaItemProvider(mediaItem));
 
-    final currentMediaItem = focusedMediaItem.valueOrNull;
+    final currentMediaItem =
+        focusedMediaItem.valueOrNull ?? MediaItem.skeleton();
 
     return AnimatedContainer(
       duration: kThemeAnimationDuration,
       height: mediaItem == null ? 0.0 : TvUi.featuredHeight,
-      child: currentMediaItem == null
-          ? const SizedBox()
-          : Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  top: -(TvUi.navigationBarSize.height),
-                  right: 0.0,
-                  child: AnimatedSwitcher(
-                    duration: kThemeAnimationDuration,
-                    child: currentMediaItem.backdrop.isEmpty
-                        ? null
-                        : BackdropImage(currentMediaItem.backdrop),
-                  ),
-                ),
-                Positioned(
-                  bottom: positionAnimation,
-                  left: TvUi.hPadding,
-                  child: SizedBox(
-                    width: TvUi.featuredSize.width,
-                    child: Opacity(
-                      opacity: opacityAnimation,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: -(TvUi.navigationBarSize.height),
+            right: 0.0,
+            child: AnimatedSwitcher(
+              duration: kThemeAnimationDuration,
+              child: currentMediaItem.backdrop.isEmpty
+                  ? null
+                  : BackdropImage(currentMediaItem.backdrop),
+            ),
+          ),
+          Positioned(
+            bottom: positionAnimation,
+            left: TvUi.hPadding,
+            child: Skeletonizer(
+              enabled: focusedMediaItem.isLoading,
+              child: SizedBox(
+                width: TvUi.featuredSize.width,
+                child: Opacity(
+                  opacity: opacityAnimation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DefaultTextStyle(
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            mediaItem != null
+                                ? [
+                                    currentMediaItem.genres.joinFirstTwo(),
+                                    currentMediaItem.year,
+                                    currentMediaItem.countries.joinFirstTwo(),
+                                    currentMediaItem.overviewDuration(context),
+                                    currentMediaItem.ratingStars,
+                                  ].removeEmpty().join(' • ')
+                                : '',
+                            //'Superhero/Action • 2022 • 2h 15m'
+                          ),
+                        ),
+                      ),
+
+                      /// название
+                      Text(
+                        mediaItem != null ? currentMediaItem.title : '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 32.0,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20.0),
+
+                      /// описание
+                      if (mediaItem != null &&
+                          currentMediaItem.overview.isNotEmpty)
+                        Text(
+                          currentMediaItem.overview,
+                          key: const ValueKey('overview'),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+
+                      const SizedBox(height: 28.0),
+
+                      Wrap(
+                        spacing: 24.0,
                         children: [
-                          DefaultTextStyle(
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Text(
-                                [
-                                  currentMediaItem.genres.joinFirstTwo(),
-                                  currentMediaItem.year,
-                                  currentMediaItem.countries.joinFirstTwo(),
-                                  currentMediaItem.overviewDuration(context),
-                                  currentMediaItem.ratingStars,
-                                ].removeEmpty().join(' • '),
-                                //'Superhero/Action • 2022 • 2h 15m'
-                              ),
-                            ),
-                          ),
-
-                          /// название
-                          Text(
-                            currentMediaItem.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 32.0,
-                            ),
-                          ),
-
-                          const SizedBox(height: 20.0),
-
-                          /// описание
-                          if (currentMediaItem.overview.isNotEmpty)
-                            Text(
-                              currentMediaItem.overview,
-                              key: const ValueKey('overview'),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-
-                          const SizedBox(height: 28.0),
-
-                          Wrap(
-                            spacing: 24.0,
-                            children: [
-                              /// забликирован ли контент
-                              if (mediaItem?.blocked == true)
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.error_outline,
-                                      color: theme.colorScheme.error,
-                                    ),
-                                    const SizedBox(width: 4.0),
-                                    Text(
-                                      'Заблокировано правообладателем',
-                                      style: TextStyle(
-                                        color: theme.colorScheme.error,
-                                      ),
-                                    ),
-                                  ],
+                          /// забликирован ли контент
+                          if (mediaItem?.blocked == true)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  color: theme.colorScheme.error,
                                 ),
-                            ],
-                          ),
-
-                          // AnimatedSwitcher(
-                          //   duration: kThemeAnimationDuration,
-                          //   reverseDuration: Duration.zero,
-                          //   transitionBuilder: (child, animation) {
-                          //     final fadeAnimation = Tween<double>(
-                          //       begin: 0.0, // Fully transparent
-                          //       end: 1.0, // Fully opaque
-                          //     ).animate(animation);
-
-                          //     final slideAnimation = Tween<Offset>(
-                          //       begin: const Offset(
-                          //           0.0, 1.0), // Start from below the widget
-                          //       end: const Offset(
-                          //           0.0, 0.0), // End at its original position
-                          //     ).animate(animation);
-
-                          //     final sizeAnimation = Tween<double>(
-                          //       begin: 0.0, // Start with zero size
-                          //       end: 1.0, // End with full size
-                          //     ).animate(animation);
-
-                          //     return SizeTransition(
-                          //       sizeFactor: sizeAnimation,
-                          //       child: FadeTransition(
-                          //         opacity: fadeAnimation,
-                          //         child: child,
-                          //       ),
-                          //     );
-                          //   },
-                          //   child: currentMediaItem.overview.isNotEmpty
-                          //       ? Padding(
-                          //           key: ValueKey(
-                          //               'overview:${currentMediaItem.overview}'),
-                          //           padding: const EdgeInsets.only(top: 20.0),
-                          //           child: Text(
-                          //             currentMediaItem.overview,
-                          //             maxLines: 6,
-                          //             overflow: TextOverflow.ellipsis,
-                          //             style: TextStyle(
-                          //               fontSize: 16.0,
-                          //               color:
-                          //                   theme.colorScheme.onSurfaceVariant,
-                          //             ),
-                          //           ),
-                          //         )
-                          //       : null,
-                          // ),
+                                const SizedBox(width: 4.0),
+                                Text(
+                                  'Заблокировано правообладателем',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.error,
+                                  ),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
+          ),
+        ],
+      ),
     );
   }
 }
