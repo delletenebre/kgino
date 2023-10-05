@@ -44,10 +44,10 @@ class ShowsPage extends HookConsumerWidget {
     final tskgApi = ref.read(tskgApiProvider);
 
     /// tskg список последний добавлений
-    final asyncTskgLatest = useMemoized(() => tskgApi.getLatestShows());
+    // final asyncTskgLatest = useMemoized(() => tskgApi.getLatestShows());
 
     /// tskg популярные
-    final asyncTskgPopular = useMemoized(() => tskgApi.getPopularShows());
+    // final asyncTskgPopular = useMemoized(() => tskgApi.getPopularShows());
 
     final bookmarksQuery = storage.db.mediaItems
         .where()
@@ -80,18 +80,18 @@ class ShowsPage extends HookConsumerWidget {
         title: '[ Filmix ] ${locale.latest}',
         apiResponse: asyncLatest,
       ),
-      CategoryListItem(
-        title: '[ TS.KG ] ${locale.latest}',
-        apiResponse: asyncTskgLatest,
-      ),
+      // CategoryListItem(
+      //   title: '[ TS.KG ] ${locale.latest}',
+      //   apiResponse: asyncTskgLatest,
+      // ),
       CategoryListItem(
         title: '[ Filmix ] ${locale.popular}',
         apiResponse: asyncPopular,
       ),
-      CategoryListItem(
-        title: '[ TS.KG ] ${locale.popular}',
-        apiResponse: asyncTskgPopular,
-      ),
+      // CategoryListItem(
+      //   title: '[ TS.KG ] ${locale.popular}',
+      //   apiResponse: asyncTskgPopular,
+      // ),
     ];
 
     final focusedMediaItem = useValueNotifier<MediaItem?>(null);

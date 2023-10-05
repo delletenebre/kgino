@@ -80,7 +80,7 @@ class FilmixApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<MediaItem>((item) {
           return FilmixItem.fromJson(item);
         }).toList();
@@ -127,7 +127,7 @@ class FilmixApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<MediaItem>((item) {
           return FilmixItem.fromJson(item);
         }).toList();
@@ -147,7 +147,7 @@ class FilmixApi {
         ..._queryParams,
         'section': '0',
       }),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<MediaItem>((item) {
           return FilmixItem.fromJson(item);
         }).toList();
@@ -201,7 +201,7 @@ class FilmixApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) {
+      decoder: (json) async {
         return json.map<MediaItem>((item) {
           return FilmixItem.fromJson(item);
         }).toList();
