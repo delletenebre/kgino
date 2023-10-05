@@ -36,7 +36,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
               OnlineService.filmix,
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
-          MediaItemType.folder,
+          MediaItemType.unknown,
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -91,7 +91,8 @@ const _$OnlineServiceEnumMap = {
 };
 
 const _$MediaItemTypeEnumMap = {
-  MediaItemType.folder: 'folder',
+  MediaItemType.unknown: 'unknown',
   MediaItemType.show: 'show',
   MediaItemType.movie: 'movie',
+  MediaItemType.folder: 'folder',
 };

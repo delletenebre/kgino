@@ -28,7 +28,7 @@ const MediaItemSchema = IsarGeneratedSchema(
       IsarPropertySchema(
         name: 'type',
         type: IsarType.byte,
-        enumMap: {"folder": 0, "show": 1, "movie": 2},
+        enumMap: {"unknown": 0, "show": 1, "movie": 2, "folder": 3},
       ),
       IsarPropertySchema(
         name: 'id',
@@ -117,10 +117,10 @@ MediaItem deserializeMediaItem(IsarReader reader) {
   final MediaItemType _type;
   {
     if (IsarCore.readNull(reader, 2)) {
-      _type = MediaItemType.folder;
+      _type = MediaItemType.unknown;
     } else {
       _type =
-          _mediaItemType[IsarCore.readByte(reader, 2)] ?? MediaItemType.folder;
+          _mediaItemType[IsarCore.readByte(reader, 2)] ?? MediaItemType.unknown;
     }
   }
   final String _id;
@@ -190,10 +190,10 @@ dynamic deserializeMediaItemProp(IsarReader reader, int property) {
     case 2:
       {
         if (IsarCore.readNull(reader, 2)) {
-          return MediaItemType.folder;
+          return MediaItemType.unknown;
         } else {
           return _mediaItemType[IsarCore.readByte(reader, 2)] ??
-              MediaItemType.folder;
+              MediaItemType.unknown;
         }
       }
     case 3:
@@ -450,9 +450,10 @@ const _mediaItemOnlineService = {
   2: OnlineService.tskg,
 };
 const _mediaItemType = {
-  0: MediaItemType.folder,
+  0: MediaItemType.unknown,
   1: MediaItemType.show,
   2: MediaItemType.movie,
+  3: MediaItemType.folder,
 };
 
 extension MediaItemQueryFilter
@@ -2305,7 +2306,7 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
               .toList() ??
           const [],
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
-          MediaItemType.folder,
+          MediaItemType.unknown,
       onlineService:
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
               OnlineService.none,
@@ -2344,9 +2345,10 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
     };
 
 const _$MediaItemTypeEnumMap = {
-  MediaItemType.folder: 'folder',
+  MediaItemType.unknown: 'unknown',
   MediaItemType.show: 'show',
   MediaItemType.movie: 'movie',
+  MediaItemType.folder: 'folder',
 };
 
 const _$OnlineServiceEnumMap = {

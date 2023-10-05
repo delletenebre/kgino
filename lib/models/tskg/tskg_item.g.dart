@@ -89,7 +89,8 @@ const _$OnlineServiceEnumMap = {
 };
 
 const _$MediaItemTypeEnumMap = {
-  MediaItemType.folder: 'folder',
+  MediaItemType.unknown: 'unknown',
   MediaItemType.show: 'show',
   MediaItemType.movie: 'movie',
+  MediaItemType.folder: 'folder',
 };
