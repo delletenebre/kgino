@@ -8,6 +8,7 @@ import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/vi
 
 import '../../resources/constants.dart';
 import '../../resources/krs_locale.dart';
+import '../../utils.dart';
 import '../details_page/krs_menu_button.dart';
 import 'controls/play_pause_button.dart';
 import 'controls/player_progress_bar.dart';
@@ -28,6 +29,9 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
   /// null - нет субтитров, true - включены, false - выключены
   final bool? hasSubtitles;
 
+  /// позиция последнего  просмотра
+  final int initialPosition;
+
   const PlayerControlsOverlay({
     super.key,
     this.title = '',
@@ -40,6 +44,7 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
     this.quality = 0,
     this.onQualityChanged,
     this.hasSubtitles,
+    this.initialPosition = 0,
   });
 
   @override
@@ -60,8 +65,17 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   /// например, выбор качества видео
   bool _menuOpened = false;
 
+  /// завершена ли загрузка видео
+  bool _videoLoaded = false;
+
+  /// нужно ли запрошивать продолжение просмотра
+  bool _requestInitialPositionChange = false;
+
   @override
   void initState() {
+    /// нужно ли запрошивать продолжение просмотра
+    _requestInitialPositionChange = widget.initialPosition > 0;
+
     super.initState();
   }
 
@@ -84,11 +98,13 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
           _visibilityTimer?.cancel();
           _visibilityTimer = Timer(const Duration(seconds: 5), () {
-            _progressBarFocusNode.requestFocus();
-            unshiftSubtitles();
-            setState(() {
-              _visible = false;
-            });
+            if (playing && !_menuOpened) {
+              _progressBarFocusNode.requestFocus();
+              unshiftSubtitles();
+              setState(() {
+                _visible = false;
+              });
+            }
           });
         }
       } else {
@@ -103,6 +119,12 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           widget.onSavePositionRequested?.call(positionInSeconds);
         }
       }
+    });
+
+    controller(context).player.stream.buffer.first.then((value) {
+      setState(() {
+        _videoLoaded = true;
+      });
     });
 
     super.didChangeDependencies();
@@ -136,6 +158,49 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   Widget build(context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (_videoLoaded && _requestInitialPositionChange) {
+        _requestInitialPositionChange = false;
+        await controller(context).player.pause();
+        _menuOpened = true;
+
+        // ignore: use_build_context_synchronously
+        await Utils.showConfirmModal(
+          context: context,
+          title: 'Продолжить просмотр?',
+          message:
+              'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
+          child: Column(
+            children: [
+              FilledButton(
+                autofocus: true,
+                onPressed: () {
+                  if (mounted) {
+                    controller(context).player
+                      ..seek(Duration(seconds: widget.initialPosition))
+                      ..play();
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Text('Продолжить'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Text('Начать с начала'),
+              ),
+            ],
+          ),
+        );
+        _menuOpened = false;
+        // ignore: use_build_context_synchronously
+        controller(context).player.play();
+      }
+    });
 
     return Focus(
       autofocus: true,

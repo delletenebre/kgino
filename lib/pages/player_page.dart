@@ -8,6 +8,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import '../models/media_item.dart';
 import '../providers/providers.dart';
 import '../ui/player/player_controls_overlay.dart';
+import '../utils.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
   final MediaItem mediaItem;
@@ -149,6 +150,11 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(context) {
     return Video(
       controller: controller,
@@ -157,6 +163,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
         return Material(
           color: Colors.transparent,
           child: PlayerControlsOverlay(
+            initialPosition: widget.initialPosition,
             title: widget.mediaItem.title,
             subtitle:
                 'Сезон ${episode.seasonNumber} Эпизод ${episode.episodeNumber}',
