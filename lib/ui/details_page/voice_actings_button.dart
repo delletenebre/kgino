@@ -29,46 +29,7 @@ class VoiceActingsButton extends HookWidget {
         /// вызываем пользовательский обработчик
         onVoiceActingChange(voiceActing);
       },
-      child: Text(
-        'Выбор аудио',
-      ),
+      child: Text(locale.selectAudio),
     );
-
-    // return FilledButton.tonal(
-    //   onPressed: () {
-    //     Utils.showModalRight(
-    //       context: context,
-    //       titleText: 'Выбор аудио',
-    //       child: ListView(
-    //         shrinkWrap: true,
-    //         children: mediaItem.voices.map((voiceActing) {
-    //           if (voiceActing.id == mediaItem.voice.id) {
-    //             /// ^ если озвучка совпадает с текущей
-
-    //             return FilledButton.tonalIcon(
-    //               autofocus: true,
-    //               icon: const Icon(Icons.check),
-    //               label: Text(voiceActing.name),
-    //               onPressed: () => Navigator.pop(context),
-    //             );
-    //           }
-
-    //           return FilledButton.tonal(
-    //             child: Text(voiceActing.name),
-    //             onPressed: () async {
-    //               /// закрываем диалоговое окно
-    //               Navigator.pop(context);
-
-    //               /// вызываем пользовательский обработчик
-    //               onVoiceActingChange(voiceActing);
-    //             },
-    //           );
-    //         }).toList(),
-    //       ),
-    //     );
-    //   },
-    //   // icon: const Icon(Icons.mic),
-    //   child: const Text('Выбрать озвучку'),
-    // );
   }
 }

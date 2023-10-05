@@ -4,10 +4,10 @@
 
   "appTitle": "KGino",
 
-  "theme": "Тема оформления", "@theme": {"type": "text"},
-  "themeSystem": "Как в системе", "@themeSystem": {"type": "text"},
-  "themeDark": "Тёмная", "@themeDark": {"type": "text"},
-  "themeLight": "Светлая", "@themeLight": {"type": "text"},
+  "theme": "Тема оформления",
+  "themeSystem": "Как в системе",
+  "themeDark": "Тёмная",
+  "themeLight": "Светлая",
 
   "search": "Поиск",
   "searchHint": "Название фильма, сериала",
@@ -79,6 +79,8 @@
   "genres": "Жанры",
   "latest": "Новое",
   "popular": "Популярное",
+
+  "selectAudio": "Выбрать аудио",
 
 
   "cancel": "Отмена",

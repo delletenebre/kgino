@@ -100,9 +100,7 @@ class ShowsPage extends HookConsumerWidget {
       children: [
         ValueListenableBuilder<MediaItem?>(
           valueListenable: focusedMediaItem,
-          builder: (context, value, _) {
-            return FeaturedCard(value);
-          },
+          builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
         ),
         Expanded(
           child: VerticalListView(
