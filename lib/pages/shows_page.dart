@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import '../api/filmix_api_provider.dart';
-import '../api/tskg_api_provider.dart';
 import '../enums/online_service.dart';
 import '../models/category_list_item.dart';
 import '../models/filmix/filmix_item.dart';
@@ -31,24 +29,6 @@ class ShowsPage extends HookConsumerWidget {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
-    /// filmix провайдер запросов к API
-    final filmixApi = ref.read(filmixApiProvider);
-
-    /// filmix список последний добавлений
-    final asyncLatest = useMemoized(() => filmixApi.getLatestShows());
-
-    /// filmix популярные
-    final asyncPopular = useMemoized(() => filmixApi.getPopularShows());
-
-    /// tskg провайдер запросов к API
-    final tskgApi = ref.read(tskgApiProvider);
-
-    /// tskg список последний добавлений
-    final asyncTskgLatest = useMemoized(() => tskgApi.getLatestShows());
-
-    /// tskg популярные
-    final asyncTskgPopular = useMemoized(() => tskgApi.getPopularShows());
-
     final bookmarksQuery = storage.db.mediaItems
         .where()
         .typeEqualTo(MediaItemType.show)
@@ -70,28 +50,33 @@ class ShowsPage extends HookConsumerWidget {
       }).toList();
     });
 
+    final providers = useMemoized(() {
+      return [
+        MediaItem(
+          id: 'filmixShows',
+          title: 'Filmix',
+          poster: 'assets/images/flmx.svg',
+          type: MediaItemType.folder,
+        ),
+        MediaItem(
+          id: 'tskgShows',
+          title: 'TS.KG',
+          poster: 'assets/images/tskg.svg',
+          type: MediaItemType.folder,
+        ),
+      ];
+    });
+
     final categories = [
+      CategoryListItem(
+        title: 'Провайдеры',
+        items: providers,
+      ),
       if (hasBookmarks)
         CategoryListItem(
           title: locale.bookmarks,
           apiResponse: asyncBookmarks,
         ),
-      CategoryListItem(
-        title: '[ Filmix ] ${locale.latest}',
-        apiResponse: asyncLatest,
-      ),
-      CategoryListItem(
-        title: '[ TS.KG ] ${locale.latest}',
-        apiResponse: asyncTskgLatest,
-      ),
-      CategoryListItem(
-        title: '[ Filmix ] ${locale.popular}',
-        apiResponse: asyncPopular,
-      ),
-      CategoryListItem(
-        title: '[ TS.KG ] ${locale.popular}',
-        apiResponse: asyncTskgPopular,
-      ),
     ];
 
     final focusedMediaItem = useValueNotifier<MediaItem?>(null);
@@ -129,8 +114,12 @@ class ShowsPage extends HookConsumerWidget {
                         }
                       },
                       onTap: () {
-                        /// переходим на страницу деталей о сериале
-                        context.goNamed('details', extra: item);
+                        if (item.isFolder) {
+                          context.goNamed(item.id);
+                        } else {
+                          /// переходим на страницу деталей о сериале
+                          context.goNamed('details', extra: item);
+                        }
                       },
                       title: item.title,
                       imageUrl: item.poster,

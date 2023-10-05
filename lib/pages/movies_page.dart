@@ -32,11 +32,11 @@ class MoviesPage extends HookConsumerWidget {
 
     final categories = [
       CategoryListItem(
-        title: '[ Filmix ] ${locale.latest}',
+        title: locale.latest,
         apiResponse: asyncLatest,
       ),
       CategoryListItem(
-        title: '[ Filmix ] ${locale.popular}',
+        title: locale.popular,
         apiResponse: asyncPopular,
       ),
     ];

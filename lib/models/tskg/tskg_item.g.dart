@@ -39,6 +39,8 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       onlineService:
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
               OnlineService.tskg,
+      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
+          MediaItemType.show,
       date:
           json['date'] == null ? null : DateTime.parse(json['date'] as String),
       badges: (json['badges'] as List<dynamic>?)
@@ -59,6 +61,7 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
 
 Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
+      'type': _$MediaItemTypeEnumMap[instance.type]!,
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'original_title': instance.originalTitle,
@@ -83,4 +86,10 @@ const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',
   OnlineService.filmix: 'filmix',
   OnlineService.tskg: 'tskg',
+};
+
+const _$MediaItemTypeEnumMap = {
+  MediaItemType.folder: 'folder',
+  MediaItemType.show: 'show',
+  MediaItemType.movie: 'movie',
 };

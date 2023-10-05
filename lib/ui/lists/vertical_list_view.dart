@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../providers/focusable_list_provider.dart';
+import '../../resources/constants.dart';
 
 class VerticalListView extends ConsumerWidget {
   final int itemCount;
@@ -38,13 +39,6 @@ class VerticalListView extends ConsumerWidget {
     );
     final focusableListController = ref.read(provider.notifier);
 
-    // ref.watch(focusableListProvider(
-    //   key: key,
-    //   itemCount: itemCount,
-    //   keyEventResult: keyEventResult,
-    //   controller: controller,
-    // ));
-
     return Focus(
       focusNode: focusableListController.generalFocusNode,
       skipTraversal: true,
@@ -73,6 +67,7 @@ class VerticalListView extends ConsumerWidget {
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
           child: ListView.builder(
             clipBehavior: clipBehavior,
+            padding: const EdgeInsets.only(bottom: TvUi.hPadding),
             controller: focusableListController.scrollController,
             itemCount: itemCount,
 

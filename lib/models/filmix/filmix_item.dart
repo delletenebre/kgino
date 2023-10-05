@@ -35,7 +35,7 @@ class FilmixItem extends MediaItem {
     super.seasons,
     super.voices,
     super.onlineService = OnlineService.filmix,
-    super.type = MediaItemType.none,
+    super.type = MediaItemType.unknown,
     this.categories = const [],
     this.shortStory = '',
     this.playerLinks = const FilmixPlayerLinks(),
@@ -196,8 +196,9 @@ class FilmixItem extends MediaItem {
       true;
 
   @override
-  List<String> get genres =>
-      categories..removeWhere((element) => element == 'Сериалы');
+  List<String> get genres {
+    return categories..removeWhere((element) => element == 'Сериалы');
+  }
 
   @override
   String get overview => shortStory;

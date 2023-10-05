@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kgino/extensions/duration.dart';
 
 import '../../extensions/json_converters.dart';
 import '../enums/online_service.dart';
@@ -22,9 +23,10 @@ part 'media_item.g.dart';
 
 /// тип медиа-контента
 enum MediaItemType {
-  none,
+  unknown,
   show,
   movie,
+  folder,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -37,7 +39,7 @@ class MediaItem {
   final OnlineService onlineService;
 
   /// тип контента
-  @JsonKey(includeFromJson: false)
+  // @JsonKey(includeFromJson: false)
   MediaItemType type;
 
   /// идентификатор на сервисе
@@ -121,7 +123,7 @@ class MediaItem {
     this.imdbRating = 0.0,
     this.kinopoiskRating = 0.0,
     this.seasons = const [],
-    this.type = MediaItemType.none,
+    this.type = MediaItemType.unknown,
     this.onlineService = OnlineService.none,
 
     ///
@@ -138,7 +140,7 @@ class MediaItem {
 
   /// заблокирован ли контент правообладателем
   @ignore
-  bool get blocked => throw UnimplementedError();
+  bool get blocked => false;
 
   /// изображение на фон
   String get backdrop => poster;
@@ -177,6 +179,9 @@ class MediaItem {
       return '★★★';
     }
   }
+
+  @ignore
+  bool get isFolder => type == MediaItemType.folder;
 
   /// загрузка подробных данных о сериале или фильме
   Future<MediaItem> loadDetails(Ref ref) {
@@ -223,14 +228,18 @@ class MediaItem {
   String overviewDuration(BuildContext context) {
     final locale = KrsLocale.of(context);
     switch (type) {
-      case MediaItemType.none:
+      case MediaItemType.unknown:
+      case MediaItemType.folder:
         return '';
       case MediaItemType.show:
         return seasons.length > 1
             ? locale.seasonsCount(seasons.length)
             : locale.episodesCount(episodes().length);
       case MediaItemType.movie:
-        return '';
+        return Duration(
+                seconds:
+                    seasons.firstOrNull?.episodes.firstOrNull?.duration ?? 0)
+            .formatted;
     }
   }
 

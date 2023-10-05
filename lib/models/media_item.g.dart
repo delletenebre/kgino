@@ -28,7 +28,7 @@ const MediaItemSchema = IsarGeneratedSchema(
       IsarPropertySchema(
         name: 'type',
         type: IsarType.byte,
-        enumMap: {"none": 0, "show": 1, "movie": 2},
+        enumMap: {"folder": 0, "show": 1, "movie": 2},
       ),
       IsarPropertySchema(
         name: 'id',
@@ -117,10 +117,10 @@ MediaItem deserializeMediaItem(IsarReader reader) {
   final MediaItemType _type;
   {
     if (IsarCore.readNull(reader, 2)) {
-      _type = MediaItemType.none;
+      _type = MediaItemType.folder;
     } else {
       _type =
-          _mediaItemType[IsarCore.readByte(reader, 2)] ?? MediaItemType.none;
+          _mediaItemType[IsarCore.readByte(reader, 2)] ?? MediaItemType.folder;
     }
   }
   final String _id;
@@ -190,10 +190,10 @@ dynamic deserializeMediaItemProp(IsarReader reader, int property) {
     case 2:
       {
         if (IsarCore.readNull(reader, 2)) {
-          return MediaItemType.none;
+          return MediaItemType.folder;
         } else {
           return _mediaItemType[IsarCore.readByte(reader, 2)] ??
-              MediaItemType.none;
+              MediaItemType.folder;
         }
       }
     case 3:
@@ -450,7 +450,7 @@ const _mediaItemOnlineService = {
   2: OnlineService.tskg,
 };
 const _mediaItemType = {
-  0: MediaItemType.none,
+  0: MediaItemType.folder,
   1: MediaItemType.show,
   2: MediaItemType.movie,
 };
@@ -2304,6 +2304,8 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
               ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
+          MediaItemType.folder,
       onlineService:
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
               OnlineService.none,
@@ -2321,6 +2323,7 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
 
 Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'onlineService': _$OnlineServiceEnumMap[instance.onlineService]!,
+      'type': _$MediaItemTypeEnumMap[instance.type]!,
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'originalTitle': instance.originalTitle,
@@ -2339,6 +2342,12 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'voice': instance.voice.toJson(),
       'quality': const IntConverter().toJson(instance.quality),
     };
+
+const _$MediaItemTypeEnumMap = {
+  MediaItemType.folder: 'folder',
+  MediaItemType.show: 'show',
+  MediaItemType.movie: 'movie',
+};
 
 const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',

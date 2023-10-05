@@ -5,9 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/media_item.dart';
 import '../pages/details_page.dart';
 import '../pages/error_page.dart';
+import '../pages/filmix/filmix_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
+import '../pages/ts.kg/tskg_shows_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final mainNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'main');
@@ -51,6 +53,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const HomePage();
         },
         routes: [
+          GoRoute(
+            path: 'filmix/shows',
+            name: 'filmixShows',
+            builder: (context, state) {
+              return const FilmixShowsPage();
+            },
+          ),
+          GoRoute(
+            path: 'tskg/shows',
+            name: 'tskgShows',
+            builder: (context, state) {
+              return const TskgShowsPage();
+            },
+          ),
           GoRoute(
             path: 'details',
             name: 'details',

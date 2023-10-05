@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../resources/constants.dart';
 
@@ -11,7 +12,7 @@ class BackdropImage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return RepaintBoundary(
       child: ShaderMask(
         blendMode: BlendMode.dstOut,
@@ -34,11 +35,23 @@ class BackdropImage extends StatelessWidget {
         /// постер фильма
         child: SizedBox.fromSize(
           size: TvUi.backdropImageSize,
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-          ),
+          child: imageUrl.startsWith('assets')
+              ? imageUrl.endsWith('svg')
+                  ? SvgPicture.asset(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    )
+                  : Image.asset(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    )
+              : CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                ),
         ),
       ),
     );

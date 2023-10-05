@@ -18,23 +18,23 @@ class FocusedMediaItem extends _$FocusedMediaItem {
     return fetchDetails();
   }
 
-  Future<void> loadDetails() async {
-    if (mediaItem != null) {
-      state = const AsyncLoading();
+  // Future<void> loadDetails() async {
+  //   if (mediaItem != null && !mediaItem!.isFolder) {
+  //     state = const AsyncLoading();
 
-      final detailed = await mediaItem!.loadDetails(ref);
-      // final tmdb = (await AsyncValue.guard(() async {
-      //   /// запрашиваем данные на TMDB
-      //   return await mediaItem.loadTmdb(ref);
-      // }))
-      //     .valueOrNull;
+  //     final detailed = await mediaItem!.loadDetails(ref);
+  //     // final tmdb = (await AsyncValue.guard(() async {
+  //     //   /// запрашиваем данные на TMDB
+  //     //   return await mediaItem.loadTmdb(ref);
+  //     // }))
+  //     //     .valueOrNull;
 
-      state = AsyncData(detailed);
-    }
-  }
+  //     state = AsyncData(detailed);
+  //   }
+  // }
 
   Future<MediaItem?> fetchDetails() async {
-    if (mediaItem != null) {
+    if (mediaItem != null && !mediaItem!.isFolder) {
       final detailed = await mediaItem!.loadDetails(ref);
 
       return detailed;
@@ -61,12 +61,18 @@ class FeaturedCard extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final featuredHeight =
+        screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
+                178.0
+            ? TvUi.featuredHeight
+            : screenHeight - TvUi.navigationBarSize.height - 178.0;
 
     final animationController = useAnimationController(
       duration: kThemeAnimationDuration,
     );
     final positionAnimation = useAnimation<double>(Tween(
-      begin: -TvUi.featuredHeight - 40.0,
+      begin: -featuredHeight - 40.0,
       end: 40.0,
     ).animate(animationController));
     final opacityAnimation = useAnimation<double>(Tween(
@@ -93,7 +99,7 @@ class FeaturedCard extends HookConsumerWidget {
 
     return AnimatedContainer(
       duration: kThemeAnimationDuration,
-      height: mediaItem == null ? 0.0 : TvUi.featuredHeight,
+      height: mediaItem == null ? 0.0 : featuredHeight,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -102,9 +108,10 @@ class FeaturedCard extends HookConsumerWidget {
             right: 0.0,
             child: AnimatedSwitcher(
               duration: kThemeAnimationDuration,
-              child: currentMediaItem.backdrop.isEmpty
-                  ? null
-                  : BackdropImage(currentMediaItem.backdrop),
+              child:
+                  currentMediaItem.backdrop.isEmpty || currentMediaItem.isFolder
+                      ? null
+                      : BackdropImage(currentMediaItem.backdrop),
             ),
           ),
           Positioned(
@@ -137,7 +144,6 @@ class FeaturedCard extends HookConsumerWidget {
                                     currentMediaItem.ratingStars,
                                   ].removeEmpty().join(' • ')
                                 : '',
-                            //'Superhero/Action • 2022 • 2h 15m'
                           ),
                         ),
                       ),
