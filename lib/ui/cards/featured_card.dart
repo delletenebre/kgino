@@ -73,10 +73,10 @@ class FeaturedCard extends HookConsumerWidget {
       begin: 0.0,
       end: 1.0,
     ).animate(animationController));
-    final heightAnimation = useAnimation<double>(Tween(
-      begin: 0.0,
-      end: TvUi.featuredHeight,
-    ).animate(animationController));
+    // final heightAnimation = useAnimation<double>(Tween(
+    //   begin: 0.0,
+    //   end: TvUi.featuredHeight,
+    // ).animate(animationController));
 
     /// вычисляем цвет свечения
     useEffect(() {
