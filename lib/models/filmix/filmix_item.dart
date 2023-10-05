@@ -48,82 +48,134 @@ class FilmixItem extends MediaItem {
   }) {
     voices = [];
 
-    if (playerLinks != null && playerLinks!.playlist is Map) {
-      type = MediaItemType.show;
+    if (playerLinks != null) {
+      if (playerLinks!.movie.isNotEmpty) {
+        /// ^ если фильм
 
-      /// парсим плейлист
-      final playlist = (playerLinks!.playlist as Map<String, dynamic>).map(
-        (k, e) {
-          return MapEntry(
-            k,
-            (e as Map<String, dynamic>).map((k, e) {
-              try {
-                if (e is Map) {
-                  return MapEntry(
-                    k,
-                    (e as Map<String, dynamic>).map((k, e) {
-                      return MapEntry(
-                        k,
-                        FilmixShowLink.fromJson(e as Map<String, dynamic>),
-                      );
-                    }),
-                  );
-                } else {
-                  return MapEntry(
-                    k,
-                    (e as List<dynamic>).asMap().map((k, e) {
-                      return MapEntry(
-                        k + 1,
-                        FilmixShowLink.fromJson(e as Map<String, dynamic>),
-                      );
-                    }),
-                  );
-                }
-              } catch (exception) {
-                return const MapEntry('', <String, FilmixShowLink>{});
-              }
-            }),
+        type = MediaItemType.movie;
+
+        /// доступные варианты озвучки
+        voices = playerLinks!.movie.map((movie) {
+          return VoiceActing(
+            id: movie.translation,
+            name: movie.translation,
           );
-        },
-      );
+        }).toList();
 
-      /// очищаем варианты озвучки от дубликатов
-      final uniqueVoiceActings =
-          playlist.entries.map((e) => e.value.keys).flattened.toSet();
+        /// выбранная озвучка
+        if (voice.id.isEmpty && voices.isNotEmpty) {
+          voice = voices.first;
+        }
 
-      /// доступные варианты озвучки
-      voices = [
-        for (final voiceActing in uniqueVoiceActings)
-          VoiceActing(
-            id: voiceActing,
-            name: voiceActing,
+        final movie = playerLinks!.movie
+            .firstWhere((movie) => movie.translation == voice.id);
+
+        final qualityRegExp = RegExp(r'\[([,\d]+)\]');
+        final qualities = (qualityRegExp
+                    .allMatches(movie.link)
+                    .map((m) => m.group(0))
+                    .firstOrNull ??
+                '')
+            .split(',')
+            .map((quality) => int.tryParse(quality) ?? 0)
+            .toList()
+          ..removeWhere((quality) => quality == 0);
+
+        final videoUrl = movie.link.replaceFirst(RegExp(r'(\[[,\d]+\])'), '%s');
+
+        seasons = [
+          MediaItemSeason(
+            name: '',
+            episodes: [
+              MediaItemEpisode(
+                id: '$isarId@1|1',
+                seasonNumber: 1,
+                episodeNumber: 1,
+                videoFileUrl: videoUrl,
+                qualities: qualities,
+              )
+            ],
           )
-      ];
+        ];
+      } else if (playerLinks!.playlist is Map) {
+        /// ^ если сериал
 
-      if (voice.id.isEmpty && voices.isNotEmpty) {
-        voice = voices.first;
-      }
+        type = MediaItemType.show;
 
-      seasons = [];
+        /// парсим плейлист
+        final playlist = (playerLinks!.playlist as Map<String, dynamic>).map(
+          (k, e) {
+            return MapEntry(
+              k,
+              (e as Map<String, dynamic>).map((k, e) {
+                try {
+                  if (e is Map) {
+                    return MapEntry(
+                      k,
+                      (e as Map<String, dynamic>).map((k, e) {
+                        return MapEntry(
+                          k,
+                          FilmixShowLink.fromJson(e as Map<String, dynamic>),
+                        );
+                      }),
+                    );
+                  } else {
+                    return MapEntry(
+                      k,
+                      (e as List<dynamic>).asMap().map((k, e) {
+                        return MapEntry(
+                          k + 1,
+                          FilmixShowLink.fromJson(e as Map<String, dynamic>),
+                        );
+                      }),
+                    );
+                  }
+                } catch (exception) {
+                  return const MapEntry('', <String, FilmixShowLink>{});
+                }
+              }),
+            );
+          },
+        );
 
-      for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
-        if (seasonEntry.value.containsKey(voice.id)) {
-          final episodes = <MediaItemEpisode>[];
-          for (final (episodeIndex, episodeEntry)
-              in (seasonEntry.value[voice.id] as Map).entries.indexed) {
-            final showLink = episodeEntry.value as FilmixShowLink;
-            episodes.add(MediaItemEpisode(
-              id: '$isarId@${seasonIndex + 1}|${episodeIndex + 1}',
-              seasonNumber: seasonIndex + 1,
-              episodeNumber: episodeIndex + 1,
-              videoFileUrl: showLink.link,
-              qualities: showLink.qualities,
+        /// очищаем варианты озвучки от дубликатов
+        final uniqueVoiceActings =
+            playlist.entries.map((e) => e.value.keys).flattened.toSet();
+
+        /// доступные варианты озвучки
+        voices = [
+          for (final voiceActing in uniqueVoiceActings)
+            VoiceActing(
+              id: voiceActing,
+              name: voiceActing,
+            )
+        ];
+
+        if (voice.id.isEmpty && voices.isNotEmpty) {
+          voice = voices.first;
+        }
+
+        seasons = [];
+
+        for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
+          if (seasonEntry.value.containsKey(voice.id)) {
+            final episodes = <MediaItemEpisode>[];
+            for (final (episodeIndex, episodeEntry)
+                in (seasonEntry.value[voice.id] as Map).entries.indexed) {
+              final showLink = episodeEntry.value as FilmixShowLink;
+              episodes.add(MediaItemEpisode(
+                id: '$isarId@${seasonIndex + 1}|${episodeIndex + 1}',
+                seasonNumber: seasonIndex + 1,
+                episodeNumber: episodeIndex + 1,
+                videoFileUrl: showLink.link,
+                qualities: showLink.qualities,
+              ));
+            }
+            seasons.add(MediaItemSeason(
+              name: seasonEntry.key,
+              episodes: episodes,
             ));
           }
-          seasons.add(MediaItemSeason(
-            name: seasonEntry.key,
-            episodes: episodes,
-          ));
         }
       }
     }
@@ -181,6 +233,10 @@ class FilmixItem extends MediaItem {
 
     if (episodeIndex < episodes.length) {
       final episode = episodes[episodeIndex];
+
+      if (quality == 0) {
+        quality = episode.qualities.sorted((a, b) => b - a).lastOrNull ?? 0;
+      }
 
       return MediaItemUrl(
         video: episode.videoFileUrl.replaceFirst('_%s.', '_$quality.'),
