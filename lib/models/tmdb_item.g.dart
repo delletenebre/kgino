@@ -6,7 +6,8 @@ part of 'tmdb_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_TmdbItem _$$_TmdbItemFromJson(Map<String, dynamic> json) => _$_TmdbItem(
+_$TmdbItemImpl _$$TmdbItemImplFromJson(Map<String, dynamic> json) =>
+    _$TmdbItemImpl(
       title: json['title'] as String?,
       name: json['name'] as String?,
       overview: json['overview'] as String? ?? '',
@@ -15,7 +16,7 @@ _$_TmdbItem _$$_TmdbItemFromJson(Map<String, dynamic> json) => _$_TmdbItem(
       firstAirDate: json['first_air_date'] as String?,
     );
 
-Map<String, dynamic> _$$_TmdbItemToJson(_$_TmdbItem instance) =>
+Map<String, dynamic> _$$TmdbItemImplToJson(_$TmdbItemImpl instance) =>
     <String, dynamic>{
       'title': instance.title,
       'name': instance.name,

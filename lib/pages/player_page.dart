@@ -8,7 +8,6 @@ import 'package:media_kit_video/media_kit_video.dart';
 import '../models/media_item.dart';
 import '../providers/providers.dart';
 import '../ui/player/player_controls_overlay.dart';
-import '../utils.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
   final MediaItem mediaItem;

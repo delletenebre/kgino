@@ -50,9 +50,23 @@ abstract class _$FocusableList extends BuildlessAutoDisposeNotifier<int> {
 const focusableListProvider = FocusableListFamily();
 
 /// See also [FocusableList].
-class FocusableListFamily extends Family<int> {
+class FocusableListFamily extends Family {
   /// See also [FocusableList].
   const FocusableListFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'focusableListProvider';
 
   /// See also [FocusableList].
   FocusableListProvider call({
@@ -71,6 +85,7 @@ class FocusableListFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   FocusableListProvider getProviderOverride(
     covariant FocusableListProvider provider,
@@ -84,19 +99,26 @@ class FocusableListFamily extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FocusableList Function() create) {
+    return _$FocusableListFamilyOverride(this, create);
+  }
+}
+
+class _$FocusableListFamilyOverride implements FamilyOverride {
+  _$FocusableListFamilyOverride(this.overriddenFamily, this.create);
+
+  final FocusableList Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FocusableListFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'focusableListProvider';
+  FocusableListProvider getProviderOverride(
+    covariant FocusableListProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [FocusableList].
@@ -133,7 +155,7 @@ class FocusableListProvider
         );
 
   FocusableListProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -191,8 +213,48 @@ class FocusableListProvider
   }
 
   @override
+  ({
+    Key? key,
+    int itemCount,
+    double offset,
+    KeyEventResult keyEventResult,
+    ListObserverController? controller,
+  }) get argument {
+    return (
+      key: key,
+      itemCount: itemCount,
+      offset: offset,
+      keyEventResult: keyEventResult,
+      controller: controller,
+    );
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<FocusableList, int> createElement() {
     return _FocusableListProviderElement(this);
+  }
+
+  FocusableListProvider _copyWith(
+    FocusableList Function() create,
+  ) {
+    return FocusableListProvider._internal(
+      () => create()
+        ..key = key
+        ..itemCount = itemCount
+        ..offset = offset
+        ..keyEventResult = keyEventResult
+        ..controller = controller,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      key: key,
+      itemCount: itemCount,
+      offset: offset,
+      keyEventResult: keyEventResult,
+      controller: controller,
+    );
   }
 
   @override
@@ -254,4 +316,4 @@ class _FocusableListProviderElement
       (origin as FocusableListProvider).controller;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

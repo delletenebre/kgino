@@ -72,7 +72,7 @@ class SearchPage extends HookConsumerWidget {
               return MediaCard(
                 onTap: () {
                   /// переходим на страницу деталей о сериале
-                  context.goNamed('details', extra: item);
+                  context.pushNamed('details', extra: item);
                 },
                 title: item.title,
                 imageUrl: item.poster,

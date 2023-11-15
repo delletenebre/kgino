@@ -71,50 +71,61 @@ class TskgShowsPage extends HookConsumerWidget {
           ),
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
+          Column(
+            children: [
+              ValueListenableBuilder<MediaItem?>(
+                valueListenable: focusedMediaItem,
+                builder: (context, mediaItem, _) =>
+                    FeaturedCardBackground(mediaItem),
+              ),
+              SizedBox(
+                height: 178.0 + 24.0,
+                child: VerticalListView(
+                  key: UniqueKey(),
+                  clipBehavior: Clip.none,
+                  onFocusChange: (hasFocus) {
+                    if (!hasFocus) {
+                      focusedMediaItem.value = null;
+                    }
+                  },
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: TvUi.vPadding),
+                      child: HorizontalListView<MediaItem>(
+                        key: UniqueKey(),
+                        itemHeight: TvUi.horizontalCardSize.height,
+                        title: Text(category.title),
+                        asyncItems: category.itemsFuture,
+                        itemBuilder: (context, index, item) {
+                          return MediaCard(
+                            onFocusChange: (hasFocus) {
+                              if (hasFocus) {
+                                focusedMediaItem.value = item;
+                              }
+                            },
+                            onTap: () {
+                              /// переходим на страницу деталей о сериале
+                              context.pushNamed('details', extra: item);
+                            },
+                            title: item.title,
+                            imageUrl: item.poster,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
           ValueListenableBuilder<MediaItem?>(
             valueListenable: focusedMediaItem,
             builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
-          ),
-          Expanded(
-            child: VerticalListView(
-              key: UniqueKey(),
-              onFocusChange: (hasFocus) {
-                if (!hasFocus) {
-                  focusedMediaItem.value = null;
-                }
-              },
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: TvUi.vPadding),
-                  child: HorizontalListView<MediaItem>(
-                    key: UniqueKey(),
-                    itemHeight: TvUi.horizontalCardSize.height,
-                    title: Text(category.title),
-                    asyncItems: category.itemsFuture,
-                    itemBuilder: (context, index, item) {
-                      return MediaCard(
-                        onFocusChange: (hasFocus) {
-                          if (hasFocus) {
-                            focusedMediaItem.value = item;
-                          }
-                        },
-                        onTap: () {
-                          /// переходим на страницу деталей о сериале
-                          context.goNamed('details', extra: item);
-                        },
-                        title: item.title,
-                        imageUrl: item.poster,
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),

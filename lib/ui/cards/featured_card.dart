@@ -67,7 +67,6 @@ class FeaturedCard extends HookConsumerWidget {
                 178.0
             ? TvUi.featuredHeight
             : screenHeight - TvUi.navigationBarSize.height - 178.0;
-
     final animationController = useAnimationController(
       duration: kThemeAnimationDuration,
     );
@@ -100,6 +99,7 @@ class FeaturedCard extends HookConsumerWidget {
     return AnimatedContainer(
       duration: kThemeAnimationDuration,
       height: mediaItem == null ? 0.0 : featuredHeight,
+      color: theme.colorScheme.surface,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -207,6 +207,56 @@ class FeaturedCard extends HookConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FeaturedCardBackground extends HookWidget {
+  final MediaItem? mediaItem;
+  // final Widget? child;
+
+  const FeaturedCardBackground(
+    this.mediaItem, {
+    super.key,
+  });
+
+  @override
+  Widget build(context) {
+    final theme = Theme.of(context);
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final featuredHeight =
+        screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
+                178.0
+            ? TvUi.featuredHeight
+            : screenHeight - TvUi.navigationBarSize.height - 178.0;
+    final animationController = useAnimationController(
+      duration: kThemeAnimationDuration,
+    );
+    final positionAnimation = useAnimation<double>(Tween(
+      begin: -featuredHeight - 40.0,
+      end: 40.0,
+    ).animate(animationController));
+    final opacityAnimation = useAnimation<double>(Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(animationController));
+    // final heightAnimation = useAnimation<double>(Tween(
+    //   begin: 0.0,
+    //   end: TvUi.featuredHeight,
+    // ).animate(animationController));
+
+    /// вычисляем цвет свечения
+    useEffect(() {
+      animationController.forward();
+
+      /// we could optionally return some "dispose" logic here
+      return null;
+    }, const []);
+
+    return AnimatedContainer(
+      duration: kThemeAnimationDuration,
+      height: mediaItem == null ? 0.0 : featuredHeight,
+      color: theme.colorScheme.surface,
     );
   }
 }

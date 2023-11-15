@@ -63,22 +63,22 @@ class _$ApiErrorCopyWithImpl<T, $Res, $Val extends ApiError<T>>
 }
 
 /// @nodoc
-abstract class _$$_ApiErrorCopyWith<T, $Res>
+abstract class _$$ApiErrorImplCopyWith<T, $Res>
     implements $ApiErrorCopyWith<T, $Res> {
-  factory _$$_ApiErrorCopyWith(
-          _$_ApiError<T> value, $Res Function(_$_ApiError<T>) then) =
-      __$$_ApiErrorCopyWithImpl<T, $Res>;
+  factory _$$ApiErrorImplCopyWith(
+          _$ApiErrorImpl<T> value, $Res Function(_$ApiErrorImpl<T>) then) =
+      __$$ApiErrorImplCopyWithImpl<T, $Res>;
   @override
   @useResult
   $Res call({String message, Map<String, String> errors});
 }
 
 /// @nodoc
-class __$$_ApiErrorCopyWithImpl<T, $Res>
-    extends _$ApiErrorCopyWithImpl<T, $Res, _$_ApiError<T>>
-    implements _$$_ApiErrorCopyWith<T, $Res> {
-  __$$_ApiErrorCopyWithImpl(
-      _$_ApiError<T> _value, $Res Function(_$_ApiError<T>) _then)
+class __$$ApiErrorImplCopyWithImpl<T, $Res>
+    extends _$ApiErrorCopyWithImpl<T, $Res, _$ApiErrorImpl<T>>
+    implements _$$ApiErrorImplCopyWith<T, $Res> {
+  __$$ApiErrorImplCopyWithImpl(
+      _$ApiErrorImpl<T> _value, $Res Function(_$ApiErrorImpl<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -87,7 +87,7 @@ class __$$_ApiErrorCopyWithImpl<T, $Res>
     Object? message = null,
     Object? errors = null,
   }) {
-    return _then(_$_ApiError<T>(
+    return _then(_$ApiErrorImpl<T>(
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -102,8 +102,8 @@ class __$$_ApiErrorCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$_ApiError<T> implements _ApiError<T> {
-  const _$_ApiError(
+class _$ApiErrorImpl<T> implements _ApiError<T> {
+  const _$ApiErrorImpl(
       {this.message = '', final Map<String, String> errors = const {}})
       : _errors = errors;
 
@@ -128,7 +128,7 @@ class _$_ApiError<T> implements _ApiError<T> {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ApiError<T> &&
+            other is _$ApiErrorImpl<T> &&
             (identical(other.message, message) || other.message == message) &&
             const DeepCollectionEquality().equals(other._errors, _errors));
   }
@@ -140,14 +140,14 @@ class _$_ApiError<T> implements _ApiError<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ApiErrorCopyWith<T, _$_ApiError<T>> get copyWith =>
-      __$$_ApiErrorCopyWithImpl<T, _$_ApiError<T>>(this, _$identity);
+  _$$ApiErrorImplCopyWith<T, _$ApiErrorImpl<T>> get copyWith =>
+      __$$ApiErrorImplCopyWithImpl<T, _$ApiErrorImpl<T>>(this, _$identity);
 }
 
 abstract class _ApiError<T> implements ApiError<T> {
   const factory _ApiError(
       {final String message,
-      final Map<String, String> errors}) = _$_ApiError<T>;
+      final Map<String, String> errors}) = _$ApiErrorImpl<T>;
 
   @override
   String get message;
@@ -155,6 +155,6 @@ abstract class _ApiError<T> implements ApiError<T> {
   Map<String, String> get errors;
   @override
   @JsonKey(ignore: true)
-  _$$_ApiErrorCopyWith<T, _$_ApiError<T>> get copyWith =>
+  _$$ApiErrorImplCopyWith<T, _$ApiErrorImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

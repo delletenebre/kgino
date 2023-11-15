@@ -34,3 +34,5 @@ analyzer:
     - '**.g.dart'
     - '**.gr.dart'
     - '**/generated_plugin_registrant.dart'
+  plugins:
+    - custom_lint

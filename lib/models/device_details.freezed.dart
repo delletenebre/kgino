@@ -75,22 +75,22 @@ class _$DeviceDetailsCopyWithImpl<$Res, $Val extends DeviceDetails>
 }
 
 /// @nodoc
-abstract class _$$_DeviceDetailsCopyWith<$Res>
+abstract class _$$DeviceDetailsImplCopyWith<$Res>
     implements $DeviceDetailsCopyWith<$Res> {
-  factory _$$_DeviceDetailsCopyWith(
-          _$_DeviceDetails value, $Res Function(_$_DeviceDetails) then) =
-      __$$_DeviceDetailsCopyWithImpl<$Res>;
+  factory _$$DeviceDetailsImplCopyWith(
+          _$DeviceDetailsImpl value, $Res Function(_$DeviceDetailsImpl) then) =
+      __$$DeviceDetailsImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String id, String name, String vendor, String osVersion});
 }
 
 /// @nodoc
-class __$$_DeviceDetailsCopyWithImpl<$Res>
-    extends _$DeviceDetailsCopyWithImpl<$Res, _$_DeviceDetails>
-    implements _$$_DeviceDetailsCopyWith<$Res> {
-  __$$_DeviceDetailsCopyWithImpl(
-      _$_DeviceDetails _value, $Res Function(_$_DeviceDetails) _then)
+class __$$DeviceDetailsImplCopyWithImpl<$Res>
+    extends _$DeviceDetailsCopyWithImpl<$Res, _$DeviceDetailsImpl>
+    implements _$$DeviceDetailsImplCopyWith<$Res> {
+  __$$DeviceDetailsImplCopyWithImpl(
+      _$DeviceDetailsImpl _value, $Res Function(_$DeviceDetailsImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -101,7 +101,7 @@ class __$$_DeviceDetailsCopyWithImpl<$Res>
     Object? vendor = null,
     Object? osVersion = null,
   }) {
-    return _then(_$_DeviceDetails(
+    return _then(_$DeviceDetailsImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -124,8 +124,8 @@ class __$$_DeviceDetailsCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_DeviceDetails implements _DeviceDetails {
-  _$_DeviceDetails(
+class _$DeviceDetailsImpl implements _DeviceDetails {
+  _$DeviceDetailsImpl(
       {this.id = '', this.name = '', this.vendor = '', this.osVersion = ''});
 
   @override
@@ -149,8 +149,8 @@ class _$_DeviceDetails implements _DeviceDetails {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_DeviceDetailsCopyWith<_$_DeviceDetails> get copyWith =>
-      __$$_DeviceDetailsCopyWithImpl<_$_DeviceDetails>(this, _$identity);
+  _$$DeviceDetailsImplCopyWith<_$DeviceDetailsImpl> get copyWith =>
+      __$$DeviceDetailsImplCopyWithImpl<_$DeviceDetailsImpl>(this, _$identity);
 }
 
 abstract class _DeviceDetails implements DeviceDetails {
@@ -158,7 +158,7 @@ abstract class _DeviceDetails implements DeviceDetails {
       {final String id,
       final String name,
       final String vendor,
-      final String osVersion}) = _$_DeviceDetails;
+      final String osVersion}) = _$DeviceDetailsImpl;
 
   @override
   String get id;
@@ -170,6 +170,6 @@ abstract class _DeviceDetails implements DeviceDetails {
   String get osVersion;
   @override
   @JsonKey(ignore: true)
-  _$$_DeviceDetailsCopyWith<_$_DeviceDetails> get copyWith =>
+  _$$DeviceDetailsImplCopyWith<_$DeviceDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

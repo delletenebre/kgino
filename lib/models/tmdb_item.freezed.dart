@@ -97,10 +97,11 @@ class _$TmdbItemCopyWithImpl<$Res, $Val extends TmdbItem>
 }
 
 /// @nodoc
-abstract class _$$_TmdbItemCopyWith<$Res> implements $TmdbItemCopyWith<$Res> {
-  factory _$$_TmdbItemCopyWith(
-          _$_TmdbItem value, $Res Function(_$_TmdbItem) then) =
-      __$$_TmdbItemCopyWithImpl<$Res>;
+abstract class _$$TmdbItemImplCopyWith<$Res>
+    implements $TmdbItemCopyWith<$Res> {
+  factory _$$TmdbItemImplCopyWith(
+          _$TmdbItemImpl value, $Res Function(_$TmdbItemImpl) then) =
+      __$$TmdbItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -113,11 +114,11 @@ abstract class _$$_TmdbItemCopyWith<$Res> implements $TmdbItemCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_TmdbItemCopyWithImpl<$Res>
-    extends _$TmdbItemCopyWithImpl<$Res, _$_TmdbItem>
-    implements _$$_TmdbItemCopyWith<$Res> {
-  __$$_TmdbItemCopyWithImpl(
-      _$_TmdbItem _value, $Res Function(_$_TmdbItem) _then)
+class __$$TmdbItemImplCopyWithImpl<$Res>
+    extends _$TmdbItemCopyWithImpl<$Res, _$TmdbItemImpl>
+    implements _$$TmdbItemImplCopyWith<$Res> {
+  __$$TmdbItemImplCopyWithImpl(
+      _$TmdbItemImpl _value, $Res Function(_$TmdbItemImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -130,7 +131,7 @@ class __$$_TmdbItemCopyWithImpl<$Res>
     Object? posterPath = null,
     Object? firstAirDate = freezed,
   }) {
-    return _then(_$_TmdbItem(
+    return _then(_$TmdbItemImpl(
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -162,8 +163,8 @@ class __$$_TmdbItemCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_TmdbItem extends _TmdbItem with DiagnosticableTreeMixin {
-  const _$_TmdbItem(
+class _$TmdbItemImpl extends _TmdbItem with DiagnosticableTreeMixin {
+  const _$TmdbItemImpl(
       {this.title,
       this.name,
       this.overview = '',
@@ -172,8 +173,8 @@ class _$_TmdbItem extends _TmdbItem with DiagnosticableTreeMixin {
       this.firstAirDate})
       : super._();
 
-  factory _$_TmdbItem.fromJson(Map<String, dynamic> json) =>
-      _$$_TmdbItemFromJson(json);
+  factory _$TmdbItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TmdbItemImplFromJson(json);
 
   @override
   final String? title;
@@ -213,7 +214,7 @@ class _$_TmdbItem extends _TmdbItem with DiagnosticableTreeMixin {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TmdbItem &&
+            other is _$TmdbItemImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.overview, overview) ||
@@ -234,12 +235,12 @@ class _$_TmdbItem extends _TmdbItem with DiagnosticableTreeMixin {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TmdbItemCopyWith<_$_TmdbItem> get copyWith =>
-      __$$_TmdbItemCopyWithImpl<_$_TmdbItem>(this, _$identity);
+  _$$TmdbItemImplCopyWith<_$TmdbItemImpl> get copyWith =>
+      __$$TmdbItemImplCopyWithImpl<_$TmdbItemImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_TmdbItemToJson(
+    return _$$TmdbItemImplToJson(
       this,
     );
   }
@@ -252,10 +253,11 @@ abstract class _TmdbItem extends TmdbItem {
       final String overview,
       final String backdropPath,
       final String posterPath,
-      final String? firstAirDate}) = _$_TmdbItem;
+      final String? firstAirDate}) = _$TmdbItemImpl;
   const _TmdbItem._() : super._();
 
-  factory _TmdbItem.fromJson(Map<String, dynamic> json) = _$_TmdbItem.fromJson;
+  factory _TmdbItem.fromJson(Map<String, dynamic> json) =
+      _$TmdbItemImpl.fromJson;
 
   @override
   String? get title;
@@ -271,6 +273,6 @@ abstract class _TmdbItem extends TmdbItem {
   String? get firstAirDate;
   @override
   @JsonKey(ignore: true)
-  _$$_TmdbItemCopyWith<_$_TmdbItem> get copyWith =>
+  _$$TmdbItemImplCopyWith<_$TmdbItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

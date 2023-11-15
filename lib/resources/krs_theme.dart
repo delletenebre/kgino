@@ -92,11 +92,13 @@ class KrsTheme {
         // primary: seedColor,
         // shadow: colorScheme['dark']!.shadow.withOpacity(0.33),
         ),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {
-      TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-      TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-      TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-    }),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+      },
+    ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         // textStyle: MaterialStateProperty.resolveWith((states) {

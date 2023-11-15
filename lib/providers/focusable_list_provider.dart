@@ -9,6 +9,7 @@ part 'focusable_list_provider.g.dart';
 class FocusableList extends _$FocusableList {
   final FocusNode generalFocusNode = FocusNode();
   late final ListObserverController listObserverController;
+  late final SliverObserverController sliverObserverController;
   List<FocusNode> focusNodes = [];
 
   @override
@@ -26,6 +27,10 @@ class FocusableList extends _$FocusableList {
           controller: ScrollController(),
         );
 
+    sliverObserverController = SliverObserverController(
+      controller: ScrollController(),
+    );
+
     ref.onCancel(() {
       for (final focusNode in focusNodes) {
         focusNode.dispose();
@@ -33,6 +38,7 @@ class FocusableList extends _$FocusableList {
 
       generalFocusNode.dispose();
       listObserverController.controller?.dispose();
+      sliverObserverController.controller?.dispose();
     });
 
     return 0;

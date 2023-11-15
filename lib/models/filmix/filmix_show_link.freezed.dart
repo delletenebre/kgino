@@ -68,22 +68,22 @@ class _$FilmixShowLinkCopyWithImpl<$Res, $Val extends FilmixShowLink>
 }
 
 /// @nodoc
-abstract class _$$_FilmixShowLinkCopyWith<$Res>
+abstract class _$$FilmixShowLinkImplCopyWith<$Res>
     implements $FilmixShowLinkCopyWith<$Res> {
-  factory _$$_FilmixShowLinkCopyWith(
-          _$_FilmixShowLink value, $Res Function(_$_FilmixShowLink) then) =
-      __$$_FilmixShowLinkCopyWithImpl<$Res>;
+  factory _$$FilmixShowLinkImplCopyWith(_$FilmixShowLinkImpl value,
+          $Res Function(_$FilmixShowLinkImpl) then) =
+      __$$FilmixShowLinkImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String link, List<int> qualities});
 }
 
 /// @nodoc
-class __$$_FilmixShowLinkCopyWithImpl<$Res>
-    extends _$FilmixShowLinkCopyWithImpl<$Res, _$_FilmixShowLink>
-    implements _$$_FilmixShowLinkCopyWith<$Res> {
-  __$$_FilmixShowLinkCopyWithImpl(
-      _$_FilmixShowLink _value, $Res Function(_$_FilmixShowLink) _then)
+class __$$FilmixShowLinkImplCopyWithImpl<$Res>
+    extends _$FilmixShowLinkCopyWithImpl<$Res, _$FilmixShowLinkImpl>
+    implements _$$FilmixShowLinkImplCopyWith<$Res> {
+  __$$FilmixShowLinkImplCopyWithImpl(
+      _$FilmixShowLinkImpl _value, $Res Function(_$FilmixShowLinkImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +92,7 @@ class __$$_FilmixShowLinkCopyWithImpl<$Res>
     Object? link = null,
     Object? qualities = null,
   }) {
-    return _then(_$_FilmixShowLink(
+    return _then(_$FilmixShowLinkImpl(
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -107,13 +107,13 @@ class __$$_FilmixShowLinkCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FilmixShowLink implements _FilmixShowLink {
-  const _$_FilmixShowLink(
+class _$FilmixShowLinkImpl implements _FilmixShowLink {
+  const _$FilmixShowLinkImpl(
       {this.link = '', final List<int> qualities = const []})
       : _qualities = qualities;
 
-  factory _$_FilmixShowLink.fromJson(Map<String, dynamic> json) =>
-      _$$_FilmixShowLinkFromJson(json);
+  factory _$FilmixShowLinkImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FilmixShowLinkImplFromJson(json);
 
   @override
   @JsonKey()
@@ -136,7 +136,7 @@ class _$_FilmixShowLink implements _FilmixShowLink {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_FilmixShowLink &&
+            other is _$FilmixShowLinkImpl &&
             (identical(other.link, link) || other.link == link) &&
             const DeepCollectionEquality()
                 .equals(other._qualities, _qualities));
@@ -150,12 +150,13 @@ class _$_FilmixShowLink implements _FilmixShowLink {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_FilmixShowLinkCopyWith<_$_FilmixShowLink> get copyWith =>
-      __$$_FilmixShowLinkCopyWithImpl<_$_FilmixShowLink>(this, _$identity);
+  _$$FilmixShowLinkImplCopyWith<_$FilmixShowLinkImpl> get copyWith =>
+      __$$FilmixShowLinkImplCopyWithImpl<_$FilmixShowLinkImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_FilmixShowLinkToJson(
+    return _$$FilmixShowLinkImplToJson(
       this,
     );
   }
@@ -163,10 +164,10 @@ class _$_FilmixShowLink implements _FilmixShowLink {
 
 abstract class _FilmixShowLink implements FilmixShowLink {
   const factory _FilmixShowLink(
-      {final String link, final List<int> qualities}) = _$_FilmixShowLink;
+      {final String link, final List<int> qualities}) = _$FilmixShowLinkImpl;
 
   factory _FilmixShowLink.fromJson(Map<String, dynamic> json) =
-      _$_FilmixShowLink.fromJson;
+      _$FilmixShowLinkImpl.fromJson;
 
   @override
   String get link;
@@ -174,6 +175,6 @@ abstract class _FilmixShowLink implements FilmixShowLink {
   List<int> get qualities;
   @override
   @JsonKey(ignore: true)
-  _$$_FilmixShowLinkCopyWith<_$_FilmixShowLink> get copyWith =>
+  _$$FilmixShowLinkImplCopyWith<_$FilmixShowLinkImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
