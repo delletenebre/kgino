@@ -8,6 +8,7 @@ import '../../resources/krs_locale.dart';
 import '../app_logo.dart';
 import 'krs_navigation_button.dart';
 import 'krs_navigation_search_button.dart';
+import 'krs_navigation_bar_settings_button.dart';
 
 class KrsNavigationBar extends HookConsumerWidget
     implements PreferredSizeWidget {
@@ -90,26 +91,19 @@ class KrsNavigationBar extends HookConsumerWidget
                       },
                       label: locale.movies,
                     ),
-                    // Expanded(
-                    //   child: SizedBox(),
-                    // ),
+                    const Expanded(
+                      child: SizedBox(),
+                    ),
                     // KrsNavigationButton(
-                    //   focusNode: tabsController.focusNodes[2],
                     //   selected: activeTab == 2,
                     //   onFocusChange: (hasFocus) {
                     //     if (hasFocus) {
                     //       tabsController.changePage(2);
                     //     }
                     //   },
-                    //   label: locale.settings,
+                    //   icon: Icons.settings_outlined,
                     // ),
-                    // const SizedBox(width: 4.0),
-                    // KrsTabBarButton(
-                    //   index: 2,
-                    //   onPressed: () {},
-                    //   label: Text(locale.cameras),
-                    // ),
-                    // const KrsTabBarSettingsButton(),
+                    const KrsNavigationBarSettingsButton(),
                   ],
                 ),
               ),

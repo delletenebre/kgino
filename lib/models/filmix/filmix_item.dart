@@ -23,6 +23,8 @@ class FilmixItem extends MediaItem {
   /// ссылки на проигрываемые файлы
   final FilmixPlayerLinks? playerLinks;
 
+  final int duration;
+
   FilmixItem({
     required super.id,
     required super.title,
@@ -45,6 +47,7 @@ class FilmixItem extends MediaItem {
     super.subtitles,
     super.voice,
     super.quality = 480,
+    this.duration = 0,
   }) {
     voices = [];
 
@@ -93,6 +96,7 @@ class FilmixItem extends MediaItem {
                 episodeNumber: 1,
                 videoFileUrl: videoUrl,
                 qualities: qualities,
+                duration: duration * 60,
               )
             ],
           )

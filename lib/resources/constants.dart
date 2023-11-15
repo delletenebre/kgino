@@ -25,4 +25,7 @@ class TvUi {
   static const featuredSize = Size(484.0, 316.0);
   static const featuredWidth = 484.0;
   static const featuredHeight = 316.0;
+
+  static double verticalListHeight = horizontalCardSize.height + 44.0 + 24.0;
+  static double verticalListHeightPad = verticalListHeight + 12.0;
 }

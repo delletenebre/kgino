@@ -91,7 +91,7 @@ class ShowsPage extends HookConsumerWidget {
                   FeaturedCardBackground(mediaItem),
             ),
             SizedBox(
-              height: 178.0 + 24.0,
+              height: TvUi.verticalListHeightPad,
               child: VerticalListView(
                 key: UniqueKey(),
                 clipBehavior: Clip.none,
@@ -115,7 +115,10 @@ class ShowsPage extends HookConsumerWidget {
                         return MediaCard(
                           onFocusChange: (hasFocus) {
                             if (hasFocus) {
-                              focusedMediaItem.value = item;
+                              focusedMediaItem.value =
+                                  item.type == MediaItemType.folder
+                                      ? null
+                                      : item;
                             }
                           },
                           onTap: () {

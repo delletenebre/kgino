@@ -58,6 +58,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       quality: json['quality'] == null
           ? 480
           : const IntConverter().fromJson(json['quality']),
+      duration: json['duration'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
@@ -82,6 +83,7 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'categories': instance.categories,
       'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
       'player_links': instance.playerLinks?.toJson(),
+      'duration': instance.duration,
     };
 
 const _$OnlineServiceEnumMap = {

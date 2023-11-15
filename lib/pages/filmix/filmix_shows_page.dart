@@ -81,7 +81,7 @@ class FilmixShowsPage extends HookConsumerWidget {
                     FeaturedCardBackground(mediaItem),
               ),
               SizedBox(
-                height: 178.0 + 24.0,
+                height: TvUi.verticalListHeightPad,
                 child: VerticalListView(
                   key: UniqueKey(),
                   clipBehavior: Clip.none,
