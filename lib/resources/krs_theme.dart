@@ -55,7 +55,6 @@ class KrsTheme {
     fontFamily: 'Golos UI',
     colorScheme: colorScheme['light']!.copyWith(
       primary: seedColor,
-      //shadow: colorScheme['light']!.shadow,
     ),
 
     /// Define FadeUpwardsPageTransitionsBuilder as the default transition on
@@ -88,10 +87,7 @@ class KrsTheme {
     brightness: Brightness.dark,
     useMaterial3: true,
     fontFamily: 'Golos UI',
-    colorScheme: colorScheme['dark']!.copyWith(
-        // primary: seedColor,
-        // shadow: colorScheme['dark']!.shadow.withOpacity(0.33),
-        ),
+    colorScheme: colorScheme['dark']!,
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
@@ -172,26 +173,54 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           message:
               'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              FilledButton(
-                autofocus: true,
-                onPressed: () {
-                  if (mounted) {
-                    controller(context).player
-                      ..seek(Duration(seconds: widget.initialPosition))
-                      ..play();
-                    Navigator.of(context).pop();
-                  }
+              HookBuilder(
+                builder: (context) {
+                  final focused = useState(false);
+
+                  return AnimatedScale(
+                    duration: kThemeAnimationDuration,
+                    scale: focused.value ? 1.1 : 1.0,
+                    child: FilledButton(
+                      autofocus: true,
+                      onFocusChange: (hasFocus) {
+                        focused.value = hasFocus;
+                      },
+                      onPressed: () {
+                        if (mounted) {
+                          controller(context).player
+                            ..seek(Duration(seconds: widget.initialPosition))
+                            ..play();
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Text('Продолжить'),
+                    ),
+                  );
                 },
-                child: Text('Продолжить'),
               ),
-              FilledButton(
-                onPressed: () {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+              const SizedBox(height: 12.0),
+              HookBuilder(
+                builder: (context) {
+                  final focused = useState(false);
+
+                  return AnimatedScale(
+                    duration: kThemeAnimationDuration,
+                    scale: focused.value ? 1.1 : 1.0,
+                    child: FilledButton(
+                      onFocusChange: (hasFocus) {
+                        focused.value = hasFocus;
+                      },
+                      onPressed: () {
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Text('Начать с начала'),
+                    ),
+                  );
                 },
-                child: Text('Начать с начала'),
               ),
             ],
           ),

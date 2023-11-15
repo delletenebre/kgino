@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/filmix/filmix_item.dart';
+import '../models/filmix/filmix_profile.dart';
+import '../models/filmix/filmix_token.dart';
 import '../models/media_item.dart';
 import '../providers/providers.dart';
 import 'interceptors/logs_interceptor.dart';
@@ -205,6 +207,51 @@ class FilmixApi {
         return json.map<MediaItem>((item) {
           return FilmixItem.fromJson(item);
         }).toList();
+      },
+    );
+  }
+
+  /// запрос профиля пользователя
+  Future<FilmixProfile> getProfile({
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<FilmixProfile>().call(
+      request: _dio.get(
+        '/user_profile',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) async {
+        return FilmixProfile.fromJson(json);
+      },
+    );
+  }
+
+  /// запрос ключа авторизации
+  Future<FilmixToken> getToken({
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<FilmixToken>().call(
+      request: _dio.get(
+        '/token_request',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) async {
+        final token = FilmixToken.fromJson(json);
+
+        /// хранилище данных
+        final storage = ref.read(storageProvider);
+
+        storage.sharedStorage.setString('filmix_auth_token', token.code);
+
+        _queryParams['user_dev_token'] = token.code;
+
+        return token;
       },
     );
   }

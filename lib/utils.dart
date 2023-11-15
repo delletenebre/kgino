@@ -12,7 +12,7 @@ class Utils {
 
     return showDialog<T>(
       context: context,
-      barrierColor: theme.colorScheme.surface.withOpacity(0.96),
+      barrierColor: Colors.black.withOpacity(0.62),
       barrierDismissible: true,
       builder: (context) => Scaffold(
         backgroundColor: Colors.transparent,
@@ -21,7 +21,7 @@ class Utils {
             padding: const EdgeInsets.all(24.0),
             width: 528.0,
             decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
+              color: KrsTheme.getSurfaceContainer(context),
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: Column(

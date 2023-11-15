@@ -7,6 +7,7 @@ import '../../providers/navigation.dart';
 import '../../resources/constants.dart';
 import '../../resources/krs_locale.dart';
 import '../../utils.dart';
+import 'filmix_account_dialog.dart';
 
 class KrsNavigationBarSettingsButton extends HookConsumerWidget {
   const KrsNavigationBarSettingsButton({
@@ -15,7 +16,6 @@ class KrsNavigationBarSettingsButton extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
 
     final showOverlay = useState(false);
@@ -63,16 +63,6 @@ class KrsNavigationBarSettingsButton extends HookConsumerWidget {
               //   end: theme.colorScheme.secondaryContainer,
               // ).animate(animationController));
 
-              final widthAnimation = useAnimation<double?>(Tween<double>(
-                begin: 0.0,
-                end: 320.0,
-              ).animate(animationController));
-
-              final heightAnimation = useAnimation<double?>(Tween<double>(
-                begin: 0.0,
-                end: MediaQuery.of(context).size.height,
-              ).animate(animationController));
-
               final scaleAnimation = useAnimation<double?>(Tween<double>(
                 begin: 0.0,
                 end: 1.0,
@@ -82,45 +72,52 @@ class KrsNavigationBarSettingsButton extends HookConsumerWidget {
 
               return Stack(
                 children: [
+                  Positioned.fill(
+                    child: ColoredBox(
+                      color: Colors.black.withOpacity(0.6),
+                    ),
+                  ),
                   Positioned(
-                    right: 0, //positionRightAnimation,
-                    top: 0, //positionTopAnimation,
+                    right: 0,
+                    top: 0,
                     child: Transform.scale(
                       alignment: Alignment.center,
                       scale: scaleAnimation,
-                      origin: const Offset(
+                      origin: Offset(
                         320.0 / 2.0 - TvUi.hPadding - 12.0,
-                        -TvUi.vPadding - 14.0,
+                        -screenSize.height / 2 + TvUi.vPadding,
                       ),
                       child: Material(
-                        color: theme.colorScheme.primaryContainer,
-                        //color: Colors.transparent,
-                        child: Container(
+                        color: KrsTheme.getSurfaceContainer(context),
+                        child: SizedBox(
                           width: 320.0,
-                          //height: heightAnimation,
+                          height: screenSize.height,
                           child: Column(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
                                   right: TvUi.hPadding + 8.0,
                                   top: TvUi.vPadding + 4.0,
+                                  bottom: 24.0,
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(locale.settings),
+                                    const SizedBox(width: 12.0),
                                     const Icon(Icons.settings_outlined),
                                   ],
                                 ),
                               ),
                               ListTile(
                                 focusNode: focusNode,
-                                onTap: () {},
+                                onTap: () {
+                                  Utils.showModal(
+                                    context: context,
+                                    child: const FilmixAccountDialog(),
+                                  );
+                                },
                                 title: Text('Аккаунт Filmix'),
-                              ),
-                              ListTile(
-                                onTap: () {},
-                                title: Text('Аккаунт Filmix 3'),
                               ),
                             ],
                           ),
