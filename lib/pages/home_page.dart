@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../providers/navigation.dart';
 import '../ui/navigation_bar/krs_navigation_bar.dart';
-import '../ui/navigation_bar/settings_drawer.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({
@@ -24,7 +23,6 @@ class HomePage extends HookConsumerWidget {
       },
       child: Scaffold(
         appBar: const KrsNavigationBar(),
-        // endDrawer: const SettingsDrawer(),
         body: PageView(
           clipBehavior: Clip.none,
           physics: const NeverScrollableScrollPhysics(),
