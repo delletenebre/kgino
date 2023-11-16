@@ -64,12 +64,12 @@ class ShowsPage extends HookConsumerWidget {
           poster: 'assets/images/tskg.svg',
           type: MediaItemType.folder,
         ),
-        MediaItem(
-          id: 'rezkaShows',
-          title: 'HD Rezka',
-          poster: 'assets/images/tskg.svg',
-          type: MediaItemType.folder,
-        ),
+        // MediaItem(
+        //   id: 'rezkaShows',
+        //   title: 'HD Rezka',
+        //   poster: 'assets/images/tskg.svg',
+        //   type: MediaItemType.folder,
+        // ),
       ];
     });
 
