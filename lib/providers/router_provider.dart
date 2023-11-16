@@ -9,6 +9,7 @@ import '../pages/filmix/filmix_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
+import '../pages/rezka/rezka_shows_page.dart';
 import '../pages/ts.kg/tskg_shows_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -65,6 +66,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'tskgShows',
             builder: (context, state) {
               return const TskgShowsPage();
+            },
+          ),
+          GoRoute(
+            path: 'rezka/shows',
+            name: 'rezkaShows',
+            builder: (context, state) {
+              return const RezkaShowsPage();
             },
           ),
           GoRoute(

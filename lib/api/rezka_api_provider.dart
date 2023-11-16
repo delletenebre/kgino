@@ -11,6 +11,7 @@ import 'package:kgino/extensions/string.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/media_item.dart';
+import '../models/rezka/rezka_item.dart';
 import '../models/tskg/tskg_item.dart';
 import '../models/voice_acting.dart';
 import '../providers/providers.dart';
@@ -163,7 +164,7 @@ class RezkaApi {
   /// список новых сериалов
   Future<List<MediaItem>> getLatestShows() async {
     return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/'),
+      request: _dio.get('/series/page/1/?filter=last'),
       decoder: (response) async {
         final html = response.toString();
 
@@ -175,35 +176,243 @@ class RezkaApi {
         final document = parse(html);
 
         /// получаем элементы списка популярных
-        final elements = document
-                .getElementById('index-news-poster-tab')
-                ?.getElementsByClassName('app-shows-item-full') ??
-            [];
+        final elements =
+            document.getElementsByClassName('b-content__inline_item');
 
         for (final element in elements) {
-          // <div class="show">
-          //   <a href="/show/wednesday_rezka">
-          //     <img src="/posters/wednesday_rezka.png" srcset="/posters2/wednesday_rezka.png 2x" alt="Уэнздей (Уэнсдей)" class="poster poster-lazy" data-toggle="tooltip" data-placement="top" title="Зарубежные сериалы, Комедия">
-          //     <p class="show-title"><img class="app-shows-show-flag" src="https://www.ts.kg/img/flags/svg/4x3/us.svg" alt="США">Уэнздей (Уэнсдей)</p>
-          //   </a>
+          // <div class="b-content__inline_item" data-id="64013" data-url="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">
+          //   <div class="b-content__inline_item-cover"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html"> <img src="http://static.rezka.cloud/i/2023/11/15/p608f1813f7e3yk66h87r.jpg" height="250" width="166" alt="Смотреть Новые уловки онлайн в HD качестве 720p" /> <span class="cat series"><i class="entity">Сериал</i><i class="icon"></i></span> <span class="info">Завершен (все серии)</span> <i class="i-sprt play"></i> </a> <i class="trailer show-trailer" data-id="64013" data-full="1"><b>Смотреть трейлер</b></i> </div>
+          //   <div class="b-content__inline_item-link"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">Новые уловки</a>
+          //     <div>2003-2015, Великобритания, Детективы</div>
+          //   </div>
           // </div>
 
           /// парсим ссылку
-          final link = element.getElementsByTagName('a').first;
-          final src = link.attributes['href'] ?? '';
-          final id = TskgItem.getShowIdFromUrl(src);
+          final id = element.attributes['data-id'] ?? '';
+          final posterUrl = element
+                  .getElementsByTagName('img')
+                  .firstOrNull
+                  ?.attributes['src'] ??
+              '';
+          final link = element
+              .getElementsByClassName('b-content__inline_item-link')
+              .first;
 
           /// парсим название
-          final title =
-              element.getElementsByClassName('app-shows-card-title').first.text;
+          final title = link.getElementsByTagName('a').first.text;
 
-          items.add(TskgItem(
+          items.add(RezkaItem(
             id: id,
             title: title,
+            poster: posterUrl,
           ));
         }
 
         return items;
+      },
+    );
+  }
+
+  /// детали
+  Future<RezkaItem> getDetails({
+    required String id,
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<RezkaItem>().call(
+      request: _dio.get('/$id-a.html'),
+      decoder: (html) async {
+        /// парсим html
+        final document = parse(html);
+
+        /// парсим озвучку
+        final translatorsElements =
+            document.getElementsByClassName('b-translator__item');
+
+        /// парсим постер
+        final posterUrl = document
+                .getElementsByClassName('b-sidecover')
+                .firstOrNull
+                ?.getElementsByTagName('a')
+                .firstOrNull
+                ?.attributes['href'] ??
+            '';
+
+        /// парсим название фильма
+        final movieName = document
+                .getElementsByClassName('b-post__title')
+                .firstOrNull
+                ?.getElementsByTagName('h1')
+                .firstOrNull
+                ?.text ??
+            '';
+
+        /// парсим оригинальное название фильма
+        final originalName = document
+                .getElementsByClassName('b-post__origtitle')
+                .firstOrNull
+                ?.text ??
+            '';
+
+        /// парсим описание фильма
+        final description = document
+                .getElementsByClassName('b-post__description_text')
+                .firstOrNull
+                ?.text ??
+            '';
+
+        /// рейтинг IMDb
+        double imdbRating = 0.0;
+
+        /// рейтинг Kinopoisk
+        double kinopoiskRating = 0.0;
+
+        /// год выхода
+        String year = '';
+
+        /// страны
+        List<String> countries = [];
+
+        /// жанры
+        List<String> genres = [];
+
+        /// продолжительность
+        Duration duration = Duration.zero;
+
+        /// сезоны
+        List<MediaItemSeason> seasons = [];
+
+        final voiceActings = <VoiceActing>[];
+        Map<String, List<MediaItemSeason>> voiceActingSeasons = {};
+
+        /// парсим переводы
+        final translatorsList = document
+                .getElementById('translators-list')
+                ?.getElementsByTagName('li')
+                .map((e) {
+              return VoiceActing(
+                id: e.attributes['data-translator_id'] ?? '',
+                name: e.text,
+              );
+            }).toList() ??
+            [];
+        final voiceActing = translatorsList.firstOrNull?.name ?? '';
+
+        final postInfoTable = document
+                .getElementsByClassName('b-post__info')
+                .firstOrNull
+                ?.getElementsByTagName('tr') ??
+            [];
+
+        for (final Element tr in postInfoTable) {
+          final section = tr
+                  .getElementsByClassName('l')
+                  .firstOrNull
+                  ?.getElementsByTagName('h2')
+                  .firstOrNull
+                  ?.text ??
+              '';
+
+          if (section == 'Рейтинги') {
+            /// парсим рейтинг IMDb
+            imdbRating = double.tryParse(tr
+                        .getElementsByClassName('b-post__info_rates imdb')
+                        .firstOrNull
+                        ?.getElementsByClassName('bold')
+                        .firstOrNull
+                        ?.text ??
+                    '0.0') ??
+                0.0;
+
+            /// парсим рейтинг Kinopoisk
+            kinopoiskRating = double.tryParse(tr
+                        .getElementsByClassName('b-post__info_rates kp')
+                        .firstOrNull
+                        ?.getElementsByClassName('bold')
+                        .firstOrNull
+                        ?.text ??
+                    '0.0') ??
+                0.0;
+          } else if (section == 'Дата выхода') {
+            /// парсим год выхода
+            final yearHref = tr
+                .getElementsByTagName('a')
+                .firstOrNull
+                ?.attributes['href']
+                ?.split('/');
+            yearHref?.removeLast();
+            year = yearHref?.lastOrNull ?? '';
+          } else if (section == 'Страна') {
+            /// парсим страны
+            countries =
+                tr.getElementsByTagName('a').map((e) => e.text).toList();
+          } else if (section == 'Жанр') {
+            /// парсим жанры
+            genres =
+                tr.getElementsByTagName('span').map((e) => e.text).toList();
+          } else if (section == 'Время') {
+            /// парсим продолжительность
+            final durationMinutes = int.tryParse(tr
+                        .getElementsByTagName('td')
+                        .lastOrNull
+                        ?.text
+                        .split(' ')
+                        .firstOrNull ??
+                    '0') ??
+                0;
+            duration = Duration(minutes: durationMinutes);
+          }
+        }
+
+        // voiceActings[movie.translation] = VoiceActing(
+        //   id: movie.translation,
+        //   name: movie.translation,
+        //   seasons: [
+        //     SeasonItem(
+        //       episodes: [
+        //         EpisodeItem(
+        //           id: '0/0',
+        //           fullId: EpisodeItem.getFullId(provider.name, id.toString(), '0/0'),
+        //           playableQualities: playableQualities,
+        //           videoFileUrl: videoUrl,
+        //           duration: duration,
+        //         ),
+        //       ],
+        //     )
+        //   ],
+        // );
+
+        final movieId = document
+                .getElementById('send-video-issue')
+                ?.attributes['data-id'] ??
+            '';
+
+        return RezkaItem(
+          id: movieId,
+          title: movieName,
+          poster: posterUrl,
+          overview: description.trim(),
+          seasons: [
+            MediaItemSeason(
+                // episodes: [
+                //   MediaIteme(
+                //     id: '0/0',
+                //     fullId: EpisodeItem.getFullId(
+                //         KginoProvider.hdrz.name, id.toString(), '0/0'),
+                //   ),
+                // ],
+                ),
+          ],
+
+          originalTitle: originalName,
+          year: year.toString(),
+          countries: countries,
+          genres: genres,
+          imdbRating: imdbRating,
+          kinopoiskRating: kinopoiskRating,
+          // duration: duration,
+          // voiceActings: {for (final v in translatorsList) v.name: v},
+          // voiceActing: voiceActing,
+        );
       },
     );
   }
