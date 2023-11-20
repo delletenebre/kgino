@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import '../../resources/constants.dart';
 
@@ -42,12 +41,12 @@ class MediaCard extends HookWidget {
 
         try {
           /// получаем цветовую палитру изобоажения
-          PaletteGenerator.fromImageProvider(
-                  CachedNetworkImageProvider(imageUrl))
-              .then((palette) {
-            if (isMounted() && palette.vibrantColor != null) {
+          ColorScheme.fromImageProvider(
+                  provider: CachedNetworkImageProvider(imageUrl))
+              .then((colorScheme) {
+            if (isMounted()) {
               /// обновляем цвет свечения
-              glowColor.value = palette.vibrantColor!.color;
+              glowColor.value = colorScheme.primary;
             }
           });
         } catch (exception) {

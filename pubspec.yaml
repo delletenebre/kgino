@@ -42,7 +42,6 @@ dependencies:
   media_kit: ^1.1.10+1
   media_kit_video: ^1.2.4
   media_kit_libs_video: ^1.0.4
-  palette_generator: ^0.3.3+3
   path_provider: ^2.1.1
   riverpod_annotation: ^3.0.0-dev.0
   scrollview_observer: ^1.16.4
