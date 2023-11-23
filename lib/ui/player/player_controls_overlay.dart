@@ -33,6 +33,8 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
   /// позиция последнего  просмотра
   final int initialPosition;
 
+  final bool menuOpened;
+
   const PlayerControlsOverlay({
     super.key,
     this.title = '',
@@ -46,6 +48,7 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
     this.onQualityChanged,
     this.hasSubtitles,
     this.initialPosition = 0,
+    this.menuOpened = false,
   });
 
   @override
@@ -76,6 +79,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   void initState() {
     /// нужно ли запрошивать продолжение просмотра
     _requestInitialPositionChange = widget.initialPosition > 0;
+
+    _menuOpened = widget.menuOpened;
 
     super.initState();
   }
@@ -159,77 +164,6 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   Widget build(context) {
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (_videoLoaded && _requestInitialPositionChange) {
-        _requestInitialPositionChange = false;
-        await controller(context).player.pause();
-        _menuOpened = true;
-
-        // ignore: use_build_context_synchronously
-        await Utils.showConfirmModal(
-          context: context,
-          title: 'Продолжить просмотр?',
-          message:
-              'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              HookBuilder(
-                builder: (context) {
-                  final focused = useState(false);
-
-                  return AnimatedScale(
-                    duration: kThemeAnimationDuration,
-                    scale: focused.value ? 1.1 : 1.0,
-                    child: FilledButton(
-                      autofocus: true,
-                      onFocusChange: (hasFocus) {
-                        focused.value = hasFocus;
-                      },
-                      onPressed: () {
-                        if (mounted) {
-                          controller(context).player
-                            ..seek(Duration(seconds: widget.initialPosition))
-                            ..play();
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: Text('Продолжить'),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12.0),
-              HookBuilder(
-                builder: (context) {
-                  final focused = useState(false);
-
-                  return AnimatedScale(
-                    duration: kThemeAnimationDuration,
-                    scale: focused.value ? 1.1 : 1.0,
-                    child: FilledButton(
-                      onFocusChange: (hasFocus) {
-                        focused.value = hasFocus;
-                      },
-                      onPressed: () {
-                        if (mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: Text('Начать с начала'),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-        _menuOpened = false;
-        // ignore: use_build_context_synchronously
-        controller(context).player.play();
-      }
-    });
 
     return Focus(
       autofocus: true,

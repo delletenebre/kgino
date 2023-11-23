@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kgino/utils.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
@@ -51,6 +53,8 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   /// null - нет субтитров, true - включены, false - выключены
   bool? hasSubtitles;
 
+  bool _menuOpened = false;
+
   @override
   void initState() {
     super.initState();
@@ -70,17 +74,99 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
       /// открываем ссылку на проигрываемый файл
       player.open(Media(mediaItemUrl.video)).then((value) async {
-        if (widget.initialPosition > 0 && widget.forcePositionUpdate) {
+        /// дожидаемся буферизации
+        await player.stream.buffer.first;
+
+        if (widget.initialPosition > 0) {
           /// ^ если задана позиция просмотра и быстрая перемотка
 
           /// дожидаемся буферизации
           await player.stream.buffer.first;
 
-          /// перематываем с небольшой отмоткой назад
-          await player.seek(Duration(
-              seconds: widget.initialPosition > 2
-                  ? widget.initialPosition - 2
-                  : widget.initialPosition));
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+            player.pause();
+
+            // ignore: use_build_context_synchronously
+            bool updatePosition = widget.forcePositionUpdate;
+            if (!updatePosition) {
+              setState(() {
+                _menuOpened = true;
+              });
+
+              updatePosition = await Utils.showConfirmModal(
+                context: context,
+                title: 'Продолжить просмотр?',
+                message:
+                    'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    HookBuilder(
+                      builder: (context) {
+                        final focused = useState(false);
+
+                        return AnimatedScale(
+                          duration: kThemeAnimationDuration,
+                          scale: focused.value ? 1.1 : 1.0,
+                          child: FilledButton(
+                            autofocus: true,
+                            onFocusChange: (hasFocus) {
+                              focused.value = hasFocus;
+                            },
+                            onPressed: () {
+                              if (mounted) {
+                                Navigator.of(context).pop(true);
+                              }
+                            },
+                            child: Text('Продолжить'),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    HookBuilder(
+                      builder: (context) {
+                        final focused = useState(false);
+
+                        return AnimatedScale(
+                          duration: kThemeAnimationDuration,
+                          scale: focused.value ? 1.1 : 1.0,
+                          child: FilledButton(
+                            onFocusChange: (hasFocus) {
+                              focused.value = hasFocus;
+                            },
+                            onPressed: () {
+                              if (mounted) {
+                                Navigator.of(context).pop(false);
+                              }
+                            },
+                            child: Text('Начать с начала'),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+
+              setState(() {
+                _menuOpened = false;
+              });
+            }
+
+            if (updatePosition == true) {
+              /// перематываем с небольшой отмоткой назад
+              await player.seek(
+                Duration(
+                  seconds: widget.initialPosition > 2
+                      ? widget.initialPosition - 2
+                      : widget.initialPosition,
+                ),
+              );
+            }
+
+            player.play();
+          });
         }
       });
 
@@ -168,6 +254,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                 'Сезон ${episode.seasonNumber} Эпизод ${episode.episodeNumber}',
             qualities: episode.qualities.sorted((a, b) => b - a),
             quality: widget.mediaItem.quality,
+            menuOpened: _menuOpened,
             onQualityChanged: (quality) {
               /// обновляем информацию о качестве видео
               widget.mediaItem.quality = quality;
