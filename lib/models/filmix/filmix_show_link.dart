@@ -7,7 +7,7 @@ part 'filmix_show_link.g.dart';
 class FilmixShowLink with _$FilmixShowLink {
   const factory FilmixShowLink({
     @Default('') String link,
-    @Default([]) List<String> qualities,
+    @Default([]) List<int> qualities,
   }) = _FilmixShowLink;
 
   factory FilmixShowLink.fromJson(Map<String, Object?> json) =>

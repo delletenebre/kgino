@@ -10,7 +10,7 @@ _$FilmixShowLinkImpl _$$FilmixShowLinkImplFromJson(Map<String, dynamic> json) =>
     _$FilmixShowLinkImpl(
       link: json['link'] as String? ?? '',
       qualities: (json['qualities'] as List<dynamic>?)
-              ?.map((e) => e as String)
+              ?.map((e) => e as int)
               .toList() ??
           const [],
     );

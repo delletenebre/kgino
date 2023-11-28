@@ -171,7 +171,7 @@ class FilmixItem extends MediaItem {
                 seasonNumber: seasonIndex + 1,
                 episodeNumber: episodeIndex + 1,
                 videoFileUrl: showLink.link,
-                qualities: showLink.qualities,
+                qualities: showLink.qualities.map((e) => e.toString()).toList(),
               ));
             }
             seasons.add(MediaItemSeason(
@@ -239,10 +239,11 @@ class FilmixItem extends MediaItem {
       final episode = episodes[episodeIndex];
 
       if (quality.isEmpty) {
-        quality =
-            (episode.qualities.sorted((a, b) => b.compareTo(a)).lastOrNull ??
-                    '')
-                .toString();
+        quality = (episode.qualities
+                    .sorted((a, b) => compareNatural(a, b))
+                    .lastOrNull ??
+                '')
+            .toString();
       }
 
       return MediaItemUrl(

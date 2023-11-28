@@ -21,7 +21,7 @@ FilmixShowLink _$FilmixShowLinkFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FilmixShowLink {
   String get link => throw _privateConstructorUsedError;
-  List<String> get qualities => throw _privateConstructorUsedError;
+  List<int> get qualities => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +35,7 @@ abstract class $FilmixShowLinkCopyWith<$Res> {
           FilmixShowLink value, $Res Function(FilmixShowLink) then) =
       _$FilmixShowLinkCopyWithImpl<$Res, FilmixShowLink>;
   @useResult
-  $Res call({String link, List<String> qualities});
+  $Res call({String link, List<int> qualities});
 }
 
 /// @nodoc
@@ -62,7 +62,7 @@ class _$FilmixShowLinkCopyWithImpl<$Res, $Val extends FilmixShowLink>
       qualities: null == qualities
           ? _value.qualities
           : qualities // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<int>,
     ) as $Val);
   }
 }
@@ -75,7 +75,7 @@ abstract class _$$FilmixShowLinkImplCopyWith<$Res>
       __$$FilmixShowLinkImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String link, List<String> qualities});
+  $Res call({String link, List<int> qualities});
 }
 
 /// @nodoc
@@ -100,7 +100,7 @@ class __$$FilmixShowLinkImplCopyWithImpl<$Res>
       qualities: null == qualities
           ? _value._qualities
           : qualities // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<int>,
     ));
   }
 }
@@ -109,7 +109,7 @@ class __$$FilmixShowLinkImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$FilmixShowLinkImpl implements _FilmixShowLink {
   const _$FilmixShowLinkImpl(
-      {this.link = '', final List<String> qualities = const []})
+      {this.link = '', final List<int> qualities = const []})
       : _qualities = qualities;
 
   factory _$FilmixShowLinkImpl.fromJson(Map<String, dynamic> json) =>
@@ -118,10 +118,10 @@ class _$FilmixShowLinkImpl implements _FilmixShowLink {
   @override
   @JsonKey()
   final String link;
-  final List<String> _qualities;
+  final List<int> _qualities;
   @override
   @JsonKey()
-  List<String> get qualities {
+  List<int> get qualities {
     if (_qualities is EqualUnmodifiableListView) return _qualities;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_qualities);
@@ -164,7 +164,7 @@ class _$FilmixShowLinkImpl implements _FilmixShowLink {
 
 abstract class _FilmixShowLink implements FilmixShowLink {
   const factory _FilmixShowLink(
-      {final String link, final List<String> qualities}) = _$FilmixShowLinkImpl;
+      {final String link, final List<int> qualities}) = _$FilmixShowLinkImpl;
 
   factory _FilmixShowLink.fromJson(Map<String, dynamic> json) =
       _$FilmixShowLinkImpl.fromJson;
@@ -172,7 +172,7 @@ abstract class _FilmixShowLink implements FilmixShowLink {
   @override
   String get link;
   @override
-  List<String> get qualities;
+  List<int> get qualities;
   @override
   @JsonKey(ignore: true)
   _$$FilmixShowLinkImplCopyWith<_$FilmixShowLinkImpl> get copyWith =>

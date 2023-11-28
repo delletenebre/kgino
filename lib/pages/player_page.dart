@@ -252,7 +252,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             title: widget.mediaItem.title,
             subtitle:
                 'Сезон ${episode.seasonNumber} Эпизод ${episode.episodeNumber}',
-            qualities: episode.qualities.sorted((a, b) => b.compareTo(a)),
+            qualities: episode.qualities.sorted((a, b) => compareNatural(b, a)),
             quality: widget.mediaItem.quality,
             menuOpened: _menuOpened,
             onQualityChanged: (quality) {

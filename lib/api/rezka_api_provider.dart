@@ -653,8 +653,8 @@ class RezkaApi {
   //   );
   // }
 
-  static const String BK_SEP = '//_//';
-  static const List<String> BK_BLOCKS = [
+  static const String rezkaSeparator = '//_//';
+  static const List<String> rezkaBlocks = [
     'JCQhIUAkJEBeIUAjJCRA',
     'QEBAQEAhIyMhXl5e',
     'IyMjI14hISMjIUBA',
@@ -665,8 +665,8 @@ class RezkaApi {
   List<dynamic> parseStreams(String salted) {
     salted = salted.replaceAll('\\', '');
 
-    for (String bk in BK_BLOCKS) {
-      salted = salted.replaceAll(BK_SEP + bk, '');
+    for (String bk in rezkaBlocks) {
+      salted = salted.replaceAll(rezkaSeparator + bk, '');
     }
 
     final decodedStreams = utf8.decode(base64.decode(salted.substring(2)));
