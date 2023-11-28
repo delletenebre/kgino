@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../api/filmix_api_provider.dart';
+import '../../api/rezka_api_provider.dart';
 import '../../models/category_list_item.dart';
 import '../../models/media_item.dart';
 import '../../resources/constants.dart';
@@ -13,8 +13,8 @@ import '../../ui/cards/media_card.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
-class FilmixShowsPage extends HookConsumerWidget {
-  const FilmixShowsPage({
+class RezkaMoviesPage extends HookConsumerWidget {
+  const RezkaMoviesPage({
     super.key,
   });
 
@@ -24,13 +24,13 @@ class FilmixShowsPage extends HookConsumerWidget {
     final locale = KrsLocale.of(context);
 
     /// filmix провайдер запросов к API
-    final api = ref.read(filmixApiProvider);
+    final api = ref.read(rezkaApiProvider);
 
-    /// filmix список последний добавлений
-    final asyncLatest = useMemoized(() => api.getLatestShows());
+    /// список последний добавлений
+    final asyncLatest = useMemoized(() => api.getLatestMovies());
 
-    /// filmix популярные
-    final asyncPopular = useMemoized(() => api.getPopularShows());
+    /// популярные
+    final asyncPopular = useMemoized(() => api.getPopularMovies());
 
     final categories = [
       CategoryListItem(
@@ -62,7 +62,7 @@ class FilmixShowsPage extends HookConsumerWidget {
               ),
               const SizedBox(width: 4.0),
               Text(
-                'Filmix Сериалы',
+                'Filmix Фильмы',
                 style: TextStyle(
                   color: theme.colorScheme.outline,
                 ),

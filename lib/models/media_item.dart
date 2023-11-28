@@ -236,7 +236,6 @@ class MediaItem {
             ? locale.seasonsCount(seasons.length)
             : locale.episodesCount(episodes().length);
       case MediaItemType.movie:
-        print('zzzzz: ${seasons.firstOrNull?.episodes.firstOrNull?.duration}');
         return Duration(
                 seconds:
                     seasons.firstOrNull?.episodes.firstOrNull?.duration ?? 0)

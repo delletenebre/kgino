@@ -13,8 +13,8 @@ import '../../ui/cards/media_card.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/vertical_list_view.dart';
 
-class FilmixShowsPage extends HookConsumerWidget {
-  const FilmixShowsPage({
+class FilmixMoviesPage extends HookConsumerWidget {
+  const FilmixMoviesPage({
     super.key,
   });
 
@@ -26,11 +26,11 @@ class FilmixShowsPage extends HookConsumerWidget {
     /// filmix провайдер запросов к API
     final api = ref.read(filmixApiProvider);
 
-    /// filmix список последний добавлений
-    final asyncLatest = useMemoized(() => api.getLatestShows());
+    /// список последний добавлений
+    final asyncLatest = useMemoized(() => api.getLatestMovies());
 
-    /// filmix популярные
-    final asyncPopular = useMemoized(() => api.getPopularShows());
+    /// популярные
+    final asyncPopular = useMemoized(() => api.getPopularMovies());
 
     final categories = [
       CategoryListItem(
@@ -62,7 +62,7 @@ class FilmixShowsPage extends HookConsumerWidget {
               ),
               const SizedBox(width: 4.0),
               Text(
-                'Filmix Сериалы',
+                'Filmix Фильмы',
                 style: TextStyle(
                   color: theme.colorScheme.outline,
                 ),

@@ -213,6 +213,110 @@ class RezkaApi {
     );
   }
 
+  /// список новых фильмов
+  Future<List<MediaItem>> getLatestMovies() async {
+    return ApiRequest<List<MediaItem>>().call(
+      request: _dio.get('/films/page/1/?filter=last'),
+      decoder: (response) async {
+        final html = response.toString();
+
+        /// список элементов
+        final items = <MediaItem>[];
+
+        /// ^ если запрос выполнен успешно
+        /// парсим html
+        final document = parse(html);
+
+        /// получаем элементы списка популярных
+        final elements =
+            document.getElementsByClassName('b-content__inline_item');
+
+        for (final element in elements) {
+          // <div class="b-content__inline_item" data-id="64013" data-url="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">
+          //   <div class="b-content__inline_item-cover"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html"> <img src="http://static.rezka.cloud/i/2023/11/15/p608f1813f7e3yk66h87r.jpg" height="250" width="166" alt="Смотреть Новые уловки онлайн в HD качестве 720p" /> <span class="cat series"><i class="entity">Сериал</i><i class="icon"></i></span> <span class="info">Завершен (все серии)</span> <i class="i-sprt play"></i> </a> <i class="trailer show-trailer" data-id="64013" data-full="1"><b>Смотреть трейлер</b></i> </div>
+          //   <div class="b-content__inline_item-link"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">Новые уловки</a>
+          //     <div>2003-2015, Великобритания, Детективы</div>
+          //   </div>
+          // </div>
+
+          /// парсим ссылку
+          final id = element.attributes['data-id'] ?? '';
+          final posterUrl = element
+                  .getElementsByTagName('img')
+                  .firstOrNull
+                  ?.attributes['src'] ??
+              '';
+          final link = element
+              .getElementsByClassName('b-content__inline_item-link')
+              .first;
+
+          /// парсим название
+          final title = link.getElementsByTagName('a').first.text;
+
+          items.add(RezkaItem(
+            id: id,
+            title: title,
+            poster: posterUrl,
+          ));
+        }
+
+        return items;
+      },
+    );
+  }
+
+  /// список популярных фильмов
+  Future<List<MediaItem>> getPopularMovies() async {
+    return ApiRequest<List<MediaItem>>().call(
+      request: _dio.get('/films/page/1/?filter=popular'),
+      decoder: (response) async {
+        final html = response.toString();
+
+        /// список элементов
+        final items = <MediaItem>[];
+
+        /// ^ если запрос выполнен успешно
+        /// парсим html
+        final document = parse(html);
+
+        /// получаем элементы списка популярных
+        final elements =
+            document.getElementsByClassName('b-content__inline_item');
+
+        for (final element in elements) {
+          // <div class="b-content__inline_item" data-id="64013" data-url="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">
+          //   <div class="b-content__inline_item-cover"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html"> <img src="http://static.rezka.cloud/i/2023/11/15/p608f1813f7e3yk66h87r.jpg" height="250" width="166" alt="Смотреть Новые уловки онлайн в HD качестве 720p" /> <span class="cat series"><i class="entity">Сериал</i><i class="icon"></i></span> <span class="info">Завершен (все серии)</span> <i class="i-sprt play"></i> </a> <i class="trailer show-trailer" data-id="64013" data-full="1"><b>Смотреть трейлер</b></i> </div>
+          //   <div class="b-content__inline_item-link"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">Новые уловки</a>
+          //     <div>2003-2015, Великобритания, Детективы</div>
+          //   </div>
+          // </div>
+
+          /// парсим ссылку
+          final id = element.attributes['data-id'] ?? '';
+          final posterUrl = element
+                  .getElementsByTagName('img')
+                  .firstOrNull
+                  ?.attributes['src'] ??
+              '';
+          final link = element
+              .getElementsByClassName('b-content__inline_item-link')
+              .first;
+
+          /// парсим название
+          final title = link.getElementsByTagName('a').first.text;
+
+          items.add(RezkaItem(
+            id: id,
+            title: title,
+            poster: posterUrl,
+          ));
+        }
+
+        return items;
+      },
+    );
+  }
+
   /// детали
   Future<RezkaItem> getDetails({
     required String id,
@@ -393,14 +497,12 @@ class RezkaApi {
           overview: description.trim(),
           seasons: [
             MediaItemSeason(
-                // episodes: [
-                //   MediaIteme(
-                //     id: '0/0',
-                //     fullId: EpisodeItem.getFullId(
-                //         KginoProvider.hdrz.name, id.toString(), '0/0'),
-                //   ),
-                // ],
+              episodes: [
+                MediaItemEpisode(
+                  id: '',
                 ),
+              ],
+            ),
           ],
 
           originalTitle: originalName,

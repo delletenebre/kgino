@@ -5,10 +5,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/media_item.dart';
 import '../pages/details_page.dart';
 import '../pages/error_page.dart';
+import '../pages/filmix/filmix_movies_page.dart';
 import '../pages/filmix/filmix_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
+import '../pages/rezka/rezka_movies_page.dart';
 import '../pages/rezka/rezka_shows_page.dart';
 import '../pages/ts.kg/tskg_shows_page.dart';
 
@@ -54,6 +56,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const HomePage();
         },
         routes: [
+          /// фильмы Filmix
+          GoRoute(
+            path: 'filmix/movies',
+            name: 'filmixMovies',
+            builder: (context, state) {
+              return const FilmixMoviesPage();
+            },
+          ),
+
+          /// сериалы Filmix
           GoRoute(
             path: 'filmix/shows',
             name: 'filmixShows',
@@ -61,6 +73,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const FilmixShowsPage();
             },
           ),
+
+          /// сериалы TS.KG
           GoRoute(
             path: 'tskg/shows',
             name: 'tskgShows',
@@ -68,6 +82,17 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const TskgShowsPage();
             },
           ),
+
+          /// фильмы Rezka
+          GoRoute(
+            path: 'rezka/movies',
+            name: 'rezkaMovies',
+            builder: (context, state) {
+              return const RezkaMoviesPage();
+            },
+          ),
+
+          /// сериалы Rezka
           GoRoute(
             path: 'rezka/shows',
             name: 'rezkaShows',
@@ -75,6 +100,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const RezkaShowsPage();
             },
           ),
+
+          /// страница с подробностями
           GoRoute(
             path: 'details',
             name: 'details',
@@ -83,6 +110,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               return DetailsPage(mediaItem);
             },
           ),
+
+          /// страница плейлиста
           GoRoute(
             path: 'playlist',
             name: 'playlist',
@@ -91,6 +120,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               return PlaylistPage(mediaItem);
             },
           ),
+
+          /// страница плеера
           GoRoute(
             path: 'player',
             name: 'player',

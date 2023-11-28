@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 
-import '../api/filmix_api_provider.dart';
+import '../enums/online_service.dart';
 import '../models/category_list_item.dart';
+import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
+import '../providers/providers.dart';
 import '../resources/constants.dart';
 import '../resources/krs_locale.dart';
 import '../ui/cards/featured_card.dart';
@@ -22,23 +25,54 @@ class MoviesPage extends HookConsumerWidget {
   Widget build(context, ref) {
     final locale = KrsLocale.of(context);
 
-    final api = ref.read(filmixApiProvider);
+    /// хранилище данных
+    final storage = ref.read(storageProvider);
 
-    /// список последний добавлений
-    final asyncLatest = useMemoized(() => api.getLatestMovies());
+    final bookmarksQuery = storage.db.mediaItems
+        .where()
+        .typeEqualTo(MediaItemType.movie)
+        .and()
+        .bookmarkedIsNotNull();
 
-    /// популярные
-    final asyncPopular = useMemoized(() => api.getPopularMovies());
+    final hasBookmarks = bookmarksQuery.count() > 0;
+
+    final asyncBookmarks = useMemoized(() async {
+      final items = await bookmarksQuery.findAllAsync();
+      return items.map((item) {
+        if (item.onlineService == OnlineService.filmix) {
+          return FilmixItem.fromJson(item.toJson());
+        }
+        throw Exception();
+      }).toList();
+    });
+
+    final providers = useMemoized(() {
+      return [
+        MediaItem(
+          id: 'filmixMovies',
+          title: 'Filmix',
+          poster: 'assets/images/flmx.svg',
+          type: MediaItemType.folder,
+        ),
+        MediaItem(
+          id: 'rezkaMovies',
+          title: 'HD Rezka',
+          //poster: 'assets/images/flmx.svg',
+          type: MediaItemType.folder,
+        ),
+      ];
+    });
 
     final categories = [
       CategoryListItem(
-        title: locale.latest,
-        apiResponse: asyncLatest,
+        title: 'Провайдеры',
+        items: providers,
       ),
-      CategoryListItem(
-        title: locale.popular,
-        apiResponse: asyncPopular,
-      ),
+      if (hasBookmarks)
+        CategoryListItem(
+          title: locale.bookmarks,
+          apiResponse: asyncBookmarks,
+        ),
     ];
 
     final focusedMediaItem = useValueNotifier<MediaItem?>(null);
@@ -77,12 +111,19 @@ class MoviesPage extends HookConsumerWidget {
                         return MediaCard(
                           onFocusChange: (hasFocus) {
                             if (hasFocus) {
-                              focusedMediaItem.value = item;
+                              focusedMediaItem.value =
+                                  item.type == MediaItemType.folder
+                                      ? null
+                                      : item;
                             }
                           },
                           onTap: () {
-                            /// переходим на страницу деталей о сериале
-                            context.pushNamed('details', extra: item);
+                            if (item.isFolder) {
+                              context.goNamed(item.id);
+                            } else {
+                              /// переходим на страницу деталей о сериале
+                              context.pushNamed('details', extra: item);
+                            }
                           },
                           title: item.title,
                           imageUrl: item.poster,
@@ -97,9 +138,7 @@ class MoviesPage extends HookConsumerWidget {
         ),
         ValueListenableBuilder<MediaItem?>(
           valueListenable: focusedMediaItem,
-          builder: (context, value, _) {
-            return FeaturedCard(value);
-          },
+          builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
         ),
       ],
     );
