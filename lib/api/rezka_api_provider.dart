@@ -662,7 +662,7 @@ class RezkaApi {
     'JCQjISFAIyFAIyM='
   ];
 
-  List<dynamic> parseStreams(String salted) {
+  List<RezkaQuality> parseStreams(String salted) {
     salted = salted.replaceAll('\\', '');
 
     for (String bk in rezkaBlocks) {
@@ -671,12 +671,19 @@ class RezkaApi {
 
     final decodedStreams = utf8.decode(base64.decode(salted.substring(2)));
 
-    List<dynamic> parsedStreams = [];
+    List<RezkaQuality> parsedStreams = [];
     RegExp exp =
         RegExp(r'\[((\d+)([a-z ]+))].+?(http.+?mp4)', caseSensitive: false);
     final matches = exp.allMatches(decodedStreams);
     for (Match match in matches) {
-      parsedStreams.add([match.group(1), match.group(4)]);
+      if (match.groupCount == 4 &&
+          match.group(1) != null &&
+          match.group(4) != null) {
+        parsedStreams.add(RezkaQuality(
+          quality: match.group(1)!,
+          url: match.group(4)!,
+        ));
+      }
     }
     return parsedStreams;
 
@@ -686,6 +693,7 @@ class RezkaApi {
 
 class RezkaQuality {
   final String quality;
+  final String url;
 
-  RezkaQuality({required this.quality});
+  RezkaQuality({required this.quality, required this.url});
 }
