@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -651,4 +652,40 @@ class RezkaApi {
   //     },
   //   );
   // }
+
+  static const String BK_SEP = '//_//';
+  static const List<String> BK_BLOCKS = [
+    'JCQhIUAkJEBeIUAjJCRA',
+    'QEBAQEAhIyMhXl5e',
+    'IyMjI14hISMjIUBA',
+    'Xl5eIUAjIyEhIyM=',
+    'JCQjISFAIyFAIyM='
+  ];
+
+  List<dynamic> parseStreams(String salted) {
+    salted = salted.replaceAll('\\', '');
+
+    for (String bk in BK_BLOCKS) {
+      salted = salted.replaceAll(BK_SEP + bk, '');
+    }
+
+    final decodedStreams = utf8.decode(base64.decode(salted.substring(2)));
+
+    List<dynamic> parsedStreams = [];
+    RegExp exp =
+        RegExp(r'\[((\d+)([a-z ]+))].+?(http.+?mp4)', caseSensitive: false);
+    final matches = exp.allMatches(decodedStreams);
+    for (Match match in matches) {
+      parsedStreams.add([match.group(1), match.group(4)]);
+    }
+    return parsedStreams;
+
+    ///:hls:manifest.m3u8
+  }
+}
+
+class RezkaQuality {
+  final String quality;
+
+  RezkaQuality({required this.quality});
 }

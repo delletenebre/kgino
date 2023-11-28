@@ -37,7 +37,7 @@ class TskgItem extends MediaItem {
     super.bookmarked,
     super.subtitles,
     super.voice,
-    super.quality = 0,
+    super.quality,
   });
 
   factory TskgItem.fromJson(Map<String, dynamic> json) =>

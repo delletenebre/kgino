@@ -54,9 +54,7 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       voice: json['voice'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice'] as Map<String, dynamic>),
-      quality: json['quality'] == null
-          ? 0
-          : const IntConverter().fromJson(json['quality']),
+      quality: json['quality'] as String? ?? '',
     );
 
 Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
@@ -77,7 +75,7 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'subtitles': instance.subtitles,
       'voice': instance.voice.toJson(),
-      'quality': const IntConverter().toJson(instance.quality),
+      'quality': instance.quality,
       'date': instance.date?.toIso8601String(),
       'badges': instance.badges,
     };

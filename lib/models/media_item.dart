@@ -107,8 +107,7 @@ class MediaItem {
   VoiceActing voice;
 
   /// выбранное качество видео
-  @IntConverter()
-  int quality;
+  String quality;
 
   MediaItem({
     required this.id,
@@ -130,7 +129,7 @@ class MediaItem {
     this.bookmarked,
     this.subtitles = false,
     this.voice = const VoiceActing(),
-    this.quality = 0,
+    this.quality = '',
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
@@ -169,7 +168,7 @@ class MediaItem {
   String get ratingStars {
     if (averageRating == 0.0) {
       return '';
-    } else if (averageRating < 4.5) {
+    } else if (averageRating < 5.0) {
       return '☆☆☆';
     } else if (averageRating < 6.0) {
       return '★☆☆';

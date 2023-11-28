@@ -1855,7 +1855,7 @@ MediaItemEpisode _$MediaItemEpisodeFromJson(Map<String, dynamic> json) =>
       episodeNumber: json['episodeNumber'] as int? ?? 0,
       videoFileUrl: json['videoFileUrl'] as String? ?? '',
       qualities: (json['qualities'] as List<dynamic>?)
-              ?.map((e) => e as int)
+              ?.map((e) => e as String)
               .toList() ??
           const [],
       subtitlesFileUrl: json['subtitlesFileUrl'] as String? ?? '',

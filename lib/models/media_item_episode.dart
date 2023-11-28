@@ -35,7 +35,7 @@ class MediaItemEpisode {
 
   /// варианты качества видео
   @ignore
-  final List<int> qualities;
+  final List<String> qualities;
 
   /// дата последнего просмотра
   DateTime? updatedAt;

@@ -32,7 +32,7 @@ class RezkaItem extends MediaItem {
     super.bookmarked,
     super.subtitles,
     super.voice,
-    super.quality = 0,
+    super.quality = '720p',
   });
 
   factory RezkaItem.fromJson(Map<String, dynamic> json) =>

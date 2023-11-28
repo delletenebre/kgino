@@ -36,6 +36,7 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
               ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      poster: json['poster'] as String? ?? '',
       onlineService:
           $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
               OnlineService.tskg,
@@ -48,9 +49,7 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
       voice: json['voice'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice'] as Map<String, dynamic>),
-      quality: json['quality'] == null
-          ? 0
-          : const IntConverter().fromJson(json['quality']),
+      quality: json['quality'] as String? ?? '720p',
     );
 
 Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
@@ -60,6 +59,7 @@ Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
       'title': instance.title,
       'original_title': instance.originalTitle,
       'overview': instance.overview,
+      'poster': instance.poster,
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,
       'countries': instance.countries,
@@ -71,7 +71,7 @@ Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'subtitles': instance.subtitles,
       'voice': instance.voice.toJson(),
-      'quality': const IntConverter().toJson(instance.quality),
+      'quality': instance.quality,
     };
 
 const _$OnlineServiceEnumMap = {

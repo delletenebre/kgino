@@ -46,7 +46,7 @@ class FilmixItem extends MediaItem {
     super.bookmarked,
     super.subtitles,
     super.voice,
-    super.quality = 480,
+    super.quality = '480',
     this.duration = 0,
   }) {
     voices = [];
@@ -80,9 +80,8 @@ class FilmixItem extends MediaItem {
                     .firstOrNull ??
                 '')
             .split(',')
-            .map((quality) => int.tryParse(quality) ?? 0)
             .toList()
-          ..removeWhere((quality) => quality == 0);
+          ..removeWhere((quality) => quality.isEmpty);
 
         final videoUrl = movie.link.replaceFirst(RegExp(r'(\[[,\d]+\])'), '%s');
 
@@ -239,8 +238,11 @@ class FilmixItem extends MediaItem {
     if (episodeIndex < episodes.length) {
       final episode = episodes[episodeIndex];
 
-      if (quality == 0) {
-        quality = episode.qualities.sorted((a, b) => b - a).lastOrNull ?? 0;
+      if (quality.isEmpty) {
+        quality =
+            (episode.qualities.sorted((a, b) => b.compareTo(a)).lastOrNull ??
+                    '')
+                .toString();
       }
 
       return MediaItemUrl(

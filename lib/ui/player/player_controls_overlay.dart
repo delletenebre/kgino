@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/constants.dart';
 import '../../resources/krs_locale.dart';
-import '../../utils.dart';
 import '../details_page/krs_menu_button.dart';
 import 'controls/play_pause_button.dart';
 import 'controls/player_progress_bar.dart';
@@ -19,13 +17,13 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
   final String subtitle;
   final Function()? onSkipNext;
   final Function()? onSkipPrevious;
-  final Function(int quality)? onQualityChanged;
+  final Function(String quality)? onQualityChanged;
   final Function(bool enabled)? onSubtitlesChanged;
 
   final Function(int position)? onSavePositionRequested;
 
-  final List<int> qualities;
-  final int quality;
+  final List<String> qualities;
+  final String quality;
 
   /// null - нет субтитров, true - включены, false - выключены
   final bool? hasSubtitles;
@@ -44,7 +42,7 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
     this.onSubtitlesChanged,
     this.onSavePositionRequested,
     this.qualities = const [],
-    this.quality = 0,
+    this.quality = '',
     this.onQualityChanged,
     this.hasSubtitles,
     this.initialPosition = 0,
@@ -282,7 +280,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                                   size: 18.0,
                                 ),
                                 child: Text(
-                                  '${widget.quality}',
+                                  widget.quality,
                                 ),
                                 onMenuOpen: () {
                                   _menuOpened = true;
