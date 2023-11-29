@@ -491,6 +491,26 @@ class RezkaApi {
                 ?.attributes['data-id'] ??
             '';
 
+        /// если нет элемента эпизодов, то это фильм
+        final isMovie = document.getElementById('simple-episodes-tabs') == null;
+
+        if (isMovie) {
+          final exp = RegExp(r'"streams":"([^"]+)');
+          final stream =
+              exp.allMatches(document.body!.text).firstOrNull?.group(1) ?? '';
+          final qualities = parseStreams(stream);
+          seasons = [
+            MediaItemSeason(
+              episodes: [
+                MediaItemEpisode(
+                  id: '',
+                  qualities: qualities.map((q) => q.quality).toList(),
+                ),
+              ],
+            ),
+          ];
+        }
+
         return RezkaItem(
           id: movieId,
           title: movieName,
