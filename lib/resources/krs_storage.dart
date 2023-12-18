@@ -1,13 +1,15 @@
-// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/media_item.dart';
-
 class KrsStorage {
   late final SharedPreferences sharedStorage;
   late final Isar db;
+
+  late final String installationId;
 
   KrsStorage();
 
@@ -15,19 +17,22 @@ class KrsStorage {
     /// инициализируем локальное хранилище
     sharedStorage = await SharedPreferences.getInstance();
 
-    // Directory directory = Directory('/assets/db');
-    // if (!kIsWeb) {
-    //   directory = await getApplicationDocumentsDirectory();
-    // }
+    late final Directory directory;
+    if (kIsWeb) {
+      directory = Directory('/assets/db');
+      await Isar.initialize();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
 
-    // try {
-    final dir = await getApplicationDocumentsDirectory();
-    db = Isar.open(
+    final db = Isar.open(
       schemas: [
-        MediaItemSchema,
-        MediaItemEpisodeSchema,
+        // MediaItemSchema,
+        // MediaItemEpisodeSchema,
       ],
-      directory: dir.path,
+      directory: kIsWeb ? Isar.sqliteInMemory : directory.path,
+      engine: kIsWeb ? IsarEngine.sqlite : IsarEngine.isar,
+      inspector: false,
     );
     // } catch (exception) {}
 

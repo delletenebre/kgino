@@ -48,40 +48,6 @@ class KrsTheme {
     return Color(p.neutral.get(theme.brightness == Brightness.dark ? 12 : 94));
   }
 
-  /// светлая тема оформления
-  static final light = ThemeData(
-    brightness: Brightness.light,
-    useMaterial3: true,
-    fontFamily: 'Golos UI',
-    colorScheme: colorScheme['light']!.copyWith(
-      primary: seedColor,
-    ),
-
-    /// Define FadeUpwardsPageTransitionsBuilder as the default transition on
-    /// iOS also. But again this will break the swipe back gesture on iOS
-    /// убирает ненужную тень в macOS между станицами
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {
-      TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-      TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-      TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-    }),
-
-    filledButtonTheme: FilledButtonThemeData(
-      style: ButtonStyle(
-        textStyle: MaterialStateProperty.resolveWith((states) {
-          return const TextStyle(fontSize: 14.0);
-        }),
-        foregroundColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.focused)) {
-            return colorScheme['light']!.onPrimary;
-          }
-
-          return colorScheme['light']!.onSurface;
-        }),
-      ),
-    ),
-  );
-
   /// тёмная тема оформления
   static final dark = ThemeData(
     brightness: Brightness.dark,

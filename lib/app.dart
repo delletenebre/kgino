@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'providers/providers.dart';
@@ -14,12 +13,6 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    /// текущая тема оформления
-    final themeMode = ref.watch(appThemeProvider);
-
-    /// текущий язык приложения
-    final locale = ref.watch(appLocaleProvider);
-
     /// контроллер маршрутов приложения
     final router = ref.watch(routerProvider);
 
@@ -29,12 +22,9 @@ class App extends ConsumerWidget {
       },
       child: MaterialApp.router(
         routerConfig: router,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale(locale),
         theme: KrsTheme.dark,
         darkTheme: KrsTheme.dark,
-        themeMode: themeMode,
+        themeMode: ThemeMode.dark,
         scrollBehavior: const MaterialScrollBehavior().copyWith(
           dragDevices: {
             PointerDeviceKind.mouse,

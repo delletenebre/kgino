@@ -2,17 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../models/media_item.dart';
-import '../pages/details_page.dart';
-import '../pages/error_page.dart';
-import '../pages/filmix/filmix_movies_page.dart';
-import '../pages/filmix/filmix_shows_page.dart';
 import '../pages/home_page.dart';
-import '../pages/player_page.dart';
-import '../pages/playlist_page.dart';
-import '../pages/rezka/rezka_movies_page.dart';
-import '../pages/rezka/rezka_shows_page.dart';
-import '../pages/ts.kg/tskg_shows_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final mainNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'main');
@@ -48,7 +38,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
     //   return null;
     // },
-    errorBuilder: (context, state) => const ErrorPage(),
+    // errorBuilder: (context, state) => const ErrorPage(),
     routes: [
       GoRoute(
         path: '/',
@@ -56,96 +46,96 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const HomePage();
         },
         routes: [
-          /// фильмы Filmix
-          GoRoute(
-            path: 'filmix/movies',
-            name: 'filmixMovies',
-            builder: (context, state) {
-              return const FilmixMoviesPage();
-            },
-          ),
-
-          /// сериалы Filmix
-          GoRoute(
-            path: 'filmix/shows',
-            name: 'filmixShows',
-            builder: (context, state) {
-              return const FilmixShowsPage();
-            },
-          ),
-
-          /// сериалы TS.KG
-          GoRoute(
-            path: 'tskg/shows',
-            name: 'tskgShows',
-            builder: (context, state) {
-              return const TskgShowsPage();
-            },
-          ),
-
-          /// фильмы Rezka
-          GoRoute(
-            path: 'rezka/movies',
-            name: 'rezkaMovies',
-            builder: (context, state) {
-              return const RezkaMoviesPage();
-            },
-          ),
-
-          /// сериалы Rezka
-          GoRoute(
-            path: 'rezka/shows',
-            name: 'rezkaShows',
-            builder: (context, state) {
-              return const RezkaShowsPage();
-            },
-          ),
-
-          /// страница с подробностями
-          GoRoute(
-            path: 'details',
-            name: 'details',
-            builder: (context, state) {
-              final mediaItem = state.extra as MediaItem;
-              return DetailsPage(mediaItem);
-            },
-          ),
-
-          /// страница плейлиста
-          GoRoute(
-            path: 'playlist',
-            name: 'playlist',
-            builder: (context, state) {
-              final mediaItem = state.extra as MediaItem;
-              return PlaylistPage(mediaItem);
-            },
-          ),
-
-          /// страница плеера
-          GoRoute(
-            path: 'player',
-            name: 'player',
-            builder: (context, state) {
-              final mediaItem = state.extra as MediaItem;
-              final episodeIndex = int.tryParse(
-                      state.uri.queryParameters['episodeIndex'] ?? '') ??
-                  0;
-              final initialPosition = int.tryParse(
-                      state.uri.queryParameters['initialPosition'] ?? '') ??
-                  0;
-
-              final forcePositionUpdate = bool.tryParse(
-                      state.uri.queryParameters['forcePositionUpdate'] ?? '') ??
-                  false;
-
-              return PlayerPage(
-                mediaItem: mediaItem,
-                episodeIndex: episodeIndex,
-                initialPosition: initialPosition,
-                forcePositionUpdate: forcePositionUpdate,
-              );
-            },
-          ),
+          // /// фильмы Filmix
+          // GoRoute(
+          //   path: 'filmix/movies',
+          //   name: 'filmixMovies',
+          //   builder: (context, state) {
+          //     return const FilmixMoviesPage();
+          //   },
+          // ),
+          //
+          // /// сериалы Filmix
+          // GoRoute(
+          //   path: 'filmix/shows',
+          //   name: 'filmixShows',
+          //   builder: (context, state) {
+          //     return const FilmixShowsPage();
+          //   },
+          // ),
+          //
+          // /// сериалы TS.KG
+          // GoRoute(
+          //   path: 'tskg/shows',
+          //   name: 'tskgShows',
+          //   builder: (context, state) {
+          //     return const TskgShowsPage();
+          //   },
+          // ),
+          //
+          // /// фильмы Rezka
+          // GoRoute(
+          //   path: 'rezka/movies',
+          //   name: 'rezkaMovies',
+          //   builder: (context, state) {
+          //     return const RezkaMoviesPage();
+          //   },
+          // ),
+          //
+          // /// сериалы Rezka
+          // GoRoute(
+          //   path: 'rezka/shows',
+          //   name: 'rezkaShows',
+          //   builder: (context, state) {
+          //     return const RezkaShowsPage();
+          //   },
+          // ),
+          //
+          // /// страница с подробностями
+          // GoRoute(
+          //   path: 'details',
+          //   name: 'details',
+          //   builder: (context, state) {
+          //     final mediaItem = state.extra as MediaItem;
+          //     return DetailsPage(mediaItem);
+          //   },
+          // ),
+          //
+          // /// страница плейлиста
+          // GoRoute(
+          //   path: 'playlist',
+          //   name: 'playlist',
+          //   builder: (context, state) {
+          //     final mediaItem = state.extra as MediaItem;
+          //     return PlaylistPage(mediaItem);
+          //   },
+          // ),
+          //
+          // /// страница плеера
+          // GoRoute(
+          //   path: 'player',
+          //   name: 'player',
+          //   builder: (context, state) {
+          //     final mediaItem = state.extra as MediaItem;
+          //     final episodeIndex = int.tryParse(
+          //             state.uri.queryParameters['episodeIndex'] ?? '') ??
+          //         0;
+          //     final initialPosition = int.tryParse(
+          //             state.uri.queryParameters['initialPosition'] ?? '') ??
+          //         0;
+          //
+          //     final forcePositionUpdate = bool.tryParse(
+          //             state.uri.queryParameters['forcePositionUpdate'] ?? '') ??
+          //         false;
+          //
+          //     return PlayerPage(
+          //       mediaItem: mediaItem,
+          //       episodeIndex: episodeIndex,
+          //       initialPosition: initialPosition,
+          //       forcePositionUpdate: forcePositionUpdate,
+          //     );
+          //   },
+          // ),
         ],
       ),
     ],
