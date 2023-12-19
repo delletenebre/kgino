@@ -19,45 +19,37 @@ class KrsNavigationBar extends HookWidget implements PreferredSizeWidget {
   Widget build(context) {
     final focused = useState(false);
 
-    return MouseRegion(
-      onEnter: (event) {
-        focused.value = true;
+    return Focus(
+      onFocusChange: (hasFocus) {
+        focused.value = hasFocus;
       },
-      onExit: (event) {
-        focused.value = false;
-      },
-      child: Focus(
-        onFocusChange: (hasFocus) {
-          focused.value = hasFocus;
-        },
-        child: Row(
-          children: [
-            KrsNavigationButton(
-              active: focused.value,
-              selected: selectedPage == 0,
-              onSelected: () {
-                onPageChanged.call(0);
-              },
-              child: const Text('Поиск'),
-            ),
-            KrsNavigationButton(
-              active: focused.value,
-              selected: selectedPage == 1,
-              onSelected: () {
-                onPageChanged.call(1);
-              },
-              child: const Text('Сериалы'),
-            ),
-            KrsNavigationButton(
-              active: focused.value,
-              selected: selectedPage == 2,
-              onSelected: () {
-                onPageChanged.call(2);
-              },
-              child: const Text('Фильмы'),
-            ),
-          ],
-        ),
+      child: Row(
+        children: [
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedPage == 0,
+            onSelected: () {
+              onPageChanged.call(0);
+            },
+            child: const Text('Поиск'),
+          ),
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedPage == 1,
+            onSelected: () {
+              onPageChanged.call(1);
+            },
+            child: const Text('Сериалы'),
+          ),
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedPage == 2,
+            onSelected: () {
+              onPageChanged.call(2);
+            },
+            child: const Text('Фильмы'),
+          ),
+        ],
       ),
     );
   }
