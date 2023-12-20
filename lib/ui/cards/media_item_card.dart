@@ -1,13 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MediaItemCard extends HookWidget {
-  final FocusNode? focusNode;
+  static const width = 196.0;
+  static const height = width / 16 * 9;
+
   final Widget child;
+  final void Function(bool hasFocus)? onFocusChanged;
+
   const MediaItemCard({
     super.key,
-    this.focusNode,
     required this.child,
+    this.onFocusChanged,
   });
 
   @override
@@ -15,33 +20,123 @@ class MediaItemCard extends HookWidget {
     final theme = Theme.of(context);
 
     final focused = useState(false);
+    final imageUrl =
+        'https://media.gettyimages.com/id/458467163/photo/the-first-avenger-movie-poster.jpg?s=612x612&w=gi&k=20&c=Fc9E7HSJmEiviWNqmLsoXGgwOdpN8fv3qZ0fem6__rM=';
+
+    /// цвет свечения
+    final glowColor = useState(theme.colorScheme.outline);
+
+    /// вычисляем цвет свечения
+    useEffect(() {
+      if (1 == 2 &&
+          imageUrl.isNotEmpty &&
+          !imageUrl.endsWith('.svg') &&
+          !imageUrl.startsWith('assets/')) {
+        /// ^ если изображение есть и оно не векторное
+
+        try {
+          /// получаем цветовую палитру изображения
+          ColorScheme.fromImageProvider(
+                  provider: CachedNetworkImageProvider(imageUrl, maxWidth: 100))
+              .then((colorScheme) {
+            /// обновляем цвет свечения
+            glowColor.value = colorScheme.primary.withOpacity(0.62);
+          });
+        } catch (exception) {
+          debugPrint('PaletteGenerator FAIL');
+        }
+      }
+
+      /// we could optionally return some "dispose" logic here
+      return null;
+    }, const []);
 
     return Focus(
-      focusNode: focusNode,
       onFocusChange: (hasFocus) {
         focused.value = hasFocus;
+        onFocusChanged?.call(hasFocus);
       },
-      child: Container(
-        margin: const EdgeInsets.all(4.0),
-        width: 240,
-        height: 100,
-        decoration: BoxDecoration(
-            color: Colors.lightGreen,
+      child: AnimatedScale(
+        duration: kThemeAnimationDuration,
+        scale: focused.value ? 1.1 : 1.0,
+        child: AnimatedContainer(
+          duration: kThemeAnimationDuration,
+          width: width,
+          height: height,
+          clipBehavior: Clip.antiAlias,
+          foregroundDecoration: BoxDecoration(
+            border: focused.value
+                ? Border.all(
+                    color: theme.colorScheme.outline,
+                    width: 3.0,
+                  )
+                : null,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+
+            /// постер
+            image: DecorationImage(
+              image: CachedNetworkImageProvider(imageUrl, maxWidth: 200),
+              fit: BoxFit.cover,
+            ),
+
+            /// цвет свечения
             boxShadow: [
-              if (focused.value)
-                BoxShadow(
-                    //color: _glowColor!.withOpacity(0.62),
-                    blurRadius: 20.0,
-                    spreadRadius: 4.0),
+              // if (focused.value)
+              //   BoxShadow(
+              //     color: glowColor.value,
+              //     blurRadius: 20.0,
+              //     spreadRadius: 4.0,
+              //   ),
             ],
             borderRadius: BorderRadius.circular(12.0),
             border: focused.value
                 ? Border.all(
                     color: theme.colorScheme.onPrimaryContainer,
-                    width: 3.0,
+                    width: 2.0,
                   )
-                : null),
-        child: child,
+                : null,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(12.0),
+            alignment: Alignment.bottomLeft,
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              /// scrim on top of image background
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Colors.black.withOpacity(0.8),
+                  Colors.black.withOpacity(0.16),
+                ],
+                stops: const [0.32, 0.62],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Title',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                // Text(
+                //   'Title',
+                //   maxLines: 1,
+                //   overflow: TextOverflow.ellipsis,
+                //   style: theme.textTheme.bodySmall?.copyWith(
+                //     color: theme.colorScheme.onSurfaceVariant,
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

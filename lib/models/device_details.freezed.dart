@@ -124,7 +124,9 @@ class __$$DeviceDetailsImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$DeviceDetailsImpl implements _DeviceDetails {
+class _$DeviceDetailsImpl
+    with DiagnosticableTreeMixin
+    implements _DeviceDetails {
   _$DeviceDetailsImpl(
       {this.id = '', this.name = '', this.vendor = '', this.osVersion = ''});
 
@@ -142,9 +144,35 @@ class _$DeviceDetailsImpl implements _DeviceDetails {
   final String osVersion;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'DeviceDetails(id: $id, name: $name, vendor: $vendor, osVersion: $osVersion)';
   }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'DeviceDetails'))
+      ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('vendor', vendor))
+      ..add(DiagnosticsProperty('osVersion', osVersion));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DeviceDetailsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.vendor, vendor) || other.vendor == vendor) &&
+            (identical(other.osVersion, osVersion) ||
+                other.osVersion == osVersion));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name, vendor, osVersion);
 
   @JsonKey(ignore: true)
   @override

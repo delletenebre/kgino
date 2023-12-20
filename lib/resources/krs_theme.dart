@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 class KrsTheme {
+  static const safeArea = _SafeArea();
+
   /// высота контейнера с информацией о фильме
   static const movieDetailsHeight = 220.0;
   static const movieDetailsExpandedHeight = 320.0;
@@ -104,4 +106,11 @@ class KrsTheme {
       ),
     ),
   );
+}
+
+class _SafeArea {
+  const _SafeArea();
+
+  final horizontal = 48.0;
+  final vertical = 28.0;
 }

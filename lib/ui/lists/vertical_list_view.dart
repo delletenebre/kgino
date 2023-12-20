@@ -3,37 +3,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-import '../../resources/krs_theme.dart';
-
-// @riverpod
-// Object? focusNodes(ExampleRef ref) async {
-//   // Wait for a user to be available, and listen to only the "firstName" property
-//   final firstName = await ref.watch(
-//     userProvider.selectAsync((it) => it.firstName),
-//   );
-//
-//   // TODO use "firstName" to fetch something else
-// }
-
-class HorizontalListView extends StatefulHookWidget {
+class VerticalListView extends StatefulHookWidget {
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
-  const HorizontalListView({
+
+  final void Function(bool hasFocus)? onFocusChanged;
+
+  final EdgeInsets padding;
+
+  const VerticalListView({
     super.key,
     required this.itemCount,
     required this.itemBuilder,
+    this.padding = const EdgeInsets.symmetric(horizontal: 0.0),
+    this.onFocusChanged,
   });
 
   @override
-  State<HorizontalListView> createState() => _HorizontalListViewState();
+  State<VerticalListView> createState() => _HorizontalListViewState();
 }
 
-class _HorizontalListViewState extends State<HorizontalListView> {
+class _HorizontalListViewState extends State<VerticalListView> {
   final scrollController = ScrollController();
   late final ListObserverController observerController;
-
-  final padding =
-      EdgeInsets.symmetric(horizontal: KrsTheme.safeArea.horizontal);
 
   List<FocusNode> focusNodes = [];
   int lastFocusedItem = 0;
@@ -58,10 +50,13 @@ class _HorizontalListViewState extends State<HorizontalListView> {
   }
 
   /// переходим к предыдущему элементу
-  void goPrevious() {
+  KeyEventResult goPrevious() {
     if (lastFocusedItem > 0) {
       lastFocusedItem--;
       animateToCurrent();
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
     }
   }
 
@@ -78,8 +73,8 @@ class _HorizontalListViewState extends State<HorizontalListView> {
     observerController.jumpTo(
       index: index,
       isFixedHeight: true,
-      offset: (offset) => padding.left,
-      padding: padding,
+      offset: (offset) => widget.padding.top,
+      padding: widget.padding,
     );
     requestFocus(index);
   }
@@ -89,15 +84,15 @@ class _HorizontalListViewState extends State<HorizontalListView> {
 
   /// плавный переход к элементу
   void animateTo(int index) {
-    requestFocus(index);
     observerController.animateTo(
       index: index,
       isFixedHeight: true,
-      offset: (offset) => padding.left,
+      offset: (offset) => widget.padding.top,
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeIn,
-      padding: padding,
+      padding: widget.padding,
     );
+    requestFocus(index);
   }
 
   /// плавный переход к последнему выделенному элементу
@@ -114,12 +109,11 @@ class _HorizontalListViewState extends State<HorizontalListView> {
     return Focus(
       skipTraversal: true,
       onKey: (node, event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-          goPrevious();
-          return KeyEventResult.handled;
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+          return goPrevious();
         }
 
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
           goNext();
           return KeyEventResult.handled;
         }
@@ -130,16 +124,16 @@ class _HorizontalListViewState extends State<HorizontalListView> {
         if (hasFocus) {
           jumpToCurrent();
         }
+        widget.onFocusChanged?.call(hasFocus);
       },
       child: ListViewObserver(
         controller: observerController,
         triggerOnObserveType: ObserverTriggerOnObserveType.directly,
         child: ListView.separated(
           controller: scrollController,
-          padding: padding,
-          clipBehavior: Clip.none,
-          scrollDirection: Axis.horizontal,
-          separatorBuilder: (context, index) => const SizedBox(width: 20.0),
+          padding: widget.padding,
+          scrollDirection: Axis.vertical,
+          separatorBuilder: (context, index) => const SizedBox(height: 24.0),
           itemCount: widget.itemCount,
           itemBuilder: (context, index) {
             return Focus(
