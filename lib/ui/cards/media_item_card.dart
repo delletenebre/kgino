@@ -23,7 +23,6 @@ class MediaItemCard extends HookWidget {
 
     final focused = useState(false);
     final imageUrl = mediaItem.poster;
-    print(imageUrl);
 
     /// цвет свечения
     final glowColor = useState(theme.colorScheme.outline);
@@ -115,7 +114,7 @@ class MediaItemCard extends HookWidget {
                   Colors.black.withOpacity(0.8),
                   Colors.black.withOpacity(0.16),
                 ],
-                stops: const [0.32, 0.62],
+                stops: const [0.24, 0.8],
               ),
             ),
             child: Column(
