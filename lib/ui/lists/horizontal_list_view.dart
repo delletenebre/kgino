@@ -15,20 +15,20 @@ import '../../resources/krs_theme.dart';
 //   // TODO use "firstName" to fetch something else
 // }
 
-class HorizontalListView extends StatefulHookWidget {
-  final int itemCount;
-  final Widget Function(BuildContext context, int index) itemBuilder;
+class HorizontalListView<T> extends StatefulHookWidget {
+  final Future<List<T>>? asyncItems;
+  final Widget Function(BuildContext context, T item) itemBuilder;
   const HorizontalListView({
     super.key,
-    required this.itemCount,
+    this.asyncItems,
     required this.itemBuilder,
   });
 
   @override
-  State<HorizontalListView> createState() => _HorizontalListViewState();
+  State<HorizontalListView<T>> createState() => _HorizontalListViewState<T>();
 }
 
-class _HorizontalListViewState extends State<HorizontalListView> {
+class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
   final scrollController = ScrollController();
   late final ListObserverController observerController;
 
@@ -38,13 +38,12 @@ class _HorizontalListViewState extends State<HorizontalListView> {
   List<FocusNode> focusNodes = [];
   int lastFocusedItem = 0;
 
+  int itemCount = 0;
+
   @override
   void initState() {
     observerController = ListObserverController(controller: scrollController);
-    focusNodes = List.generate(
-      widget.itemCount,
-      (index) => FocusNode(),
-    );
+
     super.initState();
   }
 
@@ -67,7 +66,7 @@ class _HorizontalListViewState extends State<HorizontalListView> {
 
   /// переходим к следующему элементу
   void goNext() {
-    if (lastFocusedItem < widget.itemCount - 1) {
+    if (lastFocusedItem < itemCount - 1) {
       lastFocusedItem++;
       animateToCurrent();
     }
@@ -111,6 +110,25 @@ class _HorizontalListViewState extends State<HorizontalListView> {
 
   @override
   Widget build(context) {
+    final asyncItemsReader = useMemoized(() => widget.asyncItems);
+    final snapshot = useFuture(asyncItemsReader);
+
+    if (!snapshot.hasData && !snapshot.hasError) {
+      return const LinearProgressIndicator();
+    }
+
+    List<T> items = snapshot.data ?? [];
+
+    if (items.isEmpty) {
+      return const SizedBox();
+    }
+
+    itemCount = items.length;
+    focusNodes = List.generate(
+      itemCount,
+      (index) => FocusNode(),
+    );
+
     return Focus(
       skipTraversal: true,
       onKey: (node, event) {
@@ -140,11 +158,11 @@ class _HorizontalListViewState extends State<HorizontalListView> {
           clipBehavior: Clip.none,
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, index) => const SizedBox(width: 20.0),
-          itemCount: widget.itemCount,
+          itemCount: itemCount,
           itemBuilder: (context, index) {
             return Focus(
               focusNode: focusNodeAt(index),
-              child: widget.itemBuilder(context, index),
+              child: widget.itemBuilder(context, items[index]),
             );
           },
         ),

@@ -2,16 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../models/media_item.dart';
+
 class MediaItemCard extends HookWidget {
   static const width = 196.0;
   static const height = width / 16 * 9;
 
-  final Widget child;
+  final MediaItem mediaItem;
   final void Function(bool hasFocus)? onFocusChanged;
 
   const MediaItemCard({
     super.key,
-    required this.child,
+    required this.mediaItem,
     this.onFocusChanged,
   });
 
@@ -20,8 +22,8 @@ class MediaItemCard extends HookWidget {
     final theme = Theme.of(context);
 
     final focused = useState(false);
-    final imageUrl =
-        'https://media.gettyimages.com/id/458467163/photo/the-first-avenger-movie-poster.jpg?s=612x612&w=gi&k=20&c=Fc9E7HSJmEiviWNqmLsoXGgwOdpN8fv3qZ0fem6__rM=';
+    final imageUrl = mediaItem.poster;
+    print(imageUrl);
 
     /// цвет свечения
     final glowColor = useState(theme.colorScheme.outline);
@@ -121,7 +123,7 @@ class MediaItemCard extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Title',
+                  mediaItem.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

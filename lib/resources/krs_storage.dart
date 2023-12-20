@@ -27,7 +27,7 @@ class KrsStorage {
 
     final db = Isar.open(
       schemas: [
-        MediaItemSchema,
+        // MediaItemSchema,
         // MediaItemEpisodeSchema,
       ],
       directory: kIsWeb ? Isar.sqliteInMemory : directory.path,

@@ -1,14 +1,26 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'media_item.freezed.dart';
+import '../extensions/json_converters.dart';
+
 part 'media_item.g.dart';
 
 /// онлайн-сервисы
 enum OnlineService {
   none,
   filmix,
-  tskg,
+  tskg;
+
+  String get logo {
+    switch (this) {
+      case OnlineService.tskg:
+        return 'assets/images/tskg.svg';
+      case OnlineService.filmix:
+        return 'assets/images/filmix.svg';
+      case OnlineService.none:
+        return '';
+    }
+  }
 }
 
 /// тип медиа-контента
@@ -18,83 +30,64 @@ enum MediaItemType {
   folder,
 }
 
-abstract interface class Database {
-  @Id()
-  String get dbId;
-
-  /// онлайн-сервис
-  OnlineService get onlineService;
-
-  /// идентификатор на сервисе
-  String get id;
-
-  /// название
-  String get title;
-}
-
 abstract interface class Playable {
   String getPlayableUrl();
 }
 
-@freezed
-@Collection(ignore: {'copyWith'})
-class MediaItem with _$MediaItem implements Database {
-  const MediaItem._();
+@JsonSerializable(explicitToJson: true)
+@collection
+class MediaItem {
+  /// идентификатор в базе данных
+  @Id()
+  String get isarId => '${onlineService.name}|$id';
 
-  // const factory MediaItem({
-  //   /// онлайн-сервис
-  //   @Default(OnlineService.none) OnlineService onlineService,
-  //
-  //   /// идентификатор на сервисе
-  //   @Default('') String id,
-  //
-  //   /// название
-  //   @Default('') String title,
-  //
-  //   /// постер
-  //   @Default('') String poster,
-  //
-  //   /// описание (не сохраняем в базе данных)
-  //   @ignore @Default('') String overview,
-  // }) = _MediaItem;
+  /// онлайн-сервис
+  final OnlineService onlineService;
 
-  @Implements<Database>()
-  const factory MediaItem.tskg(String id, String title) = TskgItem;
+  /// идентификатор на сервисе
+  @StringConverter()
+  final String id;
 
-  @Implements<Database>()
-  const factory MediaItem.filmix(String id, String title) = FilmixItem;
+  /// название
+  final String title;
 
-  factory MediaItem.fromJson(Map<String, Object?> json) =>
+  /// постер
+  final String poster;
+
+  /// описание (не сохраняем в базе данных)
+  @ignore
+  final String overview;
+
+  /// год
+  @StringConverter()
+  @ignore
+  final String year;
+
+  /// жанры
+  @ignore
+  final List<String> genres;
+
+  /// страны
+  @ignore
+  final List<String> countries;
+
+  const MediaItem({
+    this.onlineService = OnlineService.none,
+    this.id = '',
+    this.title = '',
+    this.poster = '',
+
+    /// не в базе данных
+    this.overview = '',
+    this.year = '',
+    this.genres = const [],
+    this.countries = const [],
+  });
+
+  factory MediaItem.fromJson(Map<String, dynamic> json) =>
       _$MediaItemFromJson(json);
 
-  @override
-  @Id()
-  String get dbId => '$onlineService|$id';
-
-  @override
-  String get id => id;
-
-  @override
-  String get title => title;
-
-  @override
-  OnlineService get onlineService {
-    if (this is TskgItem) {
-      return OnlineService.tskg;
-    } else if (this is FilmixItem) {
-      return OnlineService.filmix;
-    }
-
-    return OnlineService.none;
-  }
-
-  // @override
-  // String getPlayableUrl() {
-  //   if (this is TskgItem) {
-  //     return '2';
-  //   }
-  //   return '1';
-  // }
+  Map<String, dynamic> toJson() => _$MediaItemToJson(this);
 }
 
 //
