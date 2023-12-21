@@ -1,7 +1,11 @@
+import 'package:flutter/widgets.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../extensions/json_converters.dart';
+import 'media_item_url.dart';
 
 part 'media_item.g.dart';
 
@@ -31,12 +35,13 @@ enum MediaItemType {
 }
 
 abstract interface class Playable {
-  String getPlayableUrl();
+  Future<MediaItemUrl> loadEpisodeUrl(Ref ref);
+  Future<MediaItem> loadDetails(Ref ref);
 }
 
 @JsonSerializable(explicitToJson: true)
 @collection
-class MediaItem {
+class MediaItem implements Playable {
   /// идентификатор в базе данных
   @Id()
   String get isarId => '${onlineService.name}|$id';
@@ -54,7 +59,14 @@ class MediaItem {
   /// постер
   final String poster;
 
-  /// описание (не сохраняем в базе данных)
+  /// изображение на фон
+  @ignore
+  String get backdrop => poster;
+
+  /// тип контента
+  final MediaItemType type;
+
+  /// описание
   @ignore
   final String overview;
 
@@ -71,6 +83,26 @@ class MediaItem {
   @ignore
   final List<String> countries;
 
+  /// количество сезонов
+  @ignore
+  final int seasonCount;
+
+  /// рейтинг IMDb
+  @DoubleConverter()
+  @ignore
+  final double imdbRating;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @ignore
+  bool get hasImdbRating => imdbRating > 0.0;
+
+  /// рейтинг КиноПоиск
+  @DoubleConverter()
+  @ignore
+  final double kinopoiskRating;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @ignore
+  bool get hasKinopoiskRating => kinopoiskRating > 0.0;
+
   const MediaItem({
     this.onlineService = OnlineService.none,
     this.id = '',
@@ -78,16 +110,109 @@ class MediaItem {
     this.poster = '',
 
     /// не в базе данных
+    this.type = MediaItemType.folder,
     this.overview = '',
     this.year = '',
     this.genres = const [],
     this.countries = const [],
+    this.seasonCount = 0,
+    this.imdbRating = 0.0,
+    this.kinopoiskRating = 0.0,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
       _$MediaItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MediaItemToJson(this);
+
+  /// является ли текущий элемент "директорией"
+  @ignore
+  bool get isFolder => (type == MediaItemType.folder);
+
+  /// заблокирован ли контент правообладателем
+  @ignore
+  bool get blocked => false;
+
+  /// продолжительность для информации
+  String overviewDuration(BuildContext context) {
+    switch (type) {
+      case MediaItemType.folder:
+        return '';
+      case MediaItemType.show:
+        return localeSeasonsCount(seasonCount);
+      case MediaItemType.movie:
+        return 'need to do';
+      // return Duration(
+      //         seconds:
+      //             seasons.firstOrNull?.episodes.firstOrNull?.duration ?? 0)
+      //     .formatted;
+    }
+  }
+
+  /// усреднённый рейтинг
+  @ignore
+  double get averageRating {
+    int ratingsCount = 0;
+    if (hasImdbRating) {
+      ratingsCount++;
+    }
+
+    if (hasKinopoiskRating) {
+      ratingsCount++;
+    }
+
+    if (ratingsCount == 0) {
+      return 0.0;
+    }
+
+    return (imdbRating + kinopoiskRating) / ratingsCount;
+  }
+
+  /// отображаемый рейтинг
+  @ignore
+  String get ratingStars {
+    if (averageRating == 0.0) {
+      return '';
+    } else if (averageRating < 5.0) {
+      return '☆☆☆';
+    } else if (averageRating < 6.0) {
+      return '★☆☆';
+    } else if (averageRating < 7.7) {
+      return '★★☆';
+    } else {
+      return '★★★';
+    }
+  }
+
+  String localeSeasonsCount(int count) {
+    return Intl.pluralLogic(
+      count,
+      locale: 'ru',
+      other: 'сезона',
+      many: 'сезонов',
+      few: 'сезона',
+      one: 'сезон',
+      zero: 'сезонов',
+    );
+  }
+
+  /// загружаем подробные данные
+  @override
+  Future<MediaItem> loadDetails(Ref ref) => throw UnimplementedError();
+
+  /// загружаем ссылку на эпизод
+  @override
+  Future<MediaItemUrl> loadEpisodeUrl(Ref ref) => throw UnimplementedError();
+
+  /// образец экземпляра для показа индикатора загрузки
+  factory MediaItem.skeleton() => const MediaItem(
+        title: 'Item title for skeleton',
+        overview:
+            'orem ipsum dolor sit amet, consectetur adipiscing elit. Proin rhoncus suscipit nisi et convallis. Morbi ex libero, mollis mattis scelerisque ut, vulputate lacinia ligula ligu',
+        genres: ['Lorem', 'Ipsum'],
+        year: 'Lorem ip',
+        countries: ['Lorem ipsum', 'Dolor sit amet'],
+      );
 }
 
 //

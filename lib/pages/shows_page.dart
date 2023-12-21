@@ -7,6 +7,7 @@ import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/media_item.dart';
 import '../resources/krs_theme.dart';
+import '../ui/cards/featured_card.dart';
 import '../ui/cards/media_item_card.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
@@ -20,6 +21,7 @@ class ShowsPage extends HookConsumerWidget {
     final screenSize = MediaQuery.of(context).size;
 
     final selectedMediaItem = useState<int?>(null);
+    final focusedMediaItem = useValueNotifier<MediaItem?>(null);
 
     /// tskg провайдер запросов к API
     final tskgApi = ref.read(tskgApiProvider);
@@ -45,10 +47,14 @@ class ShowsPage extends HookConsumerWidget {
 
     return Column(
       children: [
-        AnimatedContainer(
-          duration: kThemeAnimationDuration,
-          height: selectedMediaItem.value == null ? 0.0 : 316.0,
-          child: SizedBox(),
+        // AnimatedContainer(
+        //   duration: kThemeAnimationDuration,
+        //   height: selectedMediaItem.value == null ? 0.0 : 316.0,
+        //   child: SizedBox(),
+        // ),
+        ValueListenableBuilder<MediaItem?>(
+          valueListenable: focusedMediaItem,
+          builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
         ),
         Expanded(
           child: VerticalListView(
@@ -56,6 +62,7 @@ class ShowsPage extends HookConsumerWidget {
             onFocusChanged: (hasFocus) {
               if (!hasFocus) {
                 selectedMediaItem.value = null;
+                focusedMediaItem.value = null;
               }
             },
             itemCount: categories.length,
@@ -105,6 +112,7 @@ class ShowsPage extends HookConsumerWidget {
                           onFocusChanged: (hasFocus) {
                             if (hasFocus) {
                               selectedMediaItem.value = index;
+                              focusedMediaItem.value = item;
                             }
                           },
                         );

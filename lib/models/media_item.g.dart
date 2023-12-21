@@ -1378,6 +1378,7 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      seasonCount: json['seasonCount'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
@@ -1389,6 +1390,7 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,
       'countries': instance.countries,
+      'seasonCount': instance.seasonCount,
     };
 
 const _$OnlineServiceEnumMap = {

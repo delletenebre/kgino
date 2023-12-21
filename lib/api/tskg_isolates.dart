@@ -45,6 +45,121 @@ Future<TskgItem> parseDetails(html) async {
         final href = element.attributes['href'] ?? '';
 
         /// находим только те элементы, которые указывают жанр сериала
+        return href.startsWith('/genre');
+      })
+      .map((element) => element.text)
+      .toList();
+
+  /// формируем список стран
+  final countries =
+      document.getElementsByClassName('app-show-tags-flag').map((element) {
+    /// получаем название страны
+    final countryName = element.attributes['title'] ?? '';
+
+    if (countryName == 'Российская Федерация') {
+      return 'Россия';
+    }
+
+    return countryName;
+  }).toList();
+
+  /// парсим описание сериала
+  final description =
+      TskgApi.getTextByClassName(document, 'app-show-description');
+
+  /// парсим список сезонов
+  final seasonElements =
+      document.getElementsByClassName('app-show-seasons-section-full');
+
+  /// формируем сезоны сериала
+  final seasonCount = seasonElements.length;
+
+  /// текущая озвучка
+  VoiceActing voiceActing = const VoiceActing();
+
+  /// список доступных озвучек
+  final voiceActings = <VoiceActing>[];
+
+  /// парсим список доступных озвучек
+  final voiceActingElements =
+      document.getElementsByClassName('btn-group btn-group-sm');
+  if (voiceActingElements.isNotEmpty) {
+    /// ^ если есть доступные озвучки
+
+    /// парсим кнопки с озвучками
+    final items = voiceActingElements.first.children;
+    for (final item in items) {
+      if (item.attributes['disabled'] != null) {
+        /// обновляем текущую озвучку
+        voiceActing = VoiceActing(
+          id: showId,
+          name: item.text.trim(),
+        );
+      } else {
+        final url = item.attributes['href'] ?? '';
+
+        final id = TskgItem.getShowIdFromUrl(url);
+
+        /// формируем список доступных озвучек
+        voiceActings.add(VoiceActing(
+          id: id,
+          name: item.text,
+        ));
+      }
+    }
+  }
+
+  return TskgItem(
+    id: showId,
+    title: title,
+    // seasons: seasons,
+    // originalTitle: originalTitle,
+    overview: description,
+    year: years,
+    genres: genres,
+    countries: countries,
+    seasonCount: seasonCount,
+    // voice: voiceActing,
+    // voices: voiceActings,
+  );
+}
+
+Future<TskgItem> parseDetails1(html) async {
+  /// парсим html
+  final document = parse(html);
+
+  /// парсим идентификатор сериала
+  final showIdUrl = document
+      .getElementsByClassName('episode')
+      .firstOrNull
+      ?.attributes['href'];
+  final showId = TskgItem.getShowIdFromUrl(showIdUrl ?? '');
+
+  /// парсим название сериала
+  final title = document.getElementById('h-show-title')?.text ?? '';
+
+  /// парсим название на языке оригинала
+  final originalTitle =
+      TskgApi.getTextByClassName(document, 'app-show-header-title-original');
+
+  /// парсим года выпуска сериала
+  /// убираем 'завершён/закрыт' из '2001-2010, завершён/закрыт'
+  final years = TskgApi.getTextByClassName(document, 'app-show-header-years')
+      .split(', ')
+      .first;
+
+  /// парсим страны, жанры
+  final tags = document
+      .getElementsByClassName('app-show-tags')
+      .last
+      .getElementsByTagName('a');
+
+  final genres = tags
+      .where((element) {
+        /// получаем атрибут href
+        final href = element.attributes['href'] ?? '';
+
+        /// находим только те элементы, которые указывают жанр сериала
         // return href.startsWith('/category') || href.startsWith('/genre');
         return href.startsWith('/genre');
       })
@@ -53,37 +168,16 @@ Future<TskgItem> parseDetails(html) async {
   // debugPrint('show genres: $genres');
 
   /// формируем список стран
-  final countries = document
-      .getElementsByClassName('app-show-tags-flag')
-      // tags.where((element) {
-      //   /// получаем атрибут href
-      //   final href = element.attributes['href'] ?? '';
-      //   /// находим только те элементы, которые указывают на страну
-      //   return href.startsWith('/show?country');
-      // })
-      .map((element) {
+  final countries =
+      document.getElementsByClassName('app-show-tags-flag').map((element) {
     /// получаем название страны
     final countryName = element.attributes['title'] ?? '';
-
-    /// получаем атрибут стиля элемента (изображение как background-image)
-    // String countryImageUrl = element.attributes['style'] ?? '';
-    // if (countryImageUrl.startsWith('background-image: url(')) {
-    //   /// ^ если ссылка на изображение страны не пустая
-
-    //   /// вырезаем [background-image: url(https://www.ts.kg/img/flags/svg/4x3/ru.svg)]
-    //   countryImageUrl = countryImageUrl
-    //     .substring(22, countryImageUrl.length - 1);
-    // }
 
     if (countryName == 'Российская Федерация') {
       return 'Россия';
     }
 
     return countryName;
-    // return TskgCountry(
-    //   name: countryName,
-    //   imageUrl: countryImageUrl,
-    // );
   }).toList();
 
   /// парсим описание сериала
@@ -143,12 +237,10 @@ Future<TskgItem> parseDetails(html) async {
 
       return MediaItemEpisode(
         id: '${OnlineService.tskg.name}|$showId@$episodeId',
-        // fullId: EpisodeItem.getFullId(KginoProvider.tskg.name, showId, '$episodeId'),
         name: episodeTitle,
         seasonNumber: seasonIndex + 1,
         episodeNumber: episodeIndex + 1,
         duration: episodeDuration.inSeconds,
-        // quality: episodeQuality,
       );
     }).toList();
 

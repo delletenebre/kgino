@@ -1,11 +1,20 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../api/tskg_api_provider.dart';
 import '../media_item.dart';
 
 class TskgItem extends MediaItem {
   TskgItem({
     super.id,
     super.title,
+    super.type = MediaItemType.show,
+    super.overview,
+    super.year,
     super.genres,
     super.countries,
+    super.seasonCount,
+    super.imdbRating,
+    super.kinopoiskRating,
   });
 
   @override
@@ -19,7 +28,7 @@ class TskgItem extends MediaItem {
 
   /// извлекаем идентификатор сериала из ссылки
   static String getShowIdFromUrl(String url) {
-    // разделяем url по '/'
+    /// разделяем url по символу '/'
     final path = url.split('/');
 
     if (url.startsWith('/show') && path.length > 1) {
@@ -32,5 +41,25 @@ class TskgItem extends MediaItem {
 
       return '';
     }
+  }
+
+  @override
+  Future<MediaItem> loadDetails(Ref ref) async {
+    final api = ref.read(tskgApiProvider);
+
+    /// отменяем выполнение запроса, если страница закрыта
+    final cancelToken = api.getCancelToken();
+    ref.onDispose(cancelToken.cancel);
+
+    /// отправляем запрос на получение данных
+    final detailedItem = await api.getDetails(
+      showId: id,
+      cancelToken: cancelToken,
+    );
+
+    // detailedItem.subtitles = subtitles;
+    // detailedItem.bookmarked = bookmarked;
+
+    return detailedItem;
   }
 }
