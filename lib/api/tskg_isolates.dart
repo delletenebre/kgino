@@ -1,12 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:html/parser.dart';
 
-import '../enums/online_service.dart';
 import '../extensions/string_extensions.dart';
-import '../models/media_item_episode.dart';
-import '../models/media_item_season.dart';
+import '../models/media_item.dart';
 import '../models/tskg/tskg_item.dart';
-import '../models/voice_acting.dart';
 import 'tskg_api_provider.dart';
 
 Future<TskgItem> parseDetails(html) async {
@@ -71,7 +68,7 @@ Future<TskgItem> parseDetails(html) async {
   final seasonElements =
       document.getElementsByClassName('app-show-seasons-section-full');
 
-  /// формируем сезоны сериала
+  /// количество сезонов
   final seasonCount = seasonElements.length;
 
   /// текущая озвучка
@@ -101,10 +98,7 @@ Future<TskgItem> parseDetails(html) async {
         final id = TskgItem.getShowIdFromUrl(url);
 
         /// формируем список доступных озвучек
-        voiceActings.add(VoiceActing(
-          id: id,
-          name: item.text,
-        ));
+        voiceActings.add(VoiceActing(id: id, name: item.text));
       }
     }
   }
@@ -122,6 +116,87 @@ Future<TskgItem> parseDetails(html) async {
     // voice: voiceActing,
     // voices: voiceActings,
   );
+}
+
+/// получение списка сезонов
+Future<List<MediaItemSeason>> parseSeasons(html) async {
+  /// парсим html
+  final document = parse(html);
+
+  /// парсим идентификатор сериала
+  final showIdUrl = document
+      .getElementsByClassName('episode')
+      .firstOrNull
+      ?.attributes['href'];
+  final showId = TskgItem.getShowIdFromUrl(showIdUrl ?? '');
+
+  /// парсим список сезонов
+  final seasonElements =
+      document.getElementsByClassName('app-show-seasons-section-full');
+
+  /// формируем сезоны сериала
+  final seasons = seasonElements.mapIndexed((seasonIndex, season) {
+    /// парсим заголовок названия сезона
+    final seasonTitleTable =
+        season.getElementsByClassName('app-show-season-title-table').first;
+
+    /// получаем название сезона
+    final seasonTitle = seasonTitleTable.getElementsByTagName('a').first.text;
+
+    /// парсим список эпизодов сезона
+    final seasonEpisodesTable =
+        season.getElementsByClassName('app-show-season-collapse').first;
+    final seasonEpisodeRows = seasonEpisodesTable.getElementsByTagName('tr');
+
+    /// формируем эпизоды сезона
+    final episodes = seasonEpisodeRows.mapIndexed((episodeIndex, episodeRow) {
+      /// парсим качество записи SD|HD
+      //final episodeQuality = episodeRow.getElementsByClassName('btn btn-default btn-xs').first.text;
+
+      /// парсим название и id эпизода
+      final episodeTitleElement =
+          episodeRow.getElementsByClassName('text-primary').first;
+      String episodeTitle = episodeTitleElement.text;
+
+      final regExp = RegExp(r'^\d+?\: (.+?)$');
+
+      if (regExp.hasMatch(episodeTitle)) {
+        episodeTitle = regExp.firstMatch(episodeTitle)?.group(1) ?? '';
+      }
+
+      // final episodeUrl = episodeTitleElement.attributes['href'] ?? '';
+      final episodeIdAttribute = episodeTitleElement.attributes['id'] ?? '-';
+      final episodeId = int.tryParse(episodeIdAttribute.split('-').last) ?? 0;
+
+      /// парсим продолжительность эпизода
+      final episodeDurationString =
+          episodeTitleElement.nextElementSibling?.text.trim() ?? '';
+      Duration episodeDuration = Duration.zero;
+      if (episodeDurationString.isNotEmpty) {
+        /// ^ если указана продолжительность эпизода
+
+        episodeDuration = episodeDurationString.substring(2).toDuration();
+      }
+
+      /// парсим описание эпизода (перевод, обычно)
+      // final episodeDescription = episodeRow.getElementsByClassName('text-muted clearfix').first.text.trim().replaceAll('⠀', '');
+
+      return MediaItemEpisode(
+        id: '${OnlineService.tskg.name}|$showId@$episodeId',
+        name: episodeTitle,
+        seasonNumber: seasonIndex + 1,
+        episodeNumber: episodeIndex + 1,
+        duration: episodeDuration.inSeconds,
+      );
+    }).toList();
+
+    return MediaItemSeason(
+      name: seasonTitle,
+      episodes: episodes,
+    );
+  }).toList();
+
+  return seasons;
 }
 
 Future<TskgItem> parseDetails1(html) async {

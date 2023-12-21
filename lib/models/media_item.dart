@@ -5,7 +5,16 @@ import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../extensions/json_converters.dart';
+import '../resources/krs_storage.dart';
+import 'media_item_episode.dart';
+import 'media_item_season.dart';
 import 'media_item_url.dart';
+import 'tskg/tskg_item.dart';
+import 'voice_acting.dart';
+
+export 'media_item_episode.dart';
+export 'media_item_season.dart';
+export 'voice_acting.dart';
 
 part 'media_item.g.dart';
 
@@ -35,8 +44,10 @@ enum MediaItemType {
 }
 
 abstract interface class Playable {
-  Future<MediaItemUrl> loadEpisodeUrl(Ref ref);
   Future<MediaItem> loadDetails(Ref ref);
+  Future<List<MediaItemSeason>> loadSeasons(Ref ref);
+  Future<List<VoiceActing>> loadVoiceActings(Ref ref);
+  Future<MediaItemUrl> loadEpisodeUrl(Ref ref);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -47,6 +58,7 @@ class MediaItem implements Playable {
   String get isarId => '${onlineService.name}|$id';
 
   /// онлайн-сервис
+  @enumValue
   final OnlineService onlineService;
 
   /// идентификатор на сервисе
@@ -103,6 +115,14 @@ class MediaItem implements Playable {
   @ignore
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
+  /// сезоны
+  @ignore
+  final List<MediaItemSeason> seasons;
+
+  /// варианты озвучки
+  @ignore
+  final List<VoiceActing> voices;
+
   const MediaItem({
     this.onlineService = OnlineService.none,
     this.id = '',
@@ -118,7 +138,32 @@ class MediaItem implements Playable {
     this.seasonCount = 0,
     this.imdbRating = 0.0,
     this.kinopoiskRating = 0.0,
+    this.seasons = const [],
+    this.voices = const [],
   });
+
+  MediaItem copyWith(
+          {String? id, VoiceActing? voice, List<MediaItemSeason>? seasons}) =>
+      MediaItem(
+        onlineService: onlineService,
+        id: id ?? this.id,
+        title: title,
+        poster: poster,
+        // originalTitle: originalTitle,
+        overview: overview,
+        year: year,
+        genres: genres,
+        countries: countries,
+        // voices: voices,
+        imdbRating: imdbRating,
+        kinopoiskRating: kinopoiskRating,
+        type: type,
+        seasons: seasons ?? this.seasons,
+        // bookmarked: bookmarked,
+        // subtitles: subtitles,
+        // voice: voice ?? this.voice,
+        // quality: quality,
+      );
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
       _$MediaItemFromJson(json);
@@ -184,6 +229,11 @@ class MediaItem implements Playable {
     }
   }
 
+  /// общий список всех эпизодов
+  @ignore
+  List<MediaItemEpisode> get episodes =>
+      seasons.expand((season) => season.episodes).toList();
+
   String localeSeasonsCount(int count) {
     return Intl.pluralLogic(
       count,
@@ -196,19 +246,44 @@ class MediaItem implements Playable {
     );
   }
 
-  /// загружаем подробные данные
+  /// загрузка подробных данных о сериале или фильме
   @override
-  Future<MediaItem> loadDetails(Ref ref) => throw UnimplementedError();
+  loadDetails(Ref ref) => throw UnimplementedError();
 
-  /// загружаем ссылку на эпизод
+  /// получение списка сезонов
   @override
-  Future<MediaItemUrl> loadEpisodeUrl(Ref ref) => throw UnimplementedError();
+  loadSeasons(Ref ref) => throw UnimplementedError();
+
+  /// получение списка вариантов озвучки
+  @override
+  loadVoiceActings(Ref ref) => throw UnimplementedError();
+
+  /// получение ссылки на эпизод
+  @override
+  loadEpisodeUrl(Ref ref) => throw UnimplementedError();
+
+  /// находим сохранённый в базе данных сериал или фильм
+  MediaItem? findSaved(KrsStorage storage) {
+    final savedItem = storage.db.mediaItems.get(isarId);
+    if (savedItem != null) {
+      switch (savedItem.onlineService) {
+        case OnlineService.none:
+          return savedItem;
+        case OnlineService.filmix:
+        //return FilmixItem.fromJson(savedItem.toJson());
+        case OnlineService.tskg:
+          return TskgItem.fromJson(savedItem.toJson());
+      }
+    }
+
+    return null;
+  }
 
   /// образец экземпляра для показа индикатора загрузки
   factory MediaItem.skeleton() => const MediaItem(
         title: 'Item title for skeleton',
         overview:
-            'orem ipsum dolor sit amet, consectetur adipiscing elit. Proin rhoncus suscipit nisi et convallis. Morbi ex libero, mollis mattis scelerisque ut, vulputate lacinia ligula ligu',
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin rhoncus suscipit nisi et convallis. Morbi ex libero, mollis mattis scelerisque ut, vulputate lacinia ligula ligu',
         genres: ['Lorem', 'Ipsum'],
         year: 'Lorem ip',
         countries: ['Lorem ipsum', 'Dolor sit amet'],

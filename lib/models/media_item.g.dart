@@ -38,6 +38,11 @@ const MediaItemSchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
+        name: 'type',
+        type: IsarType.byte,
+        enumMap: {"show": 0, "movie": 1, "folder": 2},
+      ),
+      IsarPropertySchema(
         name: 'isarId',
         type: IsarType.string,
       ),
@@ -58,7 +63,8 @@ int serializeMediaItem(IsarWriter writer, MediaItem object) {
   IsarCore.writeString(writer, 2, object.id);
   IsarCore.writeString(writer, 3, object.title);
   IsarCore.writeString(writer, 4, object.poster);
-  IsarCore.writeString(writer, 5, object.isarId);
+  IsarCore.writeByte(writer, 5, object.type.index);
+  IsarCore.writeString(writer, 6, object.isarId);
   return Isar.fastHash(object.isarId);
 }
 
@@ -79,11 +85,21 @@ MediaItem deserializeMediaItem(IsarReader reader) {
   _title = IsarCore.readString(reader, 3) ?? '';
   final String _poster;
   _poster = IsarCore.readString(reader, 4) ?? '';
+  final MediaItemType _type;
+  {
+    if (IsarCore.readNull(reader, 5)) {
+      _type = MediaItemType.folder;
+    } else {
+      _type =
+          _mediaItemType[IsarCore.readByte(reader, 5)] ?? MediaItemType.folder;
+    }
+  }
   final object = MediaItem(
     onlineService: _onlineService,
     id: _id,
     title: _title,
     poster: _poster,
+    type: _type,
   );
   return object;
 }
@@ -107,7 +123,16 @@ dynamic deserializeMediaItemProp(IsarReader reader, int property) {
     case 4:
       return IsarCore.readString(reader, 4) ?? '';
     case 5:
-      return IsarCore.readString(reader, 5) ?? '';
+      {
+        if (IsarCore.readNull(reader, 5)) {
+          return MediaItemType.folder;
+        } else {
+          return _mediaItemType[IsarCore.readByte(reader, 5)] ??
+              MediaItemType.folder;
+        }
+      }
+    case 6:
+      return IsarCore.readString(reader, 6) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -120,6 +145,7 @@ sealed class _MediaItemUpdate {
     String? id,
     String? title,
     String? poster,
+    MediaItemType? type,
   });
 }
 
@@ -135,6 +161,7 @@ class _MediaItemUpdateImpl implements _MediaItemUpdate {
     Object? id = ignore,
     Object? title = ignore,
     Object? poster = ignore,
+    Object? type = ignore,
   }) {
     return collection.updateProperties([
           isarId
@@ -143,6 +170,7 @@ class _MediaItemUpdateImpl implements _MediaItemUpdate {
           if (id != ignore) 2: id as String?,
           if (title != ignore) 3: title as String?,
           if (poster != ignore) 4: poster as String?,
+          if (type != ignore) 5: type as MediaItemType?,
         }) >
         0;
   }
@@ -155,6 +183,7 @@ sealed class _MediaItemUpdateAll {
     String? id,
     String? title,
     String? poster,
+    MediaItemType? type,
   });
 }
 
@@ -170,12 +199,14 @@ class _MediaItemUpdateAllImpl implements _MediaItemUpdateAll {
     Object? id = ignore,
     Object? title = ignore,
     Object? poster = ignore,
+    Object? type = ignore,
   }) {
     return collection.updateProperties(isarId, {
       if (onlineService != ignore) 1: onlineService as OnlineService?,
       if (id != ignore) 2: id as String?,
       if (title != ignore) 3: title as String?,
       if (poster != ignore) 4: poster as String?,
+      if (type != ignore) 5: type as MediaItemType?,
     });
   }
 }
@@ -192,6 +223,7 @@ sealed class _MediaItemQueryUpdate {
     String? id,
     String? title,
     String? poster,
+    MediaItemType? type,
   });
 }
 
@@ -207,12 +239,14 @@ class _MediaItemQueryUpdateImpl implements _MediaItemQueryUpdate {
     Object? id = ignore,
     Object? title = ignore,
     Object? poster = ignore,
+    Object? type = ignore,
   }) {
     return query.updateProperties(limit: limit, {
       if (onlineService != ignore) 1: onlineService as OnlineService?,
       if (id != ignore) 2: id as String?,
       if (title != ignore) 3: title as String?,
       if (poster != ignore) 4: poster as String?,
+      if (type != ignore) 5: type as MediaItemType?,
     });
   }
 }
@@ -236,6 +270,7 @@ class _MediaItemQueryBuilderUpdateImpl implements _MediaItemQueryUpdate {
     Object? id = ignore,
     Object? title = ignore,
     Object? poster = ignore,
+    Object? type = ignore,
   }) {
     final q = query.build();
     try {
@@ -244,6 +279,7 @@ class _MediaItemQueryBuilderUpdateImpl implements _MediaItemQueryUpdate {
         if (id != ignore) 2: id as String?,
         if (title != ignore) 3: title as String?,
         if (poster != ignore) 4: poster as String?,
+        if (type != ignore) 5: type as MediaItemType?,
       });
     } finally {
       q.close();
@@ -263,6 +299,11 @@ const _mediaItemOnlineService = {
   0: OnlineService.none,
   1: OnlineService.filmix,
   2: OnlineService.tskg,
+};
+const _mediaItemType = {
+  0: MediaItemType.show,
+  1: MediaItemType.movie,
+  2: MediaItemType.folder,
 };
 
 extension MediaItemQueryFilter
@@ -874,6 +915,88 @@ extension MediaItemQueryFilter
     });
   }
 
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> typeEqualTo(
+    MediaItemType value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 5,
+          value: value.index,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> typeGreaterThan(
+    MediaItemType value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 5,
+          value: value.index,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition>
+      typeGreaterThanOrEqualTo(
+    MediaItemType value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 5,
+          value: value.index,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> typeLessThan(
+    MediaItemType value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 5,
+          value: value.index,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition>
+      typeLessThanOrEqualTo(
+    MediaItemType value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 5,
+          value: value.index,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> typeBetween(
+    MediaItemType lower,
+    MediaItemType upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 5,
+          lower: lower.index,
+          upper: upper.index,
+        ),
+      );
+    });
+  }
+
   QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> isarIdEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -881,7 +1004,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -896,7 +1019,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -912,7 +1035,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -927,7 +1050,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -943,7 +1066,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -959,7 +1082,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 5,
+          property: 6,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -975,7 +1098,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -990,7 +1113,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1004,7 +1127,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 5,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1018,7 +1141,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 5,
+          property: 6,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1030,7 +1153,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 5,
+          property: 6,
           value: '',
         ),
       );
@@ -1041,7 +1164,7 @@ extension MediaItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 5,
+          property: 6,
           value: '',
         ),
       );
@@ -1128,11 +1251,23 @@ extension MediaItemQuerySortBy on QueryBuilder<MediaItem, MediaItem, QSortBy> {
     });
   }
 
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(5);
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(5, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByIsarId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        5,
+        6,
         caseSensitive: caseSensitive,
       );
     });
@@ -1142,7 +1277,7 @@ extension MediaItemQuerySortBy on QueryBuilder<MediaItem, MediaItem, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        5,
+        6,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1206,17 +1341,29 @@ extension MediaItemQuerySortThenBy
     });
   }
 
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(5);
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(5, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByIsarId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, caseSensitive: caseSensitive);
+      return query.addSortBy(6, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByIsarIdDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -1249,6 +1396,12 @@ extension MediaItemQueryWhereDistinct
       return query.addDistinctBy(4, caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterDistinct> distinctByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(5);
+    });
+  }
 }
 
 extension MediaItemQueryProperty1
@@ -1278,9 +1431,15 @@ extension MediaItemQueryProperty1
     });
   }
 
-  QueryBuilder<MediaItem, String, QAfterProperty> isarIdProperty() {
+  QueryBuilder<MediaItem, MediaItemType, QAfterProperty> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<MediaItem, String, QAfterProperty> isarIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1312,9 +1471,15 @@ extension MediaItemQueryProperty2<R>
     });
   }
 
-  QueryBuilder<MediaItem, (R, String), QAfterProperty> isarIdProperty() {
+  QueryBuilder<MediaItem, (R, MediaItemType), QAfterProperty> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<MediaItem, (R, String), QAfterProperty> isarIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1346,9 +1511,15 @@ extension MediaItemQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<MediaItem, (R1, R2, String), QOperations> isarIdProperty() {
+  QueryBuilder<MediaItem, (R1, R2, MediaItemType), QOperations> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<MediaItem, (R1, R2, String), QOperations> isarIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1366,6 +1537,8 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
           : const StringConverter().fromJson(json['id']),
       title: json['title'] as String? ?? '',
       poster: json['poster'] as String? ?? '',
+      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
+          MediaItemType.folder,
       overview: json['overview'] as String? ?? '',
       year: json['year'] == null
           ? ''
@@ -1379,6 +1552,20 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
               .toList() ??
           const [],
       seasonCount: json['seasonCount'] as int? ?? 0,
+      imdbRating: json['imdbRating'] == null
+          ? 0.0
+          : const DoubleConverter().fromJson(json['imdbRating']),
+      kinopoiskRating: json['kinopoiskRating'] == null
+          ? 0.0
+          : const DoubleConverter().fromJson(json['kinopoiskRating']),
+      seasons: (json['seasons'] as List<dynamic>?)
+              ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      voices: (json['voices'] as List<dynamic>?)
+              ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
@@ -1386,15 +1573,27 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'poster': instance.poster,
+      'type': _$MediaItemTypeEnumMap[instance.type]!,
       'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,
       'countries': instance.countries,
       'seasonCount': instance.seasonCount,
+      'imdbRating': const DoubleConverter().toJson(instance.imdbRating),
+      'kinopoiskRating':
+          const DoubleConverter().toJson(instance.kinopoiskRating),
+      'seasons': instance.seasons.map((e) => e.toJson()).toList(),
+      'voices': instance.voices.map((e) => e.toJson()).toList(),
     };
 
 const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',
   OnlineService.filmix: 'filmix',
   OnlineService.tskg: 'tskg',
+};
+
+const _$MediaItemTypeEnumMap = {
+  MediaItemType.show: 'show',
+  MediaItemType.movie: 'movie',
+  MediaItemType.folder: 'folder',
 };

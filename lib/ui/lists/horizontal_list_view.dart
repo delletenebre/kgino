@@ -128,6 +128,7 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
           itemBuilder: (context, index) {
             return MediaItemCard(
               mediaItem: MediaItem.skeleton(),
+              onTap: () {},
             );
           },
         ),

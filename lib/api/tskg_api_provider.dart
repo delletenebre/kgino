@@ -11,7 +11,6 @@ import '../models/api_request.dart';
 import '../models/media_item.dart';
 import '../models/media_item_url.dart';
 import '../models/tskg/tskg_item.dart';
-import 'interceptors/logs_interceptor.dart';
 import 'tskg_isolates.dart';
 
 part 'tskg_api_provider.g.dart';
@@ -38,7 +37,7 @@ class TskgApi {
 
   TskgApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogsInterceptor());
+    // _dio.interceptors.add(LogsInterceptor());
   }
 
   /// формируем полную ссылку на постер сериала по id
@@ -265,6 +264,21 @@ class TskgApi {
         final html = response.toString();
 
         return await compute(parseDetails, html);
+      },
+    );
+  }
+
+  /// получение списка эпизодов
+  Future<List<MediaItemSeason>> getSeasons({
+    required String showId,
+    CancelToken? cancelToken,
+  }) async {
+    return ApiRequest<List<MediaItemSeason>>().call(
+      request: _dio.get(getShowUrlById(showId), cancelToken: cancelToken),
+      decoder: (response) async {
+        final html = response.toString();
+
+        return await compute(parseSeasons, html);
       },
     );
   }

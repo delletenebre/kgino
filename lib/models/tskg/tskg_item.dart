@@ -1,8 +1,13 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/tskg_api_provider.dart';
+import '../../extensions/json_converters.dart';
 import '../media_item.dart';
 
+part 'tskg_item.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class TskgItem extends MediaItem {
   TskgItem({
     super.id,
@@ -16,6 +21,12 @@ class TskgItem extends MediaItem {
     super.imdbRating,
     super.kinopoiskRating,
   });
+
+  factory TskgItem.fromJson(Map<String, dynamic> json) =>
+      _$TskgItemFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$TskgItemToJson(this);
 
   @override
   get onlineService => OnlineService.tskg;
@@ -43,6 +54,7 @@ class TskgItem extends MediaItem {
     }
   }
 
+  /// загрузка подробных данных о сериале или фильме
   @override
   Future<MediaItem> loadDetails(Ref ref) async {
     final api = ref.read(tskgApiProvider);
@@ -61,5 +73,39 @@ class TskgItem extends MediaItem {
     // detailedItem.bookmarked = bookmarked;
 
     return detailedItem;
+  }
+
+  /// получение списка сезонов
+  @override
+  Future<List<MediaItemSeason>> loadSeasons(Ref ref) async {
+    final api = ref.read(tskgApiProvider);
+
+    /// отменяем выполнение запроса, если страница закрыта
+    final cancelToken = api.getCancelToken();
+    ref.onDispose(cancelToken.cancel);
+
+    /// отправляем запрос на получение данных
+    return await api.getSeasons(
+      showId: id,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// получение списка вариантов озвучки
+  @override
+  Future<List<VoiceActing>> loadVoiceActings(Ref ref) async {
+    final api = ref.read(tskgApiProvider);
+
+    /// отменяем выполнение запроса, если страница закрыта
+    final cancelToken = api.getCancelToken();
+    ref.onDispose(cancelToken.cancel);
+
+    /// отправляем запрос на получение данных
+    final detailedItem = await api.getDetails(
+      showId: id,
+      cancelToken: cancelToken,
+    );
+
+    return [];
   }
 }

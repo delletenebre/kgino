@@ -19,7 +19,9 @@ class FocusedMediaItem extends _$FocusedMediaItem {
   }
 
   Future<MediaItem?> fetchDetails() async {
-    if (mediaItem != null && !mediaItem!.isFolder) {
+    if (mediaItem != null &&
+        !mediaItem!.isFolder &&
+        mediaItem!.overview.isEmpty) {
       final detailed = await mediaItem!.loadDetails(ref);
 
       return detailed;
@@ -166,32 +168,6 @@ class FeaturedCard extends HookConsumerWidget {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-
-                      // const SizedBox(height: 28.0),
-
-                      // Wrap(
-                      //   spacing: 24.0,
-                      //   children: [
-                      //     /// забликирован ли контент
-                      //     if (mediaItem?.blocked == true)
-                      //       Row(
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         children: [
-                      //           Icon(
-                      //             Icons.error_outline,
-                      //             color: theme.colorScheme.error,
-                      //           ),
-                      //           const SizedBox(width: 4.0),
-                      //           Text(
-                      //             'Заблокировано правообладателем',
-                      //             style: TextStyle(
-                      //               color: theme.colorScheme.error,
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //   ],
-                      // ),
                     ],
                   ),
                 ),

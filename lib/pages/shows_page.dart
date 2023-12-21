@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../api/tskg_api_provider.dart';
@@ -39,9 +40,14 @@ class ShowsPage extends HookConsumerWidget {
         apiResponse: asyncLatest,
       ),
       CategoryListItem(
-        onlineService: OnlineService.filmix,
+        onlineService: OnlineService.tskg,
         title: 'Популярные',
         apiResponse: asyncPopular,
+      ),
+      CategoryListItem(
+        onlineService: OnlineService.filmix,
+        title: 'Последние поступления',
+        apiResponse: asyncLatest,
       ),
     ];
 
@@ -77,7 +83,7 @@ class ShowsPage extends HookConsumerWidget {
                         KrsTheme.safeArea.horizontal,
                         0.0,
                         KrsTheme.safeArea.horizontal,
-                        24.0,
+                        20.0,
                       ),
                       child: Row(
                         children: [
@@ -85,10 +91,7 @@ class ShowsPage extends HookConsumerWidget {
                             padding: const EdgeInsets.only(right: 12.0),
                             child: SvgPicture.asset(
                               category.onlineService.logo,
-                              height:
-                                  category.onlineService == OnlineService.filmix
-                                      ? 12.0
-                                      : 20.0,
+                              height: 20.0,
 
                               fit: BoxFit.scaleDown,
                               // colorFilter: ColorFilter.mode(
@@ -98,7 +101,7 @@ class ShowsPage extends HookConsumerWidget {
                           ),
                           Text(
                             category.title,
-                            style: theme.textTheme.titleLarge,
+                            style: theme.textTheme.titleMedium,
                           ),
                         ],
                       )),
@@ -114,6 +117,10 @@ class ShowsPage extends HookConsumerWidget {
                               selectedMediaItem.value = index;
                               focusedMediaItem.value = item;
                             }
+                          },
+                          onTap: () {
+                            /// переходим на страницу деталей о сериале
+                            context.pushNamed('details', extra: item);
                           },
                         );
                       },

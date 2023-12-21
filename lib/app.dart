@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'providers/providers.dart';
@@ -22,6 +23,12 @@ class App extends ConsumerWidget {
       },
       child: MaterialApp.router(
         routerConfig: router,
+
+        /// языки приложения
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('ru'),
+
         theme: KrsTheme.dark,
         darkTheme: KrsTheme.dark,
         themeMode: ThemeMode.dark,

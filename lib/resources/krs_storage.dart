@@ -5,6 +5,8 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/media_item.dart';
+
 class KrsStorage {
   late final SharedPreferences sharedStorage;
   late final Isar db;
@@ -25,10 +27,10 @@ class KrsStorage {
       directory = await getApplicationDocumentsDirectory();
     }
 
-    final db = Isar.open(
+    db = Isar.open(
       schemas: [
-        // MediaItemSchema,
-        // MediaItemEpisodeSchema,
+        MediaItemSchema,
+        MediaItemEpisodeSchema,
       ],
       directory: kIsWeb ? Isar.sqliteInMemory : directory.path,
       engine: kIsWeb ? IsarEngine.sqlite : IsarEngine.isar,
