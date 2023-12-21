@@ -25,7 +25,7 @@ class MediaItemCard extends HookWidget {
     final imageUrl = mediaItem.poster;
 
     /// цвет свечения
-    final glowColor = useState(theme.colorScheme.outline);
+    final glowColor = useState(theme.colorScheme.outline.withOpacity(0.62));
 
     /// вычисляем цвет свечения
     useEffect(() {
@@ -85,12 +85,12 @@ class MediaItemCard extends HookWidget {
 
             /// цвет свечения
             boxShadow: [
-              // if (focused.value)
-              //   BoxShadow(
-              //     color: glowColor.value,
-              //     blurRadius: 20.0,
-              //     spreadRadius: 4.0,
-              //   ),
+              if (focused.value)
+                BoxShadow(
+                  color: glowColor.value,
+                  blurRadius: 20.0,
+                  spreadRadius: 4.0,
+                ),
             ],
             borderRadius: BorderRadius.circular(12.0),
             border: focused.value

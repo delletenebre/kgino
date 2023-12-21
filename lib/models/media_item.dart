@@ -188,11 +188,11 @@ class MediaItem implements Playable {
     return Intl.pluralLogic(
       count,
       locale: 'ru',
-      other: 'сезона',
-      many: 'сезонов',
-      few: 'сезона',
-      one: 'сезон',
-      zero: 'сезонов',
+      other: '$count сезона',
+      many: '$count сезонов',
+      few: '$count сезона',
+      one: '$count сезон',
+      zero: '$count сезонов',
     );
   }
 

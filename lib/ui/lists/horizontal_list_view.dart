@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../models/media_item.dart';
 import '../../resources/krs_theme.dart';
+import '../cards/media_item_card.dart';
 
 // @riverpod
 // Object? focusNodes(ExampleRef ref) async {
@@ -114,7 +117,21 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
     final snapshot = useFuture(asyncItemsReader);
 
     if (!snapshot.hasData && !snapshot.hasError) {
-      return const LinearProgressIndicator();
+      return Skeletonizer(
+        enabled: true,
+        child: ListView.separated(
+          padding: padding,
+          clipBehavior: Clip.none,
+          scrollDirection: Axis.horizontal,
+          separatorBuilder: (context, index) => const SizedBox(width: 20.0),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return MediaItemCard(
+              mediaItem: MediaItem.skeleton(),
+            );
+          },
+        ),
+      );
     }
 
     List<T> items = snapshot.data ?? [];

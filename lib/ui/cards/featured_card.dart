@@ -18,23 +18,7 @@ class FocusedMediaItem extends _$FocusedMediaItem {
     return fetchDetails();
   }
 
-  // Future<void> loadDetails() async {
-  //   if (mediaItem != null && !mediaItem!.isFolder) {
-  //     state = const AsyncLoading();
-
-  //     final detailed = await mediaItem!.loadDetails(ref);
-  //     // final tmdb = (await AsyncValue.guard(() async {
-  //     //   /// запрашиваем данные на TMDB
-  //     //   return await mediaItem.loadTmdb(ref);
-  //     // }))
-  //     //     .valueOrNull;
-
-  //     state = AsyncData(detailed);
-  //   }
-  // }
-
   Future<MediaItem?> fetchDetails() async {
-    print('uiquiew ${mediaItem != null && !mediaItem!.isFolder}');
     if (mediaItem != null && !mediaItem!.isFolder) {
       final detailed = await mediaItem!.loadDetails(ref);
 
@@ -100,7 +84,6 @@ class FeaturedCard extends HookConsumerWidget {
     return AnimatedContainer(
       duration: kThemeAnimationDuration,
       height: mediaItem == null ? 0.0 : featuredHeight,
-      color: theme.colorScheme.surface,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -109,10 +92,9 @@ class FeaturedCard extends HookConsumerWidget {
             right: 0.0,
             child: AnimatedSwitcher(
               duration: kThemeAnimationDuration,
-              child:
-                  currentMediaItem.backdrop.isEmpty || currentMediaItem.isFolder
-                      ? null
-                      : BackdropImage(currentMediaItem.backdrop),
+              child: currentMediaItem.backdrop.isNotEmpty
+                  ? BackdropImage(currentMediaItem.backdrop)
+                  : null,
             ),
           ),
           Positioned(
@@ -128,25 +110,37 @@ class FeaturedCard extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DefaultTextStyle(
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            mediaItem != null
-                                ? [
-                                    currentMediaItem.genres.joinFirstTwo(),
-                                    currentMediaItem.year,
-                                    currentMediaItem.countries.joinFirstTwo(),
-                                    currentMediaItem.overviewDuration(context),
-                                    currentMediaItem.ratingStars,
-                                  ].removeEmpty().join(' • ')
-                                : '',
-                          ),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: (mediaItem?.blocked == true)
+
+                            /// если контент заблокирован
+                            ? Text(
+                                'Заблокировано правообладателем',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: theme.colorScheme.error,
+                                ),
+                              )
+
+                            /// жанры, год, страны, продолжительность
+                            : Text(
+                                mediaItem != null
+                                    ? [
+                                        currentMediaItem.genres.joinFirstTwo(),
+                                        currentMediaItem.year,
+                                        currentMediaItem.countries
+                                            .joinFirstTwo(),
+                                        currentMediaItem
+                                            .overviewDuration(context),
+                                        currentMediaItem.ratingStars,
+                                      ].removeEmpty().join(' • ')
+                                    : '',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
                       ),
 
                       /// название
@@ -154,9 +148,7 @@ class FeaturedCard extends HookConsumerWidget {
                         mediaItem != null ? currentMediaItem.title : '',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 32.0,
-                        ),
+                        style: theme.textTheme.titleLarge,
                       ),
 
                       const SizedBox(height: 20.0),
@@ -167,7 +159,7 @@ class FeaturedCard extends HookConsumerWidget {
                         Text(
                           currentMediaItem.overview,
                           key: const ValueKey('overview'),
-                          maxLines: 4,
+                          maxLines: 6,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 16.0,
@@ -175,31 +167,31 @@ class FeaturedCard extends HookConsumerWidget {
                           ),
                         ),
 
-                      const SizedBox(height: 28.0),
+                      // const SizedBox(height: 28.0),
 
-                      Wrap(
-                        spacing: 24.0,
-                        children: [
-                          /// забликирован ли контент
-                          if (mediaItem?.blocked == true)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  color: theme.colorScheme.error,
-                                ),
-                                const SizedBox(width: 4.0),
-                                Text(
-                                  'Заблокировано правообладателем',
-                                  style: TextStyle(
-                                    color: theme.colorScheme.error,
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
+                      // Wrap(
+                      //   spacing: 24.0,
+                      //   children: [
+                      //     /// забликирован ли контент
+                      //     if (mediaItem?.blocked == true)
+                      //       Row(
+                      //         mainAxisSize: MainAxisSize.min,
+                      //         children: [
+                      //           Icon(
+                      //             Icons.error_outline,
+                      //             color: theme.colorScheme.error,
+                      //           ),
+                      //           const SizedBox(width: 4.0),
+                      //           Text(
+                      //             'Заблокировано правообладателем',
+                      //             style: TextStyle(
+                      //               color: theme.colorScheme.error,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -208,56 +200,6 @@ class FeaturedCard extends HookConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class FeaturedCardBackground extends HookWidget {
-  final MediaItem? mediaItem;
-  // final Widget? child;
-
-  const FeaturedCardBackground(
-    this.mediaItem, {
-    super.key,
-  });
-
-  @override
-  Widget build(context) {
-    final theme = Theme.of(context);
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final featuredHeight =
-        screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
-                178.0
-            ? TvUi.featuredHeight
-            : screenHeight - TvUi.navigationBarSize.height - 178.0;
-    final animationController = useAnimationController(
-      duration: kThemeAnimationDuration,
-    );
-    final positionAnimation = useAnimation<double>(Tween(
-      begin: -featuredHeight - 40.0,
-      end: 40.0,
-    ).animate(animationController));
-    final opacityAnimation = useAnimation<double>(Tween(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(animationController));
-    // final heightAnimation = useAnimation<double>(Tween(
-    //   begin: 0.0,
-    //   end: TvUi.featuredHeight,
-    // ).animate(animationController));
-
-    /// вычисляем цвет свечения
-    useEffect(() {
-      animationController.forward();
-
-      /// we could optionally return some "dispose" logic here
-      return null;
-    }, const []);
-
-    return AnimatedContainer(
-      duration: kThemeAnimationDuration,
-      height: mediaItem == null ? 0.0 : featuredHeight,
-      color: theme.colorScheme.surface,
     );
   }
 }
