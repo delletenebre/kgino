@@ -10,7 +10,6 @@ import '../../../resources/krs_locale.dart';
 
 class PlayButton extends HookConsumerWidget {
   final MediaItem mediaItem;
-  // final String routeName;
   final void Function(bool)? onFocusChange;
 
   const PlayButton(
@@ -69,56 +68,22 @@ class PlayButton extends HookConsumerWidget {
         episodes.indexWhere((element) => element.id == playingEpisode.id);
 
     final overlayController = OverlayPortalController();
+    final layerLink = LayerLink();
 
     /// кнопка начала просмотра
-    return FilledButton.icon(
-      autofocus: true,
-      onFocusChange: (hasFocus) {
-        if (hasFocus) {
-          overlayController.show();
-        } else {
-          overlayController.hide();
-        }
-        focused.value = hasFocus;
-      },
-      onPressed: () {
-        /// переходим на страницу плеера
-        context.pushNamed(
-          'player',
-          queryParameters: {
-            'episodeIndex': '$episodeIndex',
-            'initialPosition': '${playingEpisode.position}',
-          },
-          extra: mediaItem,
-        );
-      },
-      icon: const Icon(Icons.play_arrow),
-      label: OverlayPortal(
+    return CompositedTransformTarget(
+      link: layerLink,
+      child: OverlayPortal(
         controller: overlayController,
         overlayChildBuilder: (BuildContext context) {
-          return PlayButtonTooltip(episode: playingEpisode);
+          return CompositedTransformFollower(
+            link: layerLink,
+            targetAnchor: Alignment.topLeft,
+            followerAnchor: Alignment.bottomLeft,
+            child: PlayButtonTooltip(episode: playingEpisode),
+          );
         },
-        child: Text(locale.play),
-      ),
-    );
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        /// всплывающая подсказка по эпизоду
-        // Positioned(
-        //   top: -40.0 - ((playingEpisode.position > 0) ? 16.0 : 0.0),
-        //   child: AnimatedSwitcher(
-        //     duration: kThemeAnimationDuration,
-        //     child: focused.value
-        //         ? PlayButtonTooltip(
-        //             episode: playingEpisode,
-        //           )
-        //         : null,
-        //   ),
-        // ),
-
-        /// кнопка начала просмотра
-        FilledButton.icon(
+        child: FilledButton.icon(
           autofocus: true,
           onFocusChange: (hasFocus) {
             if (hasFocus) {
@@ -140,15 +105,9 @@ class PlayButton extends HookConsumerWidget {
             );
           },
           icon: const Icon(Icons.play_arrow),
-          label: OverlayPortal(
-            controller: overlayController,
-            overlayChildBuilder: (BuildContext context) {
-              return PlayButtonTooltip(episode: playingEpisode);
-            },
-            child: Text(locale.play),
-          ),
-        )
-      ],
+          label: Text(locale.play),
+        ),
+      ),
     );
   }
 }
@@ -173,55 +132,59 @@ class PlayButtonTooltip extends HookWidget {
     final timeString = Duration(seconds: remainTime).formatted;
 
     /// показываем информацию о последнем просмотренном эпизоде
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          (episode.hasShowNumbers)
-              ? '${episode.seasonNumber} сезон, ${episode.episodeNumber} серия'
-              : ' ',
-          style: const TextStyle(
-            fontSize: 12.0,
-            fontWeight: FontWeight.bold,
+    return Container(
+      alignment: Alignment.bottomLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            (episode.hasShowNumbers)
+                ? '${episode.seasonNumber} сезон, ${episode.episodeNumber} серия'
+                : ' ',
+            style: const TextStyle(
+              fontSize: 12.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Text(
-          episode.name.isNotEmpty ? episode.name : locale.continueWatching,
-          style: const TextStyle(
-            fontSize: 10.0,
+          Text(
+            episode.name.isNotEmpty ? episode.name : locale.continueWatching,
+            style: const TextStyle(
+              fontSize: 10.0,
+            ),
           ),
-        ),
-        if (episode.position > 0)
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(bottom: 4.0, top: 3.0),
-                  width: 128.0,
-                  height: 10.0,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: LinearProgressIndicator(
-                      value: seenValue,
+          if (episode.position > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 4.0, top: 3.0),
+                    width: 128.0,
+                    height: 10.0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: LinearProgressIndicator(
+                        value: seenValue,
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    'осталось $timeString',
+                    style: TextStyle(
+                      fontSize: 10.0,
                       color: theme.colorScheme.outline,
                     ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-                Text(
-                  'осталось $timeString',
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    color: theme.colorScheme.outline,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-      ],
+          const SizedBox(height: 12.0),
+        ],
+      ),
     );
   }
 }

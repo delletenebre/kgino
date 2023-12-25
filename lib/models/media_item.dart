@@ -46,7 +46,7 @@ enum MediaItemType {
 abstract interface class Playable {
   Future<MediaItem> loadDetails(Ref ref);
   Future<List<MediaItemSeason>> loadSeasons(Ref ref);
-  Future<List<VoiceActing>> loadVoiceActings(Ref ref);
+  Future<List<VoiceActing>> loadVoices(Ref ref);
   Future<MediaItemUrl> loadEpisodeUrl(Ref ref);
 }
 
@@ -143,7 +143,10 @@ class MediaItem implements Playable {
   });
 
   MediaItem copyWith(
-          {String? id, VoiceActing? voice, List<MediaItemSeason>? seasons}) =>
+          {String? id,
+          VoiceActing? voice,
+          List<MediaItemSeason>? seasons,
+          List<VoiceActing>? voices}) =>
       MediaItem(
         onlineService: onlineService,
         id: id ?? this.id,
@@ -159,6 +162,8 @@ class MediaItem implements Playable {
         kinopoiskRating: kinopoiskRating,
         type: type,
         seasons: seasons ?? this.seasons,
+        voices: voices ?? this.voices,
+        seasonCount: seasonCount,
         // bookmarked: bookmarked,
         // subtitles: subtitles,
         // voice: voice ?? this.voice,
@@ -256,14 +261,14 @@ class MediaItem implements Playable {
 
   /// получение списка вариантов озвучки
   @override
-  loadVoiceActings(Ref ref) => throw UnimplementedError();
+  loadVoices(Ref ref) => throw UnimplementedError();
 
   /// получение ссылки на эпизод
   @override
   loadEpisodeUrl(Ref ref) => throw UnimplementedError();
 
   /// находим сохранённый в базе данных сериал или фильм
-  MediaItem? findSaved(KrsStorage storage) {
+  MediaItem findSaved(KrsStorage storage) {
     final savedItem = storage.db.mediaItems.get(isarId);
     if (savedItem != null) {
       switch (savedItem.onlineService) {
@@ -276,7 +281,7 @@ class MediaItem implements Playable {
       }
     }
 
-    return null;
+    return this;
   }
 
   /// образец экземпляра для показа индикатора загрузки

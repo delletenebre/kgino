@@ -22,14 +22,26 @@ part 'details_page.g.dart';
 @riverpod
 class Details extends _$Details {
   @override
-  Future<MediaItem?> build(MediaItem? mediaItem) async {
+  Future<MediaItem?> build(MediaItem mediaItem) async {
     return fetch();
   }
 
   Future<MediaItem?> fetch() async {
     final storage = ref.read(storageProvider);
-    final savedItem = mediaItem?.findSaved(storage) ?? mediaItem;
-    return await savedItem?.loadDetails(ref);
+
+    /// если есть, то находим сохранённую в базе данных информацию
+    final savedItem = mediaItem.findSaved(storage);
+
+    /// загружаем информацию о сериале или фильме
+    final item = await savedItem.loadDetails(ref);
+
+    /// загружаем сезоны
+    final seasons = await item.loadSeasons(ref);
+
+    /// объединяем информацию с сезонами
+    return item.copyWith(
+      seasons: seasons,
+    );
   }
 
   bool get hasItem => state.valueOrNull != null;
@@ -54,6 +66,7 @@ class DetailsPage extends HookConsumerWidget {
 
     final storage = ref.read(storageProvider);
 
+    /// контроллер информации о сериале или фильме
     final details = ref.watch(detailsProvider(mediaItem));
 
     return Scaffold(

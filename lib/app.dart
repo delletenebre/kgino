@@ -20,6 +20,7 @@ class App extends ConsumerWidget {
     return Shortcuts(
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+        LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
       },
       child: MaterialApp.router(
         routerConfig: router,
