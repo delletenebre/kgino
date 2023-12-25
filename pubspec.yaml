@@ -51,6 +51,8 @@ dependencies:
   shared_preferences: ^2.2.2
   skeletonizer: ^0.8.0
   path_provider: ^2.1.1
+  sticky_grouped_list: ^3.1.0
+  scrollable_positioned_list: ^0.3.8
   uuid: ^4.3.1
 
 dependency_overrides:

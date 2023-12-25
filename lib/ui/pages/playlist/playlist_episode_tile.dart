@@ -45,7 +45,7 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
       onKeyEvent: (focusNode, event) {
         if ([LogicalKeyboardKey.enter, LogicalKeyboardKey.select]
             .contains(event.logicalKey)) {
-          if (event is KeyUpEvent) {
+          if (event is KeyDownEvent) {
             onTap.call();
           }
         }

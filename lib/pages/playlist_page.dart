@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import '../hooks/list_observer_controller_hook.dart';
 import '../models/media_item.dart';
@@ -12,7 +11,6 @@ import '../resources/krs_theme.dart';
 import '../ui/lists/vertical_list_view.dart';
 import '../ui/pages/krs_app_bar.dart';
 import '../ui/pages/playlist/krs_list_tile.dart';
-import '../ui/pages/playlist/playlist_episode_tile.dart';
 
 class PlaylistPage extends HookConsumerWidget {
   final MediaItem mediaItem;
@@ -31,11 +29,24 @@ class PlaylistPage extends HookConsumerWidget {
 
     final seasonsListObserverController = useListObserverController();
     final episodesListObserverController = useListObserverController();
+    final episodesListFocusNode = useFocusNode();
 
     final selectedSeasonIndex = useValueNotifier(0);
     final selectedEpisodeIndex = useRef(0);
     final ignoreFocusUpdate = useRef(false);
-    final seasonName = useState('');
+
+    int episodesOffset = 0;
+    List<int> seasonEpisodesMap = [0];
+    for (final season in mediaItem.seasons) {
+      /// количество эпизодов в текущем сезоне
+      final episodesCount = season.episodes.length;
+      seasonEpisodesMap.add(
+          seasonEpisodesMap.fold(0, (value, index) => value + index) +
+              episodesCount);
+    }
+    seasonEpisodesMap[0] = 0;
+
+    final itemScrollController = GroupedItemScrollController();
 
     return Scaffold(
       appBar: const KrsAppBar(),
@@ -85,9 +96,10 @@ class PlaylistPage extends HookConsumerWidget {
                   Expanded(
                     child: VerticalListView(
                       key: const ValueKey('seasonsList'),
-                      padding: EdgeInsets.all(18.0),
+                      padding: const EdgeInsets.all(18.0),
                       separatorHeight: 12.0,
                       listObserverController: seasonsListObserverController,
+                      autofocus: true,
                       // keyEventResult: KeyEventResult.handled,
                       requestItemIndex: () => selectedSeasonIndex.value,
                       onFocusChange: (hasFocus) {
@@ -150,8 +162,54 @@ class PlaylistPage extends HookConsumerWidget {
                                 }
                               }
                             },
-                            onTap: () {},
-                            //title: '${locale.season} ${index + 1}',
+                            onSelect: () {
+                              episodesListFocusNode.requestFocus();
+                            },
+                            onTap: () {
+                              if (ignoreFocusUpdate.value) {
+                                ignoreFocusUpdate.value = false;
+                                if (index != selectedSeasonIndex.value) {
+                                  return;
+                                }
+                              }
+
+                              selectedSeasonIndex.value = index;
+
+                              final seasonIndex = selectedSeasonIndex.value;
+                              final season = mediaItem.seasons[seasonIndex];
+                              final minIndex = mediaItem.seasons
+                                  .take(seasonIndex)
+                                  .fold(
+                                      0,
+                                      (value, season) =>
+                                          value + season.episodes.length);
+
+                              /// максимальный индекс эпизода в нужном сезоне
+                              int maxIndex = minIndex + season.episodes.length;
+
+                              if (selectedEpisodeIndex.value < minIndex ||
+                                  selectedEpisodeIndex.value >= maxIndex) {
+                                /// ^ если текущий выбранный эпизод не в выбранном сезоне
+
+                                /// прокручиваем список к первому эпизоду выбранного сезона
+                                episodesListObserverController.animateTo(
+                                  index: minIndex,
+                                  isFixedHeight: true,
+                                  offset: (offset) => 0.0,
+                                  duration: kThemeAnimationDuration,
+                                  curve: Curves.easeIn,
+                                );
+
+                                /// обновляем индексы эпизода и сезона
+                                selectedSeasonIndex.value = seasonIndex;
+                                selectedEpisodeIndex.value = minIndex;
+                              } else {
+                                /// ^ если текущий выбранный эпизод из выбранного сезона
+
+                                /// обновляем индекс сезона
+                                selectedSeasonIndex.value = seasonIndex;
+                              }
+                            },
                             title:
                                 season.nameOr('${locale.season} ${index + 1}'),
                             subtitle:
@@ -189,86 +247,173 @@ class PlaylistPage extends HookConsumerWidget {
                     ),
                   ),
                   Expanded(
-                    child: VerticalListView(
-                      key: const ValueKey('episodesList'),
-                      padding: EdgeInsets.all(20.0),
-                      separatorHeight: 0.0,
-                      listObserverController: episodesListObserverController,
-                      // keyEventResult: KeyEventResult.handled,
-                      requestItemIndex: () => selectedEpisodeIndex.value,
-                      itemCount: episodes.length,
-                      itemBuilder: (context, index) {
-                        final episode = episodes[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: PlaylistEpisodeTile(
-                            episode: episode,
-                            onFocusChange: (hasFocus) {
-                              if (hasFocus) {
-                                final episodeIndex = index;
-                                int episodesOffset = 0;
-
-                                for (int i = 0;
-                                    i < mediaItem.seasons.length;
-                                    i++) {
-                                  /// текущий сезон
-                                  final season = mediaItem.seasons[i];
-
-                                  /// количество эпизодов в текущем сезоне
-                                  final episodesCount = season.episodes.length;
-
-                                  /// относительный индекс эпизода в нужном сезоне
-                                  final index = episodeIndex - episodesOffset;
-
-                                  if (episodesCount > index) {
-                                    /// обновляем индекс сезона
-
-                                    selectedSeasonIndex.value = i;
-
-                                    /// прокручиваем список сезонов к выбранному сезону
-                                    seasonsListObserverController.animateTo(
-                                      index: selectedSeasonIndex.value,
-                                      isFixedHeight: true,
-                                      offset: (offset) => 0.0,
-                                      duration: kThemeAnimationDuration,
-                                      curve: Curves.easeIn,
-                                    );
-
-                                    break;
-                                  }
-                                  episodesOffset += episodesCount;
-                                }
-
-                                /// обновляем индекс эпизода
-                                selectedEpisodeIndex.value = episodeIndex;
-                              }
-                            },
-                            onTap: () {
-                              /// переходим на страницу плеера фильма
-                              context.pushReplacementNamed(
-                                'player',
-                                queryParameters: {
-                                  'episodeIndex': '$index',
-                                },
-                                extra: mediaItem,
-                              );
-                            },
-                          ),
-                        );
-                      },
+                    child: StickyGroupedListView<dynamic, String>(
+                      elements: List.generate(
+                          50,
+                          (index) => {
+                                'group': 'zzzz',
+                                'name': index.toString(),
+                              }),
+                      groupBy: (element) => element['group'],
+                      groupSeparatorBuilder: (dynamic element) => SizedBox(),
+                      itemBuilder: (context, dynamic element) =>
+                          Text(element['name']),
+                      itemComparator: (e1, e2) =>
+                          e1['name'].compareTo(e2['name']), // optional
+                      elementIdentifier: (element) => element.name,
+                      itemScrollController: itemScrollController,
+                      order: StickyGroupedListOrder.ASC,
                     ),
+                    // VerticalListView(
+                    //         key: const ValueKey('episodesList'),
+                    //         padding: const EdgeInsets.all(20.0),
+                    //         listOffset: 64.0,
+                    //         focusNode: episodesListFocusNode,
+                    //         separatorHeight: 0.0,
+                    //         listObserverController: episodesListObserverController,
+                    //         // keyEventResult: KeyEventResult.handled,
+                    //         requestItemIndex: () => selectedEpisodeIndex.value,
+                    //         itemCount: episodes.length,
+                    //         itemBuilder: (context, index) {
+                    //           final episode = episodes[index];
+                    //
+                    //           final item = Padding(
+                    //             padding: const EdgeInsets.only(bottom: 12.0),
+                    //             child: PlaylistEpisodeTile(
+                    //               episode: episode,
+                    //               onFocusChange: (hasFocus) {
+                    //                 if (hasFocus) {
+                    //                   final episodeIndex = index;
+                    //                   int episodesOffset = 0;
+                    //
+                    //                   for (int i = 0;
+                    //                       i < mediaItem.seasons.length;
+                    //                       i++) {
+                    //                     /// текущий сезон
+                    //                     final season = mediaItem.seasons[i];
+                    //
+                    //                     /// количество эпизодов в текущем сезоне
+                    //                     final episodesCount = season.episodes.length;
+                    //
+                    //                     /// относительный индекс эпизода в нужном сезоне
+                    //                     final index = episodeIndex - episodesOffset;
+                    //
+                    //                     if (episodesCount > index) {
+                    //                       /// обновляем индекс сезона
+                    //
+                    //                       selectedSeasonIndex.value = i;
+                    //
+                    //                       /// прокручиваем список сезонов к выбранному сезону
+                    //                       seasonsListObserverController.animateTo(
+                    //                         index: selectedSeasonIndex.value,
+                    //                         isFixedHeight: true,
+                    //                         offset: (offset) => 0.0,
+                    //                         duration: kThemeAnimationDuration,
+                    //                         curve: Curves.easeIn,
+                    //                       );
+                    //
+                    //                       break;
+                    //                     }
+                    //                     episodesOffset += episodesCount;
+                    //                   }
+                    //
+                    //                   /// обновляем индекс эпизода
+                    //                   selectedEpisodeIndex.value = episodeIndex;
+                    //                 }
+                    //               },
+                    //               onTap: () {
+                    //                 /// переходим на страницу плеера фильма
+                    //                 context.pushReplacementNamed(
+                    //                   'player',
+                    //                   queryParameters: {
+                    //                     'episodeIndex': '$index',
+                    //                   },
+                    //                   extra: mediaItem,
+                    //                 );
+                    //               },
+                    //             ),
+                    //           );
+                    //
+                    //           if (seasonEpisodesMap.contains(index)) {
+                    //             return StickyHeader(
+                    //               header: Container(
+                    //                 height: 50.0,
+                    //                 color: Colors.blueGrey[700],
+                    //                 padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    //                 alignment: Alignment.centerLeft,
+                    //                 child: Text(
+                    //                   'Header #$index',
+                    //                   style: const TextStyle(color: Colors.white),
+                    //                 ),
+                    //               ),
+                    //               content: item,
+                    //             );
+                    //           } else {
+                    //             return item;
+                    //           }
+                    //
+                    //           return Padding(
+                    //             padding: const EdgeInsets.only(bottom: 12.0),
+                    //             child: PlaylistEpisodeTile(
+                    //               episode: episode,
+                    //               onFocusChange: (hasFocus) {
+                    //                 if (hasFocus) {
+                    //                   final episodeIndex = index;
+                    //                   int episodesOffset = 0;
+                    //
+                    //                   for (int i = 0;
+                    //                       i < mediaItem.seasons.length;
+                    //                       i++) {
+                    //                     /// текущий сезон
+                    //                     final season = mediaItem.seasons[i];
+                    //
+                    //                     /// количество эпизодов в текущем сезоне
+                    //                     final episodesCount = season.episodes.length;
+                    //
+                    //                     /// относительный индекс эпизода в нужном сезоне
+                    //                     final index = episodeIndex - episodesOffset;
+                    //
+                    //                     if (episodesCount > index) {
+                    //                       /// обновляем индекс сезона
+                    //
+                    //                       selectedSeasonIndex.value = i;
+                    //
+                    //                       /// прокручиваем список сезонов к выбранному сезону
+                    //                       seasonsListObserverController.animateTo(
+                    //                         index: selectedSeasonIndex.value,
+                    //                         isFixedHeight: true,
+                    //                         offset: (offset) => 0.0,
+                    //                         duration: kThemeAnimationDuration,
+                    //                         curve: Curves.easeIn,
+                    //                       );
+                    //
+                    //                       break;
+                    //                     }
+                    //                     episodesOffset += episodesCount;
+                    //                   }
+                    //
+                    //                   /// обновляем индекс эпизода
+                    //                   selectedEpisodeIndex.value = episodeIndex;
+                    //                 }
+                    //               },
+                    //               onTap: () {
+                    //                 /// переходим на страницу плеера фильма
+                    //                 context.pushReplacementNamed(
+                    //                   'player',
+                    //                   queryParameters: {
+                    //                     'episodeIndex': '$index',
+                    //                   },
+                    //                   extra: mediaItem,
+                    //                 );
+                    //               },
+                    //             ),
+                    //           );
+                    //         },
+                    //       ),
                   ),
                 ],
               ),
             ),
-            if (kDebugMode)
-              TextButton(
-                onPressed: () {
-                  context.pop();
-                },
-                child: Text(locale.back),
-              ),
           ],
         ),
       ),

@@ -10,6 +10,7 @@ class KrsListTile extends HookWidget {
   final String imageUrl;
   final void Function(bool hasFocus)? onFocusChange;
   final void Function() onTap;
+  final void Function()? onSelect;
   final bool selected;
   final bool showSelectedIcon;
   final bool dense;
@@ -22,6 +23,7 @@ class KrsListTile extends HookWidget {
     this.imageUrl = '',
     this.onFocusChange,
     required this.onTap,
+    this.onSelect,
     this.selected = false,
     this.showSelectedIcon = false,
     this.dense = false,
@@ -46,7 +48,7 @@ class KrsListTile extends HookWidget {
         if ([LogicalKeyboardKey.enter, LogicalKeyboardKey.select]
             .contains(event.logicalKey)) {
           if (event is KeyDownEvent) {
-            onTap.call();
+            onSelect?.call();
           }
         }
 

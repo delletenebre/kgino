@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -36,11 +35,6 @@ class HorizontalListView<T> extends StatefulHookWidget {
 
 class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
   late final ListObserverController observerController;
-
-  final itemScrollController = ItemScrollController();
-  final scrollOffsetController = ScrollOffsetController();
-  final itemPositionsListener = ItemPositionsListener.create();
-  final scrollOffsetListener = ScrollOffsetListener.create();
 
   final padding =
       EdgeInsets.symmetric(horizontal: KrsTheme.safeArea.horizontal);
@@ -85,13 +79,12 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
 
   /// переход к элементу без анимации
   void jumpTo(int index) {
-    // observerController.jumpTo(
-    //   index: index,
-    //   isFixedHeight: true,
-    //   offset: (offset) => padding.left,
-    //   padding: padding,
-    // );
-    itemScrollController.jumpTo(index: index);
+    observerController.jumpTo(
+      index: index,
+      isFixedHeight: true,
+      offset: (offset) => padding.left,
+      padding: padding,
+    );
     requestFocus(index);
   }
 
@@ -101,22 +94,14 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
   /// плавный переход к элементу
   void animateTo(int index) {
     requestFocus(index);
-    itemScrollController.scrollTo(
+    observerController.animateTo(
       index: index,
-      duration: kThemeAnimationDuration,
+      isFixedHeight: true,
+      offset: (offset) => padding.left,
+      duration: const Duration(milliseconds: 180),
       curve: Curves.easeIn,
-      alignment: 0,
-      //alignment: widget.listOffset ?? widget.padding.top,
-      // automaticAlignment: false,
+      padding: padding,
     );
-    // observerController.animateTo(
-    //   index: index,
-    //   isFixedHeight: true,
-    //   offset: (offset) => padding.left,
-    //   duration: const Duration(milliseconds: 180),
-    //   curve: Curves.easeIn,
-    //   padding: padding,
-    // );
   }
 
   /// плавный переход к последнему выделенному элементу
@@ -184,40 +169,27 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
           jumpToCurrent();
         }
       },
-      child: ScrollablePositionedList.builder(
-        scrollDirection: Axis.horizontal,
-        padding: padding,
-        itemCount: itemCount,
-        itemBuilder: (context, index) => Focus(
-          focusNode: focusNodeAt(index),
-          child: widget.itemBuilder(context, items[index]),
+      child: ListViewObserver(
+        controller: observerController,
+        triggerOnObserveType: ObserverTriggerOnObserveType.directly,
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView.separated(
+            controller: observerController.controller,
+            padding: padding,
+            clipBehavior: Clip.none,
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 20.0),
+            itemCount: itemCount,
+            itemBuilder: (context, index) {
+              return Focus(
+                focusNode: focusNodeAt(index),
+                child: widget.itemBuilder(context, items[index]),
+              );
+            },
+          ),
         ),
-        itemScrollController: itemScrollController,
-        scrollOffsetController: scrollOffsetController,
-        itemPositionsListener: itemPositionsListener,
-        scrollOffsetListener: scrollOffsetListener,
       ),
-      // child: ListViewObserver(
-      //   controller: observerController,
-      //   triggerOnObserveType: ObserverTriggerOnObserveType.directly,
-      //   child: ScrollConfiguration(
-      //     behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-      //     child: ListView.separated(
-      //       controller: observerController.controller,
-      //       padding: padding,
-      //       clipBehavior: Clip.none,
-      //       scrollDirection: Axis.horizontal,
-      //       separatorBuilder: (context, index) => const SizedBox(width: 20.0),
-      //       itemCount: itemCount,
-      //       itemBuilder: (context, index) {
-      //         return Focus(
-      //           focusNode: focusNodeAt(index),
-      //           child: widget.itemBuilder(context, items[index]),
-      //         );
-      //       },
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
