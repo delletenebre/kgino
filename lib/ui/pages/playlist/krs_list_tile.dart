@@ -6,6 +6,7 @@ class KrsListTile extends HookWidget {
   final FocusNode? focusNode;
   final String title;
   final String subtitle;
+  final Widget? trailing;
   final String imageUrl;
   final void Function(bool hasFocus)? onFocusChange;
   final void Function() onTap;
@@ -24,6 +25,7 @@ class KrsListTile extends HookWidget {
     this.selected = false,
     this.showSelectedIcon = false,
     this.dense = false,
+    this.trailing,
   });
 
   @override
@@ -43,7 +45,7 @@ class KrsListTile extends HookWidget {
       onKeyEvent: (focusNode, event) {
         if ([LogicalKeyboardKey.enter, LogicalKeyboardKey.select]
             .contains(event.logicalKey)) {
-          if (event is KeyUpEvent) {
+          if (event is KeyDownEvent) {
             onTap.call();
           }
         }
@@ -71,7 +73,7 @@ class KrsListTile extends HookWidget {
                   ? theme.colorScheme.inverseSurface
                   : selected
                       ? theme.colorScheme.secondaryContainer
-                      : Colors.transparent,
+                      : theme.colorScheme.secondaryContainer.withOpacity(0.12),
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: AnimatedDefaultTextStyle(
@@ -116,6 +118,7 @@ class KrsListTile extends HookWidget {
                       ],
                     ),
                   ),
+                  if (trailing != null) trailing!,
                   if (showSelectedIcon && selected)
                     Icon(
                       Icons.check_outlined,

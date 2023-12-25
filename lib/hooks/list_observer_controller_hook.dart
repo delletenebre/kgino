@@ -27,8 +27,8 @@ class _ListObserverControllerHook extends Hook<ListObserverController> {
     required this.initialScrollOffset,
     required this.keepScrollOffset,
     this.debugLabel,
-    List<Object?>? keys,
-  }) : super(keys: keys);
+    super.keys,
+  });
 
   final double initialScrollOffset;
   final bool keepScrollOffset;
@@ -46,12 +46,16 @@ class _ListObserverControllerHookState
   );
 
   @override
-  ListObserverController build(context) {
-    return controller;
-  }
+  ListObserverController build(context) => controller;
 
   @override
-  void dispose() => controller.controller?.dispose();
+  void dispose() {
+    try {
+      controller.controller?.dispose();
+    } catch (exception) {
+      // do nothing, already disposed or null
+    }
+  }
 
   @override
   String get debugLabel => 'useListObserverController';

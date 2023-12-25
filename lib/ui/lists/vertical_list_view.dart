@@ -4,19 +4,29 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 class VerticalListView extends StatefulHookWidget {
+  final ListObserverController? listObserverController;
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
 
-  final void Function(bool hasFocus)? onFocusChanged;
+  final void Function(bool hasFocus)? onFocusChange;
 
   final EdgeInsets padding;
 
+  /// запрос индекса для смены фокуса
+  /// (при внешнем управлении, например, сезоны-эпизоды)
+  final int Function()? requestItemIndex;
+
+  final double separatorHeight;
+
   const VerticalListView({
     super.key,
+    this.listObserverController,
     required this.itemCount,
     required this.itemBuilder,
     this.padding = const EdgeInsets.symmetric(horizontal: 0.0),
-    this.onFocusChanged,
+    this.onFocusChange,
+    this.requestItemIndex,
+    this.separatorHeight = 24.0,
   });
 
   @override
@@ -24,7 +34,6 @@ class VerticalListView extends StatefulHookWidget {
 }
 
 class _HorizontalListViewState extends State<VerticalListView> {
-  final scrollController = ScrollController();
   late final ListObserverController observerController;
 
   List<FocusNode> focusNodes = [];
@@ -32,7 +41,8 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   @override
   void initState() {
-    observerController = ListObserverController(controller: scrollController);
+    observerController = widget.listObserverController ??
+        ListObserverController(controller: ScrollController());
     focusNodes = List.generate(
       widget.itemCount,
       (index) => FocusNode(),
@@ -42,9 +52,11 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   @override
   void dispose() {
-    scrollController.dispose();
+    observerController.controller?.dispose();
     for (final focusNode in focusNodes) {
-      focusNode.dispose();
+      focusNode
+        ..unfocus()
+        ..dispose();
     }
     super.dispose();
   }
@@ -80,7 +92,10 @@ class _HorizontalListViewState extends State<VerticalListView> {
   }
 
   /// переход к последнему выделенному элементу без анимации
-  void jumpToCurrent() => jumpTo(lastFocusedItem);
+  void jumpToCurrent([int? index]) {
+    print('index: $index');
+    jumpTo(index ?? lastFocusedItem);
+  }
 
   /// плавный переход к элементу
   void animateTo(int index) {
@@ -99,6 +114,7 @@ class _HorizontalListViewState extends State<VerticalListView> {
   void animateToCurrent() => animateTo(lastFocusedItem);
 
   void requestFocus(int index) {
+    lastFocusedItem = index;
     focusNodeAt(index).children.firstOrNull?.requestFocus();
   }
 
@@ -122,25 +138,30 @@ class _HorizontalListViewState extends State<VerticalListView> {
       },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          jumpToCurrent();
+          // jumpToCurrent();
+          jumpToCurrent(widget.requestItemIndex?.call());
         }
-        widget.onFocusChanged?.call(hasFocus);
+        widget.onFocusChange?.call(hasFocus);
       },
       child: ListViewObserver(
         controller: observerController,
         triggerOnObserveType: ObserverTriggerOnObserveType.directly,
-        child: ListView.separated(
-          controller: scrollController,
-          padding: widget.padding,
-          scrollDirection: Axis.vertical,
-          separatorBuilder: (context, index) => const SizedBox(height: 24.0),
-          itemCount: widget.itemCount,
-          itemBuilder: (context, index) {
-            return Focus(
-              focusNode: focusNodeAt(index),
-              child: widget.itemBuilder(context, index),
-            );
-          },
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView.separated(
+            controller: observerController.controller,
+            padding: widget.padding,
+            scrollDirection: Axis.vertical,
+            separatorBuilder: (context, index) =>
+                SizedBox(height: widget.separatorHeight),
+            itemCount: widget.itemCount,
+            itemBuilder: (context, index) {
+              return Focus(
+                focusNode: focusNodeAt(index),
+                child: widget.itemBuilder(context, index),
+              );
+            },
+          ),
         ),
       ),
     );

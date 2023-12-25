@@ -93,7 +93,7 @@ class TskgItem extends MediaItem {
 
   /// получение списка вариантов озвучки
   @override
-  Future<List<VoiceActing>> loadVoiceActings(Ref ref) async {
+  Future<List<VoiceActing>> loadVoices(Ref ref) async {
     final api = ref.read(tskgApiProvider);
 
     /// отменяем выполнение запроса, если страница закрыта
@@ -101,11 +101,10 @@ class TskgItem extends MediaItem {
     ref.onDispose(cancelToken.cancel);
 
     /// отправляем запрос на получение данных
-    final detailedItem = await api.getDetails(
+    return [];
+    final voices = await api.getDetails(
       showId: id,
       cancelToken: cancelToken,
     );
-
-    return [];
   }
 }

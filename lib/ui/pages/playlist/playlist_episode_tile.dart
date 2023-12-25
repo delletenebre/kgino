@@ -32,8 +32,7 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
     final seenEpisode = episode.saved(ref.read(storageProvider));
     final seen = seenEpisode?.viewed ?? 0.0;
 
-    final title =
-        'Сезон ${episode.seasonNumber} Эпизод ${episode.episodeNumber}';
+    final title = 'Эпизод ${episode.episodeNumber}';
     final subtitle = episode.name.isNotEmpty ? episode.name : 'Нет названия';
 
     return Focus(
@@ -71,7 +70,7 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
                   ? theme.colorScheme.inverseSurface
                   : selected
                       ? theme.colorScheme.secondaryContainer
-                      : theme.colorScheme.surface,
+                      : theme.colorScheme.secondaryContainer.withOpacity(0.24),
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: AnimatedDefaultTextStyle(
@@ -83,41 +82,74 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
                         ? theme.colorScheme.onSecondaryContainer
                         : theme.colorScheme.onSurface,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 24.0,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          overflow: TextOverflow.ellipsis,
+                  /// номер эпизода
+                  Text(episode.episodeNumber.toString()),
+
+                  /// отступ
+                  const SizedBox(width: 24.0),
+
+                  /// изображение эпизода
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      // gradient: const LinearGradient(
+                      //   begin: Alignment.topLeft,
+                      //   end: Alignment.bottomRight,
+                      //   colors: [Colors.green, Colors.blue],
+                      // ),
+                      color: Colors.black,
+                    ),
+                    child: const Icon(Icons.play_arrow_outlined),
+                  ),
+
+                  /// отступ
+                  const SizedBox(width: 24.0),
+
+                  /// название эпизода
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 24.0,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              subtitle,
+                              style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        // if (subtitle.isNotEmpty)
+                        //   Opacity(
+                        //     opacity: 0.8,
+                        //     child: Text(
+                        //       subtitle,
+                        //       style: const TextStyle(
+                        //         fontSize: 12.0,
+                        //       ),
+                        //     ),
+                        //   ),
+                        if (seen > 0.0)
+                          Padding(
+                            padding:
+                                const EdgeInsetsDirectional.only(top: 12.0),
+                            child: LinearProgressIndicator(
+                              value: seen,
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                  if (subtitle.isNotEmpty)
-                    Opacity(
-                      opacity: 0.8,
-                      child: Text(
-                        subtitle,
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                        ),
-                      ),
-                    ),
-                  if (seen > 0.0)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(top: 12.0),
-                      child: LinearProgressIndicator(
-                        value: seen,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
                 ],
               ),
             ),

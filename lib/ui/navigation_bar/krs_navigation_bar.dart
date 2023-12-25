@@ -23,38 +23,40 @@ class KrsNavigationBar extends HookWidget implements PreferredSizeWidget {
       onFocusChange: (hasFocus) {
         focused.value = hasFocus;
       },
-      child: Row(
-        children: [
-          KrsNavigationButton(
-            active: focused.value,
-            selected: selectedPage == 0,
-            onSelected: () {
-              onPageChanged.call(0);
-            },
-            child: const Text('Поиск'),
-          ),
-          KrsNavigationButton(
-            active: focused.value,
-            selected: selectedPage == 1,
-            onSelected: () {
-              onPageChanged.call(1);
-            },
-            child: const Text('Сериалы'),
-          ),
-          KrsNavigationButton(
-            active: focused.value,
-            selected: selectedPage == 2,
-            onSelected: () {
-              onPageChanged.call(2);
-            },
-            child: const Text('Фильмы'),
-          ),
-        ],
+      child: SizedBox.fromSize(
+        size: preferredSize,
+        child: Row(
+          children: [
+            KrsNavigationButton(
+              active: focused.value,
+              selected: selectedPage == 0,
+              onSelected: () {
+                onPageChanged.call(0);
+              },
+              child: const Text('Поиск'),
+            ),
+            KrsNavigationButton(
+              active: focused.value,
+              selected: selectedPage == 1,
+              onSelected: () {
+                onPageChanged.call(1);
+              },
+              child: const Text('Сериалы'),
+            ),
+            KrsNavigationButton(
+              active: focused.value,
+              selected: selectedPage == 2,
+              onSelected: () {
+                onPageChanged.call(2);
+              },
+              child: const Text('Фильмы'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => const Size.fromHeight(64.0);
 }

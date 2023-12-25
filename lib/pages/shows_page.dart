@@ -65,7 +65,7 @@ class ShowsPage extends HookConsumerWidget {
         Expanded(
           child: VerticalListView(
             padding: const EdgeInsets.symmetric(vertical: 28.0),
-            onFocusChanged: (hasFocus) {
+            onFocusChange: (hasFocus) {
               if (!hasFocus) {
                 selectedMediaItem.value = null;
                 focusedMediaItem.value = null;
@@ -112,7 +112,7 @@ class ShowsPage extends HookConsumerWidget {
                       itemBuilder: (context, item) {
                         return MediaItemCard(
                           mediaItem: item,
-                          onFocusChanged: (hasFocus) {
+                          onFocusChange: (hasFocus) {
                             if (hasFocus) {
                               selectedMediaItem.value = index;
                               focusedMediaItem.value = item;

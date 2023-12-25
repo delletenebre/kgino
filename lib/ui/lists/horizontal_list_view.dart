@@ -19,10 +19,12 @@ import '../cards/media_item_card.dart';
 // }
 
 class HorizontalListView<T> extends StatefulHookWidget {
+  final ListObserverController? listObserverController;
   final Future<List<T>>? asyncItems;
   final Widget Function(BuildContext context, T item) itemBuilder;
   const HorizontalListView({
     super.key,
+    this.listObserverController,
     this.asyncItems,
     required this.itemBuilder,
   });
@@ -32,7 +34,6 @@ class HorizontalListView<T> extends StatefulHookWidget {
 }
 
 class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
-  final scrollController = ScrollController();
   late final ListObserverController observerController;
 
   final padding =
@@ -45,14 +46,15 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
 
   @override
   void initState() {
-    observerController = ListObserverController(controller: scrollController);
+    observerController = widget.listObserverController ??
+        ListObserverController(controller: ScrollController());
 
     super.initState();
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    observerController.controller?.dispose();
     for (final focusNode in focusNodes) {
       focusNode.dispose();
     }
@@ -170,19 +172,22 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
       child: ListViewObserver(
         controller: observerController,
         triggerOnObserveType: ObserverTriggerOnObserveType.directly,
-        child: ListView.separated(
-          controller: scrollController,
-          padding: padding,
-          clipBehavior: Clip.none,
-          scrollDirection: Axis.horizontal,
-          separatorBuilder: (context, index) => const SizedBox(width: 20.0),
-          itemCount: itemCount,
-          itemBuilder: (context, index) {
-            return Focus(
-              focusNode: focusNodeAt(index),
-              child: widget.itemBuilder(context, items[index]),
-            );
-          },
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView.separated(
+            controller: observerController.controller,
+            padding: padding,
+            clipBehavior: Clip.none,
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 20.0),
+            itemCount: itemCount,
+            itemBuilder: (context, index) {
+              return Focus(
+                focusNode: focusNodeAt(index),
+                child: widget.itemBuilder(context, items[index]),
+              );
+            },
+          ),
         ),
       ),
     );
