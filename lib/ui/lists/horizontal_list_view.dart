@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../models/media_item.dart';
@@ -20,12 +19,10 @@ import '../cards/media_item_card.dart';
 // }
 
 class HorizontalListView<T> extends StatefulHookWidget {
-  final ListObserverController? listObserverController;
   final Future<List<T>>? asyncItems;
   final Widget Function(BuildContext context, T item) itemBuilder;
   const HorizontalListView({
     super.key,
-    this.listObserverController,
     this.asyncItems,
     required this.itemBuilder,
   });
@@ -35,12 +32,9 @@ class HorizontalListView<T> extends StatefulHookWidget {
 }
 
 class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
-  late final ListObserverController observerController;
+  final listKey = GlobalKey();
 
   final itemScrollController = ItemScrollController();
-  final scrollOffsetController = ScrollOffsetController();
-  final itemPositionsListener = ItemPositionsListener.create();
-  final scrollOffsetListener = ScrollOffsetListener.create();
 
   final padding =
       EdgeInsets.symmetric(horizontal: KrsTheme.safeArea.horizontal);
@@ -52,15 +46,11 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
 
   @override
   void initState() {
-    observerController = widget.listObserverController ??
-        ListObserverController(controller: ScrollController());
-
     super.initState();
   }
 
   @override
   void dispose() {
-    observerController.controller?.dispose();
     for (final focusNode in focusNodes) {
       focusNode.dispose();
     }
@@ -85,13 +75,7 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
 
   /// переход к элементу без анимации
   void jumpTo(int index) {
-    // observerController.jumpTo(
-    //   index: index,
-    //   isFixedHeight: true,
-    //   offset: (offset) => padding.left,
-    //   padding: padding,
-    // );
-    itemScrollController.jumpTo(index: index);
+    itemScrollController.jumpTo(index: index, alignment: pixelToAlignment);
     requestFocus(index);
   }
 
@@ -105,18 +89,8 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
       index: index,
       duration: kThemeAnimationDuration,
       curve: Curves.easeIn,
-      alignment: 0,
-      //alignment: widget.listOffset ?? widget.padding.top,
-      // automaticAlignment: false,
+      alignment: pixelToAlignment,
     );
-    // observerController.animateTo(
-    //   index: index,
-    //   isFixedHeight: true,
-    //   offset: (offset) => padding.left,
-    //   duration: const Duration(milliseconds: 180),
-    //   curve: Curves.easeIn,
-    //   padding: padding,
-    // );
   }
 
   /// плавный переход к последнему выделенному элементу
@@ -127,6 +101,9 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
   }
 
   FocusNode focusNodeAt(int index) => focusNodes[index];
+
+  double get pixelToAlignment =>
+      (padding.left * 100 / listKey.currentContext!.size!.width) / 100;
 
   @override
   Widget build(context) {
@@ -164,6 +141,9 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
       (index) => FocusNode(),
     );
 
+    // final initialPixelToAlignment =
+    //     (padding.left * 100 / MediaQuery.of(context).size.width) / 100;
+
     return Focus(
       skipTraversal: true,
       onKey: (node, event) {
@@ -181,10 +161,13 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
       },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          jumpToCurrent();
+          requestFocus(lastFocusedItem);
         }
       },
-      child: ScrollablePositionedList.builder(
+      child: ScrollablePositionedList.separated(
+        key: listKey,
+        clipBehavior: Clip.none,
+        physics: const ClampingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         padding: padding,
         itemCount: itemCount,
@@ -192,10 +175,8 @@ class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
           focusNode: focusNodeAt(index),
           child: widget.itemBuilder(context, items[index]),
         ),
+        separatorBuilder: (context, index) => const SizedBox(width: 20.0),
         itemScrollController: itemScrollController,
-        scrollOffsetController: scrollOffsetController,
-        itemPositionsListener: itemPositionsListener,
-        scrollOffsetListener: scrollOffsetListener,
       ),
       // child: ListViewObserver(
       //   controller: observerController,

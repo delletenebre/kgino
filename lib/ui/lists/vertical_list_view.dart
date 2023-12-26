@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 class VerticalListView extends StatefulHookWidget {
-  final ListObserverController? listObserverController;
+  final ItemScrollController? itemScrollController;
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
 
@@ -25,7 +24,7 @@ class VerticalListView extends StatefulHookWidget {
 
   const VerticalListView({
     super.key,
-    this.listObserverController,
+    this.itemScrollController,
     required this.itemCount,
     required this.itemBuilder,
     this.padding = const EdgeInsets.symmetric(horizontal: 0.0),
@@ -42,21 +41,17 @@ class VerticalListView extends StatefulHookWidget {
 }
 
 class _HorizontalListViewState extends State<VerticalListView> {
+  final listKey = GlobalKey();
   //final itemScrollController = GroupedItemScrollController();
-  late final ListObserverController observerController;
 
-  final itemScrollController = ItemScrollController();
-  final scrollOffsetController = ScrollOffsetController();
-  final itemPositionsListener = ItemPositionsListener.create();
-  final scrollOffsetListener = ScrollOffsetListener.create();
-
+  late final ItemScrollController itemScrollController;
   List<FocusNode> focusNodes = [];
   int lastFocusedItem = 0;
 
   @override
   void initState() {
-    observerController = widget.listObserverController ??
-        ListObserverController(controller: ScrollController());
+    itemScrollController =
+        widget.itemScrollController ?? ItemScrollController();
     focusNodes = List.generate(
       widget.itemCount,
       (index) => FocusNode(),
@@ -66,7 +61,6 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   @override
   void dispose() {
-    observerController.controller?.dispose();
     for (final focusNode in focusNodes) {
       focusNode
         ..unfocus()
@@ -96,13 +90,10 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   /// переход к элементу без анимации
   void jumpTo(int index) {
+    requestFocus(index);
     itemScrollController.jumpTo(
       index: index,
-      // isFixedHeight: false,
-      // offset: (offset) => widget.listOffset ?? widget.padding.top,
-      // padding: widget.padding,
     );
-    requestFocus(index);
   }
 
   /// переход к последнему выделенному элементу без анимации
@@ -112,6 +103,7 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   /// плавный переход к элементу
   void animateTo(int index) {
+    requestFocus(index);
     itemScrollController.scrollTo(
       index: index,
       duration: kThemeAnimationDuration,
@@ -120,19 +112,6 @@ class _HorizontalListViewState extends State<VerticalListView> {
       //alignment: widget.listOffset ?? widget.padding.top,
       // automaticAlignment: false,
     );
-    // scrollOffsetController.animateScroll(
-    //   offset: widget.listOffset ?? widget.padding.top,
-    //   duration: kThemeAnimationDuration,
-    // );
-    // observerController.animateTo(
-    //   index: index,
-    //   isFixedHeight: false,
-    //   offset: (offset) => widget.listOffset ?? widget.padding.top,
-    //   duration: const Duration(milliseconds: 180),
-    //   curve: Curves.easeIn,
-    //   padding: widget.padding,
-    // );
-    requestFocus(index);
   }
 
   /// плавный переход к последнему выделенному элементу
@@ -144,6 +123,9 @@ class _HorizontalListViewState extends State<VerticalListView> {
   }
 
   FocusNode focusNodeAt(int index) => focusNodes[index];
+
+  // double get pixelToAlignment =>
+  //     (padding.left * 100 / listKey.currentContext!.size!.width) / 100;
 
   @override
   Widget build(context) {
@@ -175,20 +157,27 @@ class _HorizontalListViewState extends State<VerticalListView> {
         if (hasFocus) {
           // jumpToCurrent();
           jumpToCurrent(widget.requestItemIndex?.call());
+          //animateTo(widget.requestItemIndex?.call() ?? lastFocusedItem);
+          // requestFocus(widget.requestItemIndex?.call() ?? lastFocusedItem);
         }
         widget.onFocusChange?.call(hasFocus);
       },
-      child: ScrollablePositionedList.builder(
-        padding: widget.padding,
-        itemCount: widget.itemCount,
-        itemBuilder: (context, index) => Focus(
-          focusNode: focusNodeAt(index),
-          child: widget.itemBuilder(context, index),
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: ScrollablePositionedList.separated(
+          key: listKey,
+          physics: const ClampingScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          padding: widget.padding,
+          itemCount: widget.itemCount,
+          itemBuilder: (context, index) => Focus(
+            focusNode: focusNodeAt(index),
+            child: widget.itemBuilder(context, index),
+          ),
+          separatorBuilder: (context, index) =>
+              SizedBox(height: widget.separatorHeight),
+          itemScrollController: itemScrollController,
         ),
-        itemScrollController: itemScrollController,
-        scrollOffsetController: scrollOffsetController,
-        itemPositionsListener: itemPositionsListener,
-        scrollOffsetListener: scrollOffsetListener,
       ),
     );
     //   child: StickyGroupedListView<dynamic, String>(
@@ -213,50 +202,5 @@ class _HorizontalListViewState extends State<VerticalListView> {
     //     order: StickyGroupedListOrder.ASC,
     //   ),
     // );
-
-    return Focus(
-      focusNode: widget.focusNode,
-      skipTraversal: true,
-      onKey: (node, event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-          return goPrevious();
-        }
-
-        if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-          goNext();
-          return KeyEventResult.handled;
-        }
-
-        return KeyEventResult.ignored;
-      },
-      onFocusChange: (hasFocus) {
-        if (hasFocus) {
-          // jumpToCurrent();
-          jumpToCurrent(widget.requestItemIndex?.call());
-        }
-        widget.onFocusChange?.call(hasFocus);
-      },
-      child: ListViewObserver(
-        controller: observerController,
-        triggerOnObserveType: ObserverTriggerOnObserveType.directly,
-        child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: ListView.separated(
-            controller: observerController.controller,
-            padding: widget.padding,
-            scrollDirection: Axis.vertical,
-            separatorBuilder: (context, index) =>
-                SizedBox(height: widget.separatorHeight),
-            itemCount: widget.itemCount,
-            itemBuilder: (context, index) {
-              return Focus(
-                focusNode: focusNodeAt(index),
-                child: widget.itemBuilder(context, index),
-              );
-            },
-          ),
-        ),
-      ),
-    );
   }
 }
