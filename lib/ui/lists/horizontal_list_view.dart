@@ -28,10 +28,10 @@ class HorizontalListView<T> extends StatefulHookWidget {
   });
 
   @override
-  State<HorizontalListView<T>> createState() => _HorizontalListViewState<T>();
+  State<HorizontalListView<T>> createState() => HorizontalListViewState<T>();
 }
 
-class _HorizontalListViewState<T> extends State<HorizontalListView<T>> {
+class HorizontalListViewState<T> extends State<HorizontalListView<T>> {
   final listKey = GlobalKey();
 
   final itemScrollController = ItemScrollController();

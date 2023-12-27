@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class VerticalListView extends StatefulHookWidget {
+  final ItemScrollController? itemScrollController;
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
 
@@ -11,32 +12,46 @@ class VerticalListView extends StatefulHookWidget {
 
   final EdgeInsets padding;
 
+  /// запрос индекса для смены фокуса
+  /// (при внешнем управлении, например, сезоны-эпизоды)
+  final int Function()? requestItemIndex;
+
   final double separatorHeight;
 
+  final bool autofocus;
+  final FocusNode? focusNode;
   final double? listOffset;
 
   const VerticalListView({
     super.key,
+    this.itemScrollController,
     required this.itemCount,
     required this.itemBuilder,
-    this.padding = EdgeInsets.zero,
+    this.padding = const EdgeInsets.symmetric(horizontal: 0.0),
     this.onFocusChange,
-    this.separatorHeight = 20.0,
+    this.requestItemIndex,
+    this.separatorHeight = 24.0,
+    this.autofocus = false,
+    this.focusNode,
     this.listOffset,
   });
 
   @override
-  State<VerticalListView> createState() => VerticalListViewState();
+  State<VerticalListView> createState() => _HorizontalListViewState();
 }
 
-class VerticalListViewState extends State<VerticalListView> {
+class _HorizontalListViewState extends State<VerticalListView> {
   final listKey = GlobalKey();
-  final itemScrollController = ItemScrollController();
+  //final itemScrollController = GroupedItemScrollController();
+
+  late final ItemScrollController itemScrollController;
   List<FocusNode> focusNodes = [];
   int lastFocusedItem = 0;
 
   @override
   void initState() {
+    itemScrollController =
+        widget.itemScrollController ?? ItemScrollController();
     focusNodes = List.generate(
       widget.itemCount,
       (index) => FocusNode(),
@@ -66,13 +81,10 @@ class VerticalListViewState extends State<VerticalListView> {
   }
 
   /// переходим к следующему элементу
-  KeyEventResult goNext() {
+  void goNext() {
     if (lastFocusedItem < widget.itemCount - 1) {
       lastFocusedItem++;
       animateToCurrent();
-      return KeyEventResult.handled;
-    } else {
-      return KeyEventResult.ignored;
     }
   }
 
@@ -81,30 +93,25 @@ class VerticalListViewState extends State<VerticalListView> {
     requestFocus(index);
     itemScrollController.jumpTo(
       index: index,
-      alignment: pixelToAlignment,
     );
   }
 
   /// переход к последнему выделенному элементу без анимации
-  void jumpToCurrent() {
-    jumpTo(lastFocusedItem);
+  void jumpToCurrent([int? index]) {
+    jumpTo(index ?? lastFocusedItem);
   }
 
   /// плавный переход к элементу
   void animateTo(int index) {
     requestFocus(index);
-    scrollTo(index);
-  }
-
-  /// плавный переход к элементу
-  void scrollTo(int index) {
     itemScrollController.scrollTo(
       index: index,
       duration: kThemeAnimationDuration,
       curve: Curves.easeIn,
-      alignment: pixelToAlignment,
+      alignment: 0,
+      //alignment: widget.listOffset ?? widget.padding.top,
+      // automaticAlignment: false,
     );
-    lastFocusedItem = index;
   }
 
   /// плавный переход к последнему выделенному элементу
@@ -117,12 +124,22 @@ class VerticalListViewState extends State<VerticalListView> {
 
   FocusNode focusNodeAt(int index) => focusNodes[index];
 
-  double get pixelToAlignment =>
-      (widget.padding.top * 100 / listKey.currentContext!.size!.width) / 100;
+  // double get pixelToAlignment =>
+  //     (padding.left * 100 / listKey.currentContext!.size!.width) / 100;
 
   @override
   Widget build(context) {
+    useEffect(() {
+      if (widget.autofocus) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          jumpToCurrent();
+        });
+      }
+      return () {};
+    }, []);
+
     return Focus(
+      focusNode: widget.focusNode,
       skipTraversal: true,
       onKey: (node, event) {
         if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
@@ -130,14 +147,18 @@ class VerticalListViewState extends State<VerticalListView> {
         }
 
         if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-          return goNext();
+          goNext();
+          return KeyEventResult.handled;
         }
 
         return KeyEventResult.ignored;
       },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          jumpToCurrent();
+          // jumpToCurrent();
+          jumpToCurrent(widget.requestItemIndex?.call());
+          //animateTo(widget.requestItemIndex?.call() ?? lastFocusedItem);
+          // requestFocus(widget.requestItemIndex?.call() ?? lastFocusedItem);
         }
         widget.onFocusChange?.call(hasFocus);
       },
