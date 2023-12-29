@@ -93,10 +93,13 @@ class MediaItemCard extends HookWidget {
               color: theme.scaffoldBackgroundColor,
 
               /// постер
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(imageUrl, maxWidth: 200),
-                fit: BoxFit.cover,
-              ),
+              image: imageUrl.isEmpty
+                  ? null
+                  : DecorationImage(
+                      image:
+                          CachedNetworkImageProvider(imageUrl, maxWidth: 200),
+                      fit: BoxFit.cover,
+                    ),
 
               /// цвет свечения
               boxShadow: [
