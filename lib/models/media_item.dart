@@ -47,7 +47,7 @@ abstract interface class Playable {
   Future<MediaItem> loadDetails(Ref ref);
   Future<List<MediaItemSeason>> loadSeasons(Ref ref);
   Future<List<VoiceActing>> loadVoices(Ref ref);
-  Future<MediaItemUrl> loadEpisodeUrl(Ref ref);
+  Future<MediaItemUrl> loadEpisodeUrl(WidgetRef ref, MediaItemEpisode episode);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -63,7 +63,7 @@ class MediaItem implements Playable {
 
   /// идентификатор на сервисе
   @StringConverter()
-  final String id;
+  String id;
 
   /// название
   final String title;
@@ -77,6 +77,12 @@ class MediaItem implements Playable {
 
   /// тип контента
   final MediaItemType type;
+
+  /// выбранное качество видео
+  final String quality;
+
+  /// выбранный вариант озвучки
+  VoiceActing voiceActing;
 
   /// описание
   @ignore
@@ -117,17 +123,19 @@ class MediaItem implements Playable {
 
   /// сезоны
   @ignore
-  final List<MediaItemSeason> seasons;
+  List<MediaItemSeason> seasons;
 
   /// варианты озвучки
   @ignore
   final List<VoiceActing> voices;
 
-  const MediaItem({
+  MediaItem({
     this.onlineService = OnlineService.none,
     this.id = '',
     this.title = '',
     this.poster = '',
+    this.quality = '',
+    this.voiceActing = const VoiceActing(),
 
     /// не в базе данных
     this.type = MediaItemType.folder,
@@ -142,33 +150,33 @@ class MediaItem implements Playable {
     this.voices = const [],
   });
 
-  MediaItem copyWith(
-          {String? id,
-          VoiceActing? voice,
-          List<MediaItemSeason>? seasons,
-          List<VoiceActing>? voices}) =>
-      MediaItem(
-        onlineService: onlineService,
-        id: id ?? this.id,
-        title: title,
-        poster: poster,
-        // originalTitle: originalTitle,
-        overview: overview,
-        year: year,
-        genres: genres,
-        countries: countries,
-        // voices: voices,
-        imdbRating: imdbRating,
-        kinopoiskRating: kinopoiskRating,
-        type: type,
-        seasons: seasons ?? this.seasons,
-        voices: voices ?? this.voices,
-        seasonCount: seasonCount,
-        // bookmarked: bookmarked,
-        // subtitles: subtitles,
-        // voice: voice ?? this.voice,
-        // quality: quality,
-      );
+  // MediaItem copyWith(
+  //         {String? id,
+  //         VoiceActing? voice,
+  //         List<MediaItemSeason>? seasons,
+  //         List<VoiceActing>? voices}) =>
+  //     MediaItem(
+  //       onlineService: onlineService,
+  //       id: id ?? this.id,
+  //       title: title,
+  //       poster: poster,
+  //       // originalTitle: originalTitle,
+  //       overview: overview,
+  //       year: year,
+  //       genres: genres,
+  //       countries: countries,
+  //       // voices: voices,
+  //       imdbRating: imdbRating,
+  //       kinopoiskRating: kinopoiskRating,
+  //       type: type,
+  //       seasons: seasons ?? this.seasons,
+  //       voices: voices ?? this.voices,
+  //       seasonCount: seasonCount,
+  //       // bookmarked: bookmarked,
+  //       // subtitles: subtitles,
+  //       // voice: voice ?? this.voice,
+  //       // quality: quality,
+  //     );
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
       _$MediaItemFromJson(json);
@@ -265,7 +273,8 @@ class MediaItem implements Playable {
 
   /// получение ссылки на эпизод
   @override
-  loadEpisodeUrl(Ref ref) => throw UnimplementedError();
+  loadEpisodeUrl(WidgetRef ref, MediaItemEpisode episode) =>
+      throw UnimplementedError();
 
   /// находим сохранённый в базе данных сериал или фильм
   MediaItem findSaved(KrsStorage storage) {
@@ -285,7 +294,7 @@ class MediaItem implements Playable {
   }
 
   /// образец экземпляра для показа индикатора загрузки
-  factory MediaItem.skeleton() => const MediaItem(
+  factory MediaItem.skeleton() => MediaItem(
         title: 'Item title for skeleton',
         overview:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin rhoncus suscipit nisi et convallis. Morbi ex libero, mollis mattis scelerisque ut, vulputate lacinia ligula ligu',

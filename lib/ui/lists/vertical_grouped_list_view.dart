@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-class VerticalListView extends StatefulHookWidget {
-  final ItemScrollController? itemScrollController;
-  final int itemCount;
+class VerticalGroupedListView extends StatefulHookWidget {
+  final List<GroupedListViewItem> elements;
   final Widget Function(BuildContext context, int index) itemBuilder;
 
   final void Function(bool hasFocus)? onFocusChange;
@@ -18,42 +17,34 @@ class VerticalListView extends StatefulHookWidget {
 
   final double separatorHeight;
 
-  final bool autofocus;
   final FocusNode? focusNode;
-  final double? listOffset;
 
-  const VerticalListView({
+  const VerticalGroupedListView({
     super.key,
-    this.itemScrollController,
-    required this.itemCount,
+    required this.elements,
     required this.itemBuilder,
     this.padding = const EdgeInsets.symmetric(horizontal: 0.0),
     this.onFocusChange,
     this.requestItemIndex,
     this.separatorHeight = 24.0,
-    this.autofocus = false,
     this.focusNode,
-    this.listOffset,
   });
 
   @override
-  State<VerticalListView> createState() => _HorizontalListViewState();
+  State<VerticalGroupedListView> createState() =>
+      VerticalGroupedListViewState();
 }
 
-class _HorizontalListViewState extends State<VerticalListView> {
+class VerticalGroupedListViewState extends State<VerticalGroupedListView> {
   final listKey = GlobalKey();
-  //final itemScrollController = GroupedItemScrollController();
-
-  late final ItemScrollController itemScrollController;
+  final itemScrollController = GroupedItemScrollController();
   List<FocusNode> focusNodes = [];
   int lastFocusedItem = 0;
 
   @override
   void initState() {
-    itemScrollController =
-        widget.itemScrollController ?? ItemScrollController();
     focusNodes = List.generate(
-      widget.itemCount,
+      widget.elements.length,
       (index) => FocusNode(),
     );
     super.initState();
@@ -82,7 +73,7 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   /// переходим к следующему элементу
   void goNext() {
-    if (lastFocusedItem < widget.itemCount - 1) {
+    if (lastFocusedItem < widget.elements.length - 1) {
       lastFocusedItem++;
       animateToCurrent();
     }
@@ -93,6 +84,7 @@ class _HorizontalListViewState extends State<VerticalListView> {
     requestFocus(index);
     itemScrollController.jumpTo(
       index: index,
+      alignment: pixelToAlignment,
     );
   }
 
@@ -104,13 +96,15 @@ class _HorizontalListViewState extends State<VerticalListView> {
   /// плавный переход к элементу
   void animateTo(int index) {
     requestFocus(index);
+    scrollTo(index);
+  }
+
+  void scrollTo(int index) {
     itemScrollController.scrollTo(
       index: index,
       duration: kThemeAnimationDuration,
       curve: Curves.easeIn,
-      alignment: 0,
-      //alignment: widget.listOffset ?? widget.padding.top,
-      // automaticAlignment: false,
+      alignment: pixelToAlignment,
     );
   }
 
@@ -124,19 +118,12 @@ class _HorizontalListViewState extends State<VerticalListView> {
 
   FocusNode focusNodeAt(int index) => focusNodes[index];
 
-  // double get pixelToAlignment =>
-  //     (padding.left * 100 / listKey.currentContext!.size!.width) / 100;
+  double get pixelToAlignment =>
+      (widget.padding.top * 100 / listKey.currentContext!.size!.height) / 100;
 
   @override
   Widget build(context) {
-    useEffect(() {
-      if (widget.autofocus) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          jumpToCurrent();
-        });
-      }
-      return () {};
-    }, []);
+    final theme = Theme.of(context);
 
     return Focus(
       focusNode: widget.focusNode,
@@ -164,43 +151,46 @@ class _HorizontalListViewState extends State<VerticalListView> {
       },
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ScrollablePositionedList.separated(
+        child: StickyGroupedListView<GroupedListViewItem, int>(
           key: listKey,
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.vertical,
           padding: widget.padding,
-          itemCount: widget.itemCount,
-          itemBuilder: (context, index) => Focus(
+          elements: widget.elements,
+          groupBy: (item) => item.groupIndex,
+          groupSeparatorBuilder: (item) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            child: Text(
+              item.group,
+              style: const TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+          ),
+          indexedItemBuilder: (context, item, index) => Focus(
             focusNode: focusNodeAt(index),
             child: widget.itemBuilder(context, index),
           ),
-          separatorBuilder: (context, index) =>
-              SizedBox(height: widget.separatorHeight),
           itemScrollController: itemScrollController,
+          groupComparator: (e1, e2) => e1.compareTo(e2),
+          elementIdentifier: (item) => item.index,
+          stickyHeaderBackgroundColor: theme.colorScheme.surface,
+          separator: SizedBox(height: widget.separatorHeight),
         ),
       ),
     );
-    //   child: StickyGroupedListView<dynamic, String>(
-    //     elements: List.generate(
-    //         widget.itemCount,
-    //         (index) => {
-    //               'group': 'zzzz',
-    //               'index': index,
-    //             }),
-    //     groupBy: (element) => element['group'],
-    //     groupSeparatorBuilder: (dynamic element) => SizedBox(),
-    //     itemBuilder: (context, element) {
-    //       return Focus(
-    //         focusNode: focusNodeAt(element['index']),
-    //         child: widget.itemBuilder(context, element['index']),
-    //       );
-    //     },
-    //     // itemComparator: (e1, e2) =>
-    //     //     e1['name'].compareTo(e2['name']),
-    //     //elementIdentifier: (element) => element.name,
-    //     itemScrollController: itemScrollController,
-    //     order: StickyGroupedListOrder.ASC,
-    //   ),
-    // );
   }
+}
+
+class GroupedListViewItem {
+  final String group;
+  final int groupIndex;
+
+  final int index;
+
+  GroupedListViewItem({
+    required this.group,
+    required this.groupIndex,
+    required this.index,
+  });
 }

@@ -26,8 +26,11 @@ class TskgApi {
   static final userAgent =
       'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
 
+  static const baseUrl =
+      kIsWeb ? 'https://kgino.iuk.edu.kg' : 'https://www.ts.kg';
+
   final _dio = Dio(BaseOptions(
-    baseUrl: 'https://www.ts.kg',
+    baseUrl: baseUrl,
     sendTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
     headers: {
@@ -37,7 +40,7 @@ class TskgApi {
 
   TskgApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogsInterceptor());
+    //_dio.interceptors.add(LogsInterceptor());
   }
 
   /// формируем полную ссылку на постер сериала по id
@@ -254,11 +257,11 @@ class TskgApi {
   }
 
   /// получение информации о сериале
-  Future<MediaItem> getDetails({
+  Future<TskgItem> getDetails({
     required String showId,
     CancelToken? cancelToken,
   }) async {
-    return ApiRequest<MediaItem>().call(
+    return ApiRequest<TskgItem>().call(
       request: _dio.get(getShowUrlById(showId), cancelToken: cancelToken),
       decoder: (response) async {
         final html = response.toString();
@@ -302,14 +305,14 @@ class TskgApi {
       if (response.statusCode == 200) {
         /// ^ если запрос выполнен успешно
 
-        /// возвращаем информацио об эпизоде
+        /// возвращаем информацию об эпизоде
         return MediaItemUrl(
           video: response.data['video']['url'],
           subtitles: response.data['video']['subtitles'] ?? '',
         );
       }
     } catch (exception) {
-      /// ^ если прозошла сетевая ошибка
+      /// ^ если произошла сетевая ошибка
 
       debugPrint('exception: $exception');
     }

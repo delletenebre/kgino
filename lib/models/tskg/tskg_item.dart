@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../api/tskg_api_provider.dart';
 import '../../extensions/json_converters.dart';
 import '../media_item.dart';
+import '../media_item_url.dart';
 
 part 'tskg_item.g.dart';
 
@@ -56,7 +57,7 @@ class TskgItem extends MediaItem {
 
   /// загрузка подробных данных о сериале или фильме
   @override
-  Future<MediaItem> loadDetails(Ref ref) async {
+  Future<TskgItem> loadDetails(Ref ref) async {
     final api = ref.read(tskgApiProvider);
 
     /// отменяем выполнение запроса, если страница закрыта
@@ -106,5 +107,19 @@ class TskgItem extends MediaItem {
       showId: id,
       cancelToken: cancelToken,
     );
+  }
+
+  /// получение списка вариантов озвучки
+  @override
+  Future<MediaItemUrl> loadEpisodeUrl(
+      WidgetRef ref, MediaItemEpisode episode) async {
+    /// провайдер запросов к API
+    final api = ref.read(tskgApiProvider);
+
+    /// идентификатор эпизода
+    final episodeId = episode.id.split('@')[1];
+
+    /// получаем данные эпизода
+    return await api.getEpisodePlayableUrl(episodeId);
   }
 }
