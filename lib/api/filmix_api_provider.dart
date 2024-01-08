@@ -115,7 +115,6 @@ class FilmixApi {
     List<String> filter,
     int page, {
     CancelToken? cancelToken,
-    // required MediaItemType mediaItemType,
   }) async {
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get(

@@ -28,6 +28,7 @@ class FilmixItem extends MediaItem {
     required super.id,
     required super.title,
     required super.poster,
+    super.type = MediaItemType.movie,
     super.originalTitle = '',
     super.year,
     super.countries,

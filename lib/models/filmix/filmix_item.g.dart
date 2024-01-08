@@ -12,6 +12,8 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           : const StringConverter().fromJson(json['id']),
       title: json['title'] as String? ?? '',
       poster: json['poster'] as String? ?? '',
+      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
+          MediaItemType.movie,
       originalTitle: json['original_title'] as String? ?? '',
       year: json['year'] == null
           ? ''
@@ -58,7 +60,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
       quality: json['quality'] as String? ?? '720',
       duration: json['duration'] as int? ?? 0,
-    )..type = $enumDecode(_$MediaItemTypeEnumMap, json['type']);
+    );
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
@@ -86,14 +88,14 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'duration': instance.duration,
     };
 
-const _$OnlineServiceEnumMap = {
-  OnlineService.none: 'none',
-  OnlineService.filmix: 'filmix',
-  OnlineService.tskg: 'tskg',
-};
-
 const _$MediaItemTypeEnumMap = {
   MediaItemType.show: 'show',
   MediaItemType.movie: 'movie',
   MediaItemType.folder: 'folder',
+};
+
+const _$OnlineServiceEnumMap = {
+  OnlineService.none: 'none',
+  OnlineService.filmix: 'filmix',
+  OnlineService.tskg: 'tskg',
 };
