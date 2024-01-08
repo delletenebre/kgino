@@ -71,7 +71,7 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
       });
 
       /// обновляем продолжительность загруженного буфера
-      if (buffer != value.buffered.last) {
+      if (value.buffered.isNotEmpty && buffer != value.buffered.last) {
         setState(() {
           buffer = value.buffered.last;
         });

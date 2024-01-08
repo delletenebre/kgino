@@ -57,7 +57,7 @@ class TskgItem extends MediaItem {
 
   /// загрузка подробных данных о сериале или фильме
   @override
-  Future<TskgItem> loadDetails(Ref ref) async {
+  Future<MediaItem> loadDetails(Ref ref) async {
     final api = ref.read(tskgApiProvider);
 
     /// отменяем выполнение запроса, если страница закрыта
@@ -70,8 +70,8 @@ class TskgItem extends MediaItem {
       cancelToken: cancelToken,
     );
 
-    // detailedItem.subtitles = subtitles;
-    // detailedItem.bookmarked = bookmarked;
+    detailedItem.subtitlesEnabled = subtitlesEnabled;
+    detailedItem.bookmarked = bookmarked;
 
     return detailedItem;
   }
@@ -109,7 +109,7 @@ class TskgItem extends MediaItem {
     );
   }
 
-  /// получение списка вариантов озвучки
+  /// получение ссылки на воспроизводимый файл
   @override
   Future<MediaItemUrl> loadEpisodeUrl(
       WidgetRef ref, MediaItemEpisode episode) async {
@@ -120,6 +120,10 @@ class TskgItem extends MediaItem {
     final episodeId = episode.id.split('@')[1];
 
     /// получаем данные эпизода
-    return await api.getEpisodePlayableUrl(episodeId);
+    final playableUrl = await api.getEpisodePlayableUrl(episodeId);
+
+    await playableUrl.loadSubtitlesFile();
+
+    return playableUrl;
   }
 }

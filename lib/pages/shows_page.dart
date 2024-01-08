@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../api/filmix_api_provider.dart';
 import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/media_item.dart';
@@ -28,10 +29,13 @@ class ShowsPage extends HookConsumerWidget {
     final tskgApi = ref.read(tskgApiProvider);
 
     /// tskg список последний добавлений
-    final asyncLatest = useMemoized(() => tskgApi.getLatestShows());
+    final tskgAsyncLatest = useMemoized(() => tskgApi.getLatestShows());
 
-    /// tskg популярные
-    final asyncPopular = useMemoized(() => tskgApi.getPopularShows());
+    /// filmix провайдер запросов к API
+    final filmixApi = ref.read(filmixApiProvider);
+
+    /// filmix список последний добавлений
+    final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestShows());
 
     final providers = useMemoized(() => [
           MediaItem(
@@ -62,12 +66,12 @@ class ShowsPage extends HookConsumerWidget {
       CategoryListItem(
         onlineService: OnlineService.tskg,
         title: 'Последние поступления',
-        apiResponse: asyncLatest,
+        apiResponse: tskgAsyncLatest,
       ),
       CategoryListItem(
         onlineService: OnlineService.filmix,
         title: 'Последние поступления',
-        apiResponse: asyncLatest,
+        apiResponse: filmixAsyncLatest,
       ),
     ];
 

@@ -76,13 +76,23 @@ class MediaItem implements Playable {
   String get backdrop => poster;
 
   /// тип контента
-  final MediaItemType type;
+  MediaItemType type;
 
   /// выбранное качество видео
-  final String quality;
+  String quality;
 
   /// выбранный вариант озвучки
   VoiceActing voiceActing;
+
+  /// включены ли субтитры
+  bool subtitlesEnabled;
+
+  /// дата добавления в избранное
+  DateTime? bookmarked;
+
+  /// оригинальное название
+  @ignore
+  final String originalTitle;
 
   /// описание
   @ignore
@@ -127,7 +137,7 @@ class MediaItem implements Playable {
 
   /// варианты озвучки
   @ignore
-  final List<VoiceActing> voices;
+  List<VoiceActing> voices;
 
   MediaItem({
     this.onlineService = OnlineService.none,
@@ -136,9 +146,12 @@ class MediaItem implements Playable {
     this.poster = '',
     this.quality = '',
     this.voiceActing = const VoiceActing(),
+    this.subtitlesEnabled = true,
+    this.bookmarked,
 
     /// не в базе данных
     this.type = MediaItemType.folder,
+    this.originalTitle = '',
     this.overview = '',
     this.year = '',
     this.genres = const [],
@@ -186,6 +199,10 @@ class MediaItem implements Playable {
   /// является ли текущий элемент "директорией"
   @ignore
   bool get isFolder => (type == MediaItemType.folder);
+
+  /// является ли текущий элемент "сериалом"
+  @ignore
+  bool get isShow => (type == MediaItemType.show);
 
   /// заблокирован ли контент правообладателем
   @ignore
@@ -291,6 +308,13 @@ class MediaItem implements Playable {
     }
 
     return this;
+  }
+
+  /// сохранение в базу данных
+  void save(KrsStorage storage) {
+    storage.db.write((isar) {
+      isar.mediaItems.put(this);
+    });
   }
 
   /// образец экземпляра для показа индикатора загрузки

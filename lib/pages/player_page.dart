@@ -1,9 +1,12 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
 import '../models/media_item.dart';
+import '../models/media_item_url.dart';
+import '../providers/providers.dart';
 import '../ui/player/player_controls_overlay.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
@@ -29,6 +32,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 }
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
+  late MediaItemUrl _mediaItemUrl;
   VideoPlayerController? _controller;
 
   late List<MediaItemEpisode> episodes;
@@ -178,18 +182,28 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
     /// загружаем видео и субтитры
     widget.mediaItem.loadEpisodeUrl(ref, playableEpisode).then((mediaItemUrl) {
-      _controller =
-          VideoPlayerController.networkUrl(Uri.parse(mediaItemUrl.video))
-            ..initialize().then((_) {
-              setState(() {
-                _controller?.play();
-              });
-            });
+      _mediaItemUrl = mediaItemUrl;
+
+      if (mediaItemUrl.hasSubtitles) {
+        /// ^ если есть файл субтитров
+
+        hasSubtitles = widget.mediaItem.subtitlesEnabled;
+      }
+
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(mediaItemUrl.video),
+        closedCaptionFile: mediaItemUrl.loadSubtitlesFile(),
+      )..initialize().then((_) {
+          setState(() {
+            _controller?.play();
+          });
+        });
     });
   }
 
   @override
   void dispose() {
+    _controller?.pause();
     _controller?.dispose();
     super.dispose();
   }
@@ -246,7 +260,63 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                         )
                       : const SizedBox(),
                 ),
-                PlayerControlsOverlay(controller: _controller!),
+                PlayerControlsOverlay(
+                  controller: _controller!,
+                  title: widget.mediaItem.title,
+                  subtitle: widget.mediaItem.isShow
+                      ? 'Сезон ${playableEpisode.seasonNumber} Эпизод ${playableEpisode.episodeNumber}'
+                      : '',
+
+                  /// плейлист
+                  onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
+                  onSkipNext: hasNextEpisode ? skipNext : null,
+                  onSavePositionRequested: (position) {
+                    /// обновляем (если нужно) продолжительность эпизода
+                    if (playableEpisode.duration == 0) {
+                      playableEpisode.duration =
+                          _controller!.value.duration.inSeconds;
+                    }
+
+                    /// обновляем позицию просмотра для проигрываемого эпизода
+                    playableEpisode.position = position;
+
+                    /// сохраняем параметры проигрываемого эпизода
+                    playableEpisode.save(ref.read(storageProvider));
+                  },
+
+                  /// субтитры
+                  hasSubtitles: hasSubtitles,
+                  onSubtitlesChanged: (enabled) {
+                    /// обновляем информацию о субтитрах
+                    widget.mediaItem.subtitlesEnabled = enabled;
+                    widget.mediaItem.save(ref.read(storageProvider));
+
+                    if (enabled) {
+                      /// загружаем субтитры
+                      _controller!.setClosedCaptionFile(
+                          _mediaItemUrl.loadSubtitlesFile());
+                    } else {
+                      /// убираем субтитры
+                      _controller!.setClosedCaptionFile(null);
+                    }
+                  },
+
+                  /// качество видео
+                  qualities: playableEpisode.qualities
+                      .sorted((a, b) => compareNatural(b, a)),
+                  quality: widget.mediaItem.quality,
+                  onQualityChanged: (quality) {
+                    /// обновляем информацию о качестве видео
+                    widget.mediaItem.quality = quality;
+                    widget.mediaItem.save(ref.read(storageProvider));
+
+                    /// перезапускаем эпизод
+                    updateEpisode(
+                      position: _controller!.value.position.inSeconds,
+                      forcePositionUpdate: true,
+                    );
+                  },
+                ),
               ],
             )
           : const Center(child: CircularProgressIndicator()),
