@@ -33,16 +33,36 @@ class ShowsPage extends HookConsumerWidget {
     /// tskg популярные
     final asyncPopular = useMemoized(() => tskgApi.getPopularShows());
 
+    final providers = useMemoized(() => [
+          MediaItem(
+            id: 'filmixShows',
+            title: 'Filmix',
+            poster: 'assets/images/filmix.svg',
+            type: MediaItemType.folder,
+          ),
+          MediaItem(
+            id: 'tskgShows',
+            title: 'TS.KG',
+            poster: 'assets/images/tskg.svg',
+            type: MediaItemType.folder,
+          ),
+          // MediaItem(
+          //   id: 'rezkaShows',
+          //   title: 'HD Rezka',
+          //   poster: 'assets/images/tskg.svg',
+          //   type: MediaItemType.folder,
+          // ),
+        ]);
+
     final categories = [
+      CategoryListItem(
+        title: 'Провайдеры',
+        items: providers,
+      ),
       CategoryListItem(
         onlineService: OnlineService.tskg,
         title: 'Последние поступления',
         apiResponse: asyncLatest,
-      ),
-      CategoryListItem(
-        onlineService: OnlineService.tskg,
-        title: 'Популярные',
-        apiResponse: asyncPopular,
       ),
       CategoryListItem(
         onlineService: OnlineService.filmix,
@@ -53,11 +73,6 @@ class ShowsPage extends HookConsumerWidget {
 
     return Column(
       children: [
-        // AnimatedContainer(
-        //   duration: kThemeAnimationDuration,
-        //   height: selectedMediaItem.value == null ? 0.0 : 316.0,
-        //   child: SizedBox(),
-        // ),
         ValueListenableBuilder<MediaItem?>(
           valueListenable: focusedMediaItem,
           builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
@@ -114,13 +129,23 @@ class ShowsPage extends HookConsumerWidget {
                           mediaItem: item,
                           onFocusChange: (hasFocus) {
                             if (hasFocus) {
-                              selectedMediaItem.value = index;
-                              focusedMediaItem.value = item;
+                              if (item.isFolder) {
+                                selectedMediaItem.value = null;
+                                focusedMediaItem.value = null;
+                              } else {
+                                selectedMediaItem.value = index;
+                                focusedMediaItem.value = item;
+                              }
                             }
                           },
                           onTap: () {
-                            /// переходим на страницу деталей о сериале
-                            context.pushNamed('details', extra: item);
+                            if (item.isFolder) {
+                              /// переходим на страницу выбранного провайдера
+                              context.pushNamed(item.id);
+                            } else {
+                              /// переходим на страницу деталей о сериале
+                              context.pushNamed('details', extra: item);
+                            }
                           },
                         );
                       },

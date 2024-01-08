@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
+
+// import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
@@ -95,41 +94,41 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   @override
   void didChangeDependencies() {
     showOverlay();
-    playingSubscription ??=
-        controller(context).player.stream.position.listen((position) {
-      final playing = controller(context).player.state.playing;
-      if (_visible && playing && !_menuOpened) {
-        if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
-          _visibilityTimer?.cancel();
-          _visibilityTimer = Timer(const Duration(seconds: 5), () {
-            if (playing && !_menuOpened) {
-              _progressBarFocusNode.requestFocus();
-              unshiftSubtitles();
-              setState(() {
-                _visible = false;
-              });
-            }
-          });
-        }
-      } else {
-        _visibilityTimer?.cancel();
-      }
+    // playingSubscription ??=
+    //     controller(context).player.stream.position.listen((position) {
+    //   final playing = controller(context).player.state.playing;
+    //   if (_visible && playing && !_menuOpened) {
+    //     if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
+    //       _visibilityTimer?.cancel();
+    //       _visibilityTimer = Timer(const Duration(seconds: 5), () {
+    //         if (playing && !_menuOpened) {
+    //           _progressBarFocusNode.requestFocus();
+    //           unshiftSubtitles();
+    //           setState(() {
+    //             _visible = false;
+    //           });
+    //         }
+    //       });
+    //     }
+    //   } else {
+    //     _visibilityTimer?.cancel();
+    //   }
+    //
+    //   if (playing) {
+    //     final positionInSeconds = position.inSeconds;
+    //     if (positionInSeconds % 10 == 0 &&
+    //         _lastSavedPosition != positionInSeconds) {
+    //       _lastSavedPosition = positionInSeconds;
+    //       widget.onSavePositionRequested?.call(positionInSeconds);
+    //     }
+    //   }
+    // });
 
-      if (playing) {
-        final positionInSeconds = position.inSeconds;
-        if (positionInSeconds % 10 == 0 &&
-            _lastSavedPosition != positionInSeconds) {
-          _lastSavedPosition = positionInSeconds;
-          widget.onSavePositionRequested?.call(positionInSeconds);
-        }
-      }
-    });
-
-    controller(context).player.stream.buffer.first.then((value) {
-      setState(() {
-        _videoLoaded = true;
-      });
-    });
+    // controller(context).player.stream.buffer.first.then((value) {
+    //   setState(() {
+    //     _videoLoaded = true;
+    //   });
+    // });
 
     super.didChangeDependencies();
   }
@@ -146,16 +145,16 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   }
 
   void shiftSubtitles() {
-    Future.microtask(() => state(context).setSubtitleViewPadding(
-          state(context).widget.subtitleViewConfiguration.padding +
-              const EdgeInsets.only(bottom: 100.0),
-        ));
+    // Future.microtask(() => state(context).setSubtitleViewPadding(
+    //       state(context).widget.subtitleViewConfiguration.padding +
+    //           const EdgeInsets.only(bottom: 100.0),
+    //     ));
   }
 
   void unshiftSubtitles() {
-    Future.microtask(() => state(context).setSubtitleViewPadding(
-          state(context).widget.subtitleViewConfiguration.padding,
-        ));
+    // Future.microtask(() => state(context).setSubtitleViewPadding(
+    //       state(context).widget.subtitleViewConfiguration.padding,
+    //     ));
   }
 
   @override
@@ -167,18 +166,18 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
       autofocus: true,
       skipTraversal: true,
       onKey: (node, event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
-            event.isKeyPressed(LogicalKeyboardKey.backspace)) {
-          if (controller(context).player.state.playing) {
-            controller(context).player.pause();
-          } else {
-            context.pop();
-          }
-        }
-
-        if (event.isKeyPressed(LogicalKeyboardKey.space)) {
-          controller(context).player.playOrPause();
-        }
+        // if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
+        //     event.isKeyPressed(LogicalKeyboardKey.backspace)) {
+        //   if (controller(context).player.state.playing) {
+        //     controller(context).player.pause();
+        //   } else {
+        //     context.pop();
+        //   }
+        // }
+        //
+        // if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+        //   controller(context).player.playOrPause();
+        // }
 
         showOverlay();
 

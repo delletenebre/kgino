@@ -7,6 +7,7 @@ import '../pages/details_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
+import '../pages/tskg/tskg_shows_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final mainNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'main');
@@ -50,6 +51,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const HomePage();
         },
         routes: [
+          /// страница с подробностями
+          GoRoute(
+            path: 'shows/tskg',
+            name: 'tskgShows',
+            builder: (context, state) {
+              return const TskgShowsPage();
+            },
+          ),
+
           /// страница с подробностями
           GoRoute(
             path: 'details',

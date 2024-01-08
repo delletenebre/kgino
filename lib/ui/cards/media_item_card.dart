@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 import '../../models/media_item.dart';
 
@@ -55,6 +56,15 @@ class MediaItemCard extends HookWidget {
       return null;
     }, const []);
 
+    final imageProvider = imageUrl.endsWith('.svg')
+        ? Svg(
+            imageUrl,
+            source: imageUrl.startsWith('assets/')
+                ? SvgSource.asset
+                : SvgSource.network,
+          ) as ImageProvider
+        : CachedNetworkImageProvider(imageUrl, maxWidth: 200);
+
     return Focus(
       onFocusChange: (hasFocus) {
         focused.value = hasFocus;
@@ -96,8 +106,7 @@ class MediaItemCard extends HookWidget {
               image: imageUrl.isEmpty
                   ? null
                   : DecorationImage(
-                      image:
-                          CachedNetworkImageProvider(imageUrl, maxWidth: 200),
+                      image: imageProvider,
                       fit: BoxFit.cover,
                     ),
 

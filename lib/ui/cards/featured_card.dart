@@ -49,11 +49,11 @@ class FeaturedCard extends HookConsumerWidget {
   Widget build(context, ref) {
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final featuredHeight =
-        screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
-                178.0
-            ? TvUi.featuredHeight
-            : screenHeight - TvUi.navigationBarSize.height - 178.0;
+    final featuredHeight = TvUi.featuredHeight;
+    // screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
+    //         178.0
+    //     ? TvUi.featuredHeight
+    //     : screenHeight - TvUi.navigationBarSize.height - 178.0;
     final animationController = useAnimationController(
       duration: kThemeAnimationDuration,
     );
@@ -94,7 +94,8 @@ class FeaturedCard extends HookConsumerWidget {
             right: 0.0,
             child: AnimatedSwitcher(
               duration: kThemeAnimationDuration,
-              child: currentMediaItem.backdrop.isNotEmpty
+              child: currentMediaItem.backdrop.isNotEmpty &&
+                      !currentMediaItem.isFolder
                   ? BackdropImage(currentMediaItem.backdrop)
                   : null,
             ),
