@@ -32,12 +32,18 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       kinopoiskRating: json['kinopoiskRating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['kinopoiskRating']),
-    );
+    )
+      ..voiceActing =
+          VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>)
+      ..seasons = (json['seasons'] as List<dynamic>)
+          .map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
+          .toList();
 
 Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
+      'voiceActing': instance.voiceActing.toJson(),
       'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,
@@ -46,6 +52,7 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'imdbRating': const DoubleConverter().toJson(instance.imdbRating),
       'kinopoiskRating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
+      'seasons': instance.seasons.map((e) => e.toJson()).toList(),
     };
 
 const _$MediaItemTypeEnumMap = {

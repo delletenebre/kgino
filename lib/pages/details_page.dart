@@ -39,9 +39,9 @@ class Details extends _$Details {
     final seasons = await item.loadSeasons(ref);
 
     /// объединяем информацию с сезонами
-    return item.copyWith(
-      seasons: seasons,
-    );
+    item.seasons = seasons;
+
+    return item;
   }
 
   bool get hasItem => state.valueOrNull != null;
@@ -212,17 +212,11 @@ class DetailsPage extends HookConsumerWidget {
                                 VoiceActingsButton(
                                   mediaItem,
                                   onVoiceActingChange: (voiceActing) async {
-                                    MediaItem updatedMediaItem =
-                                        mediaItem.copyWith(
-                                      voice: voiceActing,
-                                    );
+                                    mediaItem.voiceActing = voiceActing;
 
                                     if (mediaItem.onlineService ==
                                         OnlineService.tskg) {
-                                      updatedMediaItem =
-                                          updatedMediaItem.copyWith(
-                                        id: voiceActing.id,
-                                      );
+                                      mediaItem.id = voiceActing.id;
                                     }
 
                                     //updatedMediaItem.save(storage);
@@ -231,7 +225,7 @@ class DetailsPage extends HookConsumerWidget {
                                     // ignore: use_build_context_synchronously
                                     context.pushReplacementNamed(
                                       'details',
-                                      extra: updatedMediaItem,
+                                      extra: mediaItem,
                                     );
                                   },
                                 ),

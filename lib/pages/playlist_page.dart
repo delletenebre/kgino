@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/media_item.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
+import '../ui/lists/vertical_grouped_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
 import '../ui/pages/krs_app_bar.dart';
 import '../ui/pages/playlist/krs_list_tile.dart';
@@ -72,13 +73,24 @@ class PlaylistPage extends HookConsumerWidget {
     }
 
     int episodesOffset = 0;
+    int seasonsOffset = 0;
     List<int> seasonEpisodesMap = [0];
+    final groupedEpisodes = <GroupedListViewItem>[];
     for (final season in mediaItem.seasons) {
+      seasonsOffset++;
+
       /// количество эпизодов в текущем сезоне
       final episodesCount = season.episodes.length;
-      seasonEpisodesMap.add(
-          seasonEpisodesMap.fold(0, (value, index) => value + index) +
-              episodesCount);
+      groupedEpisodes.addAll(
+        List.generate(episodesCount, (index) {
+          return GroupedListViewItem(
+            group: season.nameOr('${locale.season} $seasonsOffset'),
+            groupIndex: seasonsOffset,
+            index: episodesOffset + index,
+          );
+        }),
+      );
+      episodesOffset += episodesCount;
     }
     seasonEpisodesMap[0] = 0;
 
@@ -184,94 +196,208 @@ class PlaylistPage extends HookConsumerWidget {
           // ),
 
           /// эпизоды
-
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: selectedSeasonIndex,
-                  builder: (context, seasonIndex, _) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Text(
-                      mediaItem.seasons[seasonIndex].name,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: VerticalListView(
-                    key: episodesKey,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: TvUi.hPadding,
-                      vertical: TvUi.vPadding,
-                    ),
-                    listOffset: 64.0,
-                    separatorHeight: 0.0,
-                    itemCount: episodes.length,
-                    itemBuilder: (context, index) {
-                      final episode = episodes[index];
+            child: VerticalGroupedListView(
+              key: episodesKey,
+              padding: const EdgeInsets.symmetric(
+                horizontal: TvUi.hPadding,
+                vertical: TvUi.vPadding,
+              ),
+              separatorHeight: 0.0,
+              requestItemIndex: () => selectedEpisodeIndex.value,
+              elements: groupedEpisodes,
+              itemBuilder: (context, index) {
+                final episode = episodes[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: PlaylistEpisodeTile(
-                          episode: episode,
-                          onFocusChange: (hasFocus) {
-                            if (hasFocus) {
-                              final episodeIndex = index;
-                              int episodesOffset = 0;
+                final item = Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: PlaylistEpisodeTile(
+                    episode: episode,
+                    onFocusChange: (hasFocus) {
+                      if (hasFocus) {
+                        final episodeIndex = index;
+                        int episodesOffset = 0;
 
-                              for (int i = 0;
-                                  i < mediaItem.seasons.length;
-                                  i++) {
-                                /// текущий сезон
-                                final season = mediaItem.seasons[i];
+                        for (int i = 0; i < mediaItem.seasons.length; i++) {
+                          /// текущий сезон
+                          final season = mediaItem.seasons[i];
 
-                                /// количество эпизодов в текущем сезоне
-                                final episodesCount = season.episodes.length;
+                          /// количество эпизодов в текущем сезоне
+                          final episodesCount = season.episodes.length;
 
-                                /// относительный индекс эпизода в нужном сезоне
-                                final index = episodeIndex - episodesOffset;
+                          /// относительный индекс эпизода в нужном сезоне
+                          final index = episodeIndex - episodesOffset;
 
-                                if (episodesCount > index) {
-                                  /// обновляем индекс сезона
+                          if (episodesCount > index) {
+                            /// обновляем индекс сезона
 
-                                  selectedSeasonIndex.value = i;
+                            selectedSeasonIndex.value = i;
 
-                                  /// прокручиваем список сезонов к выбранному сезону
-                                  seasonsKey.currentState?.scrollTo(
-                                    selectedSeasonIndex.value,
-                                  );
+                            /// прокручиваем список сезонов к выбранному сезону
+                            seasonsKey.currentState
+                                ?.scrollTo(selectedSeasonIndex.value);
 
-                                  break;
-                                }
-                                episodesOffset += episodesCount;
-                              }
+                            break;
+                          }
+                          episodesOffset += episodesCount;
+                        }
 
-                              /// обновляем индекс эпизода
-                              selectedEpisodeIndex.value = episodeIndex;
-                            }
-                          },
-                          onTap: () {
-                            /// переходим на страницу плеера фильма
-                            context.pushReplacementNamed(
-                              'player',
-                              queryParameters: {
-                                'episodeIndex': '$index',
-                              },
-                              extra: mediaItem,
-                            );
-                          },
-                        ),
+                        /// обновляем индекс эпизода
+                        selectedEpisodeIndex.value = episodeIndex;
+                      }
+                    },
+                    onTap: () {
+                      /// переходим на страницу плеера фильма
+                      context.pushReplacementNamed(
+                        'player',
+                        queryParameters: {
+                          'episodeIndex': '$index',
+                        },
+                        extra: mediaItem,
                       );
                     },
                   ),
-                ),
-              ],
+                );
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: PlaylistEpisodeTile(
+                    episode: episode,
+                    onFocusChange: (hasFocus) {
+                      if (hasFocus) {
+                        final episodeIndex = index;
+                        int episodesOffset = 0;
+
+                        for (int i = 0; i < mediaItem.seasons.length; i++) {
+                          /// текущий сезон
+                          final season = mediaItem.seasons[i];
+
+                          /// количество эпизодов в текущем сезоне
+                          final episodesCount = season.episodes.length;
+
+                          /// относительный индекс эпизода в нужном сезоне
+                          final index = episodeIndex - episodesOffset;
+
+                          if (episodesCount > index) {
+                            /// обновляем индекс сезона
+
+                            selectedSeasonIndex.value = i;
+
+                            /// прокручиваем список сезонов к выбранному сезону
+                            seasonsKey.currentState
+                                ?.scrollTo(selectedSeasonIndex.value);
+
+                            break;
+                          }
+                          episodesOffset += episodesCount;
+                        }
+
+                        /// обновляем индекс эпизода
+                        selectedEpisodeIndex.value = episodeIndex;
+                      }
+                    },
+                    onTap: () {
+                      /// переходим на страницу плеера фильма
+                      context.pushReplacementNamed(
+                        'player',
+                        queryParameters: {
+                          'episodeIndex': '$index',
+                        },
+                        extra: mediaItem,
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
+          // Expanded(
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.stretch,
+          //     children: [
+          //       ValueListenableBuilder(
+          //         valueListenable: selectedSeasonIndex,
+          //         builder: (context, seasonIndex, _) => Padding(
+          //           padding: const EdgeInsets.only(bottom: 12.0),
+          //           child: Text(
+          //             mediaItem.seasons[seasonIndex].name,
+          //             style: TextStyle(
+          //               fontSize: 20.0,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       Expanded(
+          //         child: VerticalListView(
+          //           key: episodesKey,
+          //           padding: const EdgeInsets.symmetric(
+          //             horizontal: TvUi.hPadding,
+          //             vertical: TvUi.vPadding,
+          //           ),
+          //           listOffset: 64.0,
+          //           separatorHeight: 0.0,
+          //           itemCount: episodes.length,
+          //           itemBuilder: (context, index) {
+          //             final episode = episodes[index];
+          //
+          //             return Padding(
+          //               padding: const EdgeInsets.only(bottom: 12.0),
+          //               child: PlaylistEpisodeTile(
+          //                 episode: episode,
+          //                 onFocusChange: (hasFocus) {
+          //                   if (hasFocus) {
+          //                     final episodeIndex = index;
+          //                     int episodesOffset = 0;
+          //
+          //                     for (int i = 0;
+          //                         i < mediaItem.seasons.length;
+          //                         i++) {
+          //                       /// текущий сезон
+          //                       final season = mediaItem.seasons[i];
+          //
+          //                       /// количество эпизодов в текущем сезоне
+          //                       final episodesCount = season.episodes.length;
+          //
+          //                       /// относительный индекс эпизода в нужном сезоне
+          //                       final index = episodeIndex - episodesOffset;
+          //
+          //                       if (episodesCount > index) {
+          //                         /// обновляем индекс сезона
+          //
+          //                         selectedSeasonIndex.value = i;
+          //
+          //                         /// прокручиваем список сезонов к выбранному сезону
+          //                         seasonsKey.currentState?.scrollTo(
+          //                           selectedSeasonIndex.value,
+          //                         );
+          //
+          //                         break;
+          //                       }
+          //                       episodesOffset += episodesCount;
+          //                     }
+          //
+          //                     /// обновляем индекс эпизода
+          //                     selectedEpisodeIndex.value = episodeIndex;
+          //                   }
+          //                 },
+          //                 onTap: () {
+          //                   /// переходим на страницу плеера фильма
+          //                   context.pushReplacementNamed(
+          //                     'player',
+          //                     queryParameters: {
+          //                       'episodeIndex': '$index',
+          //                     },
+          //                     extra: mediaItem,
+          //                   );
+          //                 },
+          //               ),
+          //             );
+          //           },
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

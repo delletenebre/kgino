@@ -1,11 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../resources/krs_theme.dart';
 
-class KrsAppBar extends HookWidget implements PreferredSizeWidget {
+class KrsAppBar extends StatelessWidget implements PreferredSizeWidget {
+  @override
+  Size get preferredSize => TvUi.navigationBarSize;
+
   final List<Widget> children;
+
   const KrsAppBar({
     super.key,
     this.children = const [],
@@ -14,18 +17,13 @@ class KrsAppBar extends HookWidget implements PreferredSizeWidget {
   @override
   Widget build(context) {
     return SizedBox.fromSize(
-        size: preferredSize,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: TvUi.hPadding),
-          child: Row(
-            children: [
-              if (kDebugMode) const BackButton(),
-              ...children,
-            ],
-          ),
-        ));
+      size: preferredSize,
+      child: Row(
+        children: [
+          if (kDebugMode) BackButton(),
+          ...children,
+        ],
+      ),
+    );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(64.0);
 }

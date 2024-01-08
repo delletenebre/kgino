@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/media_item.dart';
 import '../pages/details_page.dart';
 import '../pages/home_page.dart';
+import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -68,32 +69,32 @@ final routerProvider = Provider<GoRouter>((ref) {
               return PlaylistPage(mediaItem);
             },
           ),
-          //
-          // /// страница плеера
-          // GoRoute(
-          //   path: 'player',
-          //   name: 'player',
-          //   builder: (context, state) {
-          //     final mediaItem = state.extra as MediaItem;
-          //     final episodeIndex = int.tryParse(
-          //             state.uri.queryParameters['episodeIndex'] ?? '') ??
-          //         0;
-          //     final initialPosition = int.tryParse(
-          //             state.uri.queryParameters['initialPosition'] ?? '') ??
-          //         0;
-          //
-          //     final forcePositionUpdate = bool.tryParse(
-          //             state.uri.queryParameters['forcePositionUpdate'] ?? '') ??
-          //         false;
-          //
-          //     return PlayerPage(
-          //       mediaItem: mediaItem,
-          //       episodeIndex: episodeIndex,
-          //       initialPosition: initialPosition,
-          //       forcePositionUpdate: forcePositionUpdate,
-          //     );
-          //   },
-          // ),
+
+          /// страница плеера
+          GoRoute(
+            path: 'player',
+            name: 'player',
+            builder: (context, state) {
+              final mediaItem = state.extra as MediaItem;
+              final episodeIndex = int.tryParse(
+                      state.uri.queryParameters['episodeIndex'] ?? '') ??
+                  0;
+              final initialPosition = int.tryParse(
+                      state.uri.queryParameters['initialPosition'] ?? '') ??
+                  0;
+
+              final forcePositionUpdate = bool.tryParse(
+                      state.uri.queryParameters['forcePositionUpdate'] ?? '') ??
+                  false;
+
+              return PlayerPage(
+                mediaItem: mediaItem,
+                episodeIndex: episodeIndex,
+                // initialPosition: initialPosition,
+                // forcePositionUpdate: forcePositionUpdate,
+              );
+            },
+          ),
         ],
       ),
     ],
