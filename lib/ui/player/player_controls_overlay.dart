@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:video_player/video_player.dart';
 
 // import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
-import '../buttons/krs_menu_button.dart';
 import 'controls/play_pause_button.dart';
-import 'controls/player_progress_bar.dart';
 
 class PlayerControlsOverlay extends StatefulHookConsumerWidget {
+  final VideoPlayerController controller;
   final String title;
   final String subtitle;
   final Function()? onSkipNext;
@@ -34,6 +34,7 @@ class PlayerControlsOverlay extends StatefulHookConsumerWidget {
 
   const PlayerControlsOverlay({
     super.key,
+    required this.controller,
     this.title = '',
     this.subtitle = '',
     this.onSkipNext,
@@ -80,15 +81,27 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     _menuOpened = widget.menuOpened;
 
     super.initState();
+
+    widget.controller.addListener(videoPlayerListener);
   }
 
   @override
   void dispose() {
+    widget.controller.removeListener(videoPlayerListener);
     playingSubscription?.cancel();
     _visibilityTimer?.cancel();
     _progressBarFocusNode.dispose();
 
     super.dispose();
+  }
+
+  /// уведомитель о состоянии воспроизведения
+  final isPlayingNotifier = ValueNotifier<bool>(false);
+
+  /// слушатель состояния видео-плеера
+  void videoPlayerListener() {
+    /// уведомляем, если начали или остановили просмотр
+    isPlayingNotifier.value = widget.controller.value.isPlaying;
   }
 
   @override
@@ -236,120 +249,134 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                   ),
 
                   /// кнопка остановить/продолжить воспроизведение
-                  const Center(
-                    child: PlayPauseButton(),
+                  Center(
+                    child: ValueListenableBuilder(
+                      valueListenable: isPlayingNotifier,
+                      builder: (context, isPlaying, _) {
+                        return PlayPauseButton(
+                          isPlaying: isPlaying,
+                          onTap: () {
+                            if (isPlaying) {
+                              widget.controller.pause();
+                            } else {
+                              widget.controller.play();
+                            }
+                          },
+                        );
+                      },
+                    ),
                   ),
 
                   /// прогресс бар, дополнительные кнопки управления
-                  Positioned(
-                    bottom: TvUi.vPadding,
-                    left: TvUi.hPadding,
-                    right: TvUi.hPadding,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        /// прогресс бар
-                        PlayerProgressBar(
-                          focusNode: _progressBarFocusNode,
-                          onSkipNext: () {
-                            if (!_menuOpened) {
-                              /// ^ если нет открытого блокирующего меню
-
-                              /// запускаем следующий эпизод
-                              widget.onSkipNext?.call();
-                            }
-                          },
-                        ),
-
-                        const SizedBox(height: 24.0),
-
-                        /// кнопки управления
-                        Row(
-                          children: [
-                            if (widget.qualities.isNotEmpty)
-                              KrsMenuButton(
-                                items: widget.qualities,
-                                textBuilder: (item) => item.toString(),
-                                selectedValue: widget.quality,
-                                onSelected: (value) {
-                                  widget.onQualityChanged?.call(value);
-                                },
-                                icon: const Icon(
-                                  Icons.videocam_outlined,
-                                  size: 18.0,
-                                ),
-                                child: Text(
-                                  widget.quality,
-                                ),
-                                onMenuOpen: () {
-                                  _menuOpened = true;
-                                },
-                                onMenuClose: () {
-                                  _menuOpened = false;
-                                },
-                              ),
-
-                            /// кнопка включения субтитров
-                            if (widget.hasSubtitles == false)
-                              OutlinedButton.icon(
-                                onPressed: () async {
-                                  /// вызываем пользовательский обработчик включения
-                                  /// субтитров
-                                  widget.onSubtitlesChanged?.call(true);
-                                },
-                                icon: const Icon(
-                                  Icons.subtitles,
-                                  size: 18.0,
-                                ),
-                                label: Text(locale.enableSubtitles),
-                              ),
-
-                            /// кнопка выключения субтитров
-                            if (widget.hasSubtitles == true)
-                              OutlinedButton.icon(
-                                onPressed: () async {
-                                  /// вызываем пользовательский обработчик
-                                  /// выключения субтитров
-                                  widget.onSubtitlesChanged?.call(false);
-                                },
-                                icon: const Icon(
-                                  Icons.subtitles_off,
-                                  size: 18.0,
-                                ),
-                                label: Text(locale.disableSubtitles),
-                              ),
-
-                            const Expanded(
-                              child: SizedBox(),
-                            ),
-
-                            /// кнопка перехода к предыдущему эпизоду
-                            if (widget.onSkipPrevious != null)
-                              OutlinedButton(
-                                onPressed: () {
-                                  widget.onSkipPrevious?.call();
-                                },
-                                child: const Icon(Icons.skip_previous_outlined),
-                              ),
-
-                            /// разделитель
-                            if (widget.onSkipPrevious != null &&
-                                widget.onSkipNext != null)
-                              const SizedBox(width: 12.0),
-
-                            /// кнопка перехода к следующему эпизоду
-                            if (widget.onSkipNext != null)
-                              OutlinedButton(
-                                onPressed: () {
-                                  widget.onSkipNext?.call();
-                                },
-                                child: const Icon(Icons.skip_next_outlined),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Positioned(
+                  //   bottom: TvUi.vPadding,
+                  //   left: TvUi.hPadding,
+                  //   right: TvUi.hPadding,
+                  //   child: Column(
+                  //     mainAxisSize: MainAxisSize.min,
+                  //     children: [
+                  //       /// прогресс бар
+                  //       PlayerProgressBar(
+                  //         focusNode: _progressBarFocusNode,
+                  //         onSkipNext: () {
+                  //           if (!_menuOpened) {
+                  //             /// ^ если нет открытого блокирующего меню
+                  //
+                  //             /// запускаем следующий эпизод
+                  //             widget.onSkipNext?.call();
+                  //           }
+                  //         },
+                  //       ),
+                  //
+                  //       const SizedBox(height: 24.0),
+                  //
+                  //       /// кнопки управления
+                  //       Row(
+                  //         children: [
+                  //           if (widget.qualities.isNotEmpty)
+                  //             KrsMenuButton(
+                  //               items: widget.qualities,
+                  //               textBuilder: (item) => item.toString(),
+                  //               selectedValue: widget.quality,
+                  //               onSelected: (value) {
+                  //                 widget.onQualityChanged?.call(value);
+                  //               },
+                  //               icon: const Icon(
+                  //                 Icons.videocam_outlined,
+                  //                 size: 18.0,
+                  //               ),
+                  //               child: Text(
+                  //                 widget.quality,
+                  //               ),
+                  //               onMenuOpen: () {
+                  //                 _menuOpened = true;
+                  //               },
+                  //               onMenuClose: () {
+                  //                 _menuOpened = false;
+                  //               },
+                  //             ),
+                  //
+                  //           /// кнопка включения субтитров
+                  //           if (widget.hasSubtitles == false)
+                  //             OutlinedButton.icon(
+                  //               onPressed: () async {
+                  //                 /// вызываем пользовательский обработчик включения
+                  //                 /// субтитров
+                  //                 widget.onSubtitlesChanged?.call(true);
+                  //               },
+                  //               icon: const Icon(
+                  //                 Icons.subtitles,
+                  //                 size: 18.0,
+                  //               ),
+                  //               label: Text(locale.enableSubtitles),
+                  //             ),
+                  //
+                  //           /// кнопка выключения субтитров
+                  //           if (widget.hasSubtitles == true)
+                  //             OutlinedButton.icon(
+                  //               onPressed: () async {
+                  //                 /// вызываем пользовательский обработчик
+                  //                 /// выключения субтитров
+                  //                 widget.onSubtitlesChanged?.call(false);
+                  //               },
+                  //               icon: const Icon(
+                  //                 Icons.subtitles_off,
+                  //                 size: 18.0,
+                  //               ),
+                  //               label: Text(locale.disableSubtitles),
+                  //             ),
+                  //
+                  //           const Expanded(
+                  //             child: SizedBox(),
+                  //           ),
+                  //
+                  //           /// кнопка перехода к предыдущему эпизоду
+                  //           if (widget.onSkipPrevious != null)
+                  //             OutlinedButton(
+                  //               onPressed: () {
+                  //                 widget.onSkipPrevious?.call();
+                  //               },
+                  //               child: const Icon(Icons.skip_previous_outlined),
+                  //             ),
+                  //
+                  //           /// разделитель
+                  //           if (widget.onSkipPrevious != null &&
+                  //               widget.onSkipNext != null)
+                  //             const SizedBox(width: 12.0),
+                  //
+                  //           /// кнопка перехода к следующему эпизоду
+                  //           if (widget.onSkipNext != null)
+                  //             OutlinedButton(
+                  //               onPressed: () {
+                  //                 widget.onSkipNext?.call();
+                  //               },
+                  //               child: const Icon(Icons.skip_next_outlined),
+                  //             ),
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),

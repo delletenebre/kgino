@@ -1,12 +1,9 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+import 'package:video_player/video_player.dart';
 
 import '../models/media_item.dart';
-import '../providers/providers.dart';
 import '../ui/player/player_controls_overlay.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
@@ -32,10 +29,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 }
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
-  // Create a [Player] to control playback.
-  final Player player = Player();
-  // Create a [VideoController] to handle video output from [Player].
-  late final controller = VideoController(player);
+  late VideoPlayerController _controller;
 
   late List<MediaItemEpisode> episodes;
 
@@ -61,131 +55,137 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     currentEpisodeIndex = widget.episodeIndex;
     playableEpisode = episodes[currentEpisodeIndex];
 
-    /// загружаем видео и субтитры
-    widget.mediaItem.loadEpisodeUrl(ref, playableEpisode).then((mediaItemUrl) {
-      debugPrint('Loaded episode url: $mediaItemUrl');
+    // /// загружаем видео и субтитры
+    // widget.mediaItem.loadEpisodeUrl(ref, playableEpisode).then((mediaItemUrl) {
+    //   debugPrint('Loaded episode url: $mediaItemUrl');
+    //
+    //   /// открываем ссылку на проигрываемый файл
+    //   player.open(Media(mediaItemUrl.video)).then((value) async {
+    //     /// дожидаемся буферизации
+    //     await player.stream.buffer.first;
+    //
+    //     // if (widget.initialPosition > 0) {
+    //     //   /// ^ если задана позиция просмотра и быстрая перемотка
+    //     //
+    //     //   /// дожидаемся буферизации
+    //     //   await player.stream.buffer.first;
+    //     //
+    //     //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    //     //     player.pause();
+    //     //
+    //     //     // ignore: use_build_context_synchronously
+    //     //     // bool updatePosition = widget.forcePositionUpdate;
+    //     //     // if (!updatePosition) {
+    //     //     //   setState(() {
+    //     //     //     _menuOpened = true;
+    //     //     //   });
+    //     //     //
+    //     //     //   updatePosition = await Utils.showConfirmModal(
+    //     //     //     context: context,
+    //     //     //     title: 'Продолжить просмотр?',
+    //     //     //     message:
+    //     //     //         'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
+    //     //     //     child: Column(
+    //     //     //       crossAxisAlignment: CrossAxisAlignment.stretch,
+    //     //     //       children: [
+    //     //     //         HookBuilder(
+    //     //     //           builder: (context) {
+    //     //     //             final focused = useState(false);
+    //     //     //
+    //     //     //             return AnimatedScale(
+    //     //     //               duration: kThemeAnimationDuration,
+    //     //     //               scale: focused.value ? 1.1 : 1.0,
+    //     //     //               child: FilledButton(
+    //     //     //                 autofocus: true,
+    //     //     //                 onFocusChange: (hasFocus) {
+    //     //     //                   focused.value = hasFocus;
+    //     //     //                 },
+    //     //     //                 onPressed: () {
+    //     //     //                   if (mounted) {
+    //     //     //                     Navigator.of(context).pop(true);
+    //     //     //                   }
+    //     //     //                 },
+    //     //     //                 child: Text('Продолжить'),
+    //     //     //               ),
+    //     //     //             );
+    //     //     //           },
+    //     //     //         ),
+    //     //     //         const SizedBox(height: 12.0),
+    //     //     //         HookBuilder(
+    //     //     //           builder: (context) {
+    //     //     //             final focused = useState(false);
+    //     //     //
+    //     //     //             return AnimatedScale(
+    //     //     //               duration: kThemeAnimationDuration,
+    //     //     //               scale: focused.value ? 1.1 : 1.0,
+    //     //     //               child: FilledButton(
+    //     //     //                 onFocusChange: (hasFocus) {
+    //     //     //                   focused.value = hasFocus;
+    //     //     //                 },
+    //     //     //                 onPressed: () {
+    //     //     //                   if (mounted) {
+    //     //     //                     Navigator.of(context).pop(false);
+    //     //     //                   }
+    //     //     //                 },
+    //     //     //                 child: Text('Начать с начала'),
+    //     //     //               ),
+    //     //     //             );
+    //     //     //           },
+    //     //     //         ),
+    //     //     //       ],
+    //     //     //     ),
+    //     //     //   );
+    //     //     //
+    //     //     //   setState(() {
+    //     //     //     _menuOpened = false;
+    //     //     //   });
+    //     //     // }
+    //     //     //
+    //     //     // if (updatePosition == true) {
+    //     //     //   /// перематываем с небольшой отмоткой назад
+    //     //     //   await player.seek(
+    //     //     //     Duration(
+    //     //     //       seconds: widget.initialPosition > 2
+    //     //     //           ? widget.initialPosition - 2
+    //     //     //           : widget.initialPosition,
+    //     //     //     ),
+    //     //     //   );
+    //     //     // }
+    //     //
+    //     //     player.play();
+    //     //   });
+    //     // }
+    //   });
+    //
+    //   if (mediaItemUrl.subtitles.isNotEmpty) {
+    //     /// ^ если есть файл субтитров
+    //
+    //     // setState(() {
+    //     //   hasSubtitles = widget.mediaItem.subtitles;
+    //     // });
+    //
+    //     /// загружаем субтитры
+    //     if (hasSubtitles == true) {
+    //       player.setSubtitleTrack(
+    //         SubtitleTrack.uri(
+    //           mediaItemUrl.subtitles,
+    //           language: 'ru',
+    //         ),
+    //       );
+    //     }
+    //   }
+    // });
 
-      /// открываем ссылку на проигрываемый файл
-      player.open(Media(mediaItemUrl.video)).then((value) async {
-        /// дожидаемся буферизации
-        await player.stream.buffer.first;
-
-        // if (widget.initialPosition > 0) {
-        //   /// ^ если задана позиция просмотра и быстрая перемотка
-        //
-        //   /// дожидаемся буферизации
-        //   await player.stream.buffer.first;
-        //
-        //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        //     player.pause();
-        //
-        //     // ignore: use_build_context_synchronously
-        //     // bool updatePosition = widget.forcePositionUpdate;
-        //     // if (!updatePosition) {
-        //     //   setState(() {
-        //     //     _menuOpened = true;
-        //     //   });
-        //     //
-        //     //   updatePosition = await Utils.showConfirmModal(
-        //     //     context: context,
-        //     //     title: 'Продолжить просмотр?',
-        //     //     message:
-        //     //         'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
-        //     //     child: Column(
-        //     //       crossAxisAlignment: CrossAxisAlignment.stretch,
-        //     //       children: [
-        //     //         HookBuilder(
-        //     //           builder: (context) {
-        //     //             final focused = useState(false);
-        //     //
-        //     //             return AnimatedScale(
-        //     //               duration: kThemeAnimationDuration,
-        //     //               scale: focused.value ? 1.1 : 1.0,
-        //     //               child: FilledButton(
-        //     //                 autofocus: true,
-        //     //                 onFocusChange: (hasFocus) {
-        //     //                   focused.value = hasFocus;
-        //     //                 },
-        //     //                 onPressed: () {
-        //     //                   if (mounted) {
-        //     //                     Navigator.of(context).pop(true);
-        //     //                   }
-        //     //                 },
-        //     //                 child: Text('Продолжить'),
-        //     //               ),
-        //     //             );
-        //     //           },
-        //     //         ),
-        //     //         const SizedBox(height: 12.0),
-        //     //         HookBuilder(
-        //     //           builder: (context) {
-        //     //             final focused = useState(false);
-        //     //
-        //     //             return AnimatedScale(
-        //     //               duration: kThemeAnimationDuration,
-        //     //               scale: focused.value ? 1.1 : 1.0,
-        //     //               child: FilledButton(
-        //     //                 onFocusChange: (hasFocus) {
-        //     //                   focused.value = hasFocus;
-        //     //                 },
-        //     //                 onPressed: () {
-        //     //                   if (mounted) {
-        //     //                     Navigator.of(context).pop(false);
-        //     //                   }
-        //     //                 },
-        //     //                 child: Text('Начать с начала'),
-        //     //               ),
-        //     //             );
-        //     //           },
-        //     //         ),
-        //     //       ],
-        //     //     ),
-        //     //   );
-        //     //
-        //     //   setState(() {
-        //     //     _menuOpened = false;
-        //     //   });
-        //     // }
-        //     //
-        //     // if (updatePosition == true) {
-        //     //   /// перематываем с небольшой отмоткой назад
-        //     //   await player.seek(
-        //     //     Duration(
-        //     //       seconds: widget.initialPosition > 2
-        //     //           ? widget.initialPosition - 2
-        //     //           : widget.initialPosition,
-        //     //     ),
-        //     //   );
-        //     // }
-        //
-        //     player.play();
-        //   });
-        // }
+    _controller = VideoPlayerController.networkUrl(Uri.parse(
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
+      ..initialize().then((_) {
+        setState(() {});
       });
-
-      if (mediaItemUrl.subtitles.isNotEmpty) {
-        /// ^ если есть файл субтитров
-
-        // setState(() {
-        //   hasSubtitles = widget.mediaItem.subtitles;
-        // });
-
-        /// загружаем субтитры
-        if (hasSubtitles == true) {
-          player.setSubtitleTrack(
-            SubtitleTrack.uri(
-              mediaItemUrl.subtitles,
-              language: 'ru',
-            ),
-          );
-        }
-      }
-    });
   }
 
   @override
   void dispose() {
-    player.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -229,61 +229,76 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
   @override
   Widget build(context) {
-    return Video(
-      controller: controller,
-      // controls: AdaptiveVideoControls,
-      controls: (state) {
-        return Material(
-          color: Colors.transparent,
-          child: PlayerControlsOverlay(
-            // initialPosition: widget.initialPosition,
-            title: widget.mediaItem.title,
-            subtitle:
-                'Сезон ${playableEpisode.seasonNumber} Эпизод ${playableEpisode.episodeNumber}',
-            qualities: playableEpisode.qualities
-                .sorted((a, b) => compareNatural(b, a)),
-            quality: widget.mediaItem.quality,
-            onQualityChanged: (quality) {
-              /// обновляем информацию о качестве видео
-              // widget.mediaItem.quality = quality;
-              // widget.mediaItem.save(ref.read(storageProvider));
-
-              /// перезапускаем эпизод
-              // updateEpisode(
-              //   position: controller.player.state.position.inSeconds,
-              //   forcePositionUpdate: true,
-              // );
-            },
-            onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
-            onSkipNext: hasNextEpisode ? skipNext : null,
-            onSavePositionRequested: (position) {
-              /// обновляем (если нужно) продолжительность эпизода
-              if (playableEpisode.duration == 0) {
-                playableEpisode.duration =
-                    controller.player.state.duration.inSeconds;
-              }
-
-              /// обновляем позицию просмотра для проигрываемого эпизода
-              playableEpisode.position = position;
-
-              /// сохраняем параметры проигрываемого эпизода
-              playableEpisode.save(ref.read(storageProvider));
-            },
-            hasSubtitles: hasSubtitles,
-            onSubtitlesChanged: (enabled) {
-              /// обновляем информацию о субтитрах
-              // widget.mediaItem.subtitles = enabled;
-              // widget.mediaItem.save(ref.read(storageProvider));
-
-              /// перезапускаем эпизод
-              // updateEpisode(
-              //   position: controller.player.state.position.inSeconds,
-              //   forcePositionUpdate: true,
-              // );
-            },
+    return Scaffold(
+      body: Stack(
+        children: [
+          Center(
+            child: _controller.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  )
+                : const SizedBox(),
           ),
-        );
-      },
+          PlayerControlsOverlay(controller: _controller),
+        ],
+      ),
     );
+    // return Video(
+    //   controller: controller,
+    //   // controls: AdaptiveVideoControls,
+    //   controls: (state) {
+    //     return Material(
+    //       color: Colors.transparent,
+    //       child: PlayerControlsOverlay(
+    //         // initialPosition: widget.initialPosition,
+    //         title: widget.mediaItem.title,
+    //         subtitle:
+    //             'Сезон ${playableEpisode.seasonNumber} Эпизод ${playableEpisode.episodeNumber}',
+    //         qualities: playableEpisode.qualities
+    //             .sorted((a, b) => compareNatural(b, a)),
+    //         quality: widget.mediaItem.quality,
+    //         onQualityChanged: (quality) {
+    //           /// обновляем информацию о качестве видео
+    //           // widget.mediaItem.quality = quality;
+    //           // widget.mediaItem.save(ref.read(storageProvider));
+    //
+    //           /// перезапускаем эпизод
+    //           // updateEpisode(
+    //           //   position: controller.player.state.position.inSeconds,
+    //           //   forcePositionUpdate: true,
+    //           // );
+    //         },
+    //         onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
+    //         onSkipNext: hasNextEpisode ? skipNext : null,
+    //         onSavePositionRequested: (position) {
+    //           /// обновляем (если нужно) продолжительность эпизода
+    //           if (playableEpisode.duration == 0) {
+    //             playableEpisode.duration =
+    //                 controller.player.state.duration.inSeconds;
+    //           }
+    //
+    //           /// обновляем позицию просмотра для проигрываемого эпизода
+    //           playableEpisode.position = position;
+    //
+    //           /// сохраняем параметры проигрываемого эпизода
+    //           playableEpisode.save(ref.read(storageProvider));
+    //         },
+    //         hasSubtitles: hasSubtitles,
+    //         onSubtitlesChanged: (enabled) {
+    //           /// обновляем информацию о субтитрах
+    //           // widget.mediaItem.subtitles = enabled;
+    //           // widget.mediaItem.save(ref.read(storageProvider));
+    //
+    //           /// перезапускаем эпизод
+    //           // updateEpisode(
+    //           //   position: controller.player.state.position.inSeconds,
+    //           //   forcePositionUpdate: true,
+    //           // );
+    //         },
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }

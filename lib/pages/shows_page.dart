@@ -102,18 +102,19 @@ class ShowsPage extends HookConsumerWidget {
                       ),
                       child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 12.0),
-                            child: SvgPicture.asset(
-                              category.onlineService.logo,
-                              height: 20.0,
+                          if (category.onlineService.logo.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12.0),
+                              child: SvgPicture.asset(
+                                category.onlineService.logo,
+                                height: 20.0,
 
-                              fit: BoxFit.scaleDown,
-                              // colorFilter: ColorFilter.mode(
-                              //     Colors.grey, BlendMode.srcIn),
-                              excludeFromSemantics: true,
+                                fit: BoxFit.scaleDown,
+                                // colorFilter: ColorFilter.mode(
+                                //     Colors.grey, BlendMode.srcIn),
+                                excludeFromSemantics: true,
+                              ),
                             ),
-                          ),
                           Text(
                             category.title,
                             style: theme.textTheme.titleMedium,

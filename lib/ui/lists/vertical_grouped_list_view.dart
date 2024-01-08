@@ -150,23 +150,24 @@ class VerticalGroupedListViewState extends State<VerticalGroupedListView> {
         widget.onFocusChange?.call(hasFocus);
       },
       child: ScrollConfiguration(
+        key: listKey,
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: StickyGroupedListView<GroupedListViewItem, int>(
-          key: listKey,
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.vertical,
           padding: widget.padding,
           elements: widget.elements,
           groupBy: (item) => item.groupIndex,
-          groupSeparatorBuilder: (item) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Text(
-              item.group,
-              style: const TextStyle(
-                fontSize: 20.0,
-              ),
-            ),
-          ),
+          groupSeparatorBuilder: (item) => SizedBox(),
+          //     Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 12.0),
+          //   child: Text(
+          //     item.group,
+          //     style: const TextStyle(
+          //       fontSize: 20.0,
+          //     ),
+          //   ),
+          // ),
           indexedItemBuilder: (context, item, index) => Focus(
             focusNode: focusNodeAt(index),
             child: widget.itemBuilder(context, index),
