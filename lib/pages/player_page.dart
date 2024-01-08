@@ -29,7 +29,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 }
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
 
   late List<MediaItemEpisode> episodes;
 
@@ -176,16 +176,21 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     //   }
     // });
 
-    _controller = VideoPlayerController.networkUrl(Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
-      ..initialize().then((_) {
-        setState(() {});
-      });
+    /// загружаем видео и субтитры
+    widget.mediaItem.loadEpisodeUrl(ref, playableEpisode).then((mediaItemUrl) {
+      _controller =
+          VideoPlayerController.networkUrl(Uri.parse(mediaItemUrl.video))
+            ..initialize().then((_) {
+              setState(() {
+                _controller?.play();
+              });
+            });
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -230,19 +235,21 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   @override
   Widget build(context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Center(
-            child: _controller.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  )
-                : const SizedBox(),
-          ),
-          PlayerControlsOverlay(controller: _controller),
-        ],
-      ),
+      body: _controller != null
+          ? Stack(
+              children: [
+                Center(
+                  child: _controller!.value.isInitialized
+                      ? AspectRatio(
+                          aspectRatio: _controller!.value.aspectRatio,
+                          child: VideoPlayer(_controller!),
+                        )
+                      : const SizedBox(),
+                ),
+                PlayerControlsOverlay(controller: _controller!),
+              ],
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
     // return Video(
     //   controller: controller,

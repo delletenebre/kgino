@@ -3,11 +3,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class PlayPauseButton extends HookWidget {
   final bool isPlaying;
+  final bool isBuffering;
 
   final void Function() onTap;
   const PlayPauseButton({
     super.key,
     required this.isPlaying,
+    required this.isBuffering,
     required this.onTap,
   });
 
@@ -20,22 +22,7 @@ class PlayPauseButton extends HookWidget {
 
     late Widget child;
 
-    if (isPlaying) {
-      /// ^ если видео проигрывается
-      child = Icon(
-        Icons.pause,
-
-        /// для правильной работы анимации, необходим параметр key
-        key: const ValueKey('pause'),
-        size: iconSize,
-        shadows: [
-          BoxShadow(
-            blurRadius: 12.0,
-            color: theme.colorScheme.surface,
-          ),
-        ],
-      );
-    } else {
+    if (!isPlaying) {
       /// ^ если видео на паузе
 
       child = Icon(
@@ -48,6 +35,30 @@ class PlayPauseButton extends HookWidget {
           BoxShadow(
             blurRadius: 12.0,
             color: theme.scaffoldBackgroundColor,
+          ),
+        ],
+      );
+    } else if (isBuffering) {
+      /// ^ если видео загружается
+
+      child = CircularProgressIndicator(
+        /// для правильной работы анимации, необходим параметр key
+        key: const ValueKey('buffering'),
+        color: theme.colorScheme.onSurface,
+      );
+    } else {
+      /// ^ если видео проигрывается
+
+      child = Icon(
+        Icons.pause,
+
+        /// для правильной работы анимации, необходим параметр key
+        key: const ValueKey('pause'),
+        size: iconSize,
+        shadows: [
+          BoxShadow(
+            blurRadius: 12.0,
+            color: theme.colorScheme.surface,
           ),
         ],
       );
@@ -65,13 +76,13 @@ class PlayPauseButton extends HookWidget {
           transitionBuilder: (child, animation) {
             return FadeTransition(
               opacity: Tween<double>(
-                begin: isPlaying ? 1.0 : 0.0,
-                end: isPlaying ? 0.0 : 1.0,
+                begin: isPlaying && !isBuffering ? 1.0 : 0.0,
+                end: isPlaying && !isBuffering ? 0.0 : 1.0,
               ).animate(animation),
               child: ScaleTransition(
                 scale: Tween<double>(
-                  begin: isPlaying ? 1.0 : 3.0,
-                  end: isPlaying ? 3.0 : 1.0,
+                  begin: isPlaying && !isBuffering ? 1.0 : 3.0,
+                  end: isPlaying && !isBuffering ? 3.0 : 1.0,
                 ).animate(animation),
                 child: child,
               ),
