@@ -64,6 +64,7 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
   bool _visible = false;
   final _progressBarFocusNode = FocusNode();
 
+  /// последняя время просмотра в секундах
   int _lastSavedPosition = -1;
 
   StreamSubscription? playingSubscription;
@@ -106,44 +107,44 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
   /// слушатель состояния видео-плеера
   void videoPlayerListener() {
-    isBufferingNotifier.value = widget.controller.value.isBuffering;
+    final value = widget.controller.value;
+    isBufferingNotifier.value = value.isBuffering;
 
     /// уведомляем, если начали или остановили просмотр
-    isPlayingNotifier.value = widget.controller.value.isPlaying;
+    final isPlaying = value.isPlaying;
+    isPlayingNotifier.value = isPlaying;
+
+    if (_visible && isPlaying && !_menuOpened) {
+      if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
+        _visibilityTimer?.cancel();
+        _visibilityTimer = Timer(const Duration(seconds: 5), () {
+          if (isPlaying && !_menuOpened) {
+            _progressBarFocusNode.requestFocus();
+            unshiftSubtitles();
+            setState(() {
+              _visible = false;
+            });
+          }
+        });
+      }
+    } else {
+      _visibilityTimer?.cancel();
+    }
+
+    if (isPlaying) {
+      final positionInSeconds = value.position.inSeconds;
+      if (positionInSeconds > 10 &&
+          positionInSeconds % 5 == 0 &&
+          _lastSavedPosition != positionInSeconds) {
+        _lastSavedPosition = positionInSeconds;
+        widget.onSavePositionRequested?.call(positionInSeconds);
+      }
+    }
   }
 
   @override
   void didChangeDependencies() {
     showOverlay();
-    // playingSubscription ??=
-    //     controller(context).player.stream.position.listen((position) {
-    //   final playing = controller(context).player.state.playing;
-    //   if (_visible && playing && !_menuOpened) {
-    //     if (_visibilityTimer == null || _visibilityTimer!.isActive == false) {
-    //       _visibilityTimer?.cancel();
-    //       _visibilityTimer = Timer(const Duration(seconds: 5), () {
-    //         if (playing && !_menuOpened) {
-    //           _progressBarFocusNode.requestFocus();
-    //           unshiftSubtitles();
-    //           setState(() {
-    //             _visible = false;
-    //           });
-    //         }
-    //       });
-    //     }
-    //   } else {
-    //     _visibilityTimer?.cancel();
-    //   }
-    //
-    //   if (playing) {
-    //     final positionInSeconds = position.inSeconds;
-    //     if (positionInSeconds % 10 == 0 &&
-    //         _lastSavedPosition != positionInSeconds) {
-    //       _lastSavedPosition = positionInSeconds;
-    //       widget.onSavePositionRequested?.call(positionInSeconds);
-    //     }
-    //   }
-    // });
 
     // controller(context).player.stream.buffer.first.then((value) {
     //   setState(() {

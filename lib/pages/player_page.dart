@@ -282,6 +282,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
                     /// сохраняем параметры проигрываемого эпизода
                     playableEpisode.save(ref.read(storageProvider));
+
+                    print(
+                        'playableEpisode.position: ${playableEpisode.position}');
                   },
 
                   /// субтитры

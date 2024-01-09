@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 
 import '../../../extensions/duration_extensions.dart';
 import '../../../models/media_item.dart';
@@ -31,12 +32,12 @@ class PlayButton extends HookConsumerWidget {
 
     /// список эпизодов
     final episodes = mediaItem.episodes;
-    final seenEpisodes = [];
-    // final seenEpisodes = storage.db.mediaItemEpisodes
-    //     .where()
-    //     .idStartsWith('${mediaItem.isarId}@')
-    //     .sortByUpdatedAtDesc()
-    //     .findAll();
+    final seenEpisodes = storage.db.mediaItemEpisodes
+        .where()
+        .idStartsWith('${mediaItem.isarId}@')
+        .sortByUpdatedAtDesc()
+        .findAll();
+    print('seenEpisodes: $seenEpisodes');
 
     if (mediaItem.episodes.isEmpty) {
       return const SizedBox();

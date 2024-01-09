@@ -3,11 +3,16 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 
 import '../api/filmix_api_provider.dart';
 import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
+import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
+import '../models/tskg/tskg_item.dart';
+import '../providers/providers.dart';
+import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/cards/media_item_card.dart';
@@ -20,10 +25,44 @@ class ShowsPage extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
+    final locale = KrsLocale.of(context);
     final screenSize = MediaQuery.of(context).size;
 
     final selectedMediaItem = useState<int?>(null);
     final focusedMediaItem = useValueNotifier<MediaItem?>(null);
+
+    /// хранилище данных
+    final storage = ref.read(storageProvider);
+
+    // useStream(
+    //   storage.db.mediaItems.watchLazy(),
+    // );
+
+    /// запрос избранных сериалов
+    final bookmarksQuery = storage.db.mediaItems
+        .where()
+        .typeEqualTo(MediaItemType.show)
+        .and()
+        .bookmarkedIsNotNull();
+
+    /// есть ли в списке избранных элементы
+    final bookmarkCount = bookmarksQuery.count();
+    final hasBookmarks = bookmarkCount > 0;
+
+    final asyncBookmarks = useMemoized(() async {
+      final items = await bookmarksQuery.findAllAsync();
+      return items.map((item) {
+        if (item.onlineService == OnlineService.filmix) {
+          return FilmixItem.fromJson(item.toJson());
+        }
+        if (item.onlineService == OnlineService.tskg) {
+          return TskgItem.fromJson(item.toJson());
+        }
+        throw Exception();
+      }).toList();
+    }, [bookmarkCount]);
+
+    print('build');
 
     /// tskg провайдер запросов к API
     final tskgApi = ref.read(tskgApiProvider);
@@ -63,6 +102,11 @@ class ShowsPage extends HookConsumerWidget {
         title: 'Провайдеры',
         items: providers,
       ),
+      if (hasBookmarks)
+        CategoryListItem(
+          title: locale.bookmarks,
+          apiResponse: asyncBookmarks,
+        ),
       CategoryListItem(
         onlineService: OnlineService.tskg,
         title: 'Последние поступления',
@@ -83,6 +127,7 @@ class ShowsPage extends HookConsumerWidget {
         ),
         Expanded(
           child: VerticalListView(
+            key: ValueKey(categories.length),
             padding: const EdgeInsets.symmetric(vertical: 28.0),
             onFocusChange: (hasFocus) {
               if (!hasFocus) {

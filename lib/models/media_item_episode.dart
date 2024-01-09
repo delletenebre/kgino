@@ -77,6 +77,7 @@ class MediaItemEpisode {
 
   /// сохранение в базу данных
   Future<void> save(KrsStorage storage) async {
+    print('saved');
     // TODO see restrictions listed at`SendPort.send()` documentation for more information
     // https://github.com/isar/isar/issues/1393
     storage.db.writeAsync((isar) async {
