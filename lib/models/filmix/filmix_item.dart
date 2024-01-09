@@ -40,15 +40,14 @@ class FilmixItem extends MediaItem {
     this.categories = const [],
     this.shortStory = '',
     this.playerLinks = const FilmixPlayerLinks(),
-    super.seasonCount,
 
     ///
     super.bookmarked,
     super.subtitlesEnabled,
     super.voiceActing,
-    super.quality = '720',
     this.duration = 0,
   }) {
+    quality = '720';
     voices = [];
 
     if (playerLinks != null) {
@@ -180,6 +179,8 @@ class FilmixItem extends MediaItem {
             ));
           }
         }
+
+        // seasonCount = seasons.length;
       }
     }
   }
@@ -190,6 +191,11 @@ class FilmixItem extends MediaItem {
   @override
   Map<String, dynamic> toJson() => _$FilmixItemToJson(this);
 
+  /// количество сезонов
+  @override
+  int get seasonCount => seasons.length;
+
+  /// заблокирован ли контент
   @override
   bool get blocked =>
       playerLinks
@@ -198,11 +204,13 @@ class FilmixItem extends MediaItem {
           .contains('Заблокировано правообладателем') ==
       true;
 
+  /// жанры
   @override
   List<String> get genres {
     return categories..removeWhere((element) => element == 'Сериалы');
   }
 
+  /// описание
   @override
   String get overview => shortStory;
 
@@ -221,13 +229,12 @@ class FilmixItem extends MediaItem {
       cancelToken: cancelToken,
     );
 
-    final json = detailedItem.toJson();
-    json['quality'] = quality;
-    json['subtitles'] = subtitlesEnabled;
-    json['voice'] = voiceActing.toJson();
-    json['bookmarked'] = bookmarked?.toString();
+    // detailedItem.voiceActing = voiceActing;
+    detailedItem.quality = quality;
+    // detailedItem.subtitlesEnabled = subtitlesEnabled;
+    // detailedItem.bookmarked = bookmarked;
 
-    return FilmixItem.fromJson(json);
+    return detailedItem;
   }
 
   /// получение списка вариантов озвучки
@@ -257,7 +264,7 @@ class FilmixItem extends MediaItem {
       quality = (episode.qualities
                   .sorted((a, b) => compareNatural(a, b))
                   .lastOrNull ??
-              '')
+              '720')
           .toString();
     }
 

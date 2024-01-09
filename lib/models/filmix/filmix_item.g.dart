@@ -50,7 +50,6 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           ? const FilmixPlayerLinks()
           : FilmixPlayerLinks.fromJson(
               json['player_links'] as Map<String, dynamic>),
-      seasonCount: json['season_count'] as int? ?? 0,
       bookmarked: json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String),
@@ -58,7 +57,6 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       voiceActing: json['voice_acting'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
-      quality: json['quality'] as String? ?? '720',
       duration: json['duration'] as int? ?? 0,
     );
 
@@ -69,14 +67,12 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
-      'quality': instance.quality,
       'voice_acting': instance.voiceActing.toJson(),
       'subtitles_enabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'original_title': instance.originalTitle,
       'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,
-      'season_count': instance.seasonCount,
       'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
       'kinopoisk_rating':
           const DoubleConverter().toJson(instance.kinopoiskRating),

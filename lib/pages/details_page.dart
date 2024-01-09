@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +14,7 @@ import '../ui/cards/featured_card.dart';
 import '../ui/krs_scroll_view.dart';
 import '../ui/pages/details_page/play_button.dart';
 import '../ui/pages/details_page/voice_actings_button.dart';
+import '../ui/pages/krs_app_bar.dart';
 import '../ui/try_again_message.dart';
 
 part 'details_page.g.dart';
@@ -74,7 +74,9 @@ class DetailsPage extends HookConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => TryAgainMessage(
           imageUrl: mediaItem.poster,
-          onRetry: () {},
+          onRetry: () {
+            ref.read(detailsProvider(mediaItem).notifier).fetch();
+          },
         ),
         data: (mediaItem) => HookBuilder(
           builder: (context) {
@@ -96,59 +98,50 @@ class DetailsPage extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// отступ навигационной панели
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: TvUi.hPadding,
-                        ),
-                        height: TvUi.navigationBarSize.height,
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                          spacing: 24.0,
-                          children: [
-                            /// онлайн-кинотеатр
+                      KrsAppBar(
+                        children: [
+                          /// онлайн-кинотеатр
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.smart_display_outlined,
+                                size: 16.0,
+                                color: theme.colorScheme.outline,
+                              ),
+                              const SizedBox(width: 4.0),
+                              Text(
+                                (mediaItem?.onlineService ==
+                                        OnlineService.filmix)
+                                    ? 'Filmix'
+                                    : 'TS.KG',
+                                style: TextStyle(
+                                  color: theme.colorScheme.outline,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          /// озвучка
+                          if (mediaItem?.voiceActing.name.isNotEmpty == true)
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (kDebugMode) BackButton(),
                                 Icon(
-                                  Icons.smart_display_outlined,
+                                  Icons.mic_outlined,
                                   size: 16.0,
                                   color: theme.colorScheme.outline,
                                 ),
                                 const SizedBox(width: 4.0),
                                 Text(
-                                  (mediaItem?.onlineService ==
-                                          OnlineService.filmix)
-                                      ? 'Filmix'
-                                      : 'TS.KG',
+                                  mediaItem!.voiceActing.name,
                                   style: TextStyle(
                                     color: theme.colorScheme.outline,
                                   ),
                                 ),
                               ],
                             ),
-
-                            /// озвучка
-                            // if (mediaItem?.voice.name.isNotEmpty == true)
-                            //   Row(
-                            //     mainAxisSize: MainAxisSize.min,
-                            //     children: [
-                            //       Icon(
-                            //         Icons.mic_outlined,
-                            //         size: 16.0,
-                            //         color: theme.colorScheme.outline,
-                            //       ),
-                            //       const SizedBox(width: 4.0),
-                            //       Text(
-                            //         mediaItem!.voice.name,
-                            //         style: TextStyle(
-                            //           color: theme.colorScheme.outline,
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                          ],
-                        ),
+                        ],
                       ),
 
                       /// основная информация

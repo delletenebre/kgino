@@ -6,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../extensions/json_converters.dart';
 import '../resources/krs_storage.dart';
+import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
 import 'media_item_season.dart';
 import 'media_item_url.dart';
@@ -301,7 +302,7 @@ class MediaItem implements Playable {
         case OnlineService.none:
           return savedItem;
         case OnlineService.filmix:
-        //return FilmixItem.fromJson(savedItem.toJson());
+          return FilmixItem.fromJson(savedItem.toJson());
         case OnlineService.tskg:
           return TskgItem.fromJson(savedItem.toJson());
       }

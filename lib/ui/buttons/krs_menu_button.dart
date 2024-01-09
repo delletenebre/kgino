@@ -92,6 +92,11 @@ class KrsMenuButton<T> extends StatelessWidget {
                           Navigator.of(context)
                               .pop((item == selectedValue) ? null : item);
                         },
+                        onSelect: () {
+                          /// закрываем диалоговое окно
+                          Navigator.of(context)
+                              .pop((item == selectedValue) ? null : item);
+                        },
                         selected: (item == selectedValue),
                         showSelectedIcon: true,
                         title: textBuilder(item),

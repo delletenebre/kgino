@@ -52,7 +52,6 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
       voiceActing: json['voice_acting'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
-      quality: json['quality'] as String? ?? '720p',
     );
 
 Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
@@ -61,7 +60,6 @@ Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
-      'quality': instance.quality,
       'voice_acting': instance.voiceActing.toJson(),
       'subtitles_enabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),

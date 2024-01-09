@@ -38,6 +38,7 @@ class KrsListTile extends HookWidget {
 
     return Focus(
       focusNode: focusNode,
+      autofocus: selected,
       onFocusChange: (hasFocus) {
         /// при получении фокуса
         focused.value = hasFocus;

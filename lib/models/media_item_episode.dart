@@ -6,7 +6,7 @@ import '../resources/krs_storage.dart';
 
 part 'media_item_episode.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 @collection
 class MediaItemEpisode {
   @Id()
