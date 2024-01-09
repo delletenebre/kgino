@@ -54,11 +54,11 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           ? null
           : DateTime.parse(json['bookmarked'] as String),
       subtitlesEnabled: json['subtitles_enabled'] as bool? ?? true,
-      voiceActing: json['voice_acting'] == null
+      voiceActing: json['voiceActing'] == null
           ? const VoiceActing()
-          : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
+          : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
       duration: json['duration'] as int? ?? 0,
-    );
+    )..quality = json['quality'] as String;
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
@@ -67,7 +67,8 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
-      'voice_acting': instance.voiceActing.toJson(),
+      'quality': instance.quality,
+      'voiceActing': instance.voiceActing.toJson(),
       'subtitles_enabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'original_title': instance.originalTitle,

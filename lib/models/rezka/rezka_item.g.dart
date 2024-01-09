@@ -49,9 +49,10 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
           ? null
           : DateTime.parse(json['bookmarked'] as String),
       subtitlesEnabled: json['subtitles_enabled'] as bool? ?? true,
-      voiceActing: json['voice_acting'] == null
+      voiceActing: json['voiceActing'] == null
           ? const VoiceActing()
-          : VoiceActing.fromJson(json['voice_acting'] as Map<String, dynamic>),
+          : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
+      quality: json['quality'] as String? ?? '720p',
     );
 
 Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
@@ -60,7 +61,8 @@ Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
-      'voice_acting': instance.voiceActing.toJson(),
+      'quality': instance.quality,
+      'voiceActing': instance.voiceActing.toJson(),
       'subtitles_enabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'original_title': instance.originalTitle,

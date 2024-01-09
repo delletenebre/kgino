@@ -34,7 +34,7 @@ class KrsStorage {
       ],
       directory: kIsWeb ? Isar.sqliteInMemory : directory.path,
       engine: kIsWeb ? IsarEngine.sqlite : IsarEngine.isar,
-      inspector: false,
+      inspector: kDebugMode,
     );
     // } catch (exception) {}
 

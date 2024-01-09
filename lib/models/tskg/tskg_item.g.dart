@@ -33,6 +33,7 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
           ? 0.0
           : const DoubleConverter().fromJson(json['kinopoiskRating']),
     )
+      ..quality = json['quality'] as String
       ..voiceActing =
           VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>)
       ..subtitlesEnabled = json['subtitlesEnabled'] as bool
@@ -50,6 +51,7 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
+      'quality': instance.quality,
       'voiceActing': instance.voiceActing.toJson(),
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),

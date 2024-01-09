@@ -179,8 +179,6 @@ class FilmixItem extends MediaItem {
             ));
           }
         }
-
-        // seasonCount = seasons.length;
       }
     }
   }
@@ -229,7 +227,7 @@ class FilmixItem extends MediaItem {
       cancelToken: cancelToken,
     );
 
-    // detailedItem.voiceActing = voiceActing;
+    detailedItem.voiceActing = voiceActing;
     detailedItem.quality = quality;
     // detailedItem.subtitlesEnabled = subtitlesEnabled;
     // detailedItem.bookmarked = bookmarked;
@@ -240,14 +238,8 @@ class FilmixItem extends MediaItem {
   /// получение списка вариантов озвучки
   @override
   Future<List<VoiceActing>> loadVoices(Ref ref) async {
-    final api = ref.read(filmixApiProvider);
-
-    /// отменяем выполнение запроса, если страница закрыта
-    final cancelToken = api.getCancelToken();
-    ref.onDispose(cancelToken.cancel);
-
     /// отправляем запрос на получение данных
-    return [];
+    return voices;
   }
 
   /// получение списка сезонов

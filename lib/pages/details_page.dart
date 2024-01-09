@@ -13,7 +13,7 @@ import '../resources/krs_locale.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/krs_scroll_view.dart';
 import '../ui/pages/details_page/play_button.dart';
-import '../ui/pages/details_page/voice_actings_button.dart';
+import '../ui/pages/details_page/voice_acting_button.dart';
 import '../ui/pages/krs_app_bar.dart';
 import '../ui/try_again_message.dart';
 
@@ -40,6 +40,12 @@ class Details extends _$Details {
 
     /// объединяем информацию с сезонами
     item.seasons = seasons;
+
+    /// загружаем варианты озвучки
+    final voices = await item.loadVoices(ref);
+
+    /// объединяем информацию с вариантами озвучки
+    item.voices = voices;
 
     return item;
   }
@@ -202,9 +208,10 @@ class DetailsPage extends HookConsumerWidget {
 
                               /// кнопка выбора озвучки
                               if (mediaItem.voices.length > 1)
-                                VoiceActingsButton(
+                                VoiceActingButton(
                                   mediaItem,
                                   onVoiceActingChange: (voiceActing) async {
+                                    /// изменяем выбранную озвучку
                                     mediaItem.voiceActing = voiceActing;
 
                                     if (mediaItem.onlineService ==
@@ -212,7 +219,10 @@ class DetailsPage extends HookConsumerWidget {
                                       mediaItem.id = voiceActing.id;
                                     }
 
-                                    //updatedMediaItem.save(storage);
+                                    /// сохраняем изменения выбранной озвучки
+                                    mediaItem.save(storage);
+
+                                    print('zzzz1z ${mediaItem.isarId}');
 
                                     /// обновляем страницу деталей
                                     // ignore: use_build_context_synchronously

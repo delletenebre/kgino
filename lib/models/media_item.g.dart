@@ -2140,6 +2140,7 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
           : const StringConverter().fromJson(json['id']),
       title: json['title'] as String? ?? '',
       poster: json['poster'] as String? ?? '',
+      quality: json['quality'] as String? ?? '',
       voiceActing: json['voiceActing'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
@@ -2185,6 +2186,7 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
+      'quality': instance.quality,
       'voiceActing': instance.voiceActing.toJson(),
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
