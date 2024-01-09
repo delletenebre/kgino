@@ -146,6 +146,7 @@ class Utils {
                     ],
                   ),
                 ),
+                const SizedBox(width: 24.0),
                 SizedBox(
                   width: 268.0,
                   child: child,

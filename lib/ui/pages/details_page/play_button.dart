@@ -37,7 +37,6 @@ class PlayButton extends HookConsumerWidget {
         .idStartsWith('${mediaItem.isarId}@')
         .sortByUpdatedAtDesc()
         .findAll();
-    print('seenEpisodes: $seenEpisodes');
 
     if (mediaItem.episodes.isEmpty) {
       return const SizedBox();
@@ -70,6 +69,8 @@ class PlayButton extends HookConsumerWidget {
 
     final overlayController = OverlayPortalController();
     final layerLink = LayerLink();
+
+    print('playingEpisode.position ${playingEpisode.position}');
 
     /// кнопка начала просмотра
     return CompositedTransformTarget(

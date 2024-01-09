@@ -11,7 +11,7 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
   final MediaItemEpisode episode;
   final String imageUrl;
   final void Function(bool hasFocus)? onFocusChange;
-  final void Function() onTap;
+  final void Function(int position) onTap;
   final bool selected;
 
   const PlaylistEpisodeTile({
@@ -46,14 +46,16 @@ class PlaylistEpisodeTile extends HookConsumerWidget {
         if ([LogicalKeyboardKey.enter, LogicalKeyboardKey.select]
             .contains(event.logicalKey)) {
           if (event is KeyDownEvent) {
-            onTap.call();
+            onTap.call(seenEpisode?.position ?? 0);
           }
         }
 
         return KeyEventResult.ignored;
       },
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () {
+          onTap.call(seenEpisode?.position ?? 0);
+        },
         child: AnimatedScale(
           duration: kThemeAnimationDuration,
           scale: focused.value ? 1.1 : 1.0,

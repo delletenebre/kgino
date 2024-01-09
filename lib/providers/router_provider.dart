@@ -100,8 +100,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               return PlayerPage(
                 mediaItem: mediaItem,
                 episodeIndex: episodeIndex,
-                // initialPosition: initialPosition,
-                // forcePositionUpdate: forcePositionUpdate,
+                initialPosition: initialPosition,
+                forcePositionUpdate: forcePositionUpdate,
               );
             },
           ),

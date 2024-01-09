@@ -321,7 +321,7 @@ class PlaylistPage extends HookConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: Text(
                       mediaItem.seasons[seasonIndex].name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
@@ -380,12 +380,13 @@ class PlaylistPage extends HookConsumerWidget {
                               selectedEpisodeIndex.value = episodeIndex;
                             }
                           },
-                          onTap: () {
-                            /// переходим на страницу плеера фильма
+                          onTap: (position) {
+                            /// переходим на страницу плеера
                             context.pushReplacementNamed(
                               'player',
                               queryParameters: {
                                 'episodeIndex': '$index',
+                                'initialPosition': '$position',
                               },
                               extra: mediaItem,
                             );
