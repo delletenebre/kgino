@@ -29,6 +29,7 @@ class FilmixItem extends MediaItem {
     required super.title,
     required super.poster,
     super.type = MediaItemType.movie,
+    super.quality = '720',
     super.originalTitle = '',
     super.year,
     super.countries,
@@ -47,7 +48,6 @@ class FilmixItem extends MediaItem {
     super.voiceActing,
     this.duration = 0,
   }) {
-    quality = '720';
     voices = [];
 
     if (playerLinks != null) {
@@ -229,8 +229,8 @@ class FilmixItem extends MediaItem {
 
     detailedItem.voiceActing = voiceActing;
     detailedItem.quality = quality;
-    // detailedItem.subtitlesEnabled = subtitlesEnabled;
-    // detailedItem.bookmarked = bookmarked;
+    detailedItem.subtitlesEnabled = subtitlesEnabled;
+    detailedItem.bookmarked = bookmarked;
 
     return detailedItem;
   }

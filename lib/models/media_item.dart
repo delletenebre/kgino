@@ -298,7 +298,6 @@ class MediaItem implements Playable {
   /// находим сохранённый в базе данных сериал или фильм
   MediaItem findSaved(KrsStorage storage) {
     final savedItem = storage.db.mediaItems.get(isarId);
-    print(savedItem?.toJson());
     if (savedItem != null) {
       switch (savedItem.onlineService) {
         case OnlineService.none:

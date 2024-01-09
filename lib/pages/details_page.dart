@@ -12,6 +12,7 @@ import '../providers/providers.dart';
 import '../resources/krs_locale.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/krs_scroll_view.dart';
+import '../ui/pages/details_page/bookmark_button.dart';
 import '../ui/pages/details_page/play_button.dart';
 import '../ui/pages/details_page/voice_acting_button.dart';
 import '../ui/pages/krs_app_bar.dart';
@@ -204,7 +205,7 @@ class DetailsPage extends HookConsumerWidget {
                                 ),
 
                               /// кнопка добавления или удаления из закладок
-                              // BookmarkButton(mediaItem),
+                              BookmarkButton(mediaItem),
 
                               /// кнопка выбора озвучки
                               if (mediaItem.voices.length > 1)
@@ -221,8 +222,6 @@ class DetailsPage extends HookConsumerWidget {
 
                                     /// сохраняем изменения выбранной озвучки
                                     mediaItem.save(storage);
-
-                                    print('zzzz1z ${mediaItem.isarId}');
 
                                     /// обновляем страницу деталей
                                     // ignore: use_build_context_synchronously

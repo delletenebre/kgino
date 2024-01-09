@@ -28,8 +28,8 @@ dependencies:
   riverpod_annotation: ^3.0.0-dev.3
 
   # database [isar]
-  isar: ^4.0.0-dev.14
-  isar_flutter_libs: ^4.0.0-dev.14
+  isar: ^4.0.0-dev.11
+  isar_flutter_libs: ^4.0.0-dev.11
 
   # media kit
   video_player: ^2.8.2

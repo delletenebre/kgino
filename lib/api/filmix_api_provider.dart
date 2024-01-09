@@ -130,7 +130,9 @@ class FilmixApi {
       ),
       decoder: (json) async {
         return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item);
+          final data = item as Map<String, dynamic>;
+          data.remove('quality');
+          return FilmixItem.fromJson(data);
         }).toList();
       },
     );

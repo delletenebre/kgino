@@ -14,6 +14,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       poster: json['poster'] as String? ?? '',
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
           MediaItemType.movie,
+      quality: json['quality'] as String? ?? '720',
       originalTitle: json['original_title'] as String? ?? '',
       year: json['year'] == null
           ? ''
@@ -58,7 +59,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
       duration: json['duration'] as int? ?? 0,
-    )..quality = json['quality'] as String;
+    );
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
