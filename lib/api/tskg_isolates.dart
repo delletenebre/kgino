@@ -75,7 +75,7 @@ Future<TskgItem> parseDetails(html) async {
   VoiceActing voiceActing = const VoiceActing();
 
   /// список доступных озвучек
-  final voiceActings = <VoiceActing>[];
+  final voices = <VoiceActing>[];
 
   /// парсим список доступных озвучек
   final voiceActingElements =
@@ -92,13 +92,15 @@ Future<TskgItem> parseDetails(html) async {
           id: showId,
           name: item.text.trim(),
         );
+
+        voices.add(VoiceActing(id: showId, name: item.text.trim()));
       } else {
         final url = item.attributes['href'] ?? '';
 
         final id = TskgItem.getShowIdFromUrl(url);
 
         /// формируем список доступных озвучек
-        voiceActings.add(VoiceActing(id: id, name: item.text));
+        voices.add(VoiceActing(id: id, name: item.text));
       }
     }
   }
@@ -113,8 +115,8 @@ Future<TskgItem> parseDetails(html) async {
     genres: genres,
     countries: countries,
     seasonCount: seasonCount,
-    // voice: voiceActing,
-    // voices: voiceActings,
+    voiceActing: voiceActing,
+    voices: voices,
   );
 }
 

@@ -21,6 +21,8 @@ class TskgItem extends MediaItem {
     super.seasonCount,
     super.imdbRating,
     super.kinopoiskRating,
+    super.voiceActing,
+    super.voices,
   });
 
   factory TskgItem.fromJson(Map<String, dynamic> json) =>
@@ -95,18 +97,7 @@ class TskgItem extends MediaItem {
   /// получение списка вариантов озвучки
   @override
   Future<List<VoiceActing>> loadVoices(Ref ref) async {
-    final api = ref.read(tskgApiProvider);
-
-    /// отменяем выполнение запроса, если страница закрыта
-    final cancelToken = api.getCancelToken();
-    ref.onDispose(cancelToken.cancel);
-
-    /// отправляем запрос на получение данных
-    return [];
-    final voices = await api.getDetails(
-      showId: id,
-      cancelToken: cancelToken,
-    );
+    return voices;
   }
 
   /// получение ссылки на воспроизводимый файл
