@@ -6,10 +6,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../api/filmix_api_provider.dart';
+import '../api/rezka_api_provider.dart';
 import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
+import '../models/rezka/rezka_item.dart';
 import '../models/tskg/tskg_item.dart';
 import '../providers/providers.dart';
 import '../resources/krs_locale.dart';
@@ -61,11 +63,12 @@ class ShowsPage extends HookConsumerWidget {
         if (item.onlineService == OnlineService.tskg) {
           return TskgItem.fromJson(item.toJson());
         }
+        if (item.onlineService == OnlineService.rezka) {
+          return RezkaItem.fromJson(item.toJson());
+        }
         throw Exception();
       }).toList();
     }, [bookmarkCount]);
-
-    print('build $bookmarkCount');
 
     /// tskg провайдер запросов к API
     final tskgApi = ref.read(tskgApiProvider);
@@ -79,6 +82,12 @@ class ShowsPage extends HookConsumerWidget {
     /// filmix список последний добавлений
     final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestShows());
 
+    /// hdrezka провайдер запросов к API
+    final rezkaApi = ref.read(rezkaApiProvider);
+
+    /// hdrezka список последний добавлений
+    final rezkaAsyncLatest = useMemoized(() => rezkaApi.getLatestShows());
+
     final providers = useMemoized(() => [
           MediaItem(
             id: 'filmixShows',
@@ -87,17 +96,17 @@ class ShowsPage extends HookConsumerWidget {
             type: MediaItemType.folder,
           ),
           MediaItem(
+            id: 'rezkaShows',
+            title: 'HD Rezka',
+            poster: 'assets/images/rezka.png',
+            type: MediaItemType.folder,
+          ),
+          MediaItem(
             id: 'tskgShows',
             title: 'TS.KG',
             poster: 'assets/images/tskg.svg',
             type: MediaItemType.folder,
           ),
-          // MediaItem(
-          //   id: 'rezkaShows',
-          //   title: 'HD Rezka',
-          //   poster: 'assets/images/tskg.svg',
-          //   type: MediaItemType.folder,
-          // ),
         ]);
 
     final categories = useMemoized(
@@ -113,14 +122,19 @@ class ShowsPage extends HookConsumerWidget {
                   apiResponse: asyncBookmarks,
                 ),
               CategoryListItem(
-                onlineService: OnlineService.tskg,
-                title: 'Последние поступления',
-                apiResponse: tskgAsyncLatest,
-              ),
-              CategoryListItem(
                 onlineService: OnlineService.filmix,
                 title: 'Последние поступления',
                 apiResponse: filmixAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: 'Последние поступления',
+                apiResponse: rezkaAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.tskg,
+                title: 'Последние поступления',
+                apiResponse: tskgAsyncLatest,
               ),
             ],
         [bookmarkCount]);
@@ -160,15 +174,23 @@ class ShowsPage extends HookConsumerWidget {
                           if (category.onlineService.logo.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.only(right: 12.0),
-                              child: SvgPicture.asset(
-                                category.onlineService.logo,
-                                height: 20.0,
+                              child:
+                                  category.onlineService.logo.endsWith('.svg')
+                                      ? SvgPicture.asset(
+                                          category.onlineService.logo,
+                                          height: 20.0,
 
-                                fit: BoxFit.scaleDown,
-                                // colorFilter: ColorFilter.mode(
-                                //     Colors.grey, BlendMode.srcIn),
-                                excludeFromSemantics: true,
-                              ),
+                                          fit: BoxFit.scaleDown,
+                                          // colorFilter: ColorFilter.mode(
+                                          //     Colors.grey, BlendMode.srcIn),
+                                          excludeFromSemantics: true,
+                                        )
+                                      : Image.asset(
+                                          category.onlineService.logo,
+                                          height: 20.0,
+                                          fit: BoxFit.scaleDown,
+                                          excludeFromSemantics: true,
+                                        ),
                             ),
                           Text(
                             category.title,

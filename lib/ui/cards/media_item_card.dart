@@ -64,7 +64,9 @@ class MediaItemCard extends HookWidget {
                 ? SvgSource.asset
                 : SvgSource.network,
           ) as ImageProvider
-        : CachedNetworkImageProvider(imageUrl, maxWidth: 200);
+        : imageUrl.startsWith('assets/')
+            ? Image.asset(imageUrl).image
+            : CachedNetworkImageProvider(imageUrl, maxWidth: 200);
 
     return Focus(
       onFocusChange: (hasFocus) {

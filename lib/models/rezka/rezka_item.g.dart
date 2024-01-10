@@ -81,6 +81,7 @@ Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
 const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',
   OnlineService.filmix: 'filmix',
+  OnlineService.rezka: 'rezka',
   OnlineService.tskg: 'tskg',
 };
 

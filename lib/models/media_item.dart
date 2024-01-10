@@ -10,6 +10,7 @@ import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
 import 'media_item_season.dart';
 import 'media_item_url.dart';
+import 'rezka/rezka_item.dart';
 import 'tskg/tskg_item.dart';
 import 'voice_acting.dart';
 
@@ -23,6 +24,7 @@ part 'media_item.g.dart';
 enum OnlineService {
   none,
   filmix,
+  rezka,
   tskg;
 
   String get logo {
@@ -31,6 +33,8 @@ enum OnlineService {
         return 'assets/images/tskg.svg';
       case OnlineService.filmix:
         return 'assets/images/filmix.svg';
+      case OnlineService.rezka:
+        return 'assets/images/rezka.png';
       case OnlineService.none:
         return '';
     }
@@ -306,6 +310,8 @@ class MediaItem implements Playable {
           return FilmixItem.fromJson(savedItem.toJson());
         case OnlineService.tskg:
           return TskgItem.fromJson(savedItem.toJson());
+        case OnlineService.rezka:
+          return RezkaItem.fromJson(savedItem.toJson());
       }
     }
 

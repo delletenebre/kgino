@@ -23,7 +23,7 @@ const MediaItemSchema = IsarGeneratedSchema(
       IsarPropertySchema(
         name: 'onlineService',
         type: IsarType.byte,
-        enumMap: {"none": 0, "filmix": 1, "tskg": 2},
+        enumMap: {"none": 0, "filmix": 1, "rezka": 2, "tskg": 3},
       ),
       IsarPropertySchema(
         name: 'id',
@@ -427,7 +427,8 @@ extension MediaItemQueryBuilderUpdate
 const _mediaItemOnlineService = {
   0: OnlineService.none,
   1: OnlineService.filmix,
-  2: OnlineService.tskg,
+  2: OnlineService.rezka,
+  3: OnlineService.tskg,
 };
 const _mediaItemType = {
   0: MediaItemType.show,
@@ -2206,6 +2207,7 @@ Map<String, dynamic> _$MediaItemToJson(MediaItem instance) => <String, dynamic>{
 const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',
   OnlineService.filmix: 'filmix',
+  OnlineService.rezka: 'rezka',
   OnlineService.tskg: 'tskg',
 };
 

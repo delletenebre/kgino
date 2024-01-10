@@ -49,7 +49,9 @@ class FeaturedCard extends HookConsumerWidget {
   Widget build(context, ref) {
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final featuredHeight = TvUi.featuredHeight;
+    final featuredHeight = screenHeight -
+        TvUi.cardListHeight -
+        TvUi.navigationBarSize.height; //TvUi.featuredHeight;
     // screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
     //         178.0
     //     ? TvUi.featuredHeight

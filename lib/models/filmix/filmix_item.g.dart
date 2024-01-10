@@ -95,5 +95,6 @@ const _$MediaItemTypeEnumMap = {
 const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',
   OnlineService.filmix: 'filmix',
+  OnlineService.rezka: 'rezka',
   OnlineService.tskg: 'tskg',
 };

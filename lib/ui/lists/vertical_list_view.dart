@@ -15,6 +15,8 @@ class VerticalListView extends StatefulHookWidget {
 
   final double? listOffset;
 
+  final Clip clipBehavior;
+
   const VerticalListView({
     super.key,
     required this.itemCount,
@@ -23,6 +25,7 @@ class VerticalListView extends StatefulHookWidget {
     this.onFocusChange,
     this.separatorHeight = 20.0,
     this.listOffset,
+    this.clipBehavior = Clip.hardEdge,
   });
 
   @override
@@ -145,6 +148,7 @@ class VerticalListViewState extends State<VerticalListView> {
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ScrollablePositionedList.separated(
           key: listKey,
+          clipBehavior: widget.clipBehavior,
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.vertical,
           padding: widget.padding,
