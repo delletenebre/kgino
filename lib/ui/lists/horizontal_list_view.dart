@@ -111,20 +111,23 @@ class HorizontalListViewState<T> extends State<HorizontalListView<T>> {
     final snapshot = useFuture(asyncItemsReader);
 
     if (!snapshot.hasData && !snapshot.hasError) {
-      return Skeletonizer(
-        enabled: true,
-        child: ListView.separated(
-          padding: padding,
-          clipBehavior: Clip.none,
-          scrollDirection: Axis.horizontal,
-          separatorBuilder: (context, index) => const SizedBox(width: 20.0),
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return MediaItemCard(
-              mediaItem: MediaItem.skeleton(),
-              onTap: () {},
-            );
-          },
+      return SizedBox(
+        height: TvUi.horizontalCardSize.height,
+        child: Skeletonizer(
+          enabled: true,
+          child: ListView.separated(
+            padding: padding,
+            clipBehavior: Clip.none,
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 20.0),
+            itemCount: 5,
+            itemBuilder: (context, index) {
+              return MediaItemCard(
+                mediaItem: MediaItem.skeleton(),
+                onTap: () {},
+              );
+            },
+          ),
         ),
       );
     }
