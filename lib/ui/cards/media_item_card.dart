@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:kgino/extensions/theme_data_extensions.dart';
 
 import '../../models/media_item.dart';
 
@@ -89,7 +90,6 @@ class MediaItemCard extends HookWidget {
             duration: kThemeAnimationDuration,
             width: width,
             height: height,
-            clipBehavior: Clip.antiAlias,
             foregroundDecoration: BoxDecoration(
               border: focused.value
                   ? Border.all(
@@ -100,7 +100,7 @@ class MediaItemCard extends HookWidget {
               borderRadius: BorderRadius.circular(12.0),
             ),
             decoration: BoxDecoration(
-              color: theme.scaffoldBackgroundColor,
+              color: theme.surfaceContainerHighest,
 
               /// постер
               image: imageUrl.isEmpty
@@ -108,6 +108,7 @@ class MediaItemCard extends HookWidget {
                   : DecorationImage(
                       image: imageProvider,
                       fit: BoxFit.cover,
+                      isAntiAlias: true,
                     ),
 
               /// цвет свечения
@@ -128,10 +129,10 @@ class MediaItemCard extends HookWidget {
                   : null,
             ),
             child: Container(
-              padding: const EdgeInsets.all(12.0),
-              alignment: Alignment.bottomLeft,
               width: width,
               height: height,
+              padding: const EdgeInsets.all(12.0),
+              alignment: Alignment.bottomLeft,
               decoration: BoxDecoration(
                 /// scrim on top of image background
                 gradient: LinearGradient(
@@ -143,6 +144,7 @@ class MediaItemCard extends HookWidget {
                   ],
                   stops: const [0.24, 0.8],
                 ),
+                borderRadius: BorderRadius.circular(12.0),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

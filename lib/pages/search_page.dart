@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kgino/extensions/theme_data_extensions.dart';
 
 import '../api/filmix_api_provider.dart';
 import '../api/tskg_api_provider.dart';
@@ -85,10 +86,12 @@ class SearchPage extends HookConsumerWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(48.0),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     width: 1.0,
                   ),
                 ),
+                filled: true,
+                fillColor: theme.surfaceContainerHighest,
               ),
             ),
           ),
