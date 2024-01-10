@@ -11,7 +11,7 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
           ? ''
           : const StringConverter().fromJson(json['id']),
       title: json['title'] as String? ?? '',
-      originalTitle: json['original_title'] as String? ?? '',
+      originalTitle: json['originalTitle'] as String? ?? '',
       overview: json['overview'] as String? ?? '',
       genres: (json['genres'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -24,12 +24,12 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      imdbRating: json['imdb_rating'] == null
+      imdbRating: json['imdbRating'] == null
           ? 0.0
-          : const DoubleConverter().fromJson(json['imdb_rating']),
-      kinopoiskRating: json['kinopoisk_rating'] == null
+          : const DoubleConverter().fromJson(json['imdbRating']),
+      kinopoiskRating: json['kinopoiskRating'] == null
           ? 0.0
-          : const DoubleConverter().fromJson(json['kinopoisk_rating']),
+          : const DoubleConverter().fromJson(json['kinopoiskRating']),
       seasons: (json['seasons'] as List<dynamic>?)
               ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -40,15 +40,15 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
           const [],
       poster: json['poster'] as String? ?? '',
       onlineService:
-          $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
-              OnlineService.tskg,
+          $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
+              OnlineService.rezka,
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
           MediaItemType.show,
-      seasonCount: json['season_count'] as int? ?? 0,
+      seasonCount: json['seasonCount'] as int? ?? 0,
       bookmarked: json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String),
-      subtitlesEnabled: json['subtitles_enabled'] as bool? ?? true,
+      subtitlesEnabled: json['subtitlesEnabled'] as bool? ?? true,
       voiceActing: json['voiceActing'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
@@ -56,23 +56,23 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
     );
 
 Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
-      'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
+      'onlineService': _$OnlineServiceEnumMap[instance.onlineService]!,
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
       'quality': instance.quality,
       'voiceActing': instance.voiceActing.toJson(),
-      'subtitles_enabled': instance.subtitlesEnabled,
+      'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
-      'original_title': instance.originalTitle,
+      'originalTitle': instance.originalTitle,
       'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,
       'countries': instance.countries,
-      'season_count': instance.seasonCount,
-      'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
-      'kinopoisk_rating':
+      'seasonCount': instance.seasonCount,
+      'imdbRating': const DoubleConverter().toJson(instance.imdbRating),
+      'kinopoiskRating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
       'voices': instance.voices.map((e) => e.toJson()).toList(),

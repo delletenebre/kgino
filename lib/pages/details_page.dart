@@ -121,7 +121,10 @@ class DetailsPage extends HookConsumerWidget {
                                 (mediaItem?.onlineService ==
                                         OnlineService.filmix)
                                     ? 'Filmix'
-                                    : 'TS.KG',
+                                    : (mediaItem?.onlineService ==
+                                            OnlineService.rezka)
+                                        ? 'HDrezka'
+                                        : 'TS.KG',
                                 style: TextStyle(
                                   color: theme.colorScheme.outline,
                                 ),

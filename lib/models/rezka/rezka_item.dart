@@ -9,7 +9,7 @@ import '../media_item_url.dart';
 
 part 'rezka_item.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+@JsonSerializable(explicitToJson: true)
 class RezkaItem extends MediaItem {
   RezkaItem({
     required super.id,
@@ -87,10 +87,35 @@ class RezkaItem extends MediaItem {
       cancelToken: cancelToken,
     );
 
+    detailedItem.quality = quality;
+    //detailedItem.voiceActing = voiceActing;
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
 
     return detailedItem;
+  }
+
+  /// получение списка сезонов
+  @override
+  Future<List<MediaItemSeason>> loadSeasons(Ref ref) async {
+    final api = ref.read(rezkaApiProvider);
+
+    /// отменяем выполнение запроса, если страница закрыта
+    final cancelToken = api.getCancelToken();
+    ref.onDispose(cancelToken.cancel);
+
+    /// отправляем запрос на получение данных
+    return seasons;
+    // return await api.getSeasons(
+    //   showId: id,
+    //   cancelToken: cancelToken,
+    // );
+  }
+
+  /// получение списка вариантов озвучки
+  @override
+  Future<List<VoiceActing>> loadVoices(Ref ref) async {
+    return voices;
   }
 
   /// получение ссылки на воспроизводимый файл
