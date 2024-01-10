@@ -35,7 +35,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
   late MediaItemUrl _mediaItemUrl;
-  VideoPlayerController? _controller;
+  VideoPlayerController _controller = VideoPlayerController.networkUrl(Uri());
 
   late List<MediaItemEpisode> episodes;
 
@@ -192,6 +192,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
         hasSubtitles = widget.mediaItem.subtitlesEnabled;
       }
 
+      _controller.dispose();
       _controller = VideoPlayerController.networkUrl(
         Uri.parse(mediaItemUrl.video),
         closedCaptionFile: mediaItemUrl.loadSubtitlesFile(),
@@ -201,7 +202,6 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
             // /// останавливаем воспроизведение
             // _controller?.pause();
-
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
               bool updatePosition = widget.forcePositionUpdate;
               if (!updatePosition) {
@@ -282,22 +282,24 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
               }
 
               setState(() {
-                _controller?.play();
+                _controller.play();
               });
             });
           } else {
             setState(() {
-              _controller?.play();
+              _controller.play();
             });
           }
+        }, onError: (exception) {
+          setState(() {});
         });
     });
   }
 
   @override
   void dispose() {
-    _controller?.pause();
-    _controller?.dispose();
+    _controller.pause();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -342,77 +344,76 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   @override
   Widget build(context) {
     return Scaffold(
-      body: _controller != null
-          ? Stack(
-              children: [
-                Center(
-                  child: _controller!.value.isInitialized
-                      ? AspectRatio(
-                          aspectRatio: _controller!.value.aspectRatio,
-                          child: VideoPlayer(_controller!),
-                        )
-                      : const SizedBox(),
-                ),
-                PlayerControlsOverlay(
-                  controller: _controller!,
-                  title: widget.mediaItem.title,
-                  subtitle: widget.mediaItem.isShow
-                      ? 'Сезон ${playableEpisode.seasonNumber} Эпизод ${playableEpisode.episodeNumber}'
-                      : '',
+      body: Stack(
+        children: [
+          Center(
+            child: _controller.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  )
+                : const SizedBox(),
+          ),
+          PlayerControlsOverlay(
+            key: ObjectKey(_controller),
+            controller: _controller,
+            title: widget.mediaItem.title,
+            subtitle: widget.mediaItem.isShow
+                ? 'Сезон ${playableEpisode.seasonNumber} Эпизод ${playableEpisode.episodeNumber}'
+                : '',
 
-                  /// плейлист
-                  onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
-                  onSkipNext: hasNextEpisode ? skipNext : null,
-                  onSavePositionRequested: (position) {
-                    /// обновляем (если нужно) продолжительность эпизода
-                    if (playableEpisode.duration == 0) {
-                      playableEpisode.duration =
-                          _controller!.value.duration.inSeconds;
-                    }
+            /// плейлист
+            onSkipPrevious: hasPreviousEpisode ? skipPrevious : null,
+            onSkipNext: hasNextEpisode ? skipNext : null,
+            onSavePositionRequested: (position) {
+              /// обновляем (если нужно) продолжительность эпизода
+              if (playableEpisode.duration == 0) {
+                playableEpisode.duration =
+                    _controller!.value.duration.inSeconds;
+              }
 
-                    /// обновляем позицию просмотра для проигрываемого эпизода
-                    playableEpisode.position = position;
+              /// обновляем позицию просмотра для проигрываемого эпизода
+              playableEpisode.position = position;
 
-                    /// сохраняем параметры проигрываемого эпизода
-                    playableEpisode.save(ref.read(storageProvider));
-                  },
+              /// сохраняем параметры проигрываемого эпизода
+              playableEpisode.save(ref.read(storageProvider));
+            },
 
-                  /// субтитры
-                  hasSubtitles: hasSubtitles,
-                  onSubtitlesChanged: (enabled) {
-                    /// обновляем информацию о субтитрах
-                    widget.mediaItem.subtitlesEnabled = enabled;
-                    widget.mediaItem.save(ref.read(storageProvider));
+            /// субтитры
+            hasSubtitles: hasSubtitles,
+            onSubtitlesChanged: (enabled) {
+              /// обновляем информацию о субтитрах
+              widget.mediaItem.subtitlesEnabled = enabled;
+              widget.mediaItem.save(ref.read(storageProvider));
 
-                    if (enabled) {
-                      /// загружаем субтитры
-                      _controller!.setClosedCaptionFile(
-                          _mediaItemUrl.loadSubtitlesFile());
-                    } else {
-                      /// убираем субтитры
-                      _controller!.setClosedCaptionFile(null);
-                    }
-                  },
+              if (enabled) {
+                /// загружаем субтитры
+                _controller!
+                    .setClosedCaptionFile(_mediaItemUrl.loadSubtitlesFile());
+              } else {
+                /// убираем субтитры
+                _controller!.setClosedCaptionFile(null);
+              }
+            },
 
-                  /// качество видео
-                  qualities: playableEpisode.qualities
-                      .sorted((a, b) => compareNatural(b, a)),
-                  quality: widget.mediaItem.quality,
-                  onQualityChanged: (quality) {
-                    /// обновляем информацию о качестве видео
-                    widget.mediaItem.quality = quality;
-                    widget.mediaItem.save(ref.read(storageProvider));
+            /// качество видео
+            qualities: playableEpisode.qualities
+                .sorted((a, b) => compareNatural(b, a)),
+            quality: widget.mediaItem.quality,
+            onQualityChanged: (quality) {
+              /// обновляем информацию о качестве видео
+              widget.mediaItem.quality = quality;
+              widget.mediaItem.save(ref.read(storageProvider));
 
-                    /// перезапускаем эпизод
-                    updateEpisode(
-                      position: _controller!.value.position.inSeconds,
-                      forcePositionUpdate: true,
-                    );
-                  },
-                ),
-              ],
-            )
-          : const Center(child: CircularProgressIndicator()),
+              /// перезапускаем эпизод
+              updateEpisode(
+                position: _controller!.value.position.inSeconds,
+                forcePositionUpdate: true,
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

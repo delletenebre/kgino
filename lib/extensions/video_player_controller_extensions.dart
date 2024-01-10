@@ -1,12 +1,12 @@
 import 'package:video_player/video_player.dart';
 
-extension VideoPlayerControllerExtensions on VideoPlayerController {
+extension VideoPlayerControllerExtensions on VideoPlayerController? {
   void playOrPause() {
-    if (value.isInitialized) {
-      if (value.isPlaying) {
-        pause();
+    if (this?.value.isInitialized == true) {
+      if (this?.value.isPlaying == true) {
+        this?.pause();
       } else {
-        play();
+        this?.play();
       }
     }
   }

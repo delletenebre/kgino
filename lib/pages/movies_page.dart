@@ -7,6 +7,7 @@ class MoviesPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    /// сохраняем состояние страницы между переходами [PageView]
     useAutomaticKeepAlive();
 
     return Placeholder(child: Text('фильмы'));

@@ -24,6 +24,7 @@ class ShowsPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    /// сохраняем состояние страницы между переходами [PageView]
     useAutomaticKeepAlive();
 
     final theme = Theme.of(context);
@@ -36,9 +37,9 @@ class ShowsPage extends HookConsumerWidget {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
-    // useStream(
-    //   storage.db.mediaItems.watchLazy(),
-    // );
+    useStream(
+      storage.db.mediaItems.watchLazy(),
+    );
 
     /// запрос избранных сериалов
     final bookmarksQuery = storage.db.mediaItems
@@ -64,7 +65,7 @@ class ShowsPage extends HookConsumerWidget {
       }).toList();
     }, [bookmarkCount]);
 
-    print('build');
+    print('build $bookmarkCount');
 
     /// tskg провайдер запросов к API
     final tskgApi = ref.read(tskgApiProvider);
@@ -99,27 +100,30 @@ class ShowsPage extends HookConsumerWidget {
           // ),
         ]);
 
-    final categories = [
-      CategoryListItem(
-        title: 'Провайдеры',
-        items: providers,
-      ),
-      if (hasBookmarks)
-        CategoryListItem(
-          title: locale.bookmarks,
-          apiResponse: asyncBookmarks,
-        ),
-      CategoryListItem(
-        onlineService: OnlineService.tskg,
-        title: 'Последние поступления',
-        apiResponse: tskgAsyncLatest,
-      ),
-      CategoryListItem(
-        onlineService: OnlineService.filmix,
-        title: 'Последние поступления',
-        apiResponse: filmixAsyncLatest,
-      ),
-    ];
+    final categories = useMemoized(
+        () => [
+              CategoryListItem(
+                title: 'Провайдеры',
+                items: providers,
+              ),
+              if (hasBookmarks)
+                CategoryListItem(
+                  key: ValueKey(bookmarkCount),
+                  title: locale.bookmarks,
+                  apiResponse: asyncBookmarks,
+                ),
+              CategoryListItem(
+                onlineService: OnlineService.tskg,
+                title: 'Последние поступления',
+                apiResponse: tskgAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: 'Последние поступления',
+                apiResponse: filmixAsyncLatest,
+              ),
+            ],
+        [bookmarkCount]);
 
     return Column(
       children: [
@@ -175,6 +179,7 @@ class ShowsPage extends HookConsumerWidget {
                   SizedBox(
                     height: MediaItemCard.height,
                     child: HorizontalListView<MediaItem>(
+                      key: category.key,
                       asyncItems: category.itemsFuture,
                       itemBuilder: (context, item) {
                         return MediaItemCard(

@@ -22,7 +22,15 @@ class PlayPauseButton extends HookWidget {
 
     late Widget child;
 
-    if (!isPlaying) {
+    if (isBuffering) {
+      /// ^ если видео загружается
+
+      child = CircularProgressIndicator(
+        /// для правильной работы анимации, необходим параметр key
+        key: const ValueKey('buffering'),
+        color: theme.colorScheme.onSurface,
+      );
+    } else if (!isPlaying) {
       /// ^ если видео на паузе
 
       child = Icon(
@@ -37,14 +45,6 @@ class PlayPauseButton extends HookWidget {
             color: theme.scaffoldBackgroundColor,
           ),
         ],
-      );
-    } else if (isBuffering) {
-      /// ^ если видео загружается
-
-      child = CircularProgressIndicator(
-        /// для правильной работы анимации, необходим параметр key
-        key: const ValueKey('buffering'),
-        color: theme.colorScheme.onSurface,
       );
     } else {
       /// ^ если видео проигрывается

@@ -29,7 +29,7 @@ class FilmixItem extends MediaItem {
     required super.title,
     required super.poster,
     super.type = MediaItemType.movie,
-    super.quality = '720',
+    super.quality = '721',
     super.originalTitle = '',
     super.year,
     super.countries,
@@ -252,12 +252,11 @@ class FilmixItem extends MediaItem {
   @override
   Future<MediaItemUrl> loadEpisodeUrl(
       WidgetRef ref, MediaItemEpisode episode) async {
-    if (quality.isEmpty) {
-      quality = (episode.qualities
-                  .sorted((a, b) => compareNatural(a, b))
-                  .lastOrNull ??
-              '720')
-          .toString();
+    if (episode.qualities.isNotEmpty) {
+      final qualities = episode.qualities;
+      if (quality.isEmpty || !qualities.contains(quality)) {
+        //quality = qualities.sorted((a, b) => compareNatural(a, b)).first;
+      }
     }
 
     return MediaItemUrl(

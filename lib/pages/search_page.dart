@@ -48,11 +48,13 @@ class SearchPage extends HookConsumerWidget {
       return [
         if (filmixResult.isNotEmpty)
           CategoryListItem(
+            onlineService: OnlineService.filmix,
             title: 'Filmix',
             items: filmixResult,
           ),
         if (tskgResult.isNotEmpty)
           CategoryListItem(
+            onlineService: OnlineService.tskg,
             title: 'TS.KG',
             items: tskgResult,
           ),

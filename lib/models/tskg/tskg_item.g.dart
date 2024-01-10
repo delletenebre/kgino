@@ -32,19 +32,21 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       kinopoiskRating: json['kinopoiskRating'] == null
           ? 0.0
           : const DoubleConverter().fromJson(json['kinopoiskRating']),
+      voiceActing: json['voiceActing'] == null
+          ? const VoiceActing()
+          : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
+      voices: (json['voices'] as List<dynamic>?)
+              ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     )
       ..quality = json['quality'] as String
-      ..voiceActing =
-          VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>)
       ..subtitlesEnabled = json['subtitlesEnabled'] as bool
       ..bookmarked = json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String)
       ..seasons = (json['seasons'] as List<dynamic>)
           .map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
-          .toList()
-      ..voices = (json['voices'] as List<dynamic>)
-          .map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{

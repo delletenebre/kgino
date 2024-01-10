@@ -14,7 +14,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       poster: json['poster'] as String? ?? '',
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
           MediaItemType.movie,
-      quality: json['quality'] as String? ?? '720',
+      quality: json['quality'] as String? ?? '721',
       originalTitle: json['original_title'] as String? ?? '',
       year: json['year'] == null
           ? ''
