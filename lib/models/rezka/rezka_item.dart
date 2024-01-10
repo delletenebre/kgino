@@ -24,7 +24,7 @@ class RezkaItem extends MediaItem {
     super.seasons,
     super.voices,
     super.poster,
-    super.onlineService = OnlineService.tskg,
+    super.onlineService = OnlineService.rezka,
     super.type = MediaItemType.show,
     super.seasonCount,
 
