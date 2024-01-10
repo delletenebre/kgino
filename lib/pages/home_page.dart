@@ -28,6 +28,13 @@ class HomePage extends HookWidget {
             page,
           );
         },
+        onFocusChange: (hasFocus) {
+          if (hasFocus) {
+            pageViewController.jumpToPage(
+              selectedPage.value,
+            );
+          }
+        },
       ),
       body: PageView(
         controller: pageViewController,

@@ -70,8 +70,6 @@ class PlayButton extends HookConsumerWidget {
     final overlayController = OverlayPortalController();
     final layerLink = LayerLink();
 
-    print('playingEpisode.position ${playingEpisode.position}');
-
     /// кнопка начала просмотра
     return CompositedTransformTarget(
       link: layerLink,

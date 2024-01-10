@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class KrsNavigationButton extends HookWidget {
+  final FocusNode? focusNode;
+
   /// в фокусе ли навигационный бар
   final bool active;
 
@@ -14,6 +16,7 @@ class KrsNavigationButton extends HookWidget {
 
   const KrsNavigationButton({
     super.key,
+    this.focusNode,
     required this.active,
     required this.selected,
     required this.onSelected,
@@ -24,7 +27,7 @@ class KrsNavigationButton extends HookWidget {
   Widget build(context) {
     final theme = Theme.of(context);
 
-    final focusNode = useFocusNode();
+    final focusNode = this.focusNode ?? useFocusNode();
 
     final style = ButtonStyle(
       elevation: MaterialStateProperty.all(0.0),
