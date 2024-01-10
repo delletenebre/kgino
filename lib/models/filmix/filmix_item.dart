@@ -255,7 +255,7 @@ class FilmixItem extends MediaItem {
     if (episode.qualities.isNotEmpty) {
       final qualities = episode.qualities;
       if (quality.isEmpty || !qualities.contains(quality)) {
-        //quality = qualities.sorted((a, b) => compareNatural(a, b)).first;
+        quality = qualities.sorted((a, b) => compareNatural(a, b)).first;
       }
     }
 

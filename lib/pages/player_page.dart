@@ -192,7 +192,10 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
         hasSubtitles = widget.mediaItem.subtitlesEnabled;
       }
 
+      /// подчищаем старый контроллер видео
       _controller.dispose();
+
+      /// инициализируем контроллер видео
       _controller = VideoPlayerController.networkUrl(
         Uri.parse(mediaItemUrl.video),
         closedCaptionFile: mediaItemUrl.loadSubtitlesFile(),
@@ -291,6 +294,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             });
           }
         }, onError: (exception) {
+          /// ^ если возникла ошибка инициализации видео
           setState(() {});
         });
     });
@@ -368,8 +372,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             onSavePositionRequested: (position) {
               /// обновляем (если нужно) продолжительность эпизода
               if (playableEpisode.duration == 0) {
-                playableEpisode.duration =
-                    _controller!.value.duration.inSeconds;
+                playableEpisode.duration = _controller.value.duration.inSeconds;
               }
 
               /// обновляем позицию просмотра для проигрываемого эпизода
@@ -388,11 +391,11 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
               if (enabled) {
                 /// загружаем субтитры
-                _controller!
+                _controller
                     .setClosedCaptionFile(_mediaItemUrl.loadSubtitlesFile());
               } else {
                 /// убираем субтитры
-                _controller!.setClosedCaptionFile(null);
+                _controller.setClosedCaptionFile(null);
               }
             },
 
@@ -407,7 +410,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
               /// перезапускаем эпизод
               updateEpisode(
-                position: _controller!.value.position.inSeconds,
+                position: _controller.value.position.inSeconds,
                 forcePositionUpdate: true,
               );
             },

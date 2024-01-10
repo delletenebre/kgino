@@ -110,9 +110,6 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     final value = widget.controller.value;
     isBufferingNotifier.value = value.isBuffering;
 
-    print('listen');
-    print(value.hasError);
-
     /// уведомляем, если начали или остановили просмотр
     final isPlaying = value.isPlaying;
     isPlayingNotifier.value = isPlaying;
@@ -238,63 +235,54 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                   ),
 
                   Builder(
-                    builder: (context) {
-                      if (widget.controller.value.hasError)
-                        return Center(
-                          child: Text('Ошибка загрузки видео'),
-                        );
-                      else
-                        return Center(
-                          child: ValueListenableBuilder(
-                            valueListenable: isBufferingNotifier,
-                            builder: (context, isBuffering, _) {
-                              return ValueListenableBuilder(
-                                valueListenable: isPlayingNotifier,
-                                builder: (context, isPlaying, _) {
-                                  return PlayPauseButton(
-                                    isPlaying: isPlaying,
-                                    isBuffering: isBuffering,
-                                    onTap: () {
-                                      widget.controller.playOrPause();
-                                    },
-                                  );
-                                },
-                              );
-                            },
+                    builder: (context) => widget.controller.value.hasError
+                        ? const Center(
+                            child: Text('Ошибка загрузки видео'),
+                          )
+                        : Center(
+                            child: ValueListenableBuilder(
+                              valueListenable: isBufferingNotifier,
+                              builder: (context, isBuffering, _) {
+                                return ValueListenableBuilder(
+                                  valueListenable: isPlayingNotifier,
+                                  builder: (context, isPlaying, _) {
+                                    return PlayPauseButton(
+                                      isPlaying: isPlaying,
+                                      isBuffering: isBuffering,
+                                      onTap: () {
+                                        widget.controller.playOrPause();
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                        );
-                    },
                   ),
 
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: TvUi.hPadding, vertical: TvUi.vPadding),
-                  //   child: ,
-                  // )
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: TvUi.hPadding, vertical: TvUi.vPadding),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Spacer(),
-                        Material(
-                          color: Colors.transparent,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _TitleText(
-                                widget.title,
-                                fontSize: 24.0,
-                              ),
-                              _TitleText(
-                                widget.subtitle,
-                                fontSize: 16.0,
-                              ),
-                            ],
-                          ),
+
+                        /// название фильма или сериала
+                        _TitleText(
+                          widget.title,
+                          fontSize: 24.0,
                         ),
 
-                        const SizedBox(height: 48.0),
+                        const SizedBox(height: 4.0),
+
+                        /// дополнительная информация (номер сезона и серии)
+                        _TitleText(
+                          widget.subtitle,
+                          fontSize: 14.0,
+                        ),
+
+                        const SizedBox(height: 32.0),
 
                         /// прогресс бар
                         PlayerProgressBar(
