@@ -20,6 +20,9 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    /// сохраняем состояние страницы между переходами [PageView]
+    useAutomaticKeepAlive();
+
     final theme = Theme.of(context);
 
     /// провайдер запросов к API filmix

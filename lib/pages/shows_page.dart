@@ -24,6 +24,8 @@ class ShowsPage extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    useAutomaticKeepAlive();
+
     final theme = Theme.of(context);
     final locale = KrsLocale.of(context);
     final screenSize = MediaQuery.of(context).size;

@@ -24,8 +24,10 @@ class HomePage extends HookWidget {
         controller: pageViewController,
         selectedPage: selectedPage.value,
         onPageChanged: (page) {
-          pageViewController.jumpToPage(
+          pageViewController.animateToPage(
             page,
+            duration: kThemeAnimationDuration,
+            curve: Curves.easeInOut,
           );
         },
         onFocusChange: (hasFocus) {
