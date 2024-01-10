@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/media_item.dart';
 import '../pages/details_page.dart';
+import '../pages/filmix/filmix_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
@@ -51,7 +52,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const HomePage();
         },
         routes: [
-          /// страница с подробностями
+          /// страница с сериалами Filmix
+          GoRoute(
+            path: 'shows/filmix',
+            name: 'filmixShows',
+            builder: (context, state) {
+              return const FilmixShowsPage();
+            },
+          ),
+
+          /// страница с сериалами TS.KG
           GoRoute(
             path: 'shows/tskg',
             name: 'tskgShows',

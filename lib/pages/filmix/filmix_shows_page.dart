@@ -12,6 +12,7 @@ import '../../ui/cards/featured_card.dart';
 import '../../ui/cards/media_item_card.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/vertical_list_view.dart';
+import '../../ui/pages/krs_app_bar.dart';
 
 class FilmixShowsPage extends HookConsumerWidget {
   const FilmixShowsPage({super.key});
@@ -35,18 +36,38 @@ class FilmixShowsPage extends HookConsumerWidget {
 
     final categories = [
       CategoryListItem(
-        onlineService: OnlineService.filmix,
         title: 'Последние поступления',
         apiResponse: asyncLatest,
       ),
       CategoryListItem(
-        onlineService: OnlineService.filmix,
         title: 'Популярные',
         apiResponse: asyncPopular,
       ),
     ];
 
     return Scaffold(
+      appBar: KrsAppBar(
+        children: [
+          /// онлайн-кинотеатр
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.smart_display_outlined,
+                size: 16.0,
+                color: theme.colorScheme.outline,
+              ),
+              const SizedBox(width: 4.0),
+              Text(
+                'Filmix',
+                style: TextStyle(
+                  color: theme.colorScheme.outline,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: Column(
         children: [
           ValueListenableBuilder<MediaItem?>(
