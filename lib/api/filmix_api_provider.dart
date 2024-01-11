@@ -68,7 +68,7 @@ class FilmixApi {
     };
   }
 
-  /// поиск
+  /// поиск фильмов или сериалов
   Future<List<MediaItem>> search({
     required String searchQuery,
     CancelToken? cancelToken,

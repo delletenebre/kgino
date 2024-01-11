@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -51,13 +50,16 @@ class RezkaApi {
     return (url ?? '').split('/').last.split('.').first;
   }
 
-  /// список сериалов
+  /// поиск фильмов или сериалов
   Future<List<MediaItem>> search({
     required String searchQuery,
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/search?do=search&subaction=search&q=$searchQuery'),
+      request: _dio.get(
+        '/search?do=search&subaction=search&q=$searchQuery',
+        cancelToken: cancelToken,
+      ),
       decoder: (response) async {
         final html = response.toString();
 
@@ -230,7 +232,10 @@ class RezkaApi {
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<RezkaItem>().call(
-      request: _dio.get('/$id.html'),
+      request: _dio.get(
+        '/$id.html',
+        cancelToken: cancelToken,
+      ),
       decoder: (html) async {
         /// парсим html
         final document = parse(html);
@@ -537,7 +542,6 @@ class RezkaApi {
         options: Options(contentType: Headers.formUrlEncodedContentType),
       ),
       decoder: (html) async {
-        print('html: $html');
         return '';
       },
     );
@@ -574,7 +578,6 @@ class RezkaApi {
       decoder: (response) async {
         final json = jsonDecode(response);
         final html = json['episodes'];
-        debugPrint('getSeasons: $json');
 
         if (html != null) {
           return parse(html).documentElement;
@@ -643,10 +646,7 @@ class RezkaApi {
       ),
       decoder: (response) async {
         final json = jsonDecode(response);
-        debugPrint(json.toString());
         final stream = parseStreams(json['url']);
-
-        debugPrint(json);
 
         return MediaItemUrl(
           video: stream

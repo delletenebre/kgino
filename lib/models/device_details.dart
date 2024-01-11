@@ -30,8 +30,6 @@ class DeviceDetails with _$DeviceDetails {
     /// сохраняем идентификатор установки
     sharedPreferences.setString('id', installationId);
 
-    print(installationId);
-
     /// инициализируем информацию об устройстве
     final deviceInfo = DeviceInfoPlugin();
 
