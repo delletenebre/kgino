@@ -25,6 +25,7 @@ class TryAgainMessage extends StatelessWidget {
         children: [
           Container(
             clipBehavior: Clip.antiAlias,
+            width: 200.0,
             height: 200.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),

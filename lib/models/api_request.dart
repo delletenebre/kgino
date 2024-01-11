@@ -16,7 +16,6 @@ class ApiRequest<T> {
 
       return decoder(response.data);
     } on DioException catch (dioException) {
-      print(dioException);
       if (dioException.response != null) {
         final headers = dioException.response!.headers;
         final data = dioException.response!.data;

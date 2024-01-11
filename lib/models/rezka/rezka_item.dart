@@ -2,7 +2,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/rezka_api_provider.dart';
-import '../../api/tskg_api_provider.dart';
 import '../../extensions/json_converters.dart';
 import '../media_item.dart';
 import '../media_item_url.dart';
@@ -99,18 +98,8 @@ class RezkaItem extends MediaItem {
   /// получение списка сезонов
   @override
   Future<List<MediaItemSeason>> loadSeasons(Ref ref) async {
-    final api = ref.read(rezkaApiProvider);
-
-    /// отменяем выполнение запроса, если страница закрыта
-    final cancelToken = api.getCancelToken();
-    ref.onDispose(cancelToken.cancel);
-
     /// отправляем запрос на получение данных
     return seasons;
-    // return await api.getSeasons(
-    //   showId: id,
-    //   cancelToken: cancelToken,
-    // );
   }
 
   /// получение списка вариантов озвучки
@@ -123,12 +112,19 @@ class RezkaItem extends MediaItem {
   @override
   Future<MediaItemUrl> loadEpisodeUrl(
       WidgetRef ref, MediaItemEpisode episode) async {
-    final episodeId = episode.id.split('@')[1];
+    /// идентификатор сериала
+    final postId = episode.id.split('@').first.split('|').last.split('-').first;
 
     /// провайдер запросов к API
-    final api = ref.read(tskgApiProvider);
+    final api = ref.read(rezkaApiProvider);
 
     /// получаем данные эпизода
-    return await api.getEpisodePlayableUrl(episodeId);
+    return await api.getStream(
+      id: postId,
+      voiceActingId: voiceActing.id,
+      seasonId: episode.seasonNumber,
+      episodeId: episode.episodeNumber,
+      quality: quality,
+    );
   }
 }

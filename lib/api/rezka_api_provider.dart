@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/api_request.dart';
 import '../models/media_item.dart';
+import '../models/media_item_url.dart';
 import '../models/rezka/rezka_item.dart';
 import '../providers/providers.dart';
 
@@ -292,6 +294,19 @@ class RezkaApi {
           actualVoiceActing = voices.first;
         }
 
+        if (actualVoiceActing.id.isEmpty) {
+          final exp =
+              RegExp(r'initCDNSeriesEvents\((\d+, \d+)', caseSensitive: false);
+          final translatorId = exp
+                  .allMatches(document.body!.text)
+                  .firstOrNull
+                  ?.group(1)
+                  ?.split(', ')
+                  .lastOrNull ??
+              '';
+          actualVoiceActing = VoiceActing(id: translatorId);
+        }
+
         final postInfoTable = document
                 .getElementsByClassName('b-post__info')
                 .firstOrNull
@@ -395,11 +410,12 @@ class RezkaApi {
               document.getElementById('post_id')!.attributes['value'] ?? '';
 
           final tvShow = await getSeasons(
-            id: postId,
-            voiceActingId: actualVoiceActing.id,
-          );
+                id: postId,
+                voiceActingId: actualVoiceActing.id,
+              ) ??
+              document.getElementById('simple-episodes-tabs');
 
-          final episodesLi = tvShow.getElementsByTagName('li');
+          final episodesLi = tvShow?.getElementsByTagName('li') ?? [];
 
           final episodes = episodesLi.map((episode) {
             final seasonId =
@@ -493,7 +509,7 @@ class RezkaApi {
   }
 
   /// список сезонов и эпизодов
-  Future<Document> getSeasons({
+  Future<Document?> getSeasons({
     required String id,
     required String voiceActingId,
     CancelToken? cancelToken,
@@ -514,7 +530,7 @@ class RezkaApi {
       'action': 'get_episodes'
     };
 
-    return ApiRequest<Document>().call(
+    return ApiRequest<Document?>().call(
       request: _dio.post(
         '/ajax/get_cdn_series/',
         data: data,
@@ -523,13 +539,19 @@ class RezkaApi {
       decoder: (response) async {
         final json = jsonDecode(response);
         final html = json['episodes'];
-        return parse(html);
+        debugPrint('getSeasons: $json');
+
+        if (html != null) {
+          return parse(html);
+        }
+
+        return null;
       },
     );
   }
 
   /// ссылка на проигрываемый файл
-  Future<String> getStream({
+  Future<MediaItemUrl> getStream({
     required String id,
     required String voiceActingId,
     required int seasonId,
@@ -545,7 +567,7 @@ class RezkaApi {
       'action': 'get_stream',
     };
 
-    return ApiRequest<String>().call(
+    return ApiRequest<MediaItemUrl>().call(
       request: _dio.post(
         '/ajax/get_cdn_series/',
         data: data,
@@ -553,9 +575,14 @@ class RezkaApi {
       ),
       decoder: (response) async {
         final json = jsonDecode(response);
-        print(json);
+        final stream = parseStreams(json['url']);
 
-        return '';
+        return MediaItemUrl(
+          video: stream
+                  .singleWhereOrNull((element) => element.quality == quality)
+                  ?.url ??
+              stream.first.url,
+        );
       },
     );
   }
@@ -767,4 +794,9 @@ class RezkaQuality {
   final String url;
 
   RezkaQuality({required this.quality, required this.url});
+
+  @override
+  String toString() {
+    return '{quality: $quality, url: $url}';
+  }
 }
