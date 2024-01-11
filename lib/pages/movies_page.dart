@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../api/filmix_api_provider.dart';
+import '../api/rezka_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
-import '../models/tskg/tskg_item.dart';
+import '../models/rezka/rezka_item.dart';
 import '../providers/providers.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/cards/media_item_card.dart';
+import '../ui/images/online_service_logo.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
 
@@ -57,8 +58,8 @@ class MoviesPage extends HookConsumerWidget {
         if (item.onlineService == OnlineService.filmix) {
           return FilmixItem.fromJson(item.toJson());
         }
-        if (item.onlineService == OnlineService.tskg) {
-          return TskgItem.fromJson(item.toJson());
+        if (item.onlineService == OnlineService.rezka) {
+          return RezkaItem.fromJson(item.toJson());
         }
         throw Exception();
       }).toList();
@@ -70,19 +71,25 @@ class MoviesPage extends HookConsumerWidget {
     /// filmix список последний добавлений
     final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestMovies());
 
+    /// hdrezka провайдер запросов к API
+    final rezkaApi = ref.read(rezkaApiProvider);
+
+    /// hdrezka список последний добавлений
+    final rezkaAsyncLatest = useMemoized(() => rezkaApi.getLatestMovies());
+
     final providers = useMemoized(() => [
           MediaItem(
-            id: 'filmixShows',
+            id: 'filmixMovies',
             title: 'Filmix',
             poster: 'assets/images/filmix.svg',
             type: MediaItemType.folder,
           ),
-          // MediaItem(
-          //   id: 'rezkaShows',
-          //   title: 'HD Rezka',
-          //   poster: 'assets/images/tskg.svg',
-          //   type: MediaItemType.folder,
-          // ),
+          MediaItem(
+            id: 'rezkaMovies',
+            title: 'HD Rezka',
+            poster: 'assets/images/rezka.png',
+            type: MediaItemType.folder,
+          ),
         ]);
 
     final categories = useMemoized(
@@ -102,6 +109,11 @@ class MoviesPage extends HookConsumerWidget {
                 title: 'Последние поступления',
                 apiResponse: filmixAsyncLatest,
               ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: 'Последние поступления',
+                apiResponse: rezkaAsyncLatest,
+              ),
             ],
         [bookmarkCount]);
 
@@ -119,7 +131,7 @@ class MoviesPage extends HookConsumerWidget {
           //     ? MediaQuery.of(context).size.height
           //     : MediaQuery.of(context).size.height - TvUi.featuredHeight,
           child: VerticalListView(
-            key: ValueKey(categories),
+            key: ValueKey(categories.length),
             clipBehavior:
                 focusedMediaItem.value == null ? Clip.none : Clip.hardEdge,
             padding: const EdgeInsets.symmetric(vertical: 28.0),
@@ -148,15 +160,8 @@ class MoviesPage extends HookConsumerWidget {
                           if (category.onlineService.logo.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.only(right: 12.0),
-                              child: SvgPicture.asset(
-                                category.onlineService.logo,
-                                height: 20.0,
-
-                                fit: BoxFit.scaleDown,
-                                // colorFilter: ColorFilter.mode(
-                                //     Colors.grey, BlendMode.srcIn),
-                                excludeFromSemantics: true,
-                              ),
+                              child: OnlineServiceLogo(
+                                  category.onlineService.logo),
                             ),
                           Text(
                             category.title,

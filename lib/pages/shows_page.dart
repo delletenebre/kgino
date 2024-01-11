@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -18,6 +17,7 @@ import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/cards/media_item_card.dart';
+import '../ui/images/online_service_logo.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
 
@@ -174,23 +174,8 @@ class ShowsPage extends HookConsumerWidget {
                           if (category.onlineService.logo.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.only(right: 12.0),
-                              child:
-                                  category.onlineService.logo.endsWith('.svg')
-                                      ? SvgPicture.asset(
-                                          category.onlineService.logo,
-                                          height: 20.0,
-
-                                          fit: BoxFit.scaleDown,
-                                          // colorFilter: ColorFilter.mode(
-                                          //     Colors.grey, BlendMode.srcIn),
-                                          excludeFromSemantics: true,
-                                        )
-                                      : Image.asset(
-                                          category.onlineService.logo,
-                                          height: 20.0,
-                                          fit: BoxFit.scaleDown,
-                                          excludeFromSemantics: true,
-                                        ),
+                              child: OnlineServiceLogo(
+                                  category.onlineService.logo),
                             ),
                           Text(
                             category.title,
