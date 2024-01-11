@@ -59,17 +59,17 @@ class SearchPage extends HookConsumerWidget {
 
       /// формируем список найденного
       return [
-        if (rezkaResult.isNotEmpty)
-          CategoryListItem(
-            onlineService: OnlineService.rezka,
-            title: 'HDrezka',
-            items: rezkaResult,
-          ),
         if (filmixResult.isNotEmpty)
           CategoryListItem(
             onlineService: OnlineService.filmix,
             title: 'Filmix',
             items: filmixResult,
+          ),
+        if (rezkaResult.isNotEmpty)
+          CategoryListItem(
+            onlineService: OnlineService.rezka,
+            title: 'HDrezka',
+            items: rezkaResult,
           ),
         if (tskgResult.isNotEmpty)
           CategoryListItem(
