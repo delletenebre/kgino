@@ -428,15 +428,6 @@ class RezkaApi {
 
           // final ids =
           //     titles.map((title) => title.attributes['data-id']).toList();
-          // print(ids);
-          // final seasonIds = titles
-          //     .map((title) => title.attributes['data-season_id'])
-          //     .toList();
-          // print(seasonIds);
-          // final episodeIds = titles
-          //     .map((title) => title.attributes['data-episode_id'])
-          //     .toList();
-          // print(episodeIds);
         }
 
         return RezkaItem(

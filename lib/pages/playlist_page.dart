@@ -29,7 +29,8 @@ class PlaylistPage extends HookConsumerWidget {
     final episodes = useMemoized(() => mediaItem.episodes);
 
     final seasonsKey = GlobalKey<VerticalListViewState>();
-    final episodesKey = GlobalKey<VerticalGroupedListViewState>();
+    final episodesKey = GlobalKey<VerticalListViewState>();
+    // final episodesKey = GlobalKey<VerticalGroupedListViewState>();
 
     final selectedSeasonIndex = useValueNotifier(0);
     final selectedEpisodeIndex = useRef(0);
