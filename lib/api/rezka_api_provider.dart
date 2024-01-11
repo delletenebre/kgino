@@ -382,7 +382,7 @@ class RezkaApi {
             MediaItemSeason(
               episodes: [
                 MediaItemEpisode(
-                  id: '',
+                  id: '$isarId@0|0',
                   qualities: qualities.map((q) => q.quality).toList(),
                 ),
               ],
@@ -408,6 +408,7 @@ class RezkaApi {
                 int.parse(episode.attributes['data-episode_id'] ?? '0');
             return MediaItemEpisode(
               id: '$isarId@$seasonId|$episodeId',
+              name: 'Эпизод $episodeId',
               seasonNumber: seasonId,
               episodeNumber: episodeId,
             );
@@ -419,15 +420,13 @@ class RezkaApi {
               })
               .toSet()
               .map((seasonNumber) => MediaItemSeason(
+                    name: 'Сезон $seasonNumber',
                     episodes: episodes
                         .where(
                             (episode) => episode.seasonNumber == seasonNumber)
                         .toList(),
                   ))
               .toList();
-
-          // final ids =
-          //     titles.map((title) => title.attributes['data-id']).toList();
         }
 
         return RezkaItem(

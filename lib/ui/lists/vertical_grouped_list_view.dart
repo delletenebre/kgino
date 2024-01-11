@@ -100,7 +100,6 @@ class VerticalGroupedListViewState extends State<VerticalGroupedListView> {
   }
 
   void scrollTo(int index) {
-    print('scroll TO $index');
     itemScrollController.scrollTo(
       index: index,
       duration: kThemeAnimationDuration,
