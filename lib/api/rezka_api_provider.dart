@@ -290,21 +290,30 @@ class RezkaApi {
             [];
 
         VoiceActing actualVoiceActing = voiceActing;
-        if (voices.isNotEmpty && actualVoiceActing.id.isEmpty) {
-          actualVoiceActing = voices.first;
-        }
 
         if (actualVoiceActing.id.isEmpty) {
-          final exp =
-              RegExp(r'initCDNSeriesEvents\((\d+, \d+)', caseSensitive: false);
-          final translatorId = exp
-                  .allMatches(document.body!.text)
-                  .firstOrNull
-                  ?.group(1)
-                  ?.split(', ')
-                  .lastOrNull ??
-              '';
-          actualVoiceActing = VoiceActing(id: translatorId);
+          /// ^ если озвучка не выбрана
+
+          if (voices.isNotEmpty) {
+            /// ^ если список озвучек присутствует
+
+            /// берём первую из списка
+            actualVoiceActing = voices.first;
+          } else {
+            /// ^ если списка озвучек нет
+
+            /// необходимо найти идентификатор озвучки
+            final exp = RegExp(r'initCDNSeriesEvents\((\d+, \d+)',
+                caseSensitive: false);
+            final translatorId = exp
+                    .allMatches(document.body!.text)
+                    .firstOrNull
+                    ?.group(1)
+                    ?.split(', ')
+                    .lastOrNull ??
+                '';
+            actualVoiceActing = VoiceActing(id: translatorId);
+          }
         }
 
         final postInfoTable = document
