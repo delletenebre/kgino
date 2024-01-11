@@ -83,12 +83,13 @@ class RezkaItem extends MediaItem {
 
     /// отправляем запрос на получение данных
     final detailedItem = await api.getDetails(
+      isarId: isarId,
       id: id,
+      voiceActing: voiceActing,
       cancelToken: cancelToken,
     );
 
     detailedItem.quality = quality;
-    //detailedItem.voiceActing = voiceActing;
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
 

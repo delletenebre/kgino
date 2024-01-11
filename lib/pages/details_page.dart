@@ -33,6 +33,8 @@ class Details extends _$Details {
     /// если есть, то находим сохранённую в базе данных информацию
     final savedItem = mediaItem.findSaved(storage);
 
+    print('savedItem voiceActing: ${savedItem.voiceActing.name}');
+
     /// загружаем информацию о сериале или фильме
     final item = await savedItem.loadDetails(ref);
 
@@ -44,6 +46,8 @@ class Details extends _$Details {
 
     /// загружаем варианты озвучки
     final voices = await item.loadVoices(ref);
+
+    print('voices: ${voices}');
 
     /// объединяем информацию с вариантами озвучки
     item.voices = voices;

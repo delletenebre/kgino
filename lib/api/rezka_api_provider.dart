@@ -10,7 +10,6 @@ import '../models/api_request.dart';
 import '../models/media_item.dart';
 import '../models/rezka/rezka_item.dart';
 import '../providers/providers.dart';
-import 'interceptors/logs_interceptor.dart';
 
 part 'rezka_api_provider.g.dart';
 
@@ -22,8 +21,8 @@ class RezkaApi {
 
   CancelToken getCancelToken() => CancelToken();
 
-  // static final userAgent =
-  //     'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
+  static const userAgent =
+      'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0';
 
   final _dio = Dio(BaseOptions(
     sendTimeout: const Duration(seconds: 30),
@@ -35,7 +34,7 @@ class RezkaApi {
 
   RezkaApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogsInterceptor());
+    // _dio.interceptors.add(LogsInterceptor());
 
     /// хранилище данных
     final storage = ref.read(storageProvider);
@@ -208,7 +207,9 @@ class RezkaApi {
 
   /// детали
   Future<RezkaItem> getDetails({
+    required String isarId,
     required String id,
+    required VoiceActing voiceActing,
     CancelToken? cancelToken,
   }) async {
     return ApiRequest<RezkaItem>().call(
@@ -274,8 +275,6 @@ class RezkaApi {
         /// сезоны
         List<MediaItemSeason> seasons = [];
 
-        Map<String, List<MediaItemSeason>> voiceActingSeasons = {};
-
         /// парсим переводы
         final voices = document
                 .getElementById('translators-list')
@@ -287,7 +286,11 @@ class RezkaApi {
               );
             }).toList() ??
             [];
-        final voiceActing = voices.firstOrNull ?? const VoiceActing();
+
+        VoiceActing actualVoiceActing = voiceActing;
+        if (voices.isNotEmpty && actualVoiceActing.id.isEmpty) {
+          actualVoiceActing = voices.first;
+        }
 
         final postInfoTable = document
                 .getElementsByClassName('b-post__info')
@@ -364,8 +367,11 @@ class RezkaApi {
         final seasonsCount =
             document.getElementsByClassName('b-simple_season__item').length;
 
+        final tvShow = document.getElementById('simple-episodes-tabs');
+        print(tvShow);
+
         /// если нет элемента эпизодов, то это фильм
-        final isMovie = document.getElementById('simple-episodes-tabs') == null;
+        final isMovie = (tvShow == null);
 
         if (isMovie) {
           final exp = RegExp(r'"streams":"([^"]+)');
@@ -382,11 +388,60 @@ class RezkaApi {
               ],
             ),
           ];
+        } else {
+          /// ^ если это сериал
+
+          final postId =
+              document.getElementById('post_id')!.attributes['value'] ?? '';
+
+          final tvShow = await getSeasons(
+            id: postId,
+            voiceActingId: actualVoiceActing.id,
+          );
+
+          final episodesLi = tvShow.getElementsByTagName('li');
+
+          final episodes = episodesLi.map((episode) {
+            final seasonId =
+                int.parse(episode.attributes['data-season_id'] ?? '0');
+            final episodeId =
+                int.parse(episode.attributes['data-episode_id'] ?? '0');
+            return MediaItemEpisode(
+              id: '$isarId@$seasonId|$episodeId',
+              seasonNumber: seasonId,
+              episodeNumber: episodeId,
+            );
+          });
+
+          seasons = episodesLi
+              .map((episode) {
+                return int.parse(episode.attributes['data-season_id'] ?? '0');
+              })
+              .toSet()
+              .map((seasonNumber) => MediaItemSeason(
+                    episodes: episodes
+                        .where(
+                            (episode) => episode.seasonNumber == seasonNumber)
+                        .toList(),
+                  ))
+              .toList();
+
+          // final ids =
+          //     titles.map((title) => title.attributes['data-id']).toList();
+          // print(ids);
+          // final seasonIds = titles
+          //     .map((title) => title.attributes['data-season_id'])
+          //     .toList();
+          // print(seasonIds);
+          // final episodeIds = titles
+          //     .map((title) => title.attributes['data-episode_id'])
+          //     .toList();
+          // print(episodeIds);
         }
 
         return RezkaItem(
           type: isMovie ? MediaItemType.movie : MediaItemType.show,
-          id: movieId,
+          id: id,
           title: movieName,
           poster: posterUrl,
           overview: description.trim(),
@@ -403,8 +458,114 @@ class RezkaApi {
           // duration: duration,
 
           voices: voices,
-          voiceActing: voiceActing,
+          voiceActing: actualVoiceActing,
         );
+      },
+    );
+  }
+
+  /// детали
+  Future<String> getCdnSeries({
+    required String id,
+    required String url,
+    required String action,
+    required String voiceActingId,
+    CancelToken? cancelToken,
+  }) async {
+    final headers = {
+      // 'Host': 'hdrezka.ag',
+      // 'Origin': 'https://hdrezka.ag',
+      // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
+      // 'User-Agent':
+      //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+      // 'X-Requested-With': 'XMLHttpRequest',
+      //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    };
+
+    //final data = {'id': id, 'translator_id': voiceActingId, 'action': action};
+    final data = {
+      'id': '63418',
+      'translator_id': '59',
+      'action': 'get_episodes'
+    };
+
+    return ApiRequest<String>().call(
+      request: _dio.post(
+        '/ajax/get_cdn_series/',
+        data: data,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      ),
+      decoder: (html) async {
+        print('html: $html');
+        return '';
+      },
+    );
+  }
+
+  /// список сезонов и эпизодов
+  Future<Document> getSeasons({
+    required String id,
+    required String voiceActingId,
+    CancelToken? cancelToken,
+  }) async {
+    final headers = {
+      // 'Host': 'hdrezka.ag',
+      // 'Origin': 'https://hdrezka.ag',
+      // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
+      // 'User-Agent':
+      //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+      // 'X-Requested-With': 'XMLHttpRequest',
+      //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    };
+
+    final data = {
+      'id': id,
+      'translator_id': voiceActingId,
+      'action': 'get_episodes'
+    };
+
+    return ApiRequest<Document>().call(
+      request: _dio.post(
+        '/ajax/get_cdn_series/',
+        data: data,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      ),
+      decoder: (response) async {
+        final json = jsonDecode(response);
+        final html = json['episodes'];
+        return parse(html);
+      },
+    );
+  }
+
+  /// ссылка на проигрываемый файл
+  Future<String> getStream({
+    required String id,
+    required String voiceActingId,
+    required int seasonId,
+    required int episodeId,
+    required String quality,
+    CancelToken? cancelToken,
+  }) async {
+    final data = {
+      'id': id,
+      'translator_id': voiceActingId,
+      'season': seasonId,
+      'episode': episodeId,
+      'action': 'get_stream',
+    };
+
+    return ApiRequest<String>().call(
+      request: _dio.post(
+        '/ajax/get_cdn_series/',
+        data: data,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      ),
+      decoder: (response) async {
+        final json = jsonDecode(response);
+        print(json);
+
+        return '';
       },
     );
   }
