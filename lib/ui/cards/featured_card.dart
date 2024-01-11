@@ -98,7 +98,9 @@ class FeaturedCard extends HookConsumerWidget {
               duration: kThemeAnimationDuration,
               child: currentMediaItem.backdrop.isNotEmpty &&
                       !currentMediaItem.isFolder
-                  ? BackdropImage(currentMediaItem.backdrop)
+                  ? BackdropImage(
+                      key: ValueKey(currentMediaItem.backdrop),
+                      currentMediaItem.backdrop)
                   : null,
             ),
           ),

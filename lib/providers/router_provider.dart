@@ -4,10 +4,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/media_item.dart';
 import '../pages/details_page.dart';
+import '../pages/filmix/filmix_movies_page.dart';
 import '../pages/filmix/filmix_shows_page.dart';
 import '../pages/home_page.dart';
 import '../pages/player_page.dart';
 import '../pages/playlist_page.dart';
+import '../pages/rezka/rezka_movies_page.dart';
+import '../pages/rezka/rezka_shows_page.dart';
 import '../pages/tskg/tskg_shows_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -52,12 +55,39 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const HomePage();
         },
         routes: [
+          /// страница с сериалами HDrezka
+          GoRoute(
+            path: 'shows/rezka',
+            name: 'rezkaShows',
+            builder: (context, state) {
+              return const RezkaShowsPage();
+            },
+          ),
+
+          /// страница с фильмами HDrezka
+          GoRoute(
+            path: 'movies/rezka',
+            name: 'rezkaMovies',
+            builder: (context, state) {
+              return const RezkaMoviesPage();
+            },
+          ),
+
           /// страница с сериалами Filmix
           GoRoute(
             path: 'shows/filmix',
             name: 'filmixShows',
             builder: (context, state) {
               return const FilmixShowsPage();
+            },
+          ),
+
+          /// страница с фильмами Filmix
+          GoRoute(
+            path: 'movies/filmix',
+            name: 'filmixMovies',
+            builder: (context, state) {
+              return const FilmixMoviesPage();
             },
           ),
 
