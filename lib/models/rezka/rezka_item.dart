@@ -118,13 +118,27 @@ class RezkaItem extends MediaItem {
     /// провайдер запросов к API
     final api = ref.read(rezkaApiProvider);
 
-    /// получаем данные эпизода
-    return await api.getStream(
-      id: postId,
-      voiceActingId: voiceActing.id,
-      seasonId: episode.seasonNumber,
-      episodeId: episode.episodeNumber,
-      quality: quality,
-    );
+    if (type == MediaItemType.movie) {
+      /// получаем данные фильма
+      return MediaItemUrl(
+        video: seasons.first.episodes
+            .firstWhere((episode) => episode.name == quality)
+            .videoFileUrl,
+      );
+      // return await api.getMovieStream(
+      //   id: postId,
+      //   voiceActingId: voiceActing.id,
+      //   quality: quality,
+      // );
+    } else {
+      /// получаем данные эпизода
+      return await api.getStream(
+        id: postId,
+        voiceActingId: voiceActing.id,
+        seasonId: episode.seasonNumber,
+        episodeId: episode.episodeNumber,
+        quality: quality,
+      );
+    }
   }
 }

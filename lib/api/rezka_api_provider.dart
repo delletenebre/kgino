@@ -359,21 +359,27 @@ class RezkaApi {
 
         /// извлекаем ссылки на видео-поток
         final exp = RegExp(r'"streams":"([^"]+)');
-        final stream =
-            exp.allMatches(document.body!.text).firstOrNull?.group(1) ?? '';
+        final streams = parseStreams(
+            exp.allMatches(document.body!.text).firstOrNull?.group(1) ?? '');
 
         /// список качества видео
-        final qualities = parseStreams(stream).map((q) => q.quality).toList();
+        final qualities = streams.map((q) => q.quality).toList();
 
         if (isMovie) {
-          seasons = [
-            MediaItemSeason(
-              episodes: [
-                MediaItemEpisode(
+          final episodes = streams
+              .map(
+                (stream) => MediaItemEpisode(
                   id: '$isarId@0|0',
+                  name: stream.quality,
+                  videoFileUrl: stream.url,
                   qualities: qualities,
                 ),
-              ],
+              )
+              .toList();
+
+          seasons = [
+            MediaItemSeason(
+              episodes: episodes,
             ),
           ];
         } else {
@@ -550,6 +556,42 @@ class RezkaApi {
       decoder: (response) async {
         final json = jsonDecode(response);
         final stream = parseStreams(json['url']);
+
+        return MediaItemUrl(
+          video: stream
+                  .singleWhereOrNull((element) => element.quality == quality)
+                  ?.url ??
+              stream.first.url,
+        );
+      },
+    );
+  }
+
+  /// ссылка на проигрываемый файл фильма
+  Future<MediaItemUrl> getMovieStream({
+    required String id,
+    required String voiceActingId,
+    required String quality,
+    CancelToken? cancelToken,
+  }) async {
+    final data = {
+      'id': id,
+      'translator_id': voiceActingId,
+      'action': 'get_movie',
+    };
+
+    return ApiRequest<MediaItemUrl>().call(
+      request: _dio.post(
+        '/ajax/get_cdn_series/',
+        data: data,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      ),
+      decoder: (response) async {
+        final json = jsonDecode(response);
+        debugPrint(json.toString());
+        final stream = parseStreams(json['url']);
+
+        debugPrint(json);
 
         return MediaItemUrl(
           video: stream
