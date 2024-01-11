@@ -51,10 +51,68 @@ class RezkaApi {
     return (url ?? '').split('/').last.split('.').first;
   }
 
-  /// список новых сериалов
-  Future<List<MediaItem>> getLatestShows() async {
+  /// список сериалов
+  Future<List<MediaItem>> _getShows(String filter) async {
     return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/series/page/1/?filter=last'),
+      request: _dio.get('/series/page/1/?filter=$filter'),
+      decoder: (response) async {
+        final html = response.toString();
+
+        /// список элементов
+        final items = <MediaItem>[];
+
+        /// ^ если запрос выполнен успешно
+        /// парсим html
+        final document = parse(html);
+
+        /// получаем элементы списка популярных
+        final elements =
+            document.getElementsByClassName('b-content__inline_item');
+
+        for (final element in elements) {
+          // <div class="b-content__inline_item" data-id="64013" data-url="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">
+          //   <div class="b-content__inline_item-cover"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html"> <img src="http://static.rezka.cloud/i/2023/11/15/p608f1813f7e3yk66h87r.jpg" height="250" width="166" alt="Смотреть Новые уловки онлайн в HD качестве 720p" /> <span class="cat series"><i class="entity">Сериал</i><i class="icon"></i></span> <span class="info">Завершен (все серии)</span> <i class="i-sprt play"></i> </a> <i class="trailer show-trailer" data-id="64013" data-full="1"><b>Смотреть трейлер</b></i> </div>
+          //   <div class="b-content__inline_item-link"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">Новые уловки</a>
+          //     <div>2003-2015, Великобритания, Детективы</div>
+          //   </div>
+          // </div>
+
+          /// парсим ссылку
+          final id = parseUrlId(element.attributes['data-url']);
+          final posterUrl = element
+                  .getElementsByTagName('img')
+                  .firstOrNull
+                  ?.attributes['src'] ??
+              '';
+          final link = element
+              .getElementsByClassName('b-content__inline_item-link')
+              .first;
+
+          /// парсим название
+          final title = link.getElementsByTagName('a').first.text;
+
+          items.add(RezkaItem(
+            id: id,
+            title: title,
+            poster: posterUrl,
+          ));
+        }
+
+        return items;
+      },
+    );
+  }
+
+  /// список новых сериалов
+  Future<List<MediaItem>> getLatestShows() => _getShows('last');
+
+  /// список популярных сериалов
+  Future<List<MediaItem>> getPopularShows() => _getShows('popular');
+
+  /// список фильмов
+  Future<List<MediaItem>> _getMovies(String filter) async {
+    return ApiRequest<List<MediaItem>>().call(
+      request: _dio.get('/films/page/1/?filter=$filter'),
       decoder: (response) async {
         final html = response.toString();
 
@@ -104,108 +162,10 @@ class RezkaApi {
   }
 
   /// список новых фильмов
-  Future<List<MediaItem>> getLatestMovies() async {
-    return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/films/page/1/?filter=last'),
-      decoder: (response) async {
-        final html = response.toString();
-
-        /// список элементов
-        final items = <MediaItem>[];
-
-        /// ^ если запрос выполнен успешно
-        /// парсим html
-        final document = parse(html);
-
-        /// получаем элементы списка популярных
-        final elements =
-            document.getElementsByClassName('b-content__inline_item');
-
-        for (final element in elements) {
-          // <div class="b-content__inline_item" data-id="64013" data-url="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">
-          //   <div class="b-content__inline_item-cover"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html"> <img src="http://static.rezka.cloud/i/2023/11/15/p608f1813f7e3yk66h87r.jpg" height="250" width="166" alt="Смотреть Новые уловки онлайн в HD качестве 720p" /> <span class="cat series"><i class="entity">Сериал</i><i class="icon"></i></span> <span class="info">Завершен (все серии)</span> <i class="i-sprt play"></i> </a> <i class="trailer show-trailer" data-id="64013" data-full="1"><b>Смотреть трейлер</b></i> </div>
-          //   <div class="b-content__inline_item-link"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">Новые уловки</a>
-          //     <div>2003-2015, Великобритания, Детективы</div>
-          //   </div>
-          // </div>
-
-          /// парсим ссылку
-          final id = parseUrlId(element.attributes['data-url']);
-          final posterUrl = element
-                  .getElementsByTagName('img')
-                  .firstOrNull
-                  ?.attributes['src'] ??
-              '';
-          final link = element
-              .getElementsByClassName('b-content__inline_item-link')
-              .first;
-
-          /// парсим название
-          final title = link.getElementsByTagName('a').first.text;
-
-          items.add(RezkaItem(
-            id: id,
-            title: title,
-            poster: posterUrl,
-          ));
-        }
-
-        return items;
-      },
-    );
-  }
+  Future<List<MediaItem>> getLatestMovies() => _getMovies('last');
 
   /// список популярных фильмов
-  Future<List<MediaItem>> getPopularMovies() async {
-    return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/films/page/1/?filter=popular'),
-      decoder: (response) async {
-        final html = response.toString();
-
-        /// список элементов
-        final items = <MediaItem>[];
-
-        /// ^ если запрос выполнен успешно
-        /// парсим html
-        final document = parse(html);
-
-        /// получаем элементы списка популярных
-        final elements =
-            document.getElementsByClassName('b-content__inline_item');
-
-        for (final element in elements) {
-          // <div class="b-content__inline_item" data-id="64013" data-url="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">
-          //   <div class="b-content__inline_item-cover"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html"> <img src="http://static.rezka.cloud/i/2023/11/15/p608f1813f7e3yk66h87r.jpg" height="250" width="166" alt="Смотреть Новые уловки онлайн в HD качестве 720p" /> <span class="cat series"><i class="entity">Сериал</i><i class="icon"></i></span> <span class="info">Завершен (все серии)</span> <i class="i-sprt play"></i> </a> <i class="trailer show-trailer" data-id="64013" data-full="1"><b>Смотреть трейлер</b></i> </div>
-          //   <div class="b-content__inline_item-link"> <a href="http://hdrezkayyh5pq.org/series/detective/64013-novye-ulovki-2003.html">Новые уловки</a>
-          //     <div>2003-2015, Великобритания, Детективы</div>
-          //   </div>
-          // </div>
-
-          /// парсим ссылку
-          final id = parseUrlId(element.attributes['data-url']);
-          final posterUrl = element
-                  .getElementsByTagName('img')
-                  .firstOrNull
-                  ?.attributes['src'] ??
-              '';
-          final link = element
-              .getElementsByClassName('b-content__inline_item-link')
-              .first;
-
-          /// парсим название
-          final title = link.getElementsByTagName('a').first.text;
-
-          items.add(RezkaItem(
-            id: id,
-            title: title,
-            poster: posterUrl,
-          ));
-        }
-
-        return items;
-      },
-    );
-  }
+  Future<List<MediaItem>> getPopularMovies() => _getMovies('popular');
 
   /// детали
   Future<RezkaItem> getDetails({
@@ -316,6 +276,7 @@ class RezkaApi {
           }
         }
 
+        /// информация о сериале или фильме
         final postInfoTable = document
                 .getElementsByClassName('b-post__info')
                 .firstOrNull
@@ -391,23 +352,26 @@ class RezkaApi {
         final seasonsCount =
             document.getElementsByClassName('b-simple_season__item').length;
 
-        final tvShow = document.getElementById('simple-episodes-tabs');
-        print(tvShow);
+        Element? tvShow = document.getElementById('simple-episodes-tabs');
 
         /// если нет элемента эпизодов, то это фильм
         final isMovie = (tvShow == null);
 
+        /// извлекаем ссылки на видео-поток
+        final exp = RegExp(r'"streams":"([^"]+)');
+        final stream =
+            exp.allMatches(document.body!.text).firstOrNull?.group(1) ?? '';
+
+        /// список качества видео
+        final qualities = parseStreams(stream).map((q) => q.quality).toList();
+
         if (isMovie) {
-          final exp = RegExp(r'"streams":"([^"]+)');
-          final stream =
-              exp.allMatches(document.body!.text).firstOrNull?.group(1) ?? '';
-          final qualities = parseStreams(stream);
           seasons = [
             MediaItemSeason(
               episodes: [
                 MediaItemEpisode(
                   id: '$isarId@0|0',
-                  qualities: qualities.map((q) => q.quality).toList(),
+                  qualities: qualities,
                 ),
               ],
             ),
@@ -418,13 +382,13 @@ class RezkaApi {
           final postId =
               document.getElementById('post_id')!.attributes['value'] ?? '';
 
-          final tvShow = await getSeasons(
+          tvShow = await getSeasons(
                 id: postId,
                 voiceActingId: actualVoiceActing.id,
               ) ??
-              document.getElementById('simple-episodes-tabs');
+              tvShow;
 
-          final episodesLi = tvShow?.getElementsByTagName('li') ?? [];
+          final episodesLi = tvShow.getElementsByTagName('li');
 
           final episodes = episodesLi.map((episode) {
             final seasonId =
@@ -436,6 +400,7 @@ class RezkaApi {
               name: 'Эпизод $episodeId',
               seasonNumber: seasonId,
               episodeNumber: episodeId,
+              qualities: qualities,
             );
           });
 
@@ -518,7 +483,7 @@ class RezkaApi {
   }
 
   /// список сезонов и эпизодов
-  Future<Document?> getSeasons({
+  Future<Element?> getSeasons({
     required String id,
     required String voiceActingId,
     CancelToken? cancelToken,
@@ -539,7 +504,7 @@ class RezkaApi {
       'action': 'get_episodes'
     };
 
-    return ApiRequest<Document?>().call(
+    return ApiRequest<Element?>().call(
       request: _dio.post(
         '/ajax/get_cdn_series/',
         data: data,
@@ -551,7 +516,7 @@ class RezkaApi {
         debugPrint('getSeasons: $json');
 
         if (html != null) {
-          return parse(html);
+          return parse(html).documentElement;
         }
 
         return null;
@@ -595,170 +560,6 @@ class RezkaApi {
       },
     );
   }
-
-  // /// извлекаем список сезонов
-  // Future<List<MediaItemSeason>> getSeasons({
-  //   required String id,
-  //   CancelToken? cancelToken,
-  // }) async {
-  //   return ApiRequest<List<MediaItemSeason>>().call(
-  //     request: _dio.get('/$id.html'),
-  //     decoder: (html) async {
-  //       /// парсим html
-  //       final document = parse(html);
-  //
-  //       /// сезоны
-  //       List<MediaItemSeason> seasons = [];
-  //
-  //       /// парсим переводы
-  //       final translatorsList = document
-  //               .getElementById('translators-list')
-  //               ?.getElementsByTagName('li')
-  //               .map((e) {
-  //             return VoiceActing(
-  //               id: e.attributes['data-translator_id'] ?? '',
-  //               name: e.text,
-  //             );
-  //           }).toList() ??
-  //           [];
-  //       final voiceActing = translatorsList.firstOrNull?.name ?? '';
-  //
-  //       final postInfoTable = document
-  //               .getElementsByClassName('b-post__info')
-  //               .firstOrNull
-  //               ?.getElementsByTagName('tr') ??
-  //           [];
-  //
-  //       for (final Element tr in postInfoTable) {
-  //         final section = tr
-  //                 .getElementsByClassName('l')
-  //                 .firstOrNull
-  //                 ?.getElementsByTagName('h2')
-  //                 .firstOrNull
-  //                 ?.text ??
-  //             '';
-  //
-  //         if (section == 'Рейтинги') {
-  //           /// парсим рейтинг IMDb
-  //           imdbRating = double.tryParse(tr
-  //                       .getElementsByClassName('b-post__info_rates imdb')
-  //                       .firstOrNull
-  //                       ?.getElementsByClassName('bold')
-  //                       .firstOrNull
-  //                       ?.text ??
-  //                   '0.0') ??
-  //               0.0;
-  //
-  //           /// парсим рейтинг Kinopoisk
-  //           kinopoiskRating = double.tryParse(tr
-  //                       .getElementsByClassName('b-post__info_rates kp')
-  //                       .firstOrNull
-  //                       ?.getElementsByClassName('bold')
-  //                       .firstOrNull
-  //                       ?.text ??
-  //                   '0.0') ??
-  //               0.0;
-  //         } else if (section == 'Дата выхода') {
-  //           /// парсим год выхода
-  //           final yearHref = tr
-  //               .getElementsByTagName('a')
-  //               .firstOrNull
-  //               ?.attributes['href']
-  //               ?.split('/');
-  //           yearHref?.removeLast();
-  //           year = yearHref?.lastOrNull ?? '';
-  //         } else if (section == 'Страна') {
-  //           /// парсим страны
-  //           countries =
-  //               tr.getElementsByTagName('a').map((e) => e.text).toList();
-  //         } else if (section == 'Жанр') {
-  //           /// парсим жанры
-  //           genres =
-  //               tr.getElementsByTagName('span').map((e) => e.text).toList();
-  //         } else if (section == 'Время') {
-  //           /// парсим продолжительность
-  //           final durationMinutes = int.tryParse(tr
-  //                       .getElementsByTagName('td')
-  //                       .lastOrNull
-  //                       ?.text
-  //                       .split(' ')
-  //                       .firstOrNull ??
-  //                   '0') ??
-  //               0;
-  //           duration = Duration(minutes: durationMinutes);
-  //         }
-  //       }
-  //
-  //       // voiceActings[movie.translation] = VoiceActing(
-  //       //   id: movie.translation,
-  //       //   name: movie.translation,
-  //       //   seasons: [
-  //       //     SeasonItem(
-  //       //       episodes: [
-  //       //         EpisodeItem(
-  //       //           id: '0/0',
-  //       //           fullId: EpisodeItem.getFullId(provider.name, id.toString(), '0/0'),
-  //       //           playableQualities: playableQualities,
-  //       //           videoFileUrl: videoUrl,
-  //       //           duration: duration,
-  //       //         ),
-  //       //       ],
-  //       //     )
-  //       //   ],
-  //       // );
-  //
-  //       final movieId = document
-  //               .getElementById('send-video-issue')
-  //               ?.attributes['data-id'] ??
-  //           '';
-  //
-  //       /// количество сезонов
-  //       final seasonsCount =
-  //           document.getElementsByClassName('b-simple_season__item').length;
-  //
-  //       /// если нет элемента эпизодов, то это фильм
-  //       final isMovie = document.getElementById('simple-episodes-tabs') == null;
-  //
-  //       if (isMovie) {
-  //         final exp = RegExp(r'"streams":"([^"]+)');
-  //         final stream =
-  //             exp.allMatches(document.body!.text).firstOrNull?.group(1) ?? '';
-  //         final qualities = parseStreams(stream);
-  //         seasons = [
-  //           MediaItemSeason(
-  //             episodes: [
-  //               MediaItemEpisode(
-  //                 id: '',
-  //                 qualities: qualities.map((q) => q.quality).toList(),
-  //               ),
-  //             ],
-  //           ),
-  //         ];
-  //       }
-  //
-  //       return RezkaItem(
-  //         type: isMovie ? MediaItemType.movie : MediaItemType.show,
-  //         id: movieId,
-  //         title: movieName,
-  //         poster: posterUrl,
-  //         overview: description.trim(),
-  //         seasons: seasons,
-  //
-  //         seasonCount: seasonsCount,
-  //
-  //         originalTitle: originalName,
-  //         year: year.toString(),
-  //         countries: countries,
-  //         genres: genres,
-  //         imdbRating: imdbRating,
-  //         kinopoiskRating: kinopoiskRating,
-  //         // duration: duration,
-  //         // voiceActings: {for (final v in translatorsList) v.name: v},
-  //         // voiceActing: voiceActing,
-  //       );
-  //     },
-  //   );
-  // }
 
   static const String rezkaSeparator = '//_//';
   static const List<String> rezkaBlocks = [
