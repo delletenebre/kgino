@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kgino/extensions/theme_data_extensions.dart';
 
 import '../api/filmix_api_provider.dart';
+import '../api/rezka_api_provider.dart';
 import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/media_item.dart';
 import '../resources/krs_theme.dart';
 import '../ui/cards/media_item_card.dart';
+import '../ui/images/online_service_logo.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
 
@@ -25,6 +26,9 @@ class SearchPage extends HookConsumerWidget {
 
     final theme = Theme.of(context);
 
+    /// провайдер запросов к API hdrezka
+    final rezkaApi = ref.read(rezkaApiProvider);
+
     /// провайдер запросов к API filmix
     final filmixApi = ref.read(filmixApiProvider);
 
@@ -35,10 +39,19 @@ class SearchPage extends HookConsumerWidget {
     useValueListenable(searchController);
 
     final categoriesFuture = useFuture(useMemoized(() async {
+      /// результаты поиска hdrezka
+      final rezkaResult = await rezkaApi.search(
+        searchQuery: searchController.text,
+        cancelToken: rezkaApi.getCancelToken(),
+      );
+
+      /// результаты поиска filmix
       final filmixResult = await filmixApi.search(
         searchQuery: searchController.text,
         cancelToken: filmixApi.getCancelToken(),
       );
+
+      /// результаты поиска ts.kg
       final tskgResult = await tskgApi.search(
         searchQuery: searchController.text,
         cancelToken: tskgApi.getCancelToken(),
@@ -46,6 +59,12 @@ class SearchPage extends HookConsumerWidget {
 
       /// формируем список найденного
       return [
+        if (rezkaResult.isNotEmpty)
+          CategoryListItem(
+            onlineService: OnlineService.rezka,
+            title: 'HDrezka',
+            items: rezkaResult,
+          ),
         if (filmixResult.isNotEmpty)
           CategoryListItem(
             onlineService: OnlineService.filmix,
@@ -140,15 +159,8 @@ class SearchPage extends HookConsumerWidget {
                               if (category.onlineService.logo.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(right: 12.0),
-                                  child: SvgPicture.asset(
-                                    category.onlineService.logo,
-                                    height: 20.0,
-
-                                    fit: BoxFit.scaleDown,
-                                    // colorFilter: ColorFilter.mode(
-                                    //     Colors.grey, BlendMode.srcIn),
-                                    excludeFromSemantics: true,
-                                  ),
+                                  child: OnlineServiceLogo(
+                                      category.onlineService.logo),
                                 ),
                               Text(
                                 category.title,
