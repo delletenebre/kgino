@@ -44,24 +44,24 @@ class KrsMenuButton<T> extends StatelessWidget {
         ),
         Offset.zero & overlay.size,
       );
-      final menuItems = items.map((item) {
-        return PopupMenuItem(
-          value: item,
-          height: 56,
-          enabled: false,
-          child: KrsListTile(
-            onTap: () {
-              onSelected.call(item);
-            },
-            selected: (item == selectedValue),
-            showSelectedIcon: true,
-            title: textBuilder(item),
-          ),
-        );
-      }).toList();
+      // final menuItems = items.map((item) {
+      //   return PopupMenuItem(
+      //     value: item,
+      //     height: 56,
+      //     enabled: false,
+      //     child: KrsListTile(
+      //       onTap: () {
+      //         onSelected.call(item);
+      //       },
+      //       selected: (item == selectedValue),
+      //       showSelectedIcon: true,
+      //       title: textBuilder(item),
+      //     ),
+      //   );
+      // }).toList();
 
       // Only show the menu if there is something to show
-      if (menuItems.isNotEmpty) {
+      if (items.isNotEmpty) {
         onMenuOpen?.call();
         showDialog<T>(
           context: context,
@@ -74,12 +74,16 @@ class KrsMenuButton<T> extends StatelessWidget {
                 bottom: position.bottom,
                 child: Container(
                   padding: const EdgeInsets.all(12.0),
-                  width: 280.0,
+                  constraints: const BoxConstraints(
+                    maxHeight: 480.0,
+                    maxWidth: 280.0,
+                  ),
                   decoration: BoxDecoration(
                     color: KrsTheme.getSurfaceContainer(context),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: ListView.separated(
+                    clipBehavior: Clip.none,
                     shrinkWrap: true,
                     itemCount: items.length,
                     itemBuilder: (context, index) {

@@ -114,7 +114,6 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
         // } else if (event is RawKeyUpEvent &&
         //         event.data.logicalKey == LogicalKeyboardKey.arrowLeft ||
         //     event.data.logicalKey == LogicalKeyboardKey.arrowRight) {
-        //   print('play');
         //   widget.controller.play();
         // }
 

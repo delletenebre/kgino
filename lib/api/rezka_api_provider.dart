@@ -409,7 +409,7 @@ class RezkaApi {
             '';
 
         /// количество сезонов
-        final seasonsCount =
+        int seasonsCount =
             document.getElementsByClassName('b-simple_season__item').length;
 
         Element? tvShow = document.getElementById('simple-episodes-tabs');
@@ -483,6 +483,9 @@ class RezkaApi {
                         .toList(),
                   ))
               .toList();
+
+          /// количество сезонов
+          seasonsCount = seasons.length;
         }
 
         return RezkaItem(

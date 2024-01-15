@@ -19,16 +19,12 @@ class FocusedMediaItem extends _$FocusedMediaItem {
   }
 
   Future<MediaItem?> fetchDetails() async {
-    print('start fetchDetails ${mediaItem?.id}');
     // &&
     // mediaItem!.overview.isEmpty
     if (mediaItem != null && !mediaItem!.isFolder) {
       final detailed = await mediaItem!.loadDetails(ref);
-      print('detailed ${detailed.id}');
       return detailed;
     }
-
-    print('detailedZ');
 
     return mediaItem;
   }
@@ -85,12 +81,8 @@ class FeaturedCard extends HookConsumerWidget {
 
     final focusedMediaItem = ref.watch(focusedMediaItemProvider(mediaItem));
 
-    print('mediaItem ${mediaItem?.id}');
     final currentMediaItem =
         focusedMediaItem.valueOrNull ?? MediaItem.skeleton();
-    print('mediaItem1 ${mediaItem?.id}');
-    print('currentMediaItem ${focusedMediaItem.valueOrNull?.title}');
-    print('currentMediaItem ${currentMediaItem.title}');
 
     return AnimatedContainer(
       duration: kThemeAnimationDuration,

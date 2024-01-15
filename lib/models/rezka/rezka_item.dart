@@ -80,8 +80,6 @@ class RezkaItem extends MediaItem {
     final cancelToken = api.getCancelToken();
     ref.onDispose(cancelToken.cancel);
 
-    print('1');
-
     /// отправляем запрос на получение данных
     final detailedItem = await api.getDetails(
       isarId: isarId,
@@ -89,8 +87,6 @@ class RezkaItem extends MediaItem {
       voiceActing: voiceActing,
       cancelToken: cancelToken,
     );
-
-    print('OKKKK2 $id');
 
     detailedItem.quality = quality;
     detailedItem.subtitlesEnabled = subtitlesEnabled;
