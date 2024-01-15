@@ -20,7 +20,12 @@ class KrsNavigationBar extends HookWidget implements PreferredSizeWidget {
 
   @override
   Widget build(context) {
-    final focusNodes = [useFocusNode(), useFocusNode(), useFocusNode()];
+    final focusNodes = [
+      useFocusNode(),
+      useFocusNode(),
+      useFocusNode(),
+      useFocusNode(),
+    ];
 
     final focused = useState(false);
 
@@ -64,6 +69,15 @@ class KrsNavigationBar extends HookWidget implements PreferredSizeWidget {
                   onPageChanged.call(2);
                 },
                 child: const Text('Фильмы'),
+              ),
+              KrsNavigationButton(
+                focusNode: focusNodes[3],
+                active: focused.value,
+                selected: selectedPage == 3,
+                onSelected: () {
+                  onPageChanged.call(3);
+                },
+                child: const Text('Камеры'),
               ),
             ],
           ),

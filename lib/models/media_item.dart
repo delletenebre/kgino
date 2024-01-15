@@ -296,8 +296,13 @@ class MediaItem implements Playable {
 
   /// получение ссылки на эпизод
   @override
-  loadEpisodeUrl(WidgetRef ref, MediaItemEpisode episode) =>
-      throw UnimplementedError();
+  loadEpisodeUrl(WidgetRef ref, MediaItemEpisode episode) async {
+    if (episode.videoFileUrl.isNotEmpty) {
+      return MediaItemUrl(video: episode.videoFileUrl);
+    }
+
+    throw UnimplementedError();
+  }
 
   /// находим сохранённый в базе данных сериал или фильм
   MediaItem findSaved(KrsStorage storage) {

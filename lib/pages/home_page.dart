@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../ui/navigation_bar/krs_navigation_bar.dart';
+import 'cameras_page.dart';
 import 'movies_page.dart';
 import 'search_page.dart';
 import 'shows_page.dart';
@@ -50,6 +51,7 @@ class HomePage extends HookWidget {
           SearchPage(),
           ShowsPage(),
           MoviesPage(),
+          CamerasPage(),
         ],
       ),
     );
