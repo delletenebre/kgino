@@ -348,6 +348,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   @override
   Widget build(context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           Center(

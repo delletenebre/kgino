@@ -165,7 +165,7 @@ class FeaturedCard extends HookConsumerWidget {
                         Text(
                           currentMediaItem.overview,
                           key: const ValueKey('overview'),
-                          maxLines: 6,
+                          maxLines: 5,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 16.0,
