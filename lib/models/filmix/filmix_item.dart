@@ -75,7 +75,7 @@ class FilmixItem extends MediaItem {
         final qualityRegExp = RegExp(r'\[([,\d]+)\]');
         final qualities = (qualityRegExp
                     .allMatches(movie.link)
-                    .map((m) => m.group(0))
+                    .map((m) => m.group(1))
                     .firstOrNull ??
                 '')
             .split(',')
