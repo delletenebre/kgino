@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kgino/extensions/theme_data_extensions.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../api/filmix_api_provider.dart';
 import '../api/rezka_api_provider.dart';
@@ -16,6 +17,78 @@ import '../ui/images/online_service_logo.dart';
 import '../ui/lists/horizontal_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
 
+part 'search_page.g.dart';
+
+@riverpod
+class Search extends _$Search {
+  @override
+  Future<List<CategoryListItem>> build(String searchQuery) async {
+    return fetch();
+  }
+
+  Future<List<CategoryListItem>> fetch() async {
+    /// провайдер запросов к API hdrezka
+    final rezkaApi = ref.read(rezkaApiProvider);
+    final rezkaCancelToken = rezkaApi.getCancelToken();
+
+    /// провайдер запросов к API filmix
+    final filmixApi = ref.read(filmixApiProvider);
+    final filmixCancelToken = filmixApi.getCancelToken();
+
+    /// провайдер запросов к API tskg
+    final tskgApi = ref.read(tskgApiProvider);
+    final tskgCancelToken = tskgApi.getCancelToken();
+
+    /// отменяем выполнение запроса, если страница закрыта
+    ref.onDispose(() {
+      rezkaCancelToken.cancel();
+      filmixCancelToken.cancel();
+      tskgCancelToken.cancel();
+    });
+
+    final rezkaResult = await rezkaApi.search(
+      searchQuery: searchQuery,
+      cancelToken: rezkaCancelToken,
+    );
+
+    /// результаты поиска filmix
+    final filmixResult = await filmixApi.search(
+      searchQuery: searchQuery,
+      cancelToken: filmixCancelToken,
+    );
+
+    /// результаты поиска ts.kg
+    final tskgResult = await tskgApi.search(
+      searchQuery: searchQuery,
+      cancelToken: tskgCancelToken,
+    );
+
+    /// формируем список найденного
+    return [
+      if (filmixResult.isNotEmpty)
+        CategoryListItem(
+          onlineService: OnlineService.filmix,
+          title: 'Filmix',
+          items: filmixResult,
+        ),
+      if (rezkaResult.isNotEmpty)
+        CategoryListItem(
+          onlineService: OnlineService.rezka,
+          title: 'HDrezka',
+          items: rezkaResult,
+        ),
+      if (tskgResult.isNotEmpty)
+        CategoryListItem(
+          onlineService: OnlineService.tskg,
+          title: 'TS.KG',
+          items: tskgResult,
+        ),
+    ];
+  }
+
+  // bool get hasItem => state.valueOrNull != null;
+}
+
 class SearchPage extends HookConsumerWidget {
   const SearchPage({super.key});
 
@@ -26,59 +99,7 @@ class SearchPage extends HookConsumerWidget {
 
     final theme = Theme.of(context);
 
-    /// провайдер запросов к API hdrezka
-    final rezkaApi = ref.read(rezkaApiProvider);
-
-    /// провайдер запросов к API filmix
-    final filmixApi = ref.read(filmixApiProvider);
-
-    /// провайдер запросов к API tskg
-    final tskgApi = ref.read(tskgApiProvider);
-
     final searchController = useTextEditingController();
-    useValueListenable(searchController);
-
-    final categoriesFuture = useFuture(useMemoized(() async {
-      /// результаты поиска hdrezka
-      final rezkaResult = await rezkaApi.search(
-        searchQuery: searchController.text,
-        cancelToken: rezkaApi.getCancelToken(),
-      );
-
-      /// результаты поиска filmix
-      final filmixResult = await filmixApi.search(
-        searchQuery: searchController.text,
-        cancelToken: filmixApi.getCancelToken(),
-      );
-
-      /// результаты поиска ts.kg
-      final tskgResult = await tskgApi.search(
-        searchQuery: searchController.text,
-        cancelToken: tskgApi.getCancelToken(),
-      );
-
-      /// формируем список найденного
-      return [
-        if (filmixResult.isNotEmpty)
-          CategoryListItem(
-            onlineService: OnlineService.filmix,
-            title: 'Filmix',
-            items: filmixResult,
-          ),
-        if (rezkaResult.isNotEmpty)
-          CategoryListItem(
-            onlineService: OnlineService.rezka,
-            title: 'HDrezka',
-            items: rezkaResult,
-          ),
-        if (tskgResult.isNotEmpty)
-          CategoryListItem(
-            onlineService: OnlineService.tskg,
-            title: 'TS.KG',
-            items: tskgResult,
-          ),
-      ];
-    }, [searchController.text]));
 
     return Column(
       children: [
@@ -121,22 +142,28 @@ class SearchPage extends HookConsumerWidget {
           ),
         ),
         Expanded(
-          child: Builder(
+          child: HookBuilder(
             builder: (context) {
-              if (categoriesFuture.connectionState == ConnectionState.waiting) {
+              useValueListenable(searchController);
+
+              if (searchController.value.text.isEmpty) {
+                return const SizedBox();
+              }
+
+              final controller =
+                  ref.watch(searchProvider(searchController.value.text));
+
+              /// если результаты загружаются
+              if (controller.isLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final categories = categoriesFuture.data ?? [];
+              final categories = controller.valueOrNull ?? [];
 
               if (categories.isEmpty) {
-                if (searchController.text.isEmpty) {
-                  return const SizedBox();
-                } else {
-                  return Center(
-                    child: Text('По Вашему запросу ничего не найдено'),
-                  );
-                }
+                return const Center(
+                  child: Text('По Вашему запросу ничего не найдено'),
+                );
               }
 
               return VerticalListView(

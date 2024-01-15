@@ -27,7 +27,7 @@ class TskgApi {
       'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
 
   static const baseUrl =
-      kIsWeb ? 'https://kgino.iuk.edu.kg' : 'https://www.ts.kg';
+      kIsWeb ? 'https://tskg.iuk.edu.kg' : 'https://www.ts.kg';
 
   final _dio = Dio(BaseOptions(
     baseUrl: baseUrl,
@@ -296,8 +296,9 @@ class TskgApi {
           'episode': episodeId,
         },
         options: Options(
+          contentType: Headers.jsonContentType,
           headers: {
-            'x-requested-with': 'XMLHttpRequest',
+            'X-Requested-With': 'XMLHttpRequest',
           },
         ),
       );
@@ -330,8 +331,9 @@ class TskgApi {
         '/shows/search/$searchQuery',
         cancelToken: cancelToken,
         options: Options(
+          contentType: Headers.jsonContentType,
           headers: {
-            'x-requested-with': 'XMLHttpRequest',
+            'X-Requested-With': 'XMLHttpRequest',
           },
         ),
       ),

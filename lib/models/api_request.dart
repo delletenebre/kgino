@@ -13,7 +13,6 @@ class ApiRequest<T> {
   }) async {
     try {
       final response = await request;
-
       return decoder(response.data);
     } on DioException catch (dioException) {
       if (dioException.response != null) {

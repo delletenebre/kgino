@@ -37,8 +37,8 @@ class TskgItem extends MediaItem {
   /// формируем полную ссылку на постер сериала по id
   @override
   String get poster => overview.isNotEmpty
-      ? 'https://www.ts.kg/posters2/$id.png'
-      : 'https://www.ts.kg/posters/$id.png';
+      ? '${TskgApi.baseUrl}/posters2/$id.png'
+      : '${TskgApi.baseUrl}/posters/$id.png';
 
   /// извлекаем идентификатор сериала из ссылки
   static String getShowIdFromUrl(String url) {
