@@ -302,9 +302,15 @@ class RezkaApi {
                 .getElementById('translators-list')
                 ?.getElementsByTagName('li')
                 .map((e) {
+              final language = e
+                      .getElementsByTagName('img')
+                      .firstOrNull
+                      ?.attributes['title'] ??
+                  '';
+
               return VoiceActing(
                 id: e.attributes['data-translator_id'] ?? '',
-                name: e.text,
+                name: language.isEmpty ? e.text : '${e.text} ($language)',
               );
             }).toList() ??
             [];
