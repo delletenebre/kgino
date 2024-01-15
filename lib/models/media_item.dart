@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../extensions/duration_extensions.dart';
 import '../extensions/json_converters.dart';
 import '../resources/krs_storage.dart';
 import 'filmix/filmix_item.dart';
@@ -222,11 +223,10 @@ class MediaItem implements Playable {
       case MediaItemType.show:
         return localeSeasonsCount(seasonCount);
       case MediaItemType.movie:
-        return 'need to do';
-      // return Duration(
-      //         seconds:
-      //             seasons.firstOrNull?.episodes.firstOrNull?.duration ?? 0)
-      //     .formatted;
+        return Duration(
+                seconds:
+                    seasons.firstOrNull?.episodes.firstOrNull?.duration ?? 0)
+            .formatted;
     }
   }
 

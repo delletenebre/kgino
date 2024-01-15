@@ -302,6 +302,7 @@ class RezkaApi {
                 .getElementById('translators-list')
                 ?.getElementsByTagName('li')
                 .map((e) {
+              /// ищем элемент флага, который укажет на язык озвучки
               final language = e
                       .getElementsByTagName('img')
                       .firstOrNull
@@ -315,6 +316,7 @@ class RezkaApi {
             }).toList() ??
             [];
 
+        /// выбранная озвучка
         VoiceActing actualVoiceActing = voiceActing;
 
         if (actualVoiceActing.id.isEmpty) {
@@ -439,6 +441,7 @@ class RezkaApi {
                   name: stream.quality,
                   videoFileUrl: stream.url,
                   qualities: qualities,
+                  duration: duration.inSeconds,
                 ),
               )
               .toList();
@@ -454,6 +457,7 @@ class RezkaApi {
           final postId =
               document.getElementById('post_id')!.attributes['value'] ?? '';
 
+          /// запрашиваем сезоны
           tvShow = await getSeasons(
                 id: postId,
                 voiceActingId: actualVoiceActing.id,
@@ -462,6 +466,7 @@ class RezkaApi {
 
           final episodesLi = tvShow.getElementsByTagName('li');
 
+          /// формируем эпизоды
           final episodes = episodesLi.map((episode) {
             final seasonId =
                 int.parse(episode.attributes['data-season_id'] ?? '0');
@@ -476,6 +481,7 @@ class RezkaApi {
             );
           });
 
+          /// формируем список сезонов с эпизодами
           seasons = episodesLi
               .map((episode) {
                 return int.parse(episode.attributes['data-season_id'] ?? '0');
@@ -501,17 +507,15 @@ class RezkaApi {
           poster: posterUrl,
           overview: description.trim(),
           seasons: seasons,
-
           seasonCount: seasonsCount,
-
           originalTitle: originalName,
           year: year.toString(),
           countries: countries,
           genres: genres,
           imdbRating: imdbRating,
           kinopoiskRating: kinopoiskRating,
-          // duration: duration,
 
+          ///
           voices: voices,
           voiceActing: actualVoiceActing,
         );
