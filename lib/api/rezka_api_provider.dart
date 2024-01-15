@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -40,8 +41,9 @@ class RezkaApi {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
-    String baseUrl =
-        storage.sharedStorage.getString('rezka_url') ?? 'https://rezka.ag';
+    String baseUrl = kIsWeb
+        ? 'https://kgino.iuk.edu.kg'
+        : storage.sharedStorage.getString('rezka_url') ?? 'https://rezka.ag';
 
     _dio.options.baseUrl = baseUrl;
   }
