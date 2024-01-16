@@ -311,13 +311,13 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   @override
   void deactivate() {
     /// ставим на паузу, если виджет деактивирован
-    _controller.pause();
+
     super.deactivate();
   }
 
   @override
   void dispose() {
-    // _controller.pause();
+    _controller.pause();
     _controller.dispose();
     super.dispose();
   }

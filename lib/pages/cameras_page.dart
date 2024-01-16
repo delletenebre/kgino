@@ -36,6 +36,12 @@ class CamerasPage extends HookConsumerWidget {
     /// список камер SaimaNet
     final saimaAsync = useMemoized(() => kgCameraApi.getSaimaCameras());
 
+    /// список камер КыргызТелеком
+    final ktAsync = useMemoized(() => kgCameraApi.getKtCameras());
+
+    /// список камер интересных мест
+    final extraAsync = useMemoized(() => kgCameraApi.getExtraCameras());
+
     final categories = useMemoized(() => [
           CategoryListItem(
             title: 'ЭлКат',
@@ -44,6 +50,14 @@ class CamerasPage extends HookConsumerWidget {
           CategoryListItem(
             title: 'Saima-Telecom',
             apiResponse: saimaAsync,
+          ),
+          CategoryListItem(
+            title: 'КыргызТелеком',
+            apiResponse: ktAsync,
+          ),
+          CategoryListItem(
+            title: 'Интересное',
+            items: extraAsync,
           ),
         ]);
 
@@ -93,7 +107,7 @@ class CamerasPage extends HookConsumerWidget {
                     mediaItem: item,
                     onFocusChange: (hasFocus) {},
                     onTap: () {
-                      /// переходим на страницу деталей о сериале
+                      /// переходим к просмотру
                       context.pushNamed('player', extra: item);
                     },
                   );

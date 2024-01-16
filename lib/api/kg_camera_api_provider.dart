@@ -174,4 +174,146 @@ class KgCameraApi {
 
     return '';
   }
+
+  /// список камер КыргызТелеком
+  Future<List<MediaItem>> getKtCameras() async {
+    return ApiRequest<List<MediaItem>>().call(
+      request: Dio().get('https://online.kt.kg/'),
+      decoder: (response) async {
+        final html = response.toString();
+
+        final items = <MediaItem>[];
+
+        /// парсим html
+        final document = parse(html);
+
+        /// получаем элементы списка новых поступлений
+        final elements = document.getElementsByClassName('button');
+
+        for (final element in elements) {
+          /// <button style="background: #282828;" class="button" id="camera_0" onclick="change_source('https://cam.kt.kg/cam14/stream.m3u8', 'Бишкек', 'Bishkek,KG', 'camera_0')">
+          ///     <img class="img" src="/preview/%D0%91%D0%B8%D1%88%D0%BA%D0%B5%D0%BA" style="border-radius: 10px; margin-right: max(10px, 2vh);"> Бишкек
+          /// </button>
+
+          /// парсим идентификатор
+          final onClick = element.attributes['onclick'] ?? '';
+
+          if (onClick.isNotEmpty) {
+            final exp = RegExp(r"'(.+?)'");
+            final matches = exp.allMatches(onClick);
+
+            print(matches.elementAt(0).group(1));
+
+            final src = matches.elementAt(0).group(1) ?? '';
+
+            final preview = element.firstChild?.attributes['src'] ?? '';
+
+            final title = matches.elementAt(1).group(1) ?? '';
+
+            final seasons = [
+              MediaItemSeason(episodes: [
+                MediaItemEpisode(videoFileUrl: src),
+              ])
+            ];
+
+            items.add(MediaItem(
+              type: MediaItemType.movie,
+              title: title,
+              poster: '$preview',
+              seasons: seasons,
+            ));
+          }
+        }
+
+        return items;
+      },
+    );
+  }
+
+  // List<MediaItem> getKtCameras() => [
+  //       MediaItem(
+  //         title: 'г. Бишкек (Чуй/Советская)',
+  //         poster: '',
+  //         seasons: [
+  //           MediaItemSeason(episodes: [
+  //             MediaItemEpisode(
+  //                 videoFileUrl: 'http://213.145.131.243:80/cam1/stream.m3u8'),
+  //           ])
+  //         ],
+  //       ),
+  //       MediaItem(
+  //         title: 'с. Бостери',
+  //         poster: '',
+  //         seasons: [
+  //           MediaItemSeason(episodes: [
+  //             MediaItemEpisode(
+  //                 videoFileUrl: 'http://213.145.131.243:80/cam2/stream.m3u8'),
+  //           ])
+  //         ],
+  //       ),
+  //       MediaItem(
+  //         title: 'г. Ош',
+  //         poster: '',
+  //         seasons: [
+  //           MediaItemSeason(episodes: [
+  //             MediaItemEpisode(
+  //                 videoFileUrl: 'http://213.145.131.243:80/cam3/stream.m3u8'),
+  //           ])
+  //         ],
+  //       ),
+  //     ];
+
+  /// список камер интересных мест
+  List<MediaItem> getExtraCameras() => [
+        MediaItem(
+          title: 'Кенийский водопой',
+          poster: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=KyQAB-TKOVA'),
+            ])
+          ],
+        ),
+        MediaItem(
+          title: 'Африканские животные',
+          poster: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=O8xVFhgEv6Q'),
+            ])
+          ],
+        ),
+        MediaItem(
+          title: 'Сафари камера',
+          poster: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=QkWGGhtTA4k'),
+            ])
+          ],
+        ),
+        MediaItem(
+          title: 'Парк слонов',
+          poster: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4'),
+            ])
+          ],
+        ),
+        MediaItem(
+          title: 'Таймс-сквер, Нью-Йорк',
+          poster: 'https://i.ytimg.com/vi/1-iS7LArMPA/hqdefault_live.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA'),
+            ])
+          ],
+        ),
+      ];
 }
