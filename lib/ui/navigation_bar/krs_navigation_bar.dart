@@ -44,7 +44,7 @@ class KrsNavigationBar extends HookConsumerWidget
         size: preferredSize,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: TvUi.hPadding),
-          child: Row(
+          child: Wrap(
             children: [
               KrsNavigationButton(
                 //focusNode: focusNodes[0],

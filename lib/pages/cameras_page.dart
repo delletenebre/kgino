@@ -30,13 +30,20 @@ class CamerasPage extends HookConsumerWidget {
     /// провайдер запросов к API KgCameras
     final kgCameraApi = ref.read(kgCameraApiProvider);
 
-    /// hdrezka список последний добавлений
-    final kgCameraAsync = useMemoized(() => kgCameraApi.getCameras());
+    /// список камер ЭлКат
+    final kgCameraAsync = useMemoized(() => kgCameraApi.getElcatCameras());
+
+    /// список камер SaimaNet
+    final saimaAsync = useMemoized(() => kgCameraApi.getSaimaCameras());
 
     final categories = useMemoized(() => [
           CategoryListItem(
             title: 'ЭлКат',
             apiResponse: kgCameraAsync,
+          ),
+          CategoryListItem(
+            title: 'Saima-Telecom',
+            apiResponse: saimaAsync,
           ),
         ]);
 

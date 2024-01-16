@@ -53,9 +53,11 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
 
       /// обновляем состояние воспроизведения
       if (playing != value.isPlaying) {
-        setState(() {
-          playing = value.isPlaying;
-        });
+        if (mounted) {
+          setState(() {
+            playing = value.isPlaying;
+          });
+        }
       }
 
       /// если видео было завершено, то вызываем следующее видео из плейлиста
@@ -64,17 +66,21 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
       }
 
       /// обновляем позицию воспроизведения
-      setState(() {
-        if (!tapped) {
-          position = value.position;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (!tapped) {
+            position = value.position;
+          }
+        });
+      }
 
       /// обновляем продолжительность загруженного буфера
       if (value.buffered.isNotEmpty && buffer != value.buffered.last) {
-        setState(() {
-          buffer = value.buffered.last;
-        });
+        if (mounted) {
+          setState(() {
+            buffer = value.buffered.last;
+          });
+        }
       }
     }
   }

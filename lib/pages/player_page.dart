@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kgino/ui/player/youtube_player_view.dart';
 import 'package:video_player/video_player.dart';
 
 import '../models/media_item.dart';
@@ -36,6 +37,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 class _PlayerPageState extends ConsumerState<PlayerPage> {
   late MediaItemUrl _mediaItemUrl;
   VideoPlayerController _controller = VideoPlayerController.networkUrl(Uri());
+  String _youtubeUrl = '';
 
   late List<MediaItemEpisode> episodes;
 
@@ -186,123 +188,136 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     widget.mediaItem.loadEpisodeUrl(ref, playableEpisode).then((mediaItemUrl) {
       _mediaItemUrl = mediaItemUrl;
 
-      if (mediaItemUrl.hasSubtitles) {
-        /// ^ если есть файл субтитров
+      if (_mediaItemUrl.video.startsWith('https://www.youtube.com/')) {
+        setState(() {
+          _youtubeUrl = _mediaItemUrl.video;
+        });
+      } else {
+        if (mediaItemUrl.hasSubtitles) {
+          /// ^ если есть файл субтитров
 
-        hasSubtitles = widget.mediaItem.subtitlesEnabled;
-      }
+          hasSubtitles = widget.mediaItem.subtitlesEnabled;
+        }
 
-      /// подчищаем старый контроллер видео
-      _controller.dispose();
+        /// подчищаем старый контроллер видео
+        _controller.dispose();
 
-      /// инициализируем контроллер видео
-      _controller = VideoPlayerController.networkUrl(
-        Uri.parse(mediaItemUrl.video),
-        closedCaptionFile: mediaItemUrl.loadSubtitlesFile(),
-      )..initialize().then((_) async {
-          if (widget.initialPosition > 0) {
-            /// ^ если задана позиция просмотра и быстрая перемотка
+        /// инициализируем контроллер видео
+        _controller = VideoPlayerController.networkUrl(
+          Uri.parse(mediaItemUrl.video),
+          closedCaptionFile: mediaItemUrl.loadSubtitlesFile(),
+        )..initialize().then((_) async {
+            if (widget.initialPosition > 0) {
+              /// ^ если задана позиция просмотра и быстрая перемотка
 
-            // /// останавливаем воспроизведение
-            // _controller?.pause();
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-              bool updatePosition = widget.forcePositionUpdate;
-              if (!updatePosition) {
+              // /// останавливаем воспроизведение
+              // _controller?.pause();
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+                bool updatePosition = widget.forcePositionUpdate;
+                if (!updatePosition) {
+                  setState(() {
+                    _menuOpened = true;
+                  });
+
+                  updatePosition = await Utils.showConfirmModal(
+                    context: context,
+                    title: 'Продолжить просмотр?',
+                    message:
+                        'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        HookBuilder(
+                          builder: (context) {
+                            final focused = useState(false);
+
+                            return AnimatedScale(
+                              duration: kThemeAnimationDuration,
+                              scale: focused.value ? 1.1 : 1.0,
+                              child: FilledButton(
+                                autofocus: true,
+                                onFocusChange: (hasFocus) {
+                                  focused.value = hasFocus;
+                                },
+                                onPressed: () {
+                                  if (mounted) {
+                                    Navigator.of(context).pop(true);
+                                  }
+                                },
+                                child: Text('Продолжить'),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 12.0),
+                        HookBuilder(
+                          builder: (context) {
+                            final focused = useState(false);
+
+                            return AnimatedScale(
+                              duration: kThemeAnimationDuration,
+                              scale: focused.value ? 1.1 : 1.0,
+                              child: FilledButton(
+                                onFocusChange: (hasFocus) {
+                                  focused.value = hasFocus;
+                                },
+                                onPressed: () {
+                                  if (mounted) {
+                                    Navigator.of(context).pop(false);
+                                  }
+                                },
+                                child: Text('Начать с начала'),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+
+                  setState(() {
+                    _menuOpened = false;
+                  });
+                }
+
+                if (updatePosition == true) {
+                  /// перематываем с небольшой отмоткой назад
+                  await _controller?.seekTo(
+                    Duration(
+                      seconds: widget.initialPosition > 2
+                          ? widget.initialPosition - 2
+                          : widget.initialPosition,
+                    ),
+                  );
+                }
+
                 setState(() {
-                  _menuOpened = true;
+                  _controller.play();
                 });
-
-                updatePosition = await Utils.showConfirmModal(
-                  context: context,
-                  title: 'Продолжить просмотр?',
-                  message:
-                      'Продолжить просмотр с момента, на котором Вы завершили просмотр прошлый раз',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      HookBuilder(
-                        builder: (context) {
-                          final focused = useState(false);
-
-                          return AnimatedScale(
-                            duration: kThemeAnimationDuration,
-                            scale: focused.value ? 1.1 : 1.0,
-                            child: FilledButton(
-                              autofocus: true,
-                              onFocusChange: (hasFocus) {
-                                focused.value = hasFocus;
-                              },
-                              onPressed: () {
-                                if (mounted) {
-                                  Navigator.of(context).pop(true);
-                                }
-                              },
-                              child: Text('Продолжить'),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12.0),
-                      HookBuilder(
-                        builder: (context) {
-                          final focused = useState(false);
-
-                          return AnimatedScale(
-                            duration: kThemeAnimationDuration,
-                            scale: focused.value ? 1.1 : 1.0,
-                            child: FilledButton(
-                              onFocusChange: (hasFocus) {
-                                focused.value = hasFocus;
-                              },
-                              onPressed: () {
-                                if (mounted) {
-                                  Navigator.of(context).pop(false);
-                                }
-                              },
-                              child: Text('Начать с начала'),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                );
-
-                setState(() {
-                  _menuOpened = false;
-                });
-              }
-
-              if (updatePosition == true) {
-                /// перематываем с небольшой отмоткой назад
-                await _controller?.seekTo(
-                  Duration(
-                    seconds: widget.initialPosition > 2
-                        ? widget.initialPosition - 2
-                        : widget.initialPosition,
-                  ),
-                );
-              }
-
+              });
+            } else {
               setState(() {
                 _controller.play();
               });
-            });
-          } else {
-            setState(() {
-              _controller.play();
-            });
-          }
-        }, onError: (exception) {
-          /// ^ если возникла ошибка инициализации видео
-          setState(() {});
-        });
+            }
+          }, onError: (exception) {
+            /// ^ если возникла ошибка инициализации видео
+            setState(() {});
+          });
+      }
     });
   }
 
   @override
-  void dispose() {
+  void deactivate() {
+    /// ставим на паузу, если виджет деактивирован
     _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    // _controller.pause();
     _controller.dispose();
     super.dispose();
   }
@@ -347,6 +362,10 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
   @override
   Widget build(context) {
+    if (_youtubeUrl.isNotEmpty) {
+      return YoutubePlayerView(url: _youtubeUrl);
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(

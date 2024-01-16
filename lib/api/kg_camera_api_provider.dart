@@ -26,8 +26,8 @@ class KgCameraApi {
     // _dio.interceptors.add(LogsInterceptor());
   }
 
-  /// список камер
-  Future<List<MediaItem>> getCameras() async {
+  /// список камер elcat
+  Future<List<MediaItem>> getElcatCameras() async {
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get('/'),
       decoder: (response) async {
@@ -76,5 +76,102 @@ class KgCameraApi {
         return items;
       },
     );
+  }
+
+  /// получение списка камер live.saimanet.kg
+  Future<List<MediaItem>> getSaimaCameras() async {
+    const baseUrl = 'https://live.saimanet.kg';
+
+    return ApiRequest<List<MediaItem>>().call(
+        request: _dio.get(baseUrl),
+        decoder: (response) async {
+          /// список элементов
+          final items = <MediaItem>[];
+
+          /// запрашиваем данные
+          final response = await _dio.get(baseUrl);
+
+          if (response.statusCode == 200) {
+            /// ^ если запрос выполнен успешно
+
+            /// парсим html
+            final document = parse(response.data);
+
+            /// получаем элементы списка камер
+            final elements = document.getElementsByClassName('onemaincam');
+
+            for (final element in elements) {
+              /// парсим элемент iframe
+              /*
+                <div class="onemaincam mt">
+                  <div class="image">
+                      <a href="/ru/cams/2"><img src="/images/cam2.jpg"
+                                                alt=""
+                                                title=""/></a>
+                      <div class="playicon"><a href="/ru/cams/2"></a></div>
+                  </div>
+                  <div class="title"><a href="/ru/cams/2">Площадь Ала-Тоо</a></div>
+                </div>
+              */
+              String name = '';
+              String posterUrl = '';
+              final img = element.getElementsByTagName('img');
+              if (img.isNotEmpty) {
+                String imgSrc = img.first.attributes['src'] ?? '';
+                if (!imgSrc.startsWith('/')) {
+                  imgSrc = '/$imgSrc';
+                }
+                posterUrl = '$baseUrl$imgSrc';
+              }
+
+              final link = element
+                  .getElementsByClassName('title')
+                  .first
+                  .getElementsByTagName('a');
+              if (link.isNotEmpty) {
+                name = link.first.text;
+                final cameraId = link.first.attributes['href'] ?? '';
+                final youtubeSrc =
+                    await getSaimaYoutubeLink(baseUrl + cameraId);
+
+                if (youtubeSrc.isNotEmpty) {
+                  final seasons = [
+                    MediaItemSeason(episodes: [
+                      MediaItemEpisode(videoFileUrl: youtubeSrc),
+                    ])
+                  ];
+
+                  items.add(MediaItem(
+                    type: MediaItemType.movie,
+                    title: name,
+                    poster: posterUrl,
+                    seasons: seasons,
+                  ));
+                }
+              }
+            }
+          }
+          return items;
+        });
+  }
+
+  Future<String> getSaimaYoutubeLink(String url) async {
+    try {
+      /// запрашиваем данные
+      final response = await _dio.get(url);
+      if (response.statusCode == 200) {
+        /// ^ если запрос выполнен успешно
+
+        /// парсим html
+        final document = parse(response.data);
+        final iframe = document.getElementsByTagName('iframe').first;
+
+        return iframe.attributes['src'] ?? '';
+      }
+    } catch (exception) {
+      /// ^ если произошла сетевая ошибка
+    }
+
+    return '';
   }
 }
