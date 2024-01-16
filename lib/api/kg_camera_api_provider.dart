@@ -199,8 +199,6 @@ class KgCameraApi {
           /// парсим идентификатор
           final onClick = element.attributes['onclick'] ?? '';
 
-          print('onClick $onClick');
-
           if (onClick.isNotEmpty) {
             final exp = RegExp(r"'(.+?)'");
             final matches = exp.allMatches(onClick);
@@ -214,8 +212,6 @@ class KgCameraApi {
                   ?.attributes['src'];
 
               final title = matches.elementAt(1).group(1) ?? '';
-
-              print(preview);
 
               final seasons = [
                 MediaItemSeason(episodes: [

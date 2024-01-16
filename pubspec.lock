@@ -464,6 +464,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  fvp:
+    dependency: "direct main"
+    description:
+      name: fvp
+      sha256: "127a5db80742eb01d9ef69ab5bc6f74916aea8d0462ed438cff8f5b0603d58ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.0"
   glob:
     dependency: transitive
     description:

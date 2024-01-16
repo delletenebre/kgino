@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubePlayerView extends StatefulWidget {
@@ -55,19 +56,43 @@ class _YoutubePlayerViewState extends State<YoutubePlayerView> {
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      onExitFullScreen: () {
-        /// The player forces portraitUp after exiting fullscreen.
-        /// This overrides the behaviour.
-        SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    return Focus(
+      autofocus: true,
+      skipTraversal: true,
+      onKey: (node, event) {
+        if (event.isKeyPressed(LogicalKeyboardKey.escape) ||
+            event.isKeyPressed(LogicalKeyboardKey.backspace)) {
+          if (_controller.value.isPlaying) {
+            _controller.pause();
+          } else {
+            context.pop();
+          }
+        }
+
+        if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+          if (_controller.value.isPlaying) {
+            _controller.pause();
+          } else {
+            _controller.play();
+          }
+        }
+
+        return KeyEventResult.ignored;
       },
-      player: YoutubePlayer(
-        controller: _controller,
-      ),
-      builder: (context, player) => Scaffold(
-        backgroundColor: Colors.black,
-        body: Center(
-          child: player,
+      child: YoutubePlayerBuilder(
+        onExitFullScreen: () {
+          /// The player forces portraitUp after exiting fullscreen.
+          /// This overrides the behaviour.
+          SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+        },
+        player: YoutubePlayer(
+          controller: _controller,
+        ),
+        builder: (context, player) => Scaffold(
+          backgroundColor: Colors.black,
+          body: Center(
+            child: player,
+          ),
         ),
       ),
     );

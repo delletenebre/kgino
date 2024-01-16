@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fvp/fvp.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'app.dart';
@@ -13,7 +14,8 @@ Future<void> main() async {
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// инициализируем видеоплеер
+  /// инициализируем видео-плеер
+  registerWith();
   // MediaKit.ensureInitialized();
 
   /// информация об устройстве
