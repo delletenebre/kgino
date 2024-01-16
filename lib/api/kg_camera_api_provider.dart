@@ -58,13 +58,9 @@ class KgCameraApi {
               element.getElementsByClassName('video-title').firstOrNull?.text ??
                   '';
 
-          print(src);
-          print(src.replaceAll('index.m3u8', 'tracks-v1/mono.m3u8'));
           final seasons = [
             MediaItemSeason(episodes: [
-              MediaItemEpisode(
-                  videoFileUrl:
-                      src.replaceAll('index.m3u8', 'tracks-v1/mono.m3u8'))
+              MediaItemEpisode(videoFileUrl: src),
             ])
           ];
 
