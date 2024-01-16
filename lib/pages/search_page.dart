@@ -101,6 +101,14 @@ class SearchPage extends HookConsumerWidget {
 
     final searchController = useTextEditingController();
 
+    /// [FocusNode] для результатов поиска
+    final tfocusNode = useFocusNode();
+
+    final thasFocus = useRef(false);
+
+    /// [FocusNode] для результатов поиска
+    final focusNode = useFocusNode();
+
     return Column(
       children: [
         Padding(
@@ -121,9 +129,17 @@ class SearchPage extends HookConsumerWidget {
                 return KeyEventResult.handled;
               }
 
+              // if (event.isKeyPressed(LogicalKeyboardKey.browserBack)) {
+              //   print('BBBAACKK');
+              // }
+
               return KeyEventResult.ignored;
             },
+            onFocusChange: (hasFocus) {
+              thasFocus.value = hasFocus;
+            },
             child: TextField(
+              focusNode: tfocusNode,
               controller: searchController,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
@@ -138,8 +154,15 @@ class SearchPage extends HookConsumerWidget {
                 filled: true,
                 fillColor: theme.surfaceContainerHighest,
               ),
+              onSubmitted: (value) {
+                focusNode.requestFocus();
+              },
             ),
           ),
+        ),
+        Focus(
+          focusNode: focusNode,
+          child: const SizedBox(),
         ),
         Expanded(
           child: HookBuilder(
