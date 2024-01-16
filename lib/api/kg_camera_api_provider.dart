@@ -177,8 +177,9 @@ class KgCameraApi {
 
   /// список камер КыргызТелеком
   Future<List<MediaItem>> getKtCameras() async {
+    const baseUrl = 'https://online.kt.kg';
     return ApiRequest<List<MediaItem>>().call(
-      request: Dio().get('https://online.kt.kg/'),
+      request: Dio().get(baseUrl),
       decoder: (response) async {
         final html = response.toString();
 
@@ -198,30 +199,37 @@ class KgCameraApi {
           /// парсим идентификатор
           final onClick = element.attributes['onclick'] ?? '';
 
+          print('onClick $onClick');
+
           if (onClick.isNotEmpty) {
             final exp = RegExp(r"'(.+?)'");
             final matches = exp.allMatches(onClick);
 
-            print(matches.elementAt(0).group(1));
+            if (matches.isNotEmpty) {
+              final src = matches.elementAt(0).group(1) ?? '';
 
-            final src = matches.elementAt(0).group(1) ?? '';
+              final preview = element
+                  .getElementsByTagName('img')
+                  .firstOrNull
+                  ?.attributes['src'];
 
-            final preview = element.firstChild?.attributes['src'] ?? '';
+              final title = matches.elementAt(1).group(1) ?? '';
 
-            final title = matches.elementAt(1).group(1) ?? '';
+              print(preview);
 
-            final seasons = [
-              MediaItemSeason(episodes: [
-                MediaItemEpisode(videoFileUrl: src),
-              ])
-            ];
+              final seasons = [
+                MediaItemSeason(episodes: [
+                  MediaItemEpisode(videoFileUrl: src),
+                ])
+              ];
 
-            items.add(MediaItem(
-              type: MediaItemType.movie,
-              title: title,
-              poster: '$preview',
-              seasons: seasons,
-            ));
+              items.add(MediaItem(
+                type: MediaItemType.movie,
+                title: title,
+                poster: '$baseUrl$preview',
+                seasons: seasons,
+              ));
+            }
           }
         }
 

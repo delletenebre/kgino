@@ -28,9 +28,6 @@ class KrsNavigationBar extends HookConsumerWidget
 
     final focused = useState(tabsController.focusNode.hasFocus);
 
-    print('selectedTab2: $selectedTab');
-    print('focused: ${focused.value}');
-
     return Focus(
       focusNode: tabsController.focusNode,
       onFocusChange: (hasFocus) {
