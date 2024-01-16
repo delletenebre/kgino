@@ -57,6 +57,7 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   sticky_grouped_list: ^3.1.0
   uuid: ^4.3.3
+  wakelock_plus: ^1.1.4
 
 dependency_overrides:
   meta: ^1.11.0

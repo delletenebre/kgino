@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kgino/extensions/video_player_controller_extensions.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 // import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
@@ -132,6 +133,9 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     }
 
     if (isPlaying) {
+      /// чтобы экран не переходил в режим сна
+      WakelockPlus.enable();
+
       final positionInSeconds = value.position.inSeconds;
       if (positionInSeconds > 10 &&
           positionInSeconds % 5 == 0 &&
@@ -139,6 +143,9 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
         _lastSavedPosition = positionInSeconds;
         widget.onSavePositionRequested?.call(positionInSeconds);
       }
+    } else {
+      /// позволяем экрану перейти в режим сна
+      WakelockPlus.disable();
     }
   }
 
