@@ -13,8 +13,10 @@ class ApiRequest<T> {
   }) async {
     try {
       final response = await request;
+      print('response ${response.data}');
       return decoder(response.data);
     } on DioException catch (dioException) {
+      print(dioException.requestOptions.uri);
       if (dioException.response != null) {
         final headers = dioException.response!.headers;
         final data = dioException.response!.data;

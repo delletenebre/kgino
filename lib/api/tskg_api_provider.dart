@@ -26,8 +26,9 @@ class TskgApi {
   static final userAgent =
       'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
 
-  static const baseUrl =
-      kIsWeb ? 'https://tskg.iuk.edu.kg' : 'https://www.ts.kg';
+  static const baseUrl = kIsWeb
+      ? 'https://app.iuk.edu.kg/functions/v1/corsproxy?url=https://www.ts.kg'
+      : 'https://www.ts.kg';
 
   final _dio = Dio(BaseOptions(
     baseUrl: baseUrl,
@@ -291,10 +292,10 @@ class TskgApi {
     try {
       /// запрашиваем данные
       final response = await _dio.get(
-        '/show/episode/episode.json',
-        queryParameters: {
-          'episode': episodeId,
-        },
+        '/show/episode/episode.json?episode=$episodeId',
+        // queryParameters: {
+        //   'episode': episodeId,
+        // },
         options: Options(
           contentType: Headers.jsonContentType,
           headers: {
