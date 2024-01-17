@@ -85,8 +85,6 @@ class Search extends _$Search {
         ),
     ];
   }
-
-  // bool get hasItem => state.valueOrNull != null;
 }
 
 class SearchPage extends HookConsumerWidget {
@@ -101,16 +99,16 @@ class SearchPage extends HookConsumerWidget {
 
     final searchController = useTextEditingController();
 
-    /// [FocusNode] для результатов поиска
-    final tfocusNode = useFocusNode();
+    /// [FocusNode] для поля поиска
+    final searchFieldFocusNode = useFocusNode();
 
+    /// включено ли поле поиска для редактирования
     final canEdit = useState(false);
 
+    /// имеются ли результаты поиска
     final hasSearchResults = useRef(false);
 
-    /// [FocusNode] для результатов поиска
-    final listFocusNode = useFocusNode();
-
+    /// включить поле поиска для редактирования
     enableEditing() {
       if (!canEdit.value) {
         canEdit.value = true;
@@ -119,6 +117,7 @@ class SearchPage extends HookConsumerWidget {
       return canEdit.value;
     }
 
+    /// отключить поле поиска для редактирования
     disableEditing() {
       if (canEdit.value) {
         canEdit.value = false;
@@ -139,14 +138,22 @@ class SearchPage extends HookConsumerWidget {
             skipTraversal: true,
             onKey: (node, event) {
               if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+                /// отключаем редактирование
                 disableEditing();
+
+                /// перемещаем фокус к предыдущему элементу
                 FocusScope.of(context).previousFocus();
                 return KeyEventResult.handled;
               }
 
               if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+                /// отключаем редактирование
                 disableEditing();
+
                 if (hasSearchResults.value) {
+                  /// ^ если есть результаты поиска
+
+                  /// перемещаем фокус к следующему элементу
                   FocusScope.of(context).nextFocus();
                 }
                 return KeyEventResult.handled;
@@ -154,12 +161,14 @@ class SearchPage extends HookConsumerWidget {
 
               if (event.isKeyPressed(LogicalKeyboardKey.select) ||
                   event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                /// включаем редактирование
                 if (enableEditing()) {
                   return KeyEventResult.handled;
                 }
               }
 
               if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+                /// отключаем редактирование
                 if (disableEditing()) {
                   return KeyEventResult.handled;
                 }
@@ -169,14 +178,18 @@ class SearchPage extends HookConsumerWidget {
             },
             onFocusChange: (hasFocus) {
               if (!hasFocus && canEdit.value) {
+                /// отключаем редактирование
                 disableEditing();
-                tfocusNode.requestFocus();
+
+                /// возвращаем фокус на поле поиска
+                searchFieldFocusNode.requestFocus();
               }
             },
             child: TextField(
-              focusNode: tfocusNode,
+              focusNode: searchFieldFocusNode,
               readOnly: !canEdit.value,
               onTap: () {
+                /// включаем редактирование
                 enableEditing();
               },
               controller: searchController,
@@ -194,22 +207,21 @@ class SearchPage extends HookConsumerWidget {
                 fillColor: theme.surfaceContainerHighest,
               ),
               onSubmitted: (value) {
+                /// отключаем редактирование
                 disableEditing();
-                tfocusNode.requestFocus();
+
+                /// возвращаем фокус на поле поиска
+                searchFieldFocusNode.requestFocus();
               },
             ),
           ),
         ),
-        // Focus(
-        //   focusNode: focusNode,
-        //   child: const SizedBox(),
-        // ),
-
         Expanded(
           child: HookBuilder(
             builder: (context) {
               useValueListenable(searchController);
 
+              /// помечаем, что пока нет результатов поиска
               hasSearchResults.value = false;
 
               if (searchController.value.text.isEmpty) {
@@ -232,6 +244,7 @@ class SearchPage extends HookConsumerWidget {
                 );
               }
 
+              /// помечаем, что результаты поиска есть
               hasSearchResults.value = true;
 
               return VerticalListView(
