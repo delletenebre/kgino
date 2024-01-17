@@ -8,17 +8,8 @@ import 'krs_navigation_button.dart';
 
 class KrsNavigationBar extends HookConsumerWidget
     implements PreferredSizeWidget {
-  // final PageController controller;
-  // final void Function(int page) onPageChanged;
-  // final void Function(bool hasFocus) onFocusChange;
-  // final int selectedPage;
-
   const KrsNavigationBar({
     super.key,
-    // required this.controller,
-    // required this.onPageChanged,
-    // required this.selectedPage,
-    // required this.onFocusChange,
   });
 
   @override
@@ -78,5 +69,5 @@ class KrsNavigationBar extends HookConsumerWidget
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(64.0);
+  Size get preferredSize => const KrsAppBar().preferredSize;
 }
