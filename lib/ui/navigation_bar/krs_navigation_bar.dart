@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../providers/navigation_provider.dart';
-import '../../resources/krs_theme.dart';
+import '../pages/krs_app_bar.dart';
 import 'krs_navigation_button.dart';
 
 class KrsNavigationBar extends HookConsumerWidget
@@ -37,54 +37,42 @@ class KrsNavigationBar extends HookConsumerWidget
           tabsController.requestCurrentActiveTabFocus();
         }
       },
-      child: SizedBox.fromSize(
-        size: preferredSize,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: TvUi.hPadding),
-          child: Wrap(
-            children: [
-              KrsNavigationButton(
-                //focusNode: focusNodes[0],
-                active: focused.value,
-                selected: selectedTab == 0,
-                onSelected: () {
-                  tabsController.changePage(0);
-
-                  // onPageChanged.call(0);
-                  // selected.value = 0;
-                },
-                child: const Text('Поиск'),
-              ),
-              KrsNavigationButton(
-                // focusNode: focusNodes[1],
-                active: focused.value,
-                selected: selectedTab == 1,
-                onSelected: () {
-                  tabsController.changePage(1);
-                },
-                child: const Text('Сериалы'),
-              ),
-              KrsNavigationButton(
-                //focusNode: focusNodes[2],
-                active: focused.value,
-                selected: selectedTab == 2,
-                onSelected: () {
-                  tabsController.changePage(2);
-                },
-                child: const Text('Фильмы'),
-              ),
-              KrsNavigationButton(
-                // focusNode: focusNodes[3],
-                active: focused.value,
-                selected: selectedTab == 3,
-                onSelected: () {
-                  tabsController.changePage(3);
-                },
-                child: const Text('Камеры'),
-              ),
-            ],
+      child: KrsAppBar(
+        spacing: 4.0,
+        children: [
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedTab == 0,
+            onSelected: () {
+              tabsController.changePage(0);
+            },
+            child: const Text('Поиск'),
           ),
-        ),
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedTab == 1,
+            onSelected: () {
+              tabsController.changePage(1);
+            },
+            child: const Text('Сериалы'),
+          ),
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedTab == 2,
+            onSelected: () {
+              tabsController.changePage(2);
+            },
+            child: const Text('Фильмы'),
+          ),
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedTab == 3,
+            onSelected: () {
+              tabsController.changePage(3);
+            },
+            child: const Text('Камеры'),
+          ),
+        ],
       ),
     );
   }

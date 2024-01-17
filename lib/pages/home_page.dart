@@ -20,16 +20,14 @@ class HomePage extends ConsumerWidget {
           tabsController.navigateBack();
         }
       },
-      child: SafeArea(
-        child: Scaffold(
-          appBar: const KrsNavigationBar(),
-          body: PageView(
-            controller: tabsController.pageController,
-            clipBehavior: Clip.none,
-            physics: const NeverScrollableScrollPhysics(),
-            pageSnapping: false,
-            children: tabsController.pages,
-          ),
+      child: Scaffold(
+        appBar: const KrsNavigationBar(),
+        body: PageView(
+          controller: tabsController.pageController,
+          clipBehavior: Clip.none,
+          physics: const NeverScrollableScrollPhysics(),
+          pageSnapping: false,
+          children: tabsController.pages,
         ),
       ),
     );
