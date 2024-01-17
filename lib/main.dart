@@ -15,7 +15,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// инициализируем видео-плеер
-  registerWith();
+  registerWith(options: {
+    'platforms': ['windows', 'macos', 'linux']
+  });
   // MediaKit.ensureInitialized();
 
   /// информация об устройстве
