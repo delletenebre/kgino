@@ -79,19 +79,19 @@ class _YoutubePlayerViewState extends State<YoutubePlayerView> {
 
         return KeyEventResult.ignored;
       },
-      child: YoutubePlayerBuilder(
-        onExitFullScreen: () {
-          /// The player forces portraitUp after exiting fullscreen.
-          /// This overrides the behaviour.
-          SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-        },
-        player: YoutubePlayer(
-          controller: _controller,
-        ),
-        builder: (context, player) => Scaffold(
-          backgroundColor: Colors.black,
-          body: Center(
-            child: player,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: YoutubePlayerBuilder(
+            onExitFullScreen: () {
+              /// The player forces portraitUp after exiting fullscreen.
+              /// This overrides the behaviour.
+              //SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+            },
+            player: YoutubePlayer(
+              controller: _controller,
+            ),
+            builder: (context, player) => player,
           ),
         ),
       ),

@@ -117,7 +117,8 @@ class SearchPage extends HookConsumerWidget {
             vertical: TvUi.vPadding,
           ),
           child: Focus(
-            skipTraversal: true,
+            canRequestFocus: true,
+            skipTraversal: false,
             onKey: (node, event) {
               if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
                 FocusScope.of(context).previousFocus();
@@ -136,34 +137,39 @@ class SearchPage extends HookConsumerWidget {
               return KeyEventResult.ignored;
             },
             onFocusChange: (hasFocus) {
-              thasFocus.value = hasFocus;
+              //thasFocus.value = hasFocus;
             },
-            child: TextField(
-              focusNode: tfocusNode,
-              controller: searchController,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                hintText: 'Название фильма или сериала...',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(48.0),
-                  borderSide: const BorderSide(
-                    width: 1.0,
-                  ),
-                ),
-                filled: true,
-                fillColor: theme.surfaceContainerHighest,
-              ),
-              onSubmitted: (value) {
-                focusNode.requestFocus();
+            child: GestureDetector(
+              onTap: () {
+                tfocusNode.requestFocus();
               },
+              child: TextField(
+                focusNode: tfocusNode,
+                controller: searchController,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: 'Название фильма или сериала...',
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(48.0),
+                    borderSide: const BorderSide(
+                      width: 1.0,
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: theme.surfaceContainerHighest,
+                ),
+                onSubmitted: (value) {
+                  tfocusNode.unfocus();
+                },
+              ),
             ),
           ),
         ),
-        Focus(
-          focusNode: focusNode,
-          child: const SizedBox(),
-        ),
+        // Focus(
+        //   focusNode: focusNode,
+        //   child: const SizedBox(),
+        // ),
         Expanded(
           child: HookBuilder(
             builder: (context) {
