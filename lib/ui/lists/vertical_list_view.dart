@@ -153,7 +153,6 @@ class VerticalListViewState extends State<VerticalListView> {
           child: ListView.separated(
             controller: observerController.controller,
             clipBehavior: widget.clipBehavior,
-            // shrinkWrap: true,
             scrollDirection: Axis.vertical,
             padding: widget.padding,
             itemCount: widget.itemCount,

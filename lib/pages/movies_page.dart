@@ -117,96 +117,96 @@ class MoviesPage extends HookConsumerWidget {
             ],
         [bookmarkCount]);
 
+    final key = useMemoized(
+        () => GlobalKey<VerticalListViewState>(), [categories.length]);
+
     return Column(
       children: [
         ValueListenableBuilder<MediaItem?>(
           valueListenable: focusedMediaItem,
-          builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
+          builder: (context, mediaItem, _) {
+            Future.delayed(kThemeAnimationDuration).then((value) {
+              if (mediaItem != null) {
+                key.currentState?.animateToCurrent();
+              }
+            });
+            return FeaturedCard(mediaItem);
+          },
         ),
 
-        AnimatedSize(
-          duration: kThemeAnimationDuration,
-          child: SizedBox(
-            height: focusedMediaItem.value == null
-                ? MediaQuery.of(context).size.height -
-                    TvUi.navigationBarSize.height -
-                    24.0
-                : TvUi.cardListHeight - 24.0,
-            child: VerticalListView(
-              key: ValueKey(categories.length),
-              // clipBehavior:
-              //     focusedMediaItem.value == null ? Clip.none : Clip.hardEdge,
-              padding: const EdgeInsets.symmetric(vertical: 28.0),
-              onFocusChange: (hasFocus) {
-                if (!hasFocus) {
-                  selectedMediaItem.value = null;
-                  focusedMediaItem.value = null;
-                }
-              },
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
+        Expanded(
+          child: VerticalListView(
+            key: key,
+            padding: const EdgeInsets.symmetric(vertical: TvUi.vPadding),
+            onFocusChange: (hasFocus) {
+              if (!hasFocus) {
+                selectedMediaItem.value = null;
+                focusedMediaItem.value = null;
+              }
+            },
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          KrsTheme.safeArea.horizontal,
-                          0.0,
-                          KrsTheme.safeArea.horizontal,
-                          20.0,
-                        ),
-                        child: Row(
-                          children: [
-                            if (category.onlineService.logo.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: OnlineServiceLogo(
-                                    category.onlineService.logo),
-                              ),
-                            Text(
-                              category.title,
-                              style: theme.textTheme.titleMedium,
-                            ),
-                          ],
-                        )),
-                    SizedBox(
-                      height: MediaItemCard.height,
-                      child: HorizontalListView<MediaItem>(
-                        key: category.key,
-                        asyncItems: category.itemsFuture,
-                        itemBuilder: (context, item) {
-                          return MediaItemCard(
-                            mediaItem: item,
-                            onFocusChange: (hasFocus) {
-                              if (hasFocus) {
-                                if (item.isFolder) {
-                                  selectedMediaItem.value = null;
-                                  focusedMediaItem.value = null;
-                                } else {
-                                  selectedMediaItem.value = index;
-                                  focusedMediaItem.value = item;
-                                }
-                              }
-                            },
-                            onTap: () {
-                              if (item.isFolder) {
-                                /// переходим на страницу выбранного провайдера
-                                context.pushNamed(item.id);
-                              } else {
-                                /// переходим на страницу деталей о сериале
-                                context.pushNamed('details', extra: item);
-                              }
-                            },
-                          );
-                        },
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        KrsTheme.safeArea.horizontal,
+                        0.0,
+                        KrsTheme.safeArea.horizontal,
+                        20.0,
                       ),
+                      child: Row(
+                        children: [
+                          if (category.onlineService.logo.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12.0),
+                              child: OnlineServiceLogo(
+                                  category.onlineService.logo),
+                            ),
+                          Text(
+                            category.title,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    height: MediaItemCard.height,
+                    child: HorizontalListView<MediaItem>(
+                      key: category.key,
+                      asyncItems: category.itemsFuture,
+                      itemBuilder: (context, item) {
+                        return MediaItemCard(
+                          mediaItem: item,
+                          onFocusChange: (hasFocus) {
+                            if (hasFocus) {
+                              if (item.isFolder) {
+                                selectedMediaItem.value = null;
+                                focusedMediaItem.value = null;
+                              } else {
+                                selectedMediaItem.value = index;
+                                focusedMediaItem.value = item;
+                              }
+                            }
+                          },
+                          onTap: () {
+                            if (item.isFolder) {
+                              /// переходим на страницу выбранного провайдера
+                              context.pushNamed(item.id);
+                            } else {
+                              /// переходим на страницу деталей о сериале
+                              context.pushNamed('details', extra: item);
+                            }
+                          },
+                        );
+                      },
                     ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
 

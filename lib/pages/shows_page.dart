@@ -140,16 +140,26 @@ class ShowsPage extends HookConsumerWidget {
             ],
         [bookmarkCount]);
 
+    final key = useMemoized(
+        () => GlobalKey<VerticalListViewState>(), [categories.length]);
+
     return Column(
       children: [
         ValueListenableBuilder<MediaItem?>(
           valueListenable: focusedMediaItem,
-          builder: (context, mediaItem, _) => FeaturedCard(mediaItem),
+          builder: (context, mediaItem, _) {
+            Future.delayed(kThemeAnimationDuration).then((value) {
+              if (mediaItem != null) {
+                key.currentState?.animateToCurrent();
+              }
+            });
+            return FeaturedCard(mediaItem);
+          },
         ),
         Expanded(
           child: VerticalListView(
-            key: ValueKey(categories.length),
-            padding: const EdgeInsets.symmetric(vertical: 28.0),
+            key: key,
+            padding: const EdgeInsets.symmetric(vertical: TvUi.vPadding),
             onFocusChange: (hasFocus) {
               if (!hasFocus) {
                 selectedMediaItem.value = null;
