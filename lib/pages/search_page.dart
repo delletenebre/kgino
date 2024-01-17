@@ -104,10 +104,28 @@ class SearchPage extends HookConsumerWidget {
     /// [FocusNode] для результатов поиска
     final tfocusNode = useFocusNode();
 
-    final thasFocus = useRef(false);
+    final canEdit = useState(false);
+
+    final hasSearchResults = useRef(false);
 
     /// [FocusNode] для результатов поиска
-    final focusNode = useFocusNode();
+    final listFocusNode = useFocusNode();
+
+    enableEditing() {
+      if (!canEdit.value) {
+        canEdit.value = true;
+      }
+
+      return canEdit.value;
+    }
+
+    disableEditing() {
+      if (canEdit.value) {
+        canEdit.value = false;
+      }
+
+      return !canEdit.value;
+    }
 
     return Column(
       children: [
@@ -117,52 +135,68 @@ class SearchPage extends HookConsumerWidget {
             vertical: TvUi.vPadding,
           ),
           child: Focus(
-            canRequestFocus: true,
-            skipTraversal: false,
+            canRequestFocus: false,
+            skipTraversal: true,
             onKey: (node, event) {
               if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+                disableEditing();
                 FocusScope.of(context).previousFocus();
                 return KeyEventResult.handled;
               }
 
               if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-                FocusScope.of(context).nextFocus();
+                disableEditing();
+                if (hasSearchResults.value) {
+                  FocusScope.of(context).nextFocus();
+                }
                 return KeyEventResult.handled;
               }
 
-              // if (event.isKeyPressed(LogicalKeyboardKey.browserBack)) {
-              //   print('BBBAACKK');
-              // }
+              if (event.isKeyPressed(LogicalKeyboardKey.select) ||
+                  event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                if (enableEditing()) {
+                  return KeyEventResult.handled;
+                }
+              }
+
+              if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+                if (disableEditing()) {
+                  return KeyEventResult.handled;
+                }
+              }
 
               return KeyEventResult.ignored;
             },
             onFocusChange: (hasFocus) {
-              //thasFocus.value = hasFocus;
+              if (!hasFocus && canEdit.value) {
+                disableEditing();
+                tfocusNode.requestFocus();
+              }
             },
-            child: GestureDetector(
+            child: TextField(
+              focusNode: tfocusNode,
+              readOnly: !canEdit.value,
               onTap: () {
+                enableEditing();
+              },
+              controller: searchController,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: 'Название фильма или сериала...',
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(48.0),
+                  borderSide: const BorderSide(
+                    width: 1.0,
+                  ),
+                ),
+                filled: true,
+                fillColor: theme.surfaceContainerHighest,
+              ),
+              onSubmitted: (value) {
+                disableEditing();
                 tfocusNode.requestFocus();
               },
-              child: TextField(
-                focusNode: tfocusNode,
-                controller: searchController,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: 'Название фильма или сериала...',
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(48.0),
-                    borderSide: const BorderSide(
-                      width: 1.0,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: theme.surfaceContainerHighest,
-                ),
-                onSubmitted: (value) {
-                  tfocusNode.unfocus();
-                },
-              ),
             ),
           ),
         ),
@@ -170,10 +204,13 @@ class SearchPage extends HookConsumerWidget {
         //   focusNode: focusNode,
         //   child: const SizedBox(),
         // ),
+
         Expanded(
           child: HookBuilder(
             builder: (context) {
               useValueListenable(searchController);
+
+              hasSearchResults.value = false;
 
               if (searchController.value.text.isEmpty) {
                 return const SizedBox();
@@ -194,6 +231,8 @@ class SearchPage extends HookConsumerWidget {
                   child: Text('По Вашему запросу ничего не найдено'),
                 );
               }
+
+              hasSearchResults.value = true;
 
               return VerticalListView(
                 itemCount: categories.length,
