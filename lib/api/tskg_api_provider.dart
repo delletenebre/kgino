@@ -27,7 +27,8 @@ class TskgApi {
       'KGino/${kIsWeb ? 'Web' : Platform.operatingSystem} ${kIsWeb ? 'Web' : Platform.operatingSystemVersion}';
 
   static const baseUrl = kIsWeb
-      ? 'https://app.iuk.edu.kg/functions/v1/corsproxy?url=https://www.ts.kg'
+      //? 'https://app.iuk.edu.kg/functions/v1/corsproxy?url=https://www.ts.kg'
+      ? 'https://app.iuk.edu.kg/functions/v1/proxy/?url=https://www.ts.kg'
       : 'https://www.ts.kg';
 
   final _dio = Dio(BaseOptions(

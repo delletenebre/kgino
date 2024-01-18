@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ class DeviceDetails with _$DeviceDetails {
     @Default('') final String name,
     @Default('') final String vendor,
     @Default('') final String osVersion,
+    @Default('') final String ip,
   }) = _DeviceDetails;
 
   static Future<DeviceDetails> initialize() async {
@@ -33,6 +35,8 @@ class DeviceDetails with _$DeviceDetails {
     /// инициализируем информацию об устройстве
     final deviceInfo = DeviceInfoPlugin();
 
+    final ip = (await Dio().get('https://api.ipify.org/')).data.toString();
+
     if (kIsWeb) {
       /// ^ если браузер
 
@@ -43,6 +47,7 @@ class DeviceDetails with _$DeviceDetails {
         name: info.product ?? '',
         vendor: info.vendor ?? '',
         osVersion: info.userAgent ?? '',
+        ip: ip,
       );
 
       // deviceId = const Uuid().v4();
@@ -56,6 +61,7 @@ class DeviceDetails with _$DeviceDetails {
         name: info.model,
         vendor: 'Apple',
         osVersion: info.osRelease,
+        ip: ip,
       );
     }
     // else if (Platform.isAndroid) {

@@ -26,6 +26,8 @@ class RezkaApi {
   static const userAgent =
       'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0';
 
+  String ip = '';
+
   final _dio = Dio(BaseOptions(
     sendTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
@@ -41,8 +43,11 @@ class RezkaApi {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
+    final deviceDetails = ref.read(deviceDetailsProvider);
+
     String baseUrl = kIsWeb
-        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy?url=https://rezka.ag'
+        //? 'https://app.iuk.edu.kg/functions/v1/corsproxy/?ip=185.229.36.125&url=https://hdrezka.ag'
+        ? 'https://cors.nb557.workers.dev:8443/ip${deviceDetails.ip}/https://hdrezka.ag'
         : storage.sharedStorage.getString('rezka_url') ??
             'http://hdrezka180bne.org';
 
@@ -529,41 +534,41 @@ class RezkaApi {
   }
 
   /// детали
-  Future<String> getCdnSeries({
-    required String id,
-    required String url,
-    required String action,
-    required String voiceActingId,
-    CancelToken? cancelToken,
-  }) async {
-    final headers = {
-      // 'Host': 'hdrezka.ag',
-      // 'Origin': 'https://hdrezka.ag',
-      // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
-      // 'User-Agent':
-      //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
-      // 'X-Requested-With': 'XMLHttpRequest',
-      //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-    };
-
-    //final data = {'id': id, 'translator_id': voiceActingId, 'action': action};
-    final data = {
-      'id': '63418',
-      'translator_id': '59',
-      'action': 'get_episodes'
-    };
-
-    return ApiRequest<String>().call(
-      request: _dio.post(
-        '/ajax/get_cdn_series/',
-        data: data,
-        options: Options(contentType: Headers.formUrlEncodedContentType),
-      ),
-      decoder: (html) async {
-        return '';
-      },
-    );
-  }
+  // Future<String> getCdnSeries({
+  //   required String id,
+  //   required String url,
+  //   required String action,
+  //   required String voiceActingId,
+  //   CancelToken? cancelToken,
+  // }) async {
+  //   final headers = {
+  //     // 'Host': 'hdrezka.ag',
+  //     // 'Origin': 'https://hdrezka.ag',
+  //     // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
+  //     // 'User-Agent':
+  //     //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+  //     // 'X-Requested-With': 'XMLHttpRequest',
+  //     //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+  //   };
+  //
+  //   //final data = {'id': id, 'translator_id': voiceActingId, 'action': action};
+  //   final data = {
+  //     'id': '63418',
+  //     'translator_id': '59',
+  //     'action': 'get_episodes'
+  //   };
+  //
+  //   return ApiRequest<String>().call(
+  //     request: _dio.post(
+  //       '/ajax/get_cdn_series/',
+  //       data: data,
+  //       options: Options(contentType: Headers.formUrlEncodedContentType),
+  //     ),
+  //     decoder: (html) async {
+  //       return '';
+  //     },
+  //   );
+  // }
 
   /// список сезонов и эпизодов
   Future<Element?> getSeasons({
@@ -623,21 +628,28 @@ class RezkaApi {
       'action': 'get_stream',
     };
 
+    print('zzzz: ${data}');
+
     return ApiRequest<MediaItemUrl>().call(
-      request: _dio.post(
+      request: Dio().post(
         '/ajax/get_cdn_series/',
         data: data,
-        options: Options(contentType: Headers.formUrlEncodedContentType),
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {},
+        ),
       ),
       decoder: (response) async {
         final json = jsonDecode(response);
         final stream = parseStreams(json['url']);
 
+        final streamUrl = stream
+                .singleWhereOrNull((element) => element.quality == quality)
+                ?.url ??
+            stream.first.url;
+        print('zzzz: ${streamUrl}');
         return MediaItemUrl(
-          video: stream
-                  .singleWhereOrNull((element) => element.quality == quality)
-                  ?.url ??
-              stream.first.url,
+          video: streamUrl,
         );
       },
     );

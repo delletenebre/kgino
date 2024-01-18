@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -38,7 +39,7 @@ class MoviesPage extends HookConsumerWidget {
     final storage = ref.read(storageProvider);
 
     useStream(
-      storage.db.mediaItems.watchLazy(),
+      kIsWeb ? null : storage.db.mediaItems.watchLazy(),
     );
 
     /// запрос избранных сериалов
@@ -133,7 +134,6 @@ class MoviesPage extends HookConsumerWidget {
             return FeaturedCard(mediaItem);
           },
         ),
-
         Expanded(
           child: VerticalListView(
             key: key,
@@ -209,171 +209,6 @@ class MoviesPage extends HookConsumerWidget {
             },
           ),
         ),
-
-        // AnimatedContainer(
-        //   duration: kThemeAnimationDuration,
-        //   height: TvUi.cardListHeight,
-        //   // focusedMediaItem.value == null
-        //   //     ? MediaQuery.of(context).size.height
-        //   //     : MediaQuery.of(context).size.height - TvUi.featuredHeight,
-        //   child: VerticalListView(
-        //     key: ValueKey(categories.length),
-        //     // clipBehavior:
-        //     //     focusedMediaItem.value == null ? Clip.none : Clip.hardEdge,
-        //     padding: const EdgeInsets.symmetric(vertical: 28.0),
-        //     onFocusChange: (hasFocus) {
-        //       if (!hasFocus) {
-        //         selectedMediaItem.value = null;
-        //         focusedMediaItem.value = null;
-        //       }
-        //     },
-        //     itemCount: categories.length,
-        //     itemBuilder: (context, index) {
-        //       final category = categories[index];
-        //
-        //       return Column(
-        //         crossAxisAlignment: CrossAxisAlignment.stretch,
-        //         children: [
-        //           Padding(
-        //               padding: EdgeInsets.fromLTRB(
-        //                 KrsTheme.safeArea.horizontal,
-        //                 0.0,
-        //                 KrsTheme.safeArea.horizontal,
-        //                 20.0,
-        //               ),
-        //               child: Row(
-        //                 children: [
-        //                   if (category.onlineService.logo.isNotEmpty)
-        //                     Padding(
-        //                       padding: const EdgeInsets.only(right: 12.0),
-        //                       child: OnlineServiceLogo(
-        //                           category.onlineService.logo),
-        //                     ),
-        //                   Text(
-        //                     category.title,
-        //                     style: theme.textTheme.titleMedium,
-        //                   ),
-        //                 ],
-        //               )),
-        //           SizedBox(
-        //             height: MediaItemCard.height,
-        //             child: HorizontalListView<MediaItem>(
-        //               key: category.key,
-        //               asyncItems: category.itemsFuture,
-        //               itemBuilder: (context, item) {
-        //                 return MediaItemCard(
-        //                   mediaItem: item,
-        //                   onFocusChange: (hasFocus) {
-        //                     if (hasFocus) {
-        //                       if (item.isFolder) {
-        //                         selectedMediaItem.value = null;
-        //                         focusedMediaItem.value = null;
-        //                       } else {
-        //                         selectedMediaItem.value = index;
-        //                         focusedMediaItem.value = item;
-        //                       }
-        //                     }
-        //                   },
-        //                   onTap: () {
-        //                     if (item.isFolder) {
-        //                       /// переходим на страницу выбранного провайдера
-        //                       context.pushNamed(item.id);
-        //                     } else {
-        //                       /// переходим на страницу деталей о сериале
-        //                       context.pushNamed('details', extra: item);
-        //                     }
-        //                   },
-        //                 );
-        //               },
-        //             ),
-        //           ),
-        //         ],
-        //       );
-        //     },
-        //   ),
-        // ),
-        // Expanded(
-        //   child: VerticalListView(
-        //     key: ValueKey(categories),
-        //     padding: const EdgeInsets.symmetric(vertical: 28.0),
-        //     onFocusChange: (hasFocus) {
-        //       if (!hasFocus) {
-        //         selectedMediaItem.value = null;
-        //         focusedMediaItem.value = null;
-        //       }
-        //     },
-        //     itemCount: categories.length,
-        //     itemBuilder: (context, index) {
-        //       final category = categories[index];
-        //
-        //       return Column(
-        //         crossAxisAlignment: CrossAxisAlignment.stretch,
-        //         children: [
-        //           Padding(
-        //               padding: EdgeInsets.fromLTRB(
-        //                 KrsTheme.safeArea.horizontal,
-        //                 0.0,
-        //                 KrsTheme.safeArea.horizontal,
-        //                 20.0,
-        //               ),
-        //               child: Row(
-        //                 children: [
-        //                   if (category.onlineService.logo.isNotEmpty)
-        //                     Padding(
-        //                       padding: const EdgeInsets.only(right: 12.0),
-        //                       child: SvgPicture.asset(
-        //                         category.onlineService.logo,
-        //                         height: 20.0,
-        //
-        //                         fit: BoxFit.scaleDown,
-        //                         // colorFilter: ColorFilter.mode(
-        //                         //     Colors.grey, BlendMode.srcIn),
-        //                         excludeFromSemantics: true,
-        //                       ),
-        //                     ),
-        //                   Text(
-        //                     category.title,
-        //                     style: theme.textTheme.titleMedium,
-        //                   ),
-        //                 ],
-        //               )),
-        //           SizedBox(
-        //             height: MediaItemCard.height,
-        //             child: HorizontalListView<MediaItem>(
-        //               key: category.key,
-        //               asyncItems: category.itemsFuture,
-        //               itemBuilder: (context, item) {
-        //                 return MediaItemCard(
-        //                   mediaItem: item,
-        //                   onFocusChange: (hasFocus) {
-        //                     if (hasFocus) {
-        //                       if (item.isFolder) {
-        //                         selectedMediaItem.value = null;
-        //                         focusedMediaItem.value = null;
-        //                       } else {
-        //                         selectedMediaItem.value = index;
-        //                         focusedMediaItem.value = item;
-        //                       }
-        //                     }
-        //                   },
-        //                   onTap: () {
-        //                     if (item.isFolder) {
-        //                       /// переходим на страницу выбранного провайдера
-        //                       context.pushNamed(item.id);
-        //                     } else {
-        //                       /// переходим на страницу деталей о сериале
-        //                       context.pushNamed('details', extra: item);
-        //                     }
-        //                   },
-        //                 );
-        //               },
-        //             ),
-        //           ),
-        //         ],
-        //       );
-        //     },
-        //   ),
-        // ),
       ],
     );
   }

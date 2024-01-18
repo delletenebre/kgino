@@ -20,6 +20,7 @@ mixin _$DeviceDetails {
   String get name => throw _privateConstructorUsedError;
   String get vendor => throw _privateConstructorUsedError;
   String get osVersion => throw _privateConstructorUsedError;
+  String get ip => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $DeviceDetailsCopyWith<DeviceDetails> get copyWith =>
@@ -32,7 +33,8 @@ abstract class $DeviceDetailsCopyWith<$Res> {
           DeviceDetails value, $Res Function(DeviceDetails) then) =
       _$DeviceDetailsCopyWithImpl<$Res, DeviceDetails>;
   @useResult
-  $Res call({String id, String name, String vendor, String osVersion});
+  $Res call(
+      {String id, String name, String vendor, String osVersion, String ip});
 }
 
 /// @nodoc
@@ -52,6 +54,7 @@ class _$DeviceDetailsCopyWithImpl<$Res, $Val extends DeviceDetails>
     Object? name = null,
     Object? vendor = null,
     Object? osVersion = null,
+    Object? ip = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -70,6 +73,10 @@ class _$DeviceDetailsCopyWithImpl<$Res, $Val extends DeviceDetails>
           ? _value.osVersion
           : osVersion // ignore: cast_nullable_to_non_nullable
               as String,
+      ip: null == ip
+          ? _value.ip
+          : ip // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -82,7 +89,8 @@ abstract class _$$DeviceDetailsImplCopyWith<$Res>
       __$$DeviceDetailsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String vendor, String osVersion});
+  $Res call(
+      {String id, String name, String vendor, String osVersion, String ip});
 }
 
 /// @nodoc
@@ -100,6 +108,7 @@ class __$$DeviceDetailsImplCopyWithImpl<$Res>
     Object? name = null,
     Object? vendor = null,
     Object? osVersion = null,
+    Object? ip = null,
   }) {
     return _then(_$DeviceDetailsImpl(
       id: null == id
@@ -118,6 +127,10 @@ class __$$DeviceDetailsImplCopyWithImpl<$Res>
           ? _value.osVersion
           : osVersion // ignore: cast_nullable_to_non_nullable
               as String,
+      ip: null == ip
+          ? _value.ip
+          : ip // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -128,7 +141,11 @@ class _$DeviceDetailsImpl
     with DiagnosticableTreeMixin
     implements _DeviceDetails {
   _$DeviceDetailsImpl(
-      {this.id = '', this.name = '', this.vendor = '', this.osVersion = ''});
+      {this.id = '',
+      this.name = '',
+      this.vendor = '',
+      this.osVersion = '',
+      this.ip = ''});
 
   @override
   @JsonKey()
@@ -142,10 +159,13 @@ class _$DeviceDetailsImpl
   @override
   @JsonKey()
   final String osVersion;
+  @override
+  @JsonKey()
+  final String ip;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'DeviceDetails(id: $id, name: $name, vendor: $vendor, osVersion: $osVersion)';
+    return 'DeviceDetails(id: $id, name: $name, vendor: $vendor, osVersion: $osVersion, ip: $ip)';
   }
 
   @override
@@ -156,7 +176,8 @@ class _$DeviceDetailsImpl
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('vendor', vendor))
-      ..add(DiagnosticsProperty('osVersion', osVersion));
+      ..add(DiagnosticsProperty('osVersion', osVersion))
+      ..add(DiagnosticsProperty('ip', ip));
   }
 
   @override
@@ -168,11 +189,12 @@ class _$DeviceDetailsImpl
             (identical(other.name, name) || other.name == name) &&
             (identical(other.vendor, vendor) || other.vendor == vendor) &&
             (identical(other.osVersion, osVersion) ||
-                other.osVersion == osVersion));
+                other.osVersion == osVersion) &&
+            (identical(other.ip, ip) || other.ip == ip));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, vendor, osVersion);
+  int get hashCode => Object.hash(runtimeType, id, name, vendor, osVersion, ip);
 
   @JsonKey(ignore: true)
   @override
@@ -186,7 +208,8 @@ abstract class _DeviceDetails implements DeviceDetails {
       {final String id,
       final String name,
       final String vendor,
-      final String osVersion}) = _$DeviceDetailsImpl;
+      final String osVersion,
+      final String ip}) = _$DeviceDetailsImpl;
 
   @override
   String get id;
@@ -196,6 +219,8 @@ abstract class _DeviceDetails implements DeviceDetails {
   String get vendor;
   @override
   String get osVersion;
+  @override
+  String get ip;
   @override
   @JsonKey(ignore: true)
   _$$DeviceDetailsImplCopyWith<_$DeviceDetailsImpl> get copyWith =>
