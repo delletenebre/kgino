@@ -12,6 +12,7 @@ import '../models/media_item.dart';
 import '../models/media_item_url.dart';
 import '../models/rezka/rezka_item.dart';
 import '../providers/providers.dart';
+import 'interceptors/logs_interceptor.dart';
 
 part 'rezka_api_provider.g.dart';
 
@@ -38,18 +39,20 @@ class RezkaApi {
 
   RezkaApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogsInterceptor());
+    _dio.interceptors.add(LogsInterceptor());
 
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
     final deviceDetails = ref.read(deviceDetailsProvider);
 
+    print('deviceDetails.ip: ${deviceDetails.ip}');
+
     String baseUrl = kIsWeb
-        //? 'https://app.iuk.edu.kg/functions/v1/corsproxy/?ip=185.229.36.125&url=https://hdrezka.ag'
-        ? 'https://cors.nb557.workers.dev:8443/ip${deviceDetails.ip}/https://hdrezka.ag'
+        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/?ip=${deviceDetails.ip}&url=https://hdrezka180pyq.org'
+        //? 'https://cors.nb557.workers.dev:8443/ip${deviceDetails.ip}/https://hdrezka.ag'
         : storage.sharedStorage.getString('rezka_url') ??
-            'http://hdrezka180bne.org';
+            'https://hdrezka180pyq.org';
 
     _dio.options.baseUrl = baseUrl;
   }
@@ -628,10 +631,8 @@ class RezkaApi {
       'action': 'get_stream',
     };
 
-    print('zzzz: ${data}');
-
     return ApiRequest<MediaItemUrl>().call(
-      request: Dio().post(
+      request: _dio.post(
         '/ajax/get_cdn_series/',
         data: data,
         options: Options(
