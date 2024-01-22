@@ -320,16 +320,6 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
-          title: 'Таиланд, поезд',
-          poster: 'http://i3.ytimg.com/vi/ujqL2QNKVaY/hqdefault.jpg',
-          seasons: [
-            MediaItemSeason(episodes: [
-              MediaItemEpisode(
-                  videoFileUrl: 'https://www.youtube.com/watch?v=ujqL2QNKVaY'),
-            ])
-          ],
-        ),
-        MediaItem(
           title: 'Гонконг, двухэтажный трамвай',
           poster: 'http://i3.ytimg.com/vi/Ilrezf9AnVY/hqdefault.jpg',
           seasons: [
