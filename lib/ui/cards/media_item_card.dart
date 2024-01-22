@@ -1,8 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:kgino/extensions/string_extensions.dart';
 import 'package:kgino/extensions/theme_data_extensions.dart';
 
 import '../../models/media_item.dart';
@@ -43,7 +42,7 @@ class MediaItemCard extends HookWidget {
         try {
           /// получаем цветовую палитру изображения
           ColorScheme.fromImageProvider(
-                  provider: CachedNetworkImageProvider(imageUrl, maxWidth: 100))
+                  provider: imageUrl.toProxyImageProvider(maxWidth: 100))
               .then((colorScheme) {
             /// обновляем цвет свечения
             glowColor.value = colorScheme.primary.withOpacity(0.62);
@@ -56,17 +55,6 @@ class MediaItemCard extends HookWidget {
       /// we could optionally return some "dispose" logic here
       return null;
     }, const []);
-
-    final imageProvider = imageUrl.endsWith('.svg')
-        ? Svg(
-            imageUrl,
-            source: imageUrl.startsWith('assets/')
-                ? SvgSource.asset
-                : SvgSource.network,
-          ) as ImageProvider
-        : imageUrl.startsWith('assets/')
-            ? Image.asset(imageUrl).image
-            : CachedNetworkImageProvider(imageUrl, maxWidth: 200);
 
     return Focus(
       onFocusChange: (hasFocus) {
@@ -108,7 +96,7 @@ class MediaItemCard extends HookWidget {
               image: imageUrl.isEmpty
                   ? null
                   : DecorationImage(
-                      image: imageProvider,
+                      image: imageUrl.toProxyImageProvider(maxWidth: 200),
                       fit: BoxFit.cover,
                       isAntiAlias: true,
                     ),

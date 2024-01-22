@@ -46,13 +46,10 @@ class RezkaApi {
 
     final deviceDetails = ref.read(deviceDetailsProvider);
 
-    print('deviceDetails.ip: ${deviceDetails.ip}');
-
     String baseUrl = kIsWeb
-        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/?ip=${deviceDetails.ip}&url=https://hdrezka180pyq.org'
+        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/?ip=${deviceDetails.ip}&url=https://rezka.ag'
         //? 'https://cors.nb557.workers.dev:8443/ip${deviceDetails.ip}/https://hdrezka.ag'
-        : storage.sharedStorage.getString('rezka_url') ??
-            'https://hdrezka180pyq.org';
+        : storage.sharedStorage.getString('rezka_url') ?? 'https://rezka.ag';
 
     _dio.options.baseUrl = baseUrl;
   }
@@ -121,11 +118,9 @@ class RezkaApi {
 
   /// список сериалов
   Future<List<MediaItem>> _getShows(String filter) async {
-    print('GGGEGETEAJKNKJSFN JASN JA NKJA SNFJ ASF');
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get('/series/page/1/?filter=$filter'),
       decoder: (response) async {
-        print('GGGEGETEAJKNKJSFN JASN JA NKJA SNFJ ASF2');
         final html = response.toString();
 
         /// список элементов

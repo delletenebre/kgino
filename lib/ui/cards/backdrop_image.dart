@@ -1,8 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../resources/krs_theme.dart';
+import '../images/proxy_image.dart';
 
 class BackdropImage extends StatelessWidget {
   final String imageUrl;
@@ -35,23 +34,9 @@ class BackdropImage extends StatelessWidget {
         /// постер фильма
         child: SizedBox.fromSize(
           size: TvUi.backdropImageSize,
-          child: imageUrl.startsWith('assets')
-              ? imageUrl.endsWith('svg')
-                  ? SvgPicture.asset(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                    )
-                  : Image.asset(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                    )
-              : CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                ),
+          child: ProxyImage(
+            imageUrl: imageUrl,
+          ),
         ),
       ),
     );

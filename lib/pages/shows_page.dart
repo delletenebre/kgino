@@ -75,13 +75,13 @@ class ShowsPage extends HookConsumerWidget {
     final tskgApi = ref.read(tskgApiProvider);
 
     /// tskg список последний добавлений
-    final tskgAsyncLatest = useMemoized(() => tskgApi.getLatestShows());
+    // final tskgAsyncLatest = useMemoized(() => tskgApi.getLatestShows());
 
     /// filmix провайдер запросов к API
     final filmixApi = ref.read(filmixApiProvider);
 
     /// filmix список последний добавлений
-    final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestShows());
+    // final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestShows());
 
     /// hdrezka провайдер запросов к API
     final rezkaApi = ref.read(rezkaApiProvider);
@@ -122,21 +122,21 @@ class ShowsPage extends HookConsumerWidget {
                   title: locale.bookmarks,
                   apiResponse: asyncBookmarks,
                 ),
-              CategoryListItem(
-                onlineService: OnlineService.filmix,
-                title: 'Последние поступления',
-                apiResponse: filmixAsyncLatest,
-              ),
+              // CategoryListItem(
+              //   onlineService: OnlineService.filmix,
+              //   title: 'Последние поступления',
+              //   apiResponse: filmixAsyncLatest,
+              // ),
               CategoryListItem(
                 onlineService: OnlineService.rezka,
                 title: 'Последние поступления',
                 apiResponse: rezkaAsyncLatest,
               ),
-              CategoryListItem(
-                onlineService: OnlineService.tskg,
-                title: 'Последние поступления',
-                apiResponse: tskgAsyncLatest,
-              ),
+              // CategoryListItem(
+              //   onlineService: OnlineService.tskg,
+              //   title: 'Последние поступления',
+              //   apiResponse: tskgAsyncLatest,
+              // ),
             ],
         [bookmarkCount]);
 
