@@ -20,11 +20,8 @@ class KrsNavigationBar extends HookConsumerWidget
 
     final focused = useState(tabsController.focusNode.hasFocus);
 
-    print('selectedTab: $selectedTab');
-
     return Focus(
       focusNode: tabsController.focusNode,
-      canRequestFocus: false,
       onKey: (node, event) {
         if (focused.value) {
           if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
@@ -36,10 +33,6 @@ class KrsNavigationBar extends HookConsumerWidget
             tabsController.changePage(selectedTab + 1);
             return KeyEventResult.handled;
           }
-
-          // if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-          //   return KeyEventResult.handled;
-          // }
         }
 
         return KeyEventResult.ignored;
@@ -47,9 +40,8 @@ class KrsNavigationBar extends HookConsumerWidget
       onFocusChange: (hasFocus) {
         focused.value = hasFocus;
 
-        print('FOCUS CHANGED $hasFocus');
         if (hasFocus) {
-          //tabsController.requestCurrentActiveTabFocus();
+          tabsController.requestCurrentActiveTabFocus();
         }
       },
       child: KrsAppBar(

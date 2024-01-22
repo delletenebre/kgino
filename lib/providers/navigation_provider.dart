@@ -35,13 +35,15 @@ class Navigation extends _$Navigation {
   }
 
   void changePage(int pageIndex) {
-    state = pageIndex;
-    //requestCurrentActiveTabFocus();
-    pageController.animateToPage(
-      pageIndex,
-      duration: kThemeAnimationDuration,
-      curve: Curves.easeOut,
-    );
+    if (0 <= pageIndex && pageIndex < pages.length) {
+      state = pageIndex;
+      pageController.animateToPage(
+        pageIndex,
+        duration: kThemeAnimationDuration,
+        curve: Curves.easeOut,
+      );
+      requestCurrentActiveTabFocus();
+    }
   }
 
   void navigateBack() {
@@ -50,10 +52,12 @@ class Navigation extends _$Navigation {
   }
 
   void requestCurrentActiveTabFocus() {
-    focusNode.children
-        .where((element) => element.canRequestFocus)
-        .elementAtOrNull(state)
-        ?.requestFocus();
+    if (focusNode.hasFocus) {
+      focusNode.children
+          .where((element) => element.canRequestFocus)
+          .elementAtOrNull(state)
+          ?.requestFocus();
+    }
   }
 
   bool get isSearchSelected => state == 0;

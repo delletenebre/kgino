@@ -23,7 +23,6 @@ class KrsNavigationButton extends HookWidget {
   @override
   Widget build(context) {
     final theme = Theme.of(context);
-    final focusNode = useFocusNode();
 
     final style = ButtonStyle(
       elevation: MaterialStateProperty.all(0.0),
@@ -66,11 +65,8 @@ class KrsNavigationButton extends HookWidget {
 
     return FilledButton(
       style: style,
-      onFocusChange: (hasFocus) {
-        onSelected.call();
-      },
       onPressed: () {
-        focusNode.requestFocus();
+        onSelected.call();
       },
       child: child,
     );
