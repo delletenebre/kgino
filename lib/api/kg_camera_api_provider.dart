@@ -310,12 +310,32 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
-          title: 'Таймс-сквер, Нью-Йорк',
-          poster: 'https://i.ytimg.com/vi/1-iS7LArMPA/hqdefault_live.jpg',
+          title: 'Таиланд, поезд',
+          poster: 'http://i3.ytimg.com/vi/ujqL2QNKVaY/hqdefault.jpg',
           seasons: [
             MediaItemSeason(episodes: [
               MediaItemEpisode(
-                  videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA'),
+                  videoFileUrl: 'https://www.youtube.com/watch?v=ujqL2QNKVaY'),
+            ])
+          ],
+        ),
+        MediaItem(
+          title: 'Таиланд, поезд',
+          poster: 'http://i3.ytimg.com/vi/ujqL2QNKVaY/hqdefault.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=ujqL2QNKVaY'),
+            ])
+          ],
+        ),
+        MediaItem(
+          title: 'Гонконг, двухэтажный трамвай',
+          poster: 'http://i3.ytimg.com/vi/Ilrezf9AnVY/hqdefault.jpg',
+          seasons: [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: 'https://www.youtube.com/watch?v=Ilrezf9AnVY'),
             ])
           ],
         ),
