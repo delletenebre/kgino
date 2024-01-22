@@ -26,7 +26,7 @@ class HomePage extends ConsumerWidget {
           controller: tabsController.pageController,
           clipBehavior: Clip.none,
           physics: const NeverScrollableScrollPhysics(),
-          pageSnapping: false,
+          // pageSnapping: false,
           children: tabsController.pages,
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fvp/fvp.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'models/device_details.dart';
@@ -19,6 +20,12 @@ Future<void> main() async {
     'platforms': ['windows', 'macos', 'linux']
   });
   // MediaKit.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://app.iuk.edu.kg',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzA1ODYwMDAwLAogICJleHAiOiA5ODYzNzEyODAwCn0.GpraSLasJQKJutMZrx_6GBT2dt-mpWyflLYJGfUbM0E',
+  );
 
   /// информация об устройстве
   final deviceDetails = await DeviceDetails.initialize();

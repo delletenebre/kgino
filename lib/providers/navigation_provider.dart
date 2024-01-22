@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../pages/cameras_page.dart';
 import '../pages/movies_page.dart';
 import '../pages/search_page.dart';
+import '../pages/settings_page.dart';
 import '../pages/shows_page.dart';
 
 part 'navigation_provider.g.dart';
@@ -17,6 +18,7 @@ class Navigation extends _$Navigation {
     ShowsPage(),
     MoviesPage(),
     CamerasPage(),
+    SettingsPage(),
   ];
 
   @override
@@ -34,6 +36,7 @@ class Navigation extends _$Navigation {
 
   void changePage(int pageIndex) {
     state = pageIndex;
+    //requestCurrentActiveTabFocus();
     pageController.animateToPage(
       pageIndex,
       duration: kThemeAnimationDuration,

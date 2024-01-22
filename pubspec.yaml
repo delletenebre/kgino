@@ -55,10 +55,11 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   shared_preferences: ^2.2.2
   skeletonizer: ^1.0.1
+  supabase_flutter: ^2.3.0
   path_provider: ^2.1.2
   scrollview_observer: ^1.19.0
   #scrollable_positioned_list: ^0.3.8
-  sticky_grouped_list: ^3.1.0
+  #sticky_grouped_list: ^3.1.0
   uuid: ^4.3.3
   wakelock_plus: ^1.1.4
 

@@ -28,9 +28,7 @@ class KrsAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: TvUi.hPadding,
           ),
-          child: Wrap(
-            spacing: spacing,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          child: Row(
             children: [
               if (kDebugMode && context.canPop()) const KrsBackButton(),
               ...children,

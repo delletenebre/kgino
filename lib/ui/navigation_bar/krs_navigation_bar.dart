@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,13 +20,36 @@ class KrsNavigationBar extends HookConsumerWidget
 
     final focused = useState(tabsController.focusNode.hasFocus);
 
+    print('selectedTab: $selectedTab');
+
     return Focus(
       focusNode: tabsController.focusNode,
+      canRequestFocus: false,
+      onKey: (node, event) {
+        if (focused.value) {
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+            tabsController.changePage(selectedTab - 1);
+            return KeyEventResult.handled;
+          }
+
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+            tabsController.changePage(selectedTab + 1);
+            return KeyEventResult.handled;
+          }
+
+          // if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+          //   return KeyEventResult.handled;
+          // }
+        }
+
+        return KeyEventResult.ignored;
+      },
       onFocusChange: (hasFocus) {
         focused.value = hasFocus;
 
+        print('FOCUS CHANGED $hasFocus');
         if (hasFocus) {
-          tabsController.requestCurrentActiveTabFocus();
+          //tabsController.requestCurrentActiveTabFocus();
         }
       },
       child: KrsAppBar(
@@ -62,6 +86,15 @@ class KrsNavigationBar extends HookConsumerWidget
               tabsController.changePage(3);
             },
             child: const Text('Камеры'),
+          ),
+          const Spacer(),
+          KrsNavigationButton(
+            active: focused.value,
+            selected: selectedTab == 4,
+            onSelected: () {
+              tabsController.changePage(4);
+            },
+            child: const Icon(Icons.settings),
           ),
         ],
       ),

@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/media_item.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
-import '../ui/lists/vertical_grouped_list_view.dart';
 import '../ui/lists/vertical_list_view.dart';
 import '../ui/pages/krs_app_bar.dart';
 import '../ui/pages/playlist/krs_list_tile.dart';
@@ -73,27 +72,27 @@ class PlaylistPage extends HookConsumerWidget {
       }
     }
 
-    int episodesOffset = 0;
-    int seasonsOffset = 0;
-    List<int> seasonEpisodesMap = [0];
-    final groupedEpisodes = <GroupedListViewItem>[];
-    for (final season in mediaItem.seasons) {
-      seasonsOffset++;
-
-      /// количество эпизодов в текущем сезоне
-      final episodesCount = season.episodes.length;
-      groupedEpisodes.addAll(
-        List.generate(episodesCount, (index) {
-          return GroupedListViewItem(
-            group: season.nameOr('${locale.season} $seasonsOffset'),
-            groupIndex: seasonsOffset,
-            index: episodesOffset + index,
-          );
-        }),
-      );
-      episodesOffset += episodesCount;
-    }
-    seasonEpisodesMap[0] = 0;
+    // int episodesOffset = 0;
+    // int seasonsOffset = 0;
+    // List<int> seasonEpisodesMap = [0];
+    // final groupedEpisodes = <GroupedListViewItem>[];
+    // for (final season in mediaItem.seasons) {
+    //   seasonsOffset++;
+    //
+    //   /// количество эпизодов в текущем сезоне
+    //   final episodesCount = season.episodes.length;
+    //   groupedEpisodes.addAll(
+    //     List.generate(episodesCount, (index) {
+    //       return GroupedListViewItem(
+    //         group: season.nameOr('${locale.season} $seasonsOffset'),
+    //         groupIndex: seasonsOffset,
+    //         index: episodesOffset + index,
+    //       );
+    //     }),
+    //   );
+    //   episodesOffset += episodesCount;
+    // }
+    // seasonEpisodesMap[0] = 0;
 
     return Scaffold(
       appBar: const KrsAppBar(),
