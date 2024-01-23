@@ -11,6 +11,7 @@ part 'rezka_item.g.dart';
 @JsonSerializable(explicitToJson: true)
 class RezkaItem extends MediaItem {
   RezkaItem({
+    super.onlineService = OnlineService.rezka,
     required super.id,
     required super.title,
     super.originalTitle = '',
@@ -23,7 +24,6 @@ class RezkaItem extends MediaItem {
     super.seasons,
     super.voices,
     super.poster,
-    super.onlineService = OnlineService.rezka,
     super.type = MediaItemType.show,
     super.seasonCount,
 

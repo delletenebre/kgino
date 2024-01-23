@@ -25,11 +25,12 @@ class FilmixItem extends MediaItem {
   final int duration;
 
   FilmixItem({
+    super.onlineService = OnlineService.filmix,
     required super.id,
     required super.title,
     required super.poster,
     super.type = MediaItemType.movie,
-    super.quality = '721',
+    super.quality = '720',
     super.originalTitle = '',
     super.year,
     super.countries,
@@ -37,7 +38,6 @@ class FilmixItem extends MediaItem {
     super.kinopoiskRating,
     super.seasons,
     super.voices,
-    super.onlineService = OnlineService.filmix,
     this.categories = const [],
     this.shortStory = '',
     this.playerLinks = const FilmixPlayerLinks(),

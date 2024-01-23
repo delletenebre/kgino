@@ -65,6 +65,7 @@ class MediaItem implements Playable {
 
   /// онлайн-сервис
   @enumValue
+  @JsonKey(name: 'onlineService')
   final OnlineService onlineService;
 
   /// идентификатор на сервисе
@@ -92,6 +93,7 @@ class MediaItem implements Playable {
   VoiceActing voiceActing;
 
   /// включены ли субтитры
+  @JsonKey(name: 'subtitlesEnabled')
   bool subtitlesEnabled;
 
   /// дата добавления в избранное
@@ -99,6 +101,7 @@ class MediaItem implements Playable {
 
   /// оригинальное название
   @ignore
+  @JsonKey(name: 'originalTitle')
   final String originalTitle;
 
   /// описание
@@ -120,11 +123,13 @@ class MediaItem implements Playable {
 
   /// количество сезонов
   @ignore
+  @JsonKey(name: 'seasonCount')
   final int seasonCount;
 
   /// рейтинг IMDb
   @DoubleConverter()
   @ignore
+  @JsonKey(name: 'imdbRating')
   final double imdbRating;
   @JsonKey(includeFromJson: false, includeToJson: false)
   @ignore
@@ -133,6 +138,7 @@ class MediaItem implements Playable {
   /// рейтинг КиноПоиск
   @DoubleConverter()
   @ignore
+  @JsonKey(name: 'kinopoiskRating')
   final double kinopoiskRating;
   @JsonKey(includeFromJson: false, includeToJson: false)
   @ignore

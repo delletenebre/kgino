@@ -6,7 +6,7 @@ part of 'filmix_auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filmixAuthHash() => r'ca2c2116f0ec1cd88e6ab81995d24c8b361b4e3e';
+String _$filmixAuthHash() => r'addf9ee44701a3332e04c2046725349f58ab93cf';
 
 /// контроллер авторизации
 ///

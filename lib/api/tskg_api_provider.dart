@@ -28,7 +28,7 @@ class TskgApi {
 
   static const baseUrl = kIsWeb
       //? 'https://app.iuk.edu.kg/functions/v1/corsproxy?url=https://www.ts.kg'
-      ? 'https://app.iuk.edu.kg/functions/v1/proxy/?url=https://www.ts.kg'
+      ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/https://www.ts.kg'
       : 'https://www.ts.kg';
 
   final _dio = Dio(BaseOptions(

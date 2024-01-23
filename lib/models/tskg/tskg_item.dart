@@ -11,6 +11,7 @@ part 'tskg_item.g.dart';
 @JsonSerializable(explicitToJson: true)
 class TskgItem extends MediaItem {
   TskgItem({
+    super.onlineService = OnlineService.tskg,
     super.id,
     super.title,
     super.type = MediaItemType.show,

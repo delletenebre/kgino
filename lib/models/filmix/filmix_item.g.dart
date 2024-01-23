@@ -7,6 +7,9 @@ part of 'filmix_item.dart';
 // **************************************************************************
 
 FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
+      onlineService:
+          $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
+              OnlineService.filmix,
       id: json['id'] == null
           ? ''
           : const StringConverter().fromJson(json['id']),
@@ -14,8 +17,8 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       poster: json['poster'] as String? ?? '',
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
           MediaItemType.movie,
-      quality: json['quality'] as String? ?? '721',
-      originalTitle: json['original_title'] as String? ?? '',
+      quality: json['quality'] as String? ?? '720',
+      originalTitle: json['originalTitle'] as String? ?? '',
       year: json['year'] == null
           ? ''
           : const StringConverter().fromJson(json['year']),
@@ -23,12 +26,12 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      imdbRating: json['imdb_rating'] == null
+      imdbRating: json['imdbRating'] == null
           ? 0.0
-          : const DoubleConverter().fromJson(json['imdb_rating']),
-      kinopoiskRating: json['kinopoisk_rating'] == null
+          : const DoubleConverter().fromJson(json['imdbRating']),
+      kinopoiskRating: json['kinopoiskRating'] == null
           ? 0.0
-          : const DoubleConverter().fromJson(json['kinopoisk_rating']),
+          : const DoubleConverter().fromJson(json['kinopoiskRating']),
       seasons: (json['seasons'] as List<dynamic>?)
               ?.map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -37,9 +40,6 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
               ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      onlineService:
-          $enumDecodeNullable(_$OnlineServiceEnumMap, json['online_service']) ??
-              OnlineService.filmix,
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -54,7 +54,7 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       bookmarked: json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String),
-      subtitlesEnabled: json['subtitles_enabled'] as bool? ?? true,
+      subtitlesEnabled: json['subtitlesEnabled'] as bool? ?? true,
       voiceActing: json['voiceActing'] == null
           ? const VoiceActing()
           : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
@@ -63,20 +63,20 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
 
 Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
     <String, dynamic>{
-      'online_service': _$OnlineServiceEnumMap[instance.onlineService]!,
+      'onlineService': _$OnlineServiceEnumMap[instance.onlineService]!,
       'id': const StringConverter().toJson(instance.id),
       'title': instance.title,
       'poster': instance.poster,
       'type': _$MediaItemTypeEnumMap[instance.type]!,
       'quality': instance.quality,
       'voiceActing': instance.voiceActing.toJson(),
-      'subtitles_enabled': instance.subtitlesEnabled,
+      'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
-      'original_title': instance.originalTitle,
+      'originalTitle': instance.originalTitle,
       'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,
-      'imdb_rating': const DoubleConverter().toJson(instance.imdbRating),
-      'kinopoisk_rating':
+      'imdbRating': const DoubleConverter().toJson(instance.imdbRating),
+      'kinopoiskRating':
           const DoubleConverter().toJson(instance.kinopoiskRating),
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
       'voices': instance.voices.map((e) => e.toJson()).toList(),
@@ -86,15 +86,15 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'duration': instance.duration,
     };
 
-const _$MediaItemTypeEnumMap = {
-  MediaItemType.show: 'show',
-  MediaItemType.movie: 'movie',
-  MediaItemType.folder: 'folder',
-};
-
 const _$OnlineServiceEnumMap = {
   OnlineService.none: 'none',
   OnlineService.filmix: 'filmix',
   OnlineService.rezka: 'rezka',
   OnlineService.tskg: 'tskg',
+};
+
+const _$MediaItemTypeEnumMap = {
+  MediaItemType.show: 'show',
+  MediaItemType.movie: 'movie',
+  MediaItemType.folder: 'folder',
 };

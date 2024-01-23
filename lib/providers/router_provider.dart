@@ -110,15 +110,27 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               MediaItem? mediaItem;
               if (state.extra is Map) {
+                /// ^ в web, при [Navigator.pop()] extra не сохраняется как [MediaItem]
+                /// поэтому необходима проверка на json
+
                 final extra = (state.extra as Map<String, dynamic>);
+
+                print(
+                    'zzzzzzzzz extra ${extra.containsKey('onlineService')} ${extra['onlineService']}');
+                print(extra);
                 if (extra.containsKey('onlineService')) {
+                  print(extra['onlineService']);
                   switch (extra['onlineService']) {
                     case 'rezka':
                       mediaItem = RezkaItem.fromJson(extra);
+                      break;
                     case 'tskg':
                       mediaItem = TskgItem.fromJson(extra);
+                      break;
                     case 'filmix':
                       mediaItem = FilmixItem.fromJson(extra);
+                      print('zzzzzzzzz extra1');
+                      break;
                   }
                 }
               } else if (state.extra is MediaItem) {

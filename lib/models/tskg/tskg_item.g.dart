@@ -7,6 +7,9 @@ part of 'tskg_item.dart';
 // **************************************************************************
 
 TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
+      onlineService:
+          $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
+              OnlineService.tskg,
       id: json['id'] == null
           ? ''
           : const StringConverter().fromJson(json['id']),
@@ -67,7 +70,15 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
           const DoubleConverter().toJson(instance.kinopoiskRating),
       'seasons': instance.seasons.map((e) => e.toJson()).toList(),
       'voices': instance.voices.map((e) => e.toJson()).toList(),
+      'onlineService': _$OnlineServiceEnumMap[instance.onlineService]!,
     };
+
+const _$OnlineServiceEnumMap = {
+  OnlineService.none: 'none',
+  OnlineService.filmix: 'filmix',
+  OnlineService.rezka: 'rezka',
+  OnlineService.tskg: 'tskg',
+};
 
 const _$MediaItemTypeEnumMap = {
   MediaItemType.show: 'show',

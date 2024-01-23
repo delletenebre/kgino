@@ -7,6 +7,9 @@ part of 'rezka_item.dart';
 // **************************************************************************
 
 RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
+      onlineService:
+          $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
+              OnlineService.rezka,
       id: json['id'] == null
           ? ''
           : const StringConverter().fromJson(json['id']),
@@ -39,9 +42,6 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
               .toList() ??
           const [],
       poster: json['poster'] as String? ?? '',
-      onlineService:
-          $enumDecodeNullable(_$OnlineServiceEnumMap, json['onlineService']) ??
-              OnlineService.rezka,
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
           MediaItemType.show,
       seasonCount: json['seasonCount'] as int? ?? 0,
