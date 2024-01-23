@@ -24,7 +24,7 @@ extension StringExtensions on String {
       return this;
     } else {
       if (kIsWeb) {
-        return 'https://app.iuk.edu.kg/functions/v1/corsproxy/?url=$this';
+        return 'https://app.iuk.edu.kg/functions/v1/corsproxy/$this';
       } else {
         return this;
       }

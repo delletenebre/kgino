@@ -46,10 +46,10 @@ class Search extends _$Search {
       tskgCancelToken.cancel();
     });
 
-    // final rezkaResult = await rezkaApi.search(
-    //   searchQuery: searchQuery,
-    //   cancelToken: rezkaCancelToken,
-    // );
+    final rezkaResult = await rezkaApi.search(
+      searchQuery: searchQuery,
+      cancelToken: rezkaCancelToken,
+    );
 
     /// результаты поиска filmix
     final filmixResult = await filmixApi.search(
@@ -71,12 +71,12 @@ class Search extends _$Search {
           title: 'Filmix',
           items: filmixResult,
         ),
-      // if (rezkaResult.isNotEmpty)
-      //   CategoryListItem(
-      //     onlineService: OnlineService.rezka,
-      //     title: 'HDrezka',
-      //     items: rezkaResult,
-      //   ),
+      if (rezkaResult.isNotEmpty)
+        CategoryListItem(
+          onlineService: OnlineService.rezka,
+          title: 'HDrezka',
+          items: rezkaResult,
+        ),
       if (tskgResult.isNotEmpty)
         CategoryListItem(
           onlineService: OnlineService.tskg,

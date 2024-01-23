@@ -9,7 +9,6 @@ import '../models/filmix/filmix_profile.dart';
 import '../models/filmix/filmix_token.dart';
 import '../models/media_item.dart';
 import '../providers/providers.dart';
-import 'interceptors/logs_interceptor.dart';
 
 part 'filmix_api_provider.g.dart';
 
@@ -34,7 +33,7 @@ class FilmixApi {
 
   FilmixApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogsInterceptor());
+    //_dio.interceptors.add(LogsInterceptor());
 
     /// хранилище данных
     final storage = ref.read(storageProvider);

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
+import '../models/rezka/rezka_item.dart';
+import '../models/tskg/tskg_item.dart';
 import '../pages/details_page.dart';
 import '../pages/filmix/filmix_movies_page.dart';
 import '../pages/filmix/filmix_shows_page.dart';
@@ -105,8 +108,28 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'details',
             name: 'details',
             builder: (context, state) {
-              final mediaItem = state.extra as MediaItem;
-              return DetailsPage(mediaItem);
+              MediaItem? mediaItem;
+              if (state.extra is Map) {
+                final extra = (state.extra as Map<String, dynamic>);
+                if (extra.containsKey('onlineService')) {
+                  switch (extra['onlineService']) {
+                    case 'rezka':
+                      mediaItem = RezkaItem.fromJson(extra);
+                    case 'tskg':
+                      mediaItem = TskgItem.fromJson(extra);
+                    case 'filmix':
+                      mediaItem = FilmixItem.fromJson(extra);
+                  }
+                }
+              } else if (state.extra is MediaItem) {
+                mediaItem = state.extra as MediaItem;
+              }
+
+              if (mediaItem != null) {
+                return DetailsPage(mediaItem);
+              } else {
+                return const HomePage();
+              }
             },
           ),
 
