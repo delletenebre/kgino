@@ -34,6 +34,9 @@ class FilmixShowsPage extends HookConsumerWidget {
     /// популярные
     final asyncPopular = useMemoized(() => api.getPopularShows());
 
+    /// список категорий
+    final asyncCategories = useMemoized(() => api.getCategories());
+
     final categories = [
       CategoryListItem(
         title: 'Последние поступления',
@@ -42,6 +45,10 @@ class FilmixShowsPage extends HookConsumerWidget {
       CategoryListItem(
         title: 'Популярные',
         apiResponse: asyncPopular,
+      ),
+      CategoryListItem(
+        title: 'locale.genres',
+        apiResponse: asyncCategories,
       ),
     ];
 
@@ -131,8 +138,23 @@ class FilmixShowsPage extends HookConsumerWidget {
                               }
                             },
                             onTap: () {
-                              /// переходим на страницу деталей о сериале
-                              context.pushNamed('details', extra: item);
+                              if (item.isFolder) {
+                                /// ^ если это категория (жанр)
+
+                                /// переходим в папку выбранной категории
+                                context.pushNamed(
+                                  'filmixCategory',
+                                  queryParameters: {
+                                    'id': item.id,
+                                    'title': item.title,
+                                  },
+                                );
+                              } else {
+                                /// ^ если это сериал
+
+                                /// переходим на страницу деталей о сериале
+                                context.pushNamed('details', extra: item);
+                              }
                             },
                           );
                         },

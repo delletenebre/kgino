@@ -256,86 +256,32 @@ class FilmixApi {
     );
   }
 
-  // /// поиск фильмов
-  // Future<ApiResponse<List<KginoItem>>> searchMovies(String searchQuery) async {
-  //   return ApiRequest<List<KginoItem>>().call(
-  //     request: _dio.get('/search', queryParameters: {
-  //       ..._queryParams,
-  //       'story': searchQuery,
-  //     }),
-  //     decoder: (json) async {
-  //       return json.map<KginoItem>((item) {
-  //         return FlmxItem.fromJson(item).toMovieItem();
-  //       }).toList();
-  //     },
-  //   );
-  // }
+  /// список категорий
+  Future<List<MediaItem>> getCategories({CancelToken? cancelToken}) async {
+    return ApiRequest<List<MediaItem>>().call(
+      request: _dio.get(
+        '/category_list',
+        queryParameters: {
+          ..._queryParams,
+        },
+        cancelToken: cancelToken,
+      ),
+      decoder: (json) async {
+        final categories = <MediaItem>[];
+        Map.from(json).forEach((key, value) {
+          categories.add(FilmixItem(
+            id: key.toString().replaceAll('f', 'g'),
+            type: MediaItemType.folder,
+            title: value,
+            poster: '',
+          ));
+        });
 
-  // /// запрос ключа авторизации
-  // Future<ApiResponse<FlmxToken>> getToken({
-  //   CancelToken? cancelToken,
-  // }) async {
-  //   return ApiRequest<FlmxToken>().call(
-  //     request: _dio.get(
-  //       '/token_request',
-  //       queryParameters: {
-  //         ..._queryParams,
-  //       },
-  //       cancelToken: cancelToken,
-  //     ),
-  //     decoder: (json) async {
-  //       final token = FlmxToken.fromJson(json);
-
-  //       /// хранилище данных
-  //       final storage = GetIt.instance<KrsStorage>();
-
-  //       storage.sharedStorage.setString('filmix_auth_token', token.code);
-
-  //       _queryParams['user_dev_token'] = token.code;
-
-  //       return token;
-  //     },
-  //   );
-  // }
-
-  // /// запрос профиля пользователя
-  // Future<ApiResponse<FlmxProfile>> getProfile({
-  //   CancelToken? cancelToken,
-  // }) async {
-  //   return ApiRequest<FlmxProfile>().call(
-  //     request: _dio.get(
-  //       '/user_profile',
-  //       queryParameters: {
-  //         ..._queryParams,
-  //       },
-  //       cancelToken: cancelToken,
-  //     ),
-  //     decoder: (json) async {
-  //       return FlmxProfile.fromJson(json);
-  //     },
-  //   );
-  // }
-
-  // /// список категорий
-  // Future<ApiResponse<List<KginoItem>>> getCategories() async {
-  //   return ApiRequest<List<KginoItem>>().call(
-  //     request: _dio.get('/category_list', queryParameters: {
-  //       ..._queryParams,
-  //     }),
-  //     decoder: (json) async {
-  //       final categories = <KginoItem>[];
-  //       Map.from(json).forEach((key, value) {
-  //         categories.add(KginoItem(
-  //           provider: KginoProvider.flmxMovie.name,
-  //           id: key.toString().replaceAll('f', 'g'),
-  //           name: value,
-  //           posterUrl: '',
-  //           isFolder: true,
-  //         ));
-  //       });
-
-  //       return categories;
-  //     },
-  //   );
-  // }
+        return categories;
+        // return json.map<MediaItem>((item) {
+        //   return FilmixItem.fromJson(item);
+        // }).toList();
+      },
+    );
+  }
 }
