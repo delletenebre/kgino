@@ -176,9 +176,6 @@ MediaItem? extraToMediaItem(Object? extra) {
 
     final extraJson = (extra as Map<String, dynamic>);
 
-    print(
-        'zzzzzzzzz extra ${extraJson.containsKey('onlineService')} ${extraJson['onlineService']}');
-    print(extraJson);
     if (extraJson.containsKey('onlineService')) {
       switch (extraJson['onlineService']) {
         case 'rezka':

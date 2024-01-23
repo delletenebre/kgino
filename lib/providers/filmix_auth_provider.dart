@@ -28,7 +28,6 @@ class FilmixAuth extends _$FilmixAuth {
   /// получаем профиль пользователя
   FutureOr<FilmixProfile?> getProfile() async {
     state = const AsyncLoading();
-    print('HERE');
 
     /// провайдер запросов к API
     final api = ref.read(filmixApiProvider);

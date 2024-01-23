@@ -643,7 +643,6 @@ class RezkaApi {
                 .singleWhereOrNull((element) => element.quality == quality)
                 ?.url ??
             stream.first.url;
-        print('zzzz: ${streamUrl}');
         return MediaItemUrl(
           video: streamUrl,
         );
