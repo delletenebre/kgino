@@ -45,7 +45,7 @@ class KrsNavigationBar extends HookConsumerWidget
         }
       },
       child: KrsAppBar(
-        spacing: 4.0,
+        backButtonEnabled: false,
         children: [
           KrsNavigationButton(
             active: focused.value,
@@ -55,6 +55,7 @@ class KrsNavigationBar extends HookConsumerWidget
             },
             child: const Text('Поиск'),
           ),
+          const SizedBox(width: 4.0),
           KrsNavigationButton(
             active: focused.value,
             selected: selectedTab == 1,
@@ -63,6 +64,7 @@ class KrsNavigationBar extends HookConsumerWidget
             },
             child: const Text('Сериалы'),
           ),
+          const SizedBox(width: 4.0),
           KrsNavigationButton(
             active: focused.value,
             selected: selectedTab == 2,
@@ -71,6 +73,7 @@ class KrsNavigationBar extends HookConsumerWidget
             },
             child: const Text('Фильмы'),
           ),
+          const SizedBox(width: 4.0),
           KrsNavigationButton(
             active: focused.value,
             selected: selectedTab == 3,

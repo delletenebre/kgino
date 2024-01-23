@@ -10,16 +10,32 @@ class KrsAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => TvUi.navigationBarSize;
 
   final List<Widget> children;
+
+  final List<Widget> wrapChildren;
   final double spacing;
+
+  final bool backButtonEnabled;
 
   const KrsAppBar({
     super.key,
     this.children = const [],
+    this.wrapChildren = const [],
     this.spacing = 24.0,
+    this.backButtonEnabled = true,
   });
 
   @override
   Widget build(context) {
+    Widget? wrapped;
+    if (wrapChildren.isNotEmpty) {
+      wrapped = Expanded(
+        child: Wrap(
+          spacing: spacing,
+          children: wrapChildren,
+        ),
+      );
+    }
+
     return SafeArea(
       child: Container(
         height: preferredSize.height,
@@ -30,8 +46,15 @@ class KrsAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           child: Row(
             children: [
-              if (kDebugMode && context.canPop()) const KrsBackButton(),
+              if ((kDebugMode || kIsWeb) &&
+                  context.canPop() &&
+                  backButtonEnabled)
+                const Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: KrsBackButton(),
+                ),
               ...children,
+              if (wrapped != null) wrapped,
             ],
           ),
         ),

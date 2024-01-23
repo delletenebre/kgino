@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -48,9 +49,11 @@ class FeaturedCard extends HookConsumerWidget {
   Widget build(context, ref) {
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final featuredHeight = screenHeight -
-        TvUi.cardListHeight -
-        TvUi.navigationBarSize.height; //TvUi.featuredHeight;
+    final featuredHeight = kIsWeb
+        ? TvUi.featuredHeight
+        : screenHeight -
+            TvUi.cardListHeight -
+            TvUi.navigationBarSize.height; //TvUi.featuredHeight;
     // screenHeight - TvUi.featuredHeight - TvUi.navigationBarSize.height >
     //         178.0
     //     ? TvUi.featuredHeight

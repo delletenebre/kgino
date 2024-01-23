@@ -108,34 +108,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'details',
             name: 'details',
             builder: (context, state) {
-              MediaItem? mediaItem;
-              if (state.extra is Map) {
-                /// ^ в web, при [Navigator.pop()] extra не сохраняется как [MediaItem]
-                /// поэтому необходима проверка на json
-
-                final extra = (state.extra as Map<String, dynamic>);
-
-                print(
-                    'zzzzzzzzz extra ${extra.containsKey('onlineService')} ${extra['onlineService']}');
-                print(extra);
-                if (extra.containsKey('onlineService')) {
-                  print(extra['onlineService']);
-                  switch (extra['onlineService']) {
-                    case 'rezka':
-                      mediaItem = RezkaItem.fromJson(extra);
-                      break;
-                    case 'tskg':
-                      mediaItem = TskgItem.fromJson(extra);
-                      break;
-                    case 'filmix':
-                      mediaItem = FilmixItem.fromJson(extra);
-                      print('zzzzzzzzz extra1');
-                      break;
-                  }
-                }
-              } else if (state.extra is MediaItem) {
-                mediaItem = state.extra as MediaItem;
-              }
+              final mediaItem = extraToMediaItem(state.extra);
 
               if (mediaItem != null) {
                 return DetailsPage(mediaItem);
@@ -150,8 +123,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'playlist',
             name: 'playlist',
             builder: (context, state) {
-              final mediaItem = state.extra as MediaItem;
-              return PlaylistPage(mediaItem);
+              final mediaItem = extraToMediaItem(state.extra);
+              if (mediaItem != null) {
+                return PlaylistPage(mediaItem);
+              } else {
+                return const HomePage();
+              }
             },
           ),
 
@@ -160,7 +137,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'player',
             name: 'player',
             builder: (context, state) {
-              final mediaItem = state.extra as MediaItem;
+              final mediaItem = extraToMediaItem(state.extra);
+
               final episodeIndex = int.tryParse(
                       state.uri.queryParameters['episodeIndex'] ?? '') ??
                   0;
@@ -172,12 +150,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                       state.uri.queryParameters['forcePositionUpdate'] ?? '') ??
                   false;
 
-              return PlayerPage(
-                mediaItem: mediaItem,
-                episodeIndex: episodeIndex,
-                initialPosition: initialPosition,
-                forcePositionUpdate: forcePositionUpdate,
-              );
+              if (mediaItem != null) {
+                return PlayerPage(
+                  mediaItem: mediaItem,
+                  episodeIndex: episodeIndex,
+                  initialPosition: initialPosition,
+                  forcePositionUpdate: forcePositionUpdate,
+                );
+              } else {
+                return const HomePage();
+              }
             },
           ),
         ],
@@ -185,6 +167,37 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
+MediaItem? extraToMediaItem(Object? extra) {
+  MediaItem? mediaItem;
+  if (extra is Map) {
+    /// ^ в web, при [Navigator.pop()] extra не сохраняется как [MediaItem]
+    /// поэтому необходима проверка на json
+
+    final extraJson = (extra as Map<String, dynamic>);
+
+    print(
+        'zzzzzzzzz extra ${extraJson.containsKey('onlineService')} ${extraJson['onlineService']}');
+    print(extraJson);
+    if (extraJson.containsKey('onlineService')) {
+      switch (extraJson['onlineService']) {
+        case 'rezka':
+          mediaItem = RezkaItem.fromJson(extraJson);
+          break;
+        case 'tskg':
+          mediaItem = TskgItem.fromJson(extraJson);
+          break;
+        case 'filmix':
+          mediaItem = FilmixItem.fromJson(extraJson);
+          break;
+      }
+    }
+  } else if (extra is MediaItem) {
+    mediaItem = extra;
+  }
+
+  return mediaItem;
+}
 
 class RouteRefreshListenable extends Listenable {
   VoidCallback? _listener;

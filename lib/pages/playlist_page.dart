@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/media_item.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
+import '../ui/images/proxy_image.dart';
 import '../ui/lists/vertical_list_view.dart';
 import '../ui/pages/krs_app_bar.dart';
 import '../ui/pages/playlist/krs_list_tile.dart';
@@ -120,9 +120,8 @@ class PlaylistPage extends HookConsumerWidget {
                           ),
                           child: FittedBox(
                             fit: BoxFit.cover,
-                            child: CachedNetworkImage(
+                            child: ProxyImage(
                               imageUrl: mediaItem.poster,
-                              alignment: Alignment.center,
                             ),
                           ),
                         ),

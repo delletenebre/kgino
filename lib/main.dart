@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:fvp/fvp.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,6 +15,8 @@ Future<void> main() async {
 
   /// инициализируем движок взаимодействия с нативным кодом
   WidgetsFlutterBinding.ensureInitialized();
+
+  // usePathUrlStrategy();
 
   /// инициализируем видео-плеер
   registerWith(options: {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -106,7 +107,7 @@ class DetailsPage extends HookConsumerWidget {
                     children: [
                       /// отступ навигационной панели
                       KrsAppBar(
-                        children: [
+                        wrapChildren: [
                           /// онлайн-кинотеатр
                           Row(
                             mainAxisSize: MainAxisSize.min,
@@ -158,9 +159,7 @@ class DetailsPage extends HookConsumerWidget {
                       FeaturedCard(mediaItem),
 
                       /// пустой отступ
-                      const Expanded(
-                        child: SizedBox(),
-                      ),
+                      if (!kIsWeb) const Expanded(child: SizedBox()),
 
                       /// кнопки управления
                       Focus(
