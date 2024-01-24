@@ -13,6 +13,7 @@ import '../models/filmix/filmix_item.dart';
 import '../models/media_item.dart';
 import '../models/rezka/rezka_item.dart';
 import '../models/tskg/tskg_item.dart';
+import '../providers/navigation_provider.dart';
 import '../providers/providers.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
@@ -165,6 +166,10 @@ class ShowsPage extends HookConsumerWidget {
                 selectedMediaItem.value = null;
                 focusedMediaItem.value = null;
               }
+            },
+            onMoveUp: () {
+              /// запрашиваем фокус на навигационную панель
+              ref.read(navigationProvider.notifier).focusNode.requestFocus();
             },
             itemCount: categories.length,
             itemBuilder: (context, index) {

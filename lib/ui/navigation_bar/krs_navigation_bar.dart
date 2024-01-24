@@ -9,8 +9,11 @@ import 'krs_navigation_button.dart';
 
 class KrsNavigationBar extends HookConsumerWidget
     implements PreferredSizeWidget {
+  final void Function()? onKeyDown;
+
   const KrsNavigationBar({
     super.key,
+    this.onKeyDown,
   });
 
   @override
@@ -22,6 +25,7 @@ class KrsNavigationBar extends HookConsumerWidget
 
     return Focus(
       focusNode: tabsController.focusNode,
+      autofocus: true,
       onKey: (node, event) {
         if (focused.value) {
           if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
@@ -32,6 +36,13 @@ class KrsNavigationBar extends HookConsumerWidget
           if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
             tabsController.changePage(selectedTab + 1);
             return KeyEventResult.handled;
+          }
+
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+            onKeyDown?.call();
+            return onKeyDown != null
+                ? KeyEventResult.handled
+                : KeyEventResult.ignored;
           }
         }
 

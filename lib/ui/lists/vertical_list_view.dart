@@ -17,6 +17,8 @@ class VerticalListView extends StatefulHookWidget {
 
   final Clip clipBehavior;
 
+  final void Function()? onMoveUp;
+
   const VerticalListView({
     super.key,
     required this.itemCount,
@@ -26,6 +28,7 @@ class VerticalListView extends StatefulHookWidget {
     this.separatorHeight = 20.0,
     this.listOffset,
     this.clipBehavior = Clip.hardEdge,
+    this.onMoveUp,
   });
 
   @override
@@ -66,7 +69,10 @@ class VerticalListViewState extends State<VerticalListView> {
       animateToCurrent();
       return KeyEventResult.handled;
     } else {
-      return KeyEventResult.ignored;
+      widget.onMoveUp?.call();
+      return widget.onMoveUp != null
+          ? KeyEventResult.handled
+          : KeyEventResult.ignored;
     }
   }
 

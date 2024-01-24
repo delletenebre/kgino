@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../api/kg_camera_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/media_item.dart';
+import '../providers/navigation_provider.dart';
 import '../resources/krs_locale.dart';
 import '../resources/krs_theme.dart';
 import '../ui/cards/media_item_card.dart';
@@ -69,6 +70,10 @@ class CamerasPage extends HookConsumerWidget {
           selectedMediaItem.value = null;
           focusedMediaItem.value = null;
         }
+      },
+      onMoveUp: () {
+        /// запрашиваем фокус на навигационную панель
+        ref.read(navigationProvider.notifier).focusNode.requestFocus();
       },
       itemCount: categories.length,
       itemBuilder: (context, index) {

@@ -237,6 +237,8 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
           widget.controller.playOrPause();
         }
 
+        if (event.isKeyPressed(LogicalKeyboardKey.keyF)) {}
+
         showOverlay();
 
         return KeyEventResult.ignored;
@@ -302,7 +304,13 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Spacer(),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              widget.controller.playOrPause();
+                            },
+                          ),
+                        ),
 
                         /// название фильма или сериала
                         _TitleText(
