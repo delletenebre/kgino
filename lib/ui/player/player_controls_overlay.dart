@@ -1,18 +1,21 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kgino/extensions/video_player_controller_extensions.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:video_player/video_player.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../../extensions/video_player_controller_extensions.dart';
 // import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 import '../../resources/krs_locale.dart';
 import '../../resources/krs_theme.dart';
 import '../buttons/krs_menu_button.dart';
+import 'controls/fullscreen_button.dart';
 import 'controls/play_pause_button.dart';
 import 'controls/player_progress_bar.dart';
 
@@ -102,9 +105,21 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     super.dispose();
   }
 
+  @override
+  void deactivate() {
+    widget.controller.pause();
+    exitFullScreen();
+    super.deactivate();
+  }
+
   /// уведомитель о состоянии воспроизведения
   final isPlayingNotifier = ValueNotifier<bool>(false);
+
+  /// уведомитель о состоянии буферизации видео
   final isBufferingNotifier = ValueNotifier<bool>(true);
+
+  /// уведомитель о состоянии перехода на весь экран
+  final isFullscreenNotifier = ValueNotifier<bool>(false);
 
   /// слушатель состояния видео-плеера
   void videoPlayerListener() {
@@ -146,6 +161,20 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
     } else {
       /// позволяем экрану перейти в режим сна
       WakelockPlus.disable();
+    }
+  }
+
+  void enterFullScreen() {
+    if (kIsWeb) {
+      html.document.documentElement?.requestFullscreen();
+      isFullscreenNotifier.value = true;
+    }
+  }
+
+  void exitFullScreen() {
+    if (kIsWeb) {
+      html.document.exitFullscreen();
+      isFullscreenNotifier.value = false;
     }
   }
 
@@ -369,11 +398,15 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
                             /// кнопка перехода к предыдущему эпизоду
                             if (widget.onSkipPrevious != null)
-                              OutlinedButton(
-                                onPressed: () {
-                                  widget.onSkipPrevious?.call();
-                                },
-                                child: const Icon(Icons.skip_previous_outlined),
+                              Tooltip(
+                                message: 'Предыдущий эпизод',
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    widget.onSkipPrevious?.call();
+                                  },
+                                  child:
+                                      const Icon(Icons.skip_previous_outlined),
+                                ),
                               ),
 
                             /// разделитель
@@ -383,11 +416,35 @@ class _PlayerControlsOverlayState extends ConsumerState<PlayerControlsOverlay> {
 
                             /// кнопка перехода к следующему эпизоду
                             if (widget.onSkipNext != null)
-                              OutlinedButton(
-                                onPressed: () {
-                                  widget.onSkipNext?.call();
-                                },
-                                child: const Icon(Icons.skip_next_outlined),
+                              Tooltip(
+                                message: 'Следующий эпизод',
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    widget.onSkipNext?.call();
+                                  },
+                                  child: const Icon(Icons.skip_next_outlined),
+                                ),
+                              ),
+
+                            if (kIsWeb)
+                              Padding(
+                                padding: const EdgeInsetsDirectional.only(
+                                    start: 12.0),
+                                child: ValueListenableBuilder(
+                                  valueListenable: isFullscreenNotifier,
+                                  builder: (context, isFullscreen, _) {
+                                    return FullscreenButton(
+                                      isFullscreen: isFullscreen,
+                                      onTap: () {
+                                        if (isFullscreen) {
+                                          exitFullScreen();
+                                        } else {
+                                          enterFullScreen();
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
                           ],
                         ),

@@ -62,6 +62,7 @@ dependencies:
   scrollview_observer: ^1.19.0
   #scrollable_positioned_list: ^0.3.8
   #sticky_grouped_list: ^3.1.0
+  universal_html: ^2.2.4
   uuid: ^4.3.3
   wakelock_plus: ^1.1.4
 
