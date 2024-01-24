@@ -81,6 +81,7 @@ class FilmixApi {
         },
         cancelToken: cancelToken,
       ),
+      onError: (error) => [],
       decoder: (json) async {
         return json.map<MediaItem>((item) {
           return FilmixItem.fromJson(item);

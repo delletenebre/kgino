@@ -68,6 +68,7 @@ class RezkaApi {
         '/search?do=search&subaction=search&q=$searchQuery',
         cancelToken: cancelToken,
       ),
+      onError: (error) => [],
       decoder: (response) async {
         final html = response.toString();
 

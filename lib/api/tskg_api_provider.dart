@@ -339,6 +339,7 @@ class TskgApi {
           },
         ),
       ),
+      onError: (error) => [],
       decoder: (response) async {
         final items = <MediaItem>[];
 

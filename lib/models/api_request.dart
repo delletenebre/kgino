@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -10,11 +11,16 @@ class ApiRequest<T> {
   Future<T> call({
     required Future<Response<dynamic>> request,
     required Future<T> Function(dynamic json) decoder,
+    FutureOr<T> Function(Object error)? onError,
   }) async {
     try {
       final response = await request;
       return decoder(response.data);
     } on DioException catch (dioException) {
+      if (onError != null) {
+        return onError(dioException);
+      }
+
       if (dioException.response != null) {
         final headers = dioException.response!.headers;
         final data = dioException.response!.data;
@@ -49,14 +55,22 @@ class ApiRequest<T> {
       throw const ApiError(
         message: 'Отсутствует связь с сервером',
       );
-    } on SocketException catch (_) {
+    } on SocketException catch (exception) {
       debugPrint('no internet connection');
+
+      if (onError != null) {
+        return onError(exception);
+      }
 
       throw const ApiError(
         message: 'Отсутствует связь с сервером',
       );
     } catch (exception, stacktrace) {
       debugPrint('Exception: $exception, stacktrace: $stacktrace');
+
+      if (onError != null) {
+        return onError.call(exception);
+      }
 
       throw ApiError(
         message: exception.toString(),

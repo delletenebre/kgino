@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,8 +29,12 @@ class KgCameraApi {
 
   /// список камер elcat
   Future<List<MediaItem>> getElcatCameras() async {
+    const baseUrl = kIsWeb
+        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/https://kg.camera'
+        : 'https://kg.camera';
+
     return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/'),
+      request: _dio.get('$baseUrl/'),
       decoder: (response) async {
         final html = response.toString();
 
@@ -80,7 +85,9 @@ class KgCameraApi {
 
   /// получение списка камер live.saimanet.kg
   Future<List<MediaItem>> getSaimaCameras() async {
-    const baseUrl = 'https://live.saimanet.kg';
+    const baseUrl = kIsWeb
+        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/https://live.saimanet.kg'
+        : 'https://live.saimanet.kg';
 
     return ApiRequest<List<MediaItem>>().call(
         request: _dio.get(baseUrl),

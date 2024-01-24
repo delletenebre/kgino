@@ -1318,13 +1318,21 @@ packages:
     source: hosted
     version: "2.5.6"
   video_player_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: video_player_platform_interface
       sha256: "236454725fafcacf98f0f39af0d7c7ab2ce84762e3b63f2cbb3ef9a7e0550bc6"
       url: "https://pub.dev"
     source: hosted
     version: "6.2.2"
+  video_player_tizen:
+    dependency: "direct main"
+    description:
+      name: video_player_tizen
+      sha256: "94931190778853aba3ff737ed5f75d9dc864fb6136e829642b5ab2f6df1bab50"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.9"
   video_player_web:
     dependency: transitive
     description:
@@ -1349,6 +1357,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "13.0.0"
+  wakelock_platform_interface:
+    dependency: transitive
+    description:
+      name: wakelock_platform_interface
+      sha256: "1f4aeb81fb592b863da83d2d0f7b8196067451e4df91046c26b54a403f9de621"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   wakelock_plus:
     dependency: "direct main"
     description:
@@ -1365,6 +1381,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  wakelock_tizen:
+    dependency: "direct main"
+    description:
+      name: wakelock_tizen
+      sha256: d984be48cf1333fcc55d879ebb4c58a4cf2adfe353aa5d0a37562981daf637f3
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   watcher:
     dependency: transitive
     description:
