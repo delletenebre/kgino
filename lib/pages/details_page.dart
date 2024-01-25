@@ -160,6 +160,7 @@ class DetailsPage extends HookConsumerWidget {
 
                       /// пустой отступ
                       if (!kIsWeb) const Expanded(child: SizedBox()),
+                      if (kIsWeb) const SizedBox(height: 24.0),
 
                       /// кнопки управления
                       Focus(
