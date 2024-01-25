@@ -1,5 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -26,7 +27,9 @@ class FilmixApi {
 
   /// cinema online
   final _dio = Dio(BaseOptions(
-    baseUrl: 'http://filmixapp.cyou/api/v2',
+    baseUrl: kIsWeb
+        ? 'https://app.iuk.edu.kg/functions/v1/corsproxy/http://filmixapp.cyou/api/v2'
+        : 'http://filmixapp.cyou/api/v2',
     sendTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
   ));
