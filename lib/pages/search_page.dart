@@ -129,8 +129,13 @@ class SearchPage extends HookConsumerWidget {
     return PopScope(
         canPop: true,
         onPopInvoked: (didPop) {
-          /// отключаем редактирование
-          disableEditing();
+          print('HAS FOCUS: ${searchFieldFocusNode.hasFocus}');
+          if (searchFieldFocusNode.hasFocus) {
+            /// отключаем редактирование
+            disableEditing();
+            searchFieldFocusNode.unfocus();
+            print('FOCUS: ${canEdit.value}');
+          }
         },
         child: Column(
           children: [
@@ -187,8 +192,8 @@ class SearchPage extends HookConsumerWidget {
                     /// отключаем редактирование
                     disableEditing();
 
-                    /// возвращаем фокус на поле поиска
-                    searchFieldFocusNode.requestFocus();
+                    // /// возвращаем фокус на поле поиска
+                    searchFieldFocusNode.nextFocus();
                   }
                 },
                 child: TextField(
@@ -218,7 +223,7 @@ class SearchPage extends HookConsumerWidget {
                     disableEditing();
 
                     /// возвращаем фокус на поле поиска
-                    searchFieldFocusNode.requestFocus();
+                    searchFieldFocusNode.nextFocus();
                   },
                 ),
               ),
