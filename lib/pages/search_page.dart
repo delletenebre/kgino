@@ -126,182 +126,190 @@ class SearchPage extends HookConsumerWidget {
       return !canEdit.value;
     }
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: TvUi.hPadding,
-            vertical: TvUi.vPadding,
-          ),
-          child: Focus(
-            canRequestFocus: false,
-            skipTraversal: true,
-            onKey: (node, event) {
-              if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-                /// отключаем редактирование
-                disableEditing();
-
-                /// перемещаем фокус к предыдущему элементу
-                FocusScope.of(context).previousFocus();
-                return KeyEventResult.handled;
-              }
-
-              if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-                /// отключаем редактирование
-                disableEditing();
-
-                if (hasSearchResults.value) {
-                  /// ^ если есть результаты поиска
-
-                  /// перемещаем фокус к следующему элементу
-                  FocusScope.of(context).nextFocus();
-                }
-                return KeyEventResult.handled;
-              }
-
-              if (event.isKeyPressed(LogicalKeyboardKey.select) ||
-                  event.isKeyPressed(LogicalKeyboardKey.enter)) {
-                /// включаем редактирование
-                if (enableEditing()) {
-                  return KeyEventResult.handled;
-                }
-              }
-
-              if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
-                /// отключаем редактирование
-                if (disableEditing()) {
-                  return KeyEventResult.handled;
-                }
-              }
-
-              return KeyEventResult.ignored;
-            },
-            onFocusChange: (hasFocus) {
-              if (!hasFocus && canEdit.value) {
-                /// отключаем редактирование
-                disableEditing();
-
-                /// возвращаем фокус на поле поиска
-                searchFieldFocusNode.requestFocus();
-              }
-            },
-            child: TextField(
-              focusNode: searchFieldFocusNode,
-              readOnly: !canEdit.value,
-              onTap: () {
-                /// включаем редактирование
-                enableEditing();
-              },
-              controller: searchController,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                hintText: 'Название фильма или сериала...',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(48.0),
-                  borderSide: const BorderSide(
-                    width: 1.0,
-                  ),
-                ),
-                filled: true,
-                fillColor: theme.surfaceContainerHighest,
+    return PopScope(
+        canPop: true,
+        onPopInvoked: (didPop) {
+          /// отключаем редактирование
+          disableEditing();
+        },
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: TvUi.hPadding,
+                vertical: TvUi.vPadding,
               ),
-              onSubmitted: (value) {
-                /// отключаем редактирование
-                disableEditing();
+              child: Focus(
+                canRequestFocus: false,
+                skipTraversal: true,
+                onKey: (node, event) {
+                  if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+                    /// отключаем редактирование
+                    disableEditing();
 
-                /// возвращаем фокус на поле поиска
-                searchFieldFocusNode.requestFocus();
-              },
-            ),
-          ),
-        ),
-        Expanded(
-          child: HookBuilder(
-            builder: (context) {
-              useValueListenable(searchController);
+                    /// перемещаем фокус к предыдущему элементу
+                    FocusScope.of(context).previousFocus();
+                    return KeyEventResult.handled;
+                  }
 
-              /// помечаем, что пока нет результатов поиска
-              hasSearchResults.value = false;
+                  if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+                    /// отключаем редактирование
+                    disableEditing();
 
-              if (searchController.value.text.isEmpty) {
-                return const SizedBox();
-              }
+                    if (hasSearchResults.value) {
+                      /// ^ если есть результаты поиска
 
-              final controller =
-                  ref.watch(searchProvider(searchController.value.text));
+                      /// перемещаем фокус к следующему элементу
+                      FocusScope.of(context).nextFocus();
+                    }
+                    return KeyEventResult.handled;
+                  }
 
-              /// если результаты загружаются
-              if (controller.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                  if (event.isKeyPressed(LogicalKeyboardKey.select) ||
+                      event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                    /// включаем редактирование
+                    if (enableEditing()) {
+                      return KeyEventResult.handled;
+                    }
+                  }
 
-              final categories = controller.valueOrNull ?? [];
+                  if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+                    /// отключаем редактирование
+                    if (disableEditing()) {
+                      return KeyEventResult.handled;
+                    }
+                  }
 
-              if (categories.isEmpty) {
-                return const Center(
-                  child: Text('По Вашему запросу ничего не найдено'),
-                );
-              }
+                  return KeyEventResult.ignored;
+                },
+                onFocusChange: (hasFocus) {
+                  if (!hasFocus && canEdit.value) {
+                    /// отключаем редактирование
+                    disableEditing();
 
-              /// помечаем, что результаты поиска есть
-              hasSearchResults.value = true;
-
-              return VerticalListView(
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            KrsTheme.safeArea.horizontal,
-                            0.0,
-                            KrsTheme.safeArea.horizontal,
-                            20.0,
-                          ),
-                          child: Row(
-                            children: [
-                              if (category.onlineService.logo.isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 12.0),
-                                  child: OnlineServiceLogo(
-                                      category.onlineService.logo),
-                                ),
-                              Text(
-                                category.title,
-                                style: theme.textTheme.titleMedium,
-                              ),
-                            ],
-                          )),
-                      SizedBox(
-                        height: MediaItemCard.height,
-                        child: HorizontalListView<MediaItem>(
-                          // key: UniqueKey(),
-                          // itemHeight: TvUi.horizontalCardSize.height,
-                          // title: Text(category.title),
-                          asyncItems: category.itemsFuture,
-                          itemBuilder: (context, item) {
-                            return MediaItemCard(
-                              mediaItem: item,
-                              onTap: () {
-                                /// переходим на страницу деталей о сериале или фильме
-                                context.pushNamed('details', extra: item);
-                              },
-                            );
-                          },
-                        ),
+                    /// возвращаем фокус на поле поиска
+                    searchFieldFocusNode.requestFocus();
+                  }
+                },
+                child: TextField(
+                  focusNode: searchFieldFocusNode,
+                  readOnly: !canEdit.value,
+                  onTap: () {
+                    /// включаем редактирование
+                    enableEditing();
+                  },
+                  controller: searchController,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: 'Название фильма или сериала...',
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 24.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(48.0),
+                      borderSide: const BorderSide(
+                        width: 1.0,
                       ),
-                    ],
+                    ),
+                    filled: true,
+                    fillColor: theme.surfaceContainerHighest,
+                  ),
+                  onSubmitted: (value) {
+                    /// отключаем редактирование
+                    disableEditing();
+
+                    /// возвращаем фокус на поле поиска
+                    searchFieldFocusNode.requestFocus();
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: HookBuilder(
+                builder: (context) {
+                  useValueListenable(searchController);
+
+                  /// помечаем, что пока нет результатов поиска
+                  hasSearchResults.value = false;
+
+                  if (searchController.value.text.isEmpty) {
+                    return const SizedBox();
+                  }
+
+                  final controller =
+                      ref.watch(searchProvider(searchController.value.text));
+
+                  /// если результаты загружаются
+                  if (controller.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final categories = controller.valueOrNull ?? [];
+
+                  if (categories.isEmpty) {
+                    return const Center(
+                      child: Text('По Вашему запросу ничего не найдено'),
+                    );
+                  }
+
+                  /// помечаем, что результаты поиска есть
+                  hasSearchResults.value = true;
+
+                  return VerticalListView(
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                KrsTheme.safeArea.horizontal,
+                                0.0,
+                                KrsTheme.safeArea.horizontal,
+                                20.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  if (category.onlineService.logo.isNotEmpty)
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 12.0),
+                                      child: OnlineServiceLogo(
+                                          category.onlineService.logo),
+                                    ),
+                                  Text(
+                                    category.title,
+                                    style: theme.textTheme.titleMedium,
+                                  ),
+                                ],
+                              )),
+                          SizedBox(
+                            height: MediaItemCard.height,
+                            child: HorizontalListView<MediaItem>(
+                              // key: UniqueKey(),
+                              // itemHeight: TvUi.horizontalCardSize.height,
+                              // title: Text(category.title),
+                              asyncItems: category.itemsFuture,
+                              itemBuilder: (context, item) {
+                                return MediaItemCard(
+                                  mediaItem: item,
+                                  onTap: () {
+                                    /// переходим на страницу деталей о сериале или фильме
+                                    context.pushNamed('details', extra: item);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
-        ),
-      ],
-    );
+              ),
+            ),
+          ],
+        ));
   }
 }

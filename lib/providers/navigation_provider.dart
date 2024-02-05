@@ -47,17 +47,16 @@ class Navigation extends _$Navigation {
   }
 
   void navigateBack() {
-    state = 1;
-    requestCurrentActiveTabFocus();
+    changePage(1);
   }
 
   void requestCurrentActiveTabFocus() {
-    if (focusNode.hasFocus) {
-      focusNode.children
-          .where((element) => element.canRequestFocus)
-          .elementAtOrNull(state)
-          ?.requestFocus();
-    }
+    //if (focusNode.hasFocus) {
+    focusNode.children
+        .where((element) => element.canRequestFocus)
+        .elementAtOrNull(state)
+        ?.requestFocus();
+    // }
   }
 
   bool get isSearchSelected => state == 0;
