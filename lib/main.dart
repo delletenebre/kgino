@@ -20,7 +20,7 @@ Future<void> main() async {
 
   /// инициализируем видео-плеер
   registerWith(options: {
-    'platforms': ['windows', 'macos', 'linux']
+    'platforms': ['windows', 'macos', 'linux', 'android']
   });
   // MediaKit.ensureInitialized();
 
