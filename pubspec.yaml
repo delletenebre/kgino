@@ -14,7 +14,7 @@ environment:
 # flutter pub outdated
 # flutter pub upgrade
 
-# flutter pub build apk --split-per-abi --release
+# flutter build apk --split-per-abi --release
 
 dependencies:
   flutter:
