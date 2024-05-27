@@ -1,122 +1,201 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../api/filmix_api_provider.dart';
+import '../api/rezka_api_provider.dart';
+import '../api/tskg_api_provider.dart';
 import '../models/category_list_item.dart';
-import '../models/kgino_item.dart';
-import '../resources/krs_storage.dart';
+import '../models/media_item.dart';
+import '../providers/locale_provider.dart';
+import '../providers/storage_provider.dart';
+import '../resources/kika_theme.dart';
+import '../ui/cards/featured_card.dart';
+import '../ui/cards/media_item_card.dart';
 import '../ui/lists/horizontal_list_view.dart';
-import '../ui/lists/kgino_list_tile.dart';
-import '../ui/lists/kgino_raw_list_tile.dart';
+import '../ui/lists/online_service_list_title.dart';
 import '../ui/lists/vertical_list_view.dart';
 
-class ShowsPage extends HookWidget {
-  const ShowsPage({
-    super.key,
-  });
+class ShowsPage extends HookConsumerWidget {
+  const ShowsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
+    /// сохраняем состояние страницы между переходами [PageView]
+    useAutomaticKeepAlive();
+
+    final locale = Locale.of(context);
+
+    final focusedMediaItem = useValueNotifier<MediaItem?>(null);
 
     /// хранилище данных
-    final storage = GetIt.instance<KrsStorage>();
+    final storage = ref.read(storageProvider);
 
-    /// фильтруем сохранённые сериалы
-    final savedItemsQuery = storage.db.kginoItems
-      .where()
-      .filter()
-      .not()
-      .bookmarkedIsNull()
-      //.bookmarkedIsNotNull()
-      .and()
-      .group((q) => q
-        .providerEqualTo(KginoProvider.tskg.name)
-        .or()
-        .providerEqualTo(KginoProvider.flmxShow.name)
-      )
-      .sortByBookmarkedDesc()
-      .build();
+    useStream(storage.db.mediaItems.watchLazy());
 
-    final stream = useMemoized(() => savedItemsQuery.watch(fireImmediately: true));
-    final savedItems = useStream(stream);
+    /// запрос избранных сериалов
+    final bookmarksQuery = storage.db.mediaItems
+        .where()
+        .typeEqualTo(MediaItemType.show)
+        .and()
+        .bookmarkedIsNotNull();
 
-    final categories = [
-      CategoryListItem(
-        title: 'Выберите сервис',
-        items: [
-          KginoItem(
-            provider: KginoProvider.flmxShow.name,
-            id: '/flmx/shows',
-            name: 'Filmix',
-            posterUrl: 'assets/images/flmx.svg',
-            isFolder: true,
-          ),
+    /// есть ли в списке избранных элементы
+    final bookmarkCount = bookmarksQuery.count();
+    final hasBookmarks = bookmarkCount > 0;
 
-          KginoItem(
-            provider: KginoProvider.tskg.name,
-            id: '/tskg',
-            name: 'TS.KG',
-            posterUrl: 'assets/images/tskg.svg',
-            isFolder: true,
-          ),
-        ],
-      ),
+    final asyncBookmarks = useMemoized(() async {
+      final items = await bookmarksQuery.findAllAsync();
+      return items.map((item) => item.fromDatabase()).toList();
+    }, [bookmarkCount]);
 
-      CategoryListItem(
-        title: 'В закладках',
-        items: savedItems.data ?? [],
-      ),
+    /// tskg провайдер запросов к API
+    final tskgApi = ref.read(tskgApiProvider);
 
-    ];
+    /// filmix провайдер запросов к API
+    final filmixApi = ref.read(filmixApiProvider);
 
-    return VerticalListView(
-      itemCount: categories.length,
-      itemBuilder: (context, focusNode, index) {
-        final category = categories.elementAt(index);
+    /// tskg список последних добавлений
+    final tskgAsyncLatest = useMemoized(() => tskgApi.getLatestShows());
 
-        return HorizontalListView<KginoItem>(
-          key: ObjectKey(category),
-          focusNode: focusNode,
-          titleText: category.title,
-          itemsFuture: category.itemsFuture,
-          itemBuilder: (context, focusNode, index, item) {
+    /// tskg список новых сериалов
+    final tskgAsyncNewest = useMemoized(() => tskgApi.getNewestShows());
 
-            if (item.isFolder) {
-              return KginoRawListTile(
-                focusNode: focusNode,
-                onFocused: (focusNode) {
-                  
-                },
-                onTap: () {
-                  context.push(item.id);
-                },
-                title: item.name,
-                imageUrl: item.posterUrl,
-              );
-            }
+    /// tskg список популярных сериалов
+    final tskgAsyncPopular = useMemoized(() => tskgApi.getPopularShows());
 
-            /// карточка фильма
-            return KginoListTile(
-              focusNode: focusNode,
-              onTap: () {
-                /// переходим на страницу сериала
-                context.pushNamed(item.provider == KginoProvider.flmxShow.name
-                  ? 'flmxShowDetails' : 'tskgDetails',
-                  pathParameters: {
-                    'id': item.id,
-                  },
-                );
-              },
-              item: item,
-            );
+    /// filmix список последних добавлений
+    final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestShows());
 
+    /// filmix список новых
+    final filmixAsyncNewest = useMemoized(() => filmixApi.getNewestShows());
+
+    /// filmix список популярных
+    final filmixAsyncPopular = useMemoized(() => filmixApi.getPopularShows());
+
+    /// hdrezka провайдер запросов к API
+    final rezkaApi = ref.read(rezkaApiProvider);
+
+    /// hdrezka список последних добавлений
+    final rezkaAsyncLatest = useMemoized(() => rezkaApi.getLatestShows());
+
+    /// hdrezka список популярных
+    final rezkaAsyncPopular = useMemoized(() => rezkaApi.getPopularShows());
+
+    /// hdrezka список новых
+    final rezkaAsyncNewest = useMemoized(() => rezkaApi.getNewestShows());
+
+    final categories = useMemoized(
+        () => [
+              if (hasBookmarks)
+                CategoryListItem(
+                  key: ValueKey(bookmarkCount),
+                  title: locale.bookmarks,
+                  apiResponse: asyncBookmarks,
+                ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: locale.latestArrivals,
+                apiResponse: filmixAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: locale.novelty,
+                apiResponse: filmixAsyncNewest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: locale.popular,
+                apiResponse: filmixAsyncPopular,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: locale.latestArrivals,
+                apiResponse: rezkaAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: locale.novelty,
+                apiResponse: rezkaAsyncNewest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: locale.popular,
+                apiResponse: rezkaAsyncPopular,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.tskg,
+                title: locale.latestArrivals,
+                apiResponse: tskgAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.tskg,
+                title: locale.novelty,
+                apiResponse: tskgAsyncNewest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.tskg,
+                title: locale.popular,
+                apiResponse: tskgAsyncPopular,
+              ),
+            ],
+        [bookmarkCount]);
+
+    final key = useMemoized(
+        () => GlobalKey<VerticalListViewState>(), [categories.length]);
+
+    return Column(
+      children: [
+        ValueListenableBuilder<MediaItem?>(
+          valueListenable: focusedMediaItem,
+          builder: (context, mediaItem, _) {
+            return FeaturedCard(mediaItem, key: ValueKey(mediaItem?.id));
           },
-          
-        );
-      },
-    );
+        ),
+        Expanded(
+          child: VerticalListView(
+            key: key,
+            itemHeight: kCardMaxHeight + kListTitleHeight,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
 
+              return HorizontalListView<MediaItem>(
+                key: (category.title == locale.bookmarks)
+                    ? ValueKey(bookmarkCount)
+                    : null,
+                title: OnlineServiceListTitle(category),
+                asyncItems: category.itemsFuture,
+                itemBuilder: (context, index, item) {
+                  return MediaItemCard(
+                    mediaItem: item,
+                    onFocusChange: (hasFocus) {
+                      if (hasFocus) {
+                        if (item.isFolder) {
+                          focusedMediaItem.value = null;
+                        } else {
+                          focusedMediaItem.value = item;
+                        }
+                      }
+                    },
+                    onPressed: () {
+                      if (item.isFolder) {
+                        /// переходим на страницу выбранного провайдера
+                        context.pushNamed(item.id);
+                      } else {
+                        /// переходим на страницу деталей о сериале
+                        context.pushNamed('details', extra: item);
+                      }
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }

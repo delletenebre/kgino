@@ -1,22 +1,17 @@
-import 'season_item.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
 
-// part 'voice_acting.g.dart';
+part 'voice_acting.freezed.dart';
+part 'voice_acting.g.dart';
 
-class VoiceActing {
+@freezed
+@Embedded(ignore: {'copyWith'})
+class VoiceActing with _$VoiceActing {
+  const factory VoiceActing({
+    @Default('') final String id,
+    @Default('') final String name,
+  }) = _VoiceActing;
 
-  /// идентификатор перевода
-  final String id;
-
-  /// название перевода
-  final String name;
-
-  /// сезоны в переводе
-  List<SeasonItem> seasons;
-
-  VoiceActing({
-    required this.id,
-    required this.name,
-    this.seasons = const [],
-  });
-
+  factory VoiceActing.fromJson(Map<String, dynamic> json) =>
+      _$VoiceActingFromJson(json);
 }

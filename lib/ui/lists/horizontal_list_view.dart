@@ -1,218 +1,270 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'focusable_list_cubit/focusable_list_cubit.dart';
-import 'focusable_list_cubit/focusable_list_state.dart';
+import '../../models/media_item.dart';
+import '../../providers/active_horizontal_list_provider.dart';
+import '../../resources/kika_theme.dart';
+import '../animated_loading.dart';
+import '../navigation/kika_navigation_rail.dart';
 
-class HorizontalListView<T> extends HookWidget {
-  final ListObserverController? controller;
-
-  final Future<List<T>>? itemsFuture;
-  final Widget Function(BuildContext context, FocusNode focusNode, int index, T item) itemBuilder;
-
-  /// функция загрузки следующей порции элементов
-  final Future<List<T>> Function(int page, int loadedCount)? onLoadNextPage;
-  
-  /// запрос индекса для смены фокуса
-  /// (при внешнем управлении, например, сезоны-эпизоды)
-  final int Function()? requestItemIndex;
-
-  /// используется при внешнем управлении (например, сезоны-эпизоды)
-  final FocusNode? focusNode;
-
-  /// название списка
-  final String titleText;
-
-  final double spacing;
-
-  /// отступы списка
-  final EdgeInsetsGeometry padding;
-
-  final double height;
+class HorizontalListView<T> extends StatefulHookConsumerWidget {
+  final double itemWidth;
+  final double itemHeight;
+  final Widget? title;
+  final Widget Function(BuildContext context, int index, T item) itemBuilder;
+  final void Function()? onMoveLeft;
+  final void Function()? onMoveEnd;
+  final void Function(int index)? onStartMoveTo;
+  final FutureOr<List<T>>? asyncItems;
+  final bool hasNavigationBar;
+  final EdgeInsetsGeometry? padding;
+  final ValueChanged<bool>? onFocusChange;
 
   const HorizontalListView({
     super.key,
-    this.controller,
-    this.itemsFuture,
+    this.itemWidth = 196.0,
+    this.itemHeight = kCardMaxHeight,
     required this.itemBuilder,
-
-    this.onLoadNextPage,
-    this.requestItemIndex,
-    this.focusNode,
-
-    this.titleText = '',
-
-    this.spacing = 24.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 32.0),
-    this.height = 234.0,
+    this.onMoveLeft,
+    this.onMoveEnd,
+    this.onStartMoveTo,
+    this.asyncItems,
+    this.title,
+    this.hasNavigationBar = true,
+    this.padding,
+    this.onFocusChange,
   });
 
   @override
+  createState() => HorizontalListViewState<T>();
+}
+
+class HorizontalListViewState<T> extends ConsumerState<HorizontalListView<T>> {
+  final _scrollController = ScrollController();
+  int _selectedItemIndex = 0;
+  bool _animationComplete = true;
+  bool _focused = false;
+
+  List<FocusNode> _focusNodes = [];
+
+  int _itemCount = 0;
+
+  double get calculatedScrollPosition {
+    final position = max(0.0, _selectedItemIndex * (widget.itemWidth + 20.0));
+
+    return min(position, _scrollController.position.maxScrollExtent);
+  }
+
+  void requestCurrentFocus() {
+    _focusNodes[_selectedItemIndex].children.firstOrNull?.requestFocus();
+  }
+
+  void animateToCurrent({bool requestFocus = true}) {
+    widget.onStartMoveTo?.call(_selectedItemIndex);
+
+    if (widget.hasNavigationBar) {
+      ref
+          .read(activeHorizontalListProvider.notifier)
+          .updateIndex(_selectedItemIndex);
+    }
+
+    final position = calculatedScrollPosition;
+    _animationComplete = false;
+    _scrollController.position
+        .moveTo(
+      position,
+      duration: kThemeAnimationDuration,
+      curve: Curves.fastOutSlowIn,
+    )
+        .then((value) {
+      _animationComplete = true;
+
+      if (requestFocus) {
+        requestCurrentFocus();
+      }
+    });
+  }
+
+  void scrollTo(int index, {bool requestFocus = true}) {
+    _selectedItemIndex = index;
+    animateToCurrent(requestFocus: requestFocus);
+  }
+
+  /// переходим к предыдущему элементу
+  KeyEventResult goPrevious() {
+    if (_selectedItemIndex > 0) {
+      _selectedItemIndex--;
+      animateToCurrent();
+      return KeyEventResult.handled;
+    } else {
+      if (widget.hasNavigationBar) {
+        ref.read(activeHorizontalListProvider.notifier).onMoveLeft();
+      }
+      widget.onMoveLeft?.call();
+      return widget.onMoveLeft != null
+          ? KeyEventResult.handled
+          : KeyEventResult.skipRemainingHandlers;
+    }
+  }
+
+  /// переходим к следующему элементу
+  KeyEventResult goNext() {
+    if (_selectedItemIndex < _itemCount - 1) {
+      _selectedItemIndex++;
+      animateToCurrent();
+      return KeyEventResult.handled;
+    } else {
+      widget.onMoveEnd?.call();
+      return widget.onMoveEnd != null
+          ? KeyEventResult.handled
+          : KeyEventResult.skipRemainingHandlers;
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(context) {
-    /// текущая страница элементов (при динамической загрузке)
-    final currentPage = useState(1);
-    
+    final theme = Theme.of(context);
 
-    /// была ли достигнута последняя страница
-    bool lastPageReached = false;
+    final horizontalPadding = widget.padding ??
+        const EdgeInsets.only(
+            left: KikaNavigationRailState.minWidth + 48.0, right: 48.0);
 
-    // final _focusNodes = <FocusNode>[];
-    
-    /// текущий элемент, на котором фокус
-    final currentFocusableIndex = useState(0);
+    final asyncItemsReader = useMemoized(() async => widget.asyncItems);
+    final snapshot = useFuture(asyncItemsReader);
 
-    final asyncItems = useMemoized(() => itemsFuture);
-    final snapshot = useFuture(asyncItems);
+    return BackButtonListener(
+      onBackButtonPressed: () async {
+        if (_focused && _selectedItemIndex > 0) {
+          _selectedItemIndex = 0;
+          animateToCurrent();
+          return true;
+        }
 
-    if (!snapshot.hasData && !snapshot.hasError) {
-      return const LinearProgressIndicator();
-    }
+        return false;
+      },
+      child: Focus(
+        onFocusChange: (hasFocus) {
+          if (hasFocus) {
+            animateToCurrent();
+          }
 
-    List<T> items = snapshot.data!;
-    final itemCount = useState(items.length);
+          setState(() {
+            _focused = hasFocus;
+          });
 
-    final pageLoading = useState(false);
-    final currentItemIndex = useState(0);
-    final needUpdateFocus = useState(false);
+          widget.onFocusChange?.call(hasFocus);
+        },
+        onKeyEvent: (node, event) {
+          if (!_animationComplete) {
+            /// запрещаем действия, если анимация не выполнена
+            return KeyEventResult.handled;
+          }
 
-    if (items.isEmpty) {
-      return const SizedBox();
-    }
+          if (HardwareKeyboard.instance
+              .isLogicalKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+            /// переходим к предыдущему элементу в списке
+            goPrevious();
+            return KeyEventResult.handled;
+          }
 
-    return SizedBox(
-      height: height,
-      child: BlocProvider(
-        key: ValueKey(itemCount.value),
-        create: (context) => FocusableListCubit(
-          controller: controller,
-          itemCount: itemCount.value,
-          offset: padding.horizontal / 2.0,
-          /// при окончании списка, при дальнейшем нажатии влево/вправо чтобы
-          /// фокус не переходил на следующий список, ставим handled
-          keyEventResult: KeyEventResult.handled,
-        ),
+          if (HardwareKeyboard.instance
+              .isLogicalKeyPressed(LogicalKeyboardKey.arrowRight)) {
+            /// переходим к следующему элементу в списке
+            goNext();
+            return KeyEventResult.handled;
+          }
 
-        child: BlocBuilder<FocusableListCubit, FocusableListState>(
-          builder: (context, focusableListState) {
-            final listCubit = context.read<FocusableListCubit>();
-            
-            if (needUpdateFocus.value) {
-              Future.microtask(() {
-                listCubit.megaJumpTo(currentItemIndex.value);
-                needUpdateFocus.value = false;
-              });
-            }
-
-            return Focus(
-              focusNode: focusNode,
-              skipTraversal: true,
-
-              onKey: (node, event) {
-                if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-                  return listCubit.goPrevious();
-                }
-
-                if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-                  return listCubit.goNext();
-                }
-
-                return KeyEventResult.ignored;
-              },
-
-              onFocusChange: (hasFocus) {
-                //onFocusChange?.call(hasFocus);
-
-                if (hasFocus) {
-                  listCubit.jumpToCurrent(requestItemIndex);
-                }
-              },
-
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (titleText.isNotEmpty) Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      start: padding.horizontal / 2.0,
-                      end: padding.horizontal / 2.0,
-                      bottom: 24.0,
-                    ),
-                    child: Text(titleText,
-                      style: const TextStyle(
-                        fontSize: 16.0,
+          return KeyEventResult.ignored;
+        },
+        child: AnimatedOpacity(
+          duration: kThemeAnimationDuration,
+          opacity: _focused ? 1.0 : 0.36,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.title != null)
+                SizedBox(
+                  height: kListTitleHeight,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: horizontalPadding,
+                      child: AnimatedDefaultTextStyle(
+                        duration: kThemeAnimationDuration,
+                        style: TextStyle(
+                          fontSize: _focused ? 24.0 : 18.0,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                        child: widget.title!,
                       ),
                     ),
                   ),
-                  
-                  Expanded(
-                    child: ListViewObserver(
-                      controller: focusableListState.listObserverController,
-                      child: ListView.separated(
-                        padding: padding,
-                        scrollDirection: Axis.horizontal,
+                ),
+              Builder(
+                builder: (context) {
+                  if (!snapshot.hasData && !snapshot.hasError) {
+                    return SizedBox(
+                      height: widget.itemHeight,
+                      child: ListView(
+                        padding: horizontalPadding,
                         clipBehavior: Clip.none,
-                        controller: focusableListState.scrollController,
-                        itemCount: itemCount.value,
-
-                        /// разделитель
-                        separatorBuilder: (context, index) {
-                          return SizedBox(width: spacing);
-                        },
-
-                        /// основной контент
-                        itemBuilder: (context, index) {
-                          return Focus(
-                            canRequestFocus: false,
-                            skipTraversal: true,
-
-                            onFocusChange: (hasFocus) async {
-                              if (hasFocus) {
-                                if (!pageLoading.value && !lastPageReached && index > itemCount.value - 7) {
-                                  pageLoading.value = true;
-                                  currentPage.value++;
-                                  final newItems = await onLoadNextPage?.call(currentPage.value, itemCount.value) ?? [];
-                                  if (newItems.isEmpty) {
-                                    lastPageReached = true;
-                                  } else {
-                                    items.addAll(newItems);
-                                    currentItemIndex.value = listCubit.state.focusableIndex;
-                                    itemCount.value = items.length;
-                                    needUpdateFocus.value = true;
-                                  }
-                                  pageLoading.value = false;
-                                }
-
-                                /// при быстрой перемотке, для экономии ресурсов,
-                                /// немного тормозим вызов [onItemFocused],
-                                /// в котором происходит загрузка дополнительных
-                                /// сведений о сериале или фильме
-                                Future.delayed(const Duration(milliseconds: 100), () {
-                                  if (currentFocusableIndex.value == index) {
-                                    /// ^ если виджет ещё жив
-                                    
-                                    /// вызываем пользовательский обработчик
-                                    //onItemFocused?.call(items[index]);
-                                    
-                                  }
-                                });
-                              }
-                            },
-                            
-                            child: itemBuilder(
-                              context, listCubit.focusNodeAt(index), index, items[index]),
-                            
-                          );
-                        },
+                        scrollDirection: Axis.horizontal,
+                        children: const [
+                          AnimatedLoading(size: 48.0),
+                        ],
                       ),
+                    );
+                  }
+
+                  List<T> items = snapshot.data ?? [];
+
+                  if (items.isEmpty) {
+                    items = [MediaItem(type: MediaItemType.error) as T];
+                  }
+
+                  _itemCount = items.length;
+                  _focusNodes =
+                      List.generate(_itemCount, (index) => FocusNode());
+
+                  return SizedBox(
+                    height: widget.itemHeight,
+                    child: ListView.separated(
+                      clipBehavior: Clip.none,
+                      padding: horizontalPadding,
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _itemCount,
+                      itemBuilder: (context, index) {
+                        return Focus(
+                          key: ValueKey(index),
+                          canRequestFocus: false,
+                          focusNode: _focusNodes[index],
+                          child:
+                              widget.itemBuilder(context, index, items[index]),
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 20.0),
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
     );

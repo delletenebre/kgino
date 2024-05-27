@@ -1,133 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../api/wcam_api_provider.dart';
+import '../api/kg_camera_api_provider.dart';
 import '../models/category_list_item.dart';
-import '../models/kgino_item.dart';
-import '../resources/krs_locale.dart';
+import '../models/media_item.dart';
+import '../resources/kika_theme.dart';
+
+import '../ui/cards/media_item_card.dart';
 import '../ui/lists/horizontal_list_view.dart';
-import '../ui/lists/kgino_list_tile.dart';
+import '../ui/lists/online_service_list_title.dart';
 import '../ui/lists/vertical_list_view.dart';
 
-class CamerasPage extends HookWidget {
-  const CamerasPage({
-    super.key,
-  });
+class CamerasPage extends HookConsumerWidget {
+  const CamerasPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final locale = KrsLocale.of(context);
+  Widget build(context, ref) {
+    /// сохраняем состояние страницы между переходами [PageView]
+    useAutomaticKeepAlive();
 
-    /// провайдер запросов к API
-    final api = GetIt.instance<WcamApiProvider>();
+    /// провайдер запросов к API KgCameras
+    final kgCameraApi = ref.read(kgCameraApiProvider);
 
-    // final asyncElcat = useMemoized(() {
-    //   return api.getElcatCameras();
-    // });
+    /// список камер ЭлКат
+    final kgCameraAsync = useMemoized(() => kgCameraApi.getElcatCameras());
 
-    final asyncSaima = useMemoized(() {
-      return api.getSaimaCameras();
-    });
+    /// список камер SaimaNet
+    final saimaAsync = useMemoized(() => kgCameraApi.getSaimaCameras());
 
-    final categories = [
+    /// список камер КыргызТелеком
+    final ktAsync = useMemoized(() => kgCameraApi.getKtCameras());
 
-      // CategoryListItem(
-      //   title: 'Элкат',
-      //   apiResponse: asyncElcat,
-      // ),
+    /// список камер интересных мест
+    final extraAsync = useMemoized(() => kgCameraApi.getExtraCameras());
 
-      CategoryListItem(
-        title: 'SaimaNet',
-        apiResponse: asyncSaima,
-      ),
-
-      CategoryListItem(
-        title: 'Кыргызтелеком',
-        items: api.getKtCameras(),
-      ),
-
-      CategoryListItem(
-        title: 'Интересное',
-        items: [
-
-          KginoItem.webcamera(
-            name: 'Кенийский водопой',
-            posterUrl: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
-            videoFileUrl: 'https://www.youtube.com/watch?v=KyQAB-TKOVA',
+    final categories = useMemoized(() => [
+          CategoryListItem(
+            title: 'ЭлКат',
+            apiResponse: kgCameraAsync,
           ),
-
-          KginoItem.webcamera(
-            name: 'Африканские животные',
-            posterUrl: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
-            videoFileUrl: 'https://www.youtube.com/watch?v=O8xVFhgEv6Q',
+          CategoryListItem(
+            title: 'Saima-Telecom',
+            apiResponse: saimaAsync,
           ),
-
-          KginoItem.webcamera(
-            name: 'Сафари камера',
-            posterUrl: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
-            videoFileUrl: 'https://www.youtube.com/watch?v=QkWGGhtTA4k',
+          CategoryListItem(
+            title: 'КыргызТелеком',
+            apiResponse: ktAsync,
           ),
-
-          KginoItem.webcamera(
-            name: 'Парк слонов',
-            posterUrl: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
-            videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4',
+          CategoryListItem(
+            title: 'Интересное',
+            items: extraAsync,
           ),
+        ]);
 
-          KginoItem.webcamera(
-            name: 'Таймс-сквер, Нью-Йорк',
-            posterUrl: 'https://i.ytimg.com/vi/1-iS7LArMPA/hqdefault_live.jpg',
-            videoFileUrl: 'https://www.youtube.com/watch?v=1-iS7LArMPA',
+    return Column(
+      children: [
+        const SizedBox(height: 56.0),
+        Expanded(
+          child: VerticalListView(
+            itemHeight: kCardMaxHeight + kListTitleHeight,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+
+              return HorizontalListView<MediaItem>(
+                // onMoveLeft: () {
+                //   HomeLayout.maybeOf(context)?.openDrawer();
+                // },
+                title: OnlineServiceListTitle(category),
+                asyncItems: category.itemsFuture,
+                itemBuilder: (context, index, item) {
+                  return MediaItemCard(
+                    mediaItem: item,
+                    onFocusChange: (hasFocus) {},
+                    onPressed: () {
+                      /// переходим к просмотру
+                      context.pushNamed('player', extra: item);
+                    },
+                  );
+                },
+              );
+            },
           ),
-          
-        ],
-      )
-
-      // CategoryListItem(
-      //   title: 'TS.KG',
-      //   apiResponse: asyncTskgSearchResults,
-      // ),
-
-      // CategoryListItem(
-      //   title: 'Online Cinema',
-      //   apiResponse: asyncOckgSearchResults,
-      // ),
-
-    ];
-
-    return VerticalListView(
-      itemCount: categories.length,
-      itemBuilder: (context, focusNode, index) {
-        final category = categories[index];
-
-        /// категория сериалов (горизонтальный список)
-        return HorizontalListView<KginoItem>(
-          focusNode: focusNode,
-          titleText: category.title,
-          itemsFuture: category.itemsFuture,
-          itemBuilder: (context, focusNode, index, item) {
-
-            /// карточка сериала
-            return KginoListTile(
-              focusNode: focusNode,
-              onTap: () {
-                /// переходим на страницу плеера камеры
-                context.pushNamed('wcamPlayer',
-                  queryParameters: {
-                    'episodeId': item.seasons.first.episodes.first.id,
-                  },
-                  extra: item,
-                );
-              },
-              item: item,
-            );
-
-          },
-          
-        );
-      },
+        ),
+      ],
     );
   }
 }

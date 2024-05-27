@@ -1,24 +1,25 @@
-import 'api_response.dart';
-import 'kgino_item.dart';
+import 'package:flutter/foundation.dart';
+
+import 'media_item.dart';
 
 class CategoryListItem {
+  final Key? key;
+  final OnlineService onlineService;
   final String title;
-  final List<KginoItem> items;
-  final Future<ApiResponse<List<KginoItem>>>? apiResponse;
+  final List<MediaItem> items;
+  final Future<List<MediaItem>>? apiResponse;
 
   CategoryListItem({
+    this.key,
+    this.onlineService = OnlineService.none,
     required this.title,
     this.items = const [],
     this.apiResponse,
   });
 
-  Future<List<KginoItem>> get itemsFuture async {
+  Future<List<MediaItem>> get itemsFuture async {
     if (apiResponse != null) {
-      final response = await apiResponse!;
-
-      if (response.isSuccess) {
-        return response.asData.data;
-      }
+      return await apiResponse!;
     }
 
     return items;

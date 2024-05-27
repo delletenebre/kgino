@@ -1,130 +1,194 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../api/filmix_api_provider.dart';
+import '../api/rezka_api_provider.dart';
 import '../models/category_list_item.dart';
-import '../models/kgino_item.dart';
-import '../resources/krs_storage.dart';
+import '../models/media_item.dart';
+import '../providers/locale_provider.dart';
+import '../providers/storage_provider.dart';
+import '../resources/kika_theme.dart';
+import '../ui/cards/featured_card.dart';
+import '../ui/cards/item_card.dart';
+import '../ui/cards/media_item_card.dart';
 import '../ui/lists/horizontal_list_view.dart';
-import '../ui/lists/kgino_list_tile.dart';
-import '../ui/lists/kgino_raw_list_tile.dart';
+import '../ui/lists/online_service_list_title.dart';
 import '../ui/lists/vertical_list_view.dart';
 
-class MoviesPage extends HookWidget {
-  const MoviesPage({
-    super.key,
-  });
+class MoviesPage extends HookConsumerWidget {
+  const MoviesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
+    /// сохраняем состояние страницы между переходами [PageView]
+    useAutomaticKeepAlive();
+
+    final locale = Locale.of(context);
+
+    final focusedMediaItem = useValueNotifier<MediaItem?>(null);
 
     /// хранилище данных
-    final storage = GetIt.instance<KrsStorage>();
+    final storage = ref.read(storageProvider);
 
-    /// фильтруем сохранённые сериалы
-    final savedItemsQuery = storage.db.kginoItems
-      .where()
-      .filter()
-      .not()
-      .bookmarkedIsNull()
-      // .bookmarkedIsNotNull()
-      .and()
-      .group((q) => q
-        .providerEqualTo(KginoProvider.ockg.name)
-        .or()
-        .providerEqualTo(KginoProvider.flmxMovie.name)
-      )
-      .sortByBookmarkedDesc()
-      .build();
+    final reloadKey = useState(UniqueKey());
 
-    final stream = useMemoized(() => savedItemsQuery.watch(fireImmediately: true));
-    final savedItems = useStream(stream);
+    useStream(storage.db.mediaItems.watchLazy());
 
-    final categories = [
-      CategoryListItem(
-        title: 'Выберите сервис',
-        items: [
-          KginoItem(
-            provider: KginoProvider.flmxShow.name,
-            id: '/flmx/movies',
-            name: 'Filmix',
-            posterUrl: 'assets/images/flmx.svg',
-            isFolder: true,
-          ),
+    /// запрос избранных сериалов
+    final bookmarksQuery = storage.db.mediaItems
+        .where()
+        .typeEqualTo(MediaItemType.movie)
+        .and()
+        .bookmarkedIsNotNull();
 
-          // KginoItem(
-          //   provider: KginoProvider.hdrz.name,
-          //   id: '/hdrz/movies',
-          //   name: 'HDRezka',
-          //   posterUrl: '',
-          //   isFolder: true,
-          // ),
+    /// есть ли в списке избранных элементы
+    final bookmarkCount = bookmarksQuery.count();
+    final hasBookmarks = bookmarkCount > 0;
 
-          KginoItem(
-            provider: KginoProvider.tskg.name,
-            id: '/ockg',
-            name: 'OC.KG',
-            posterUrl: 'https://oc.kg/templates/mobile/img/logooc_winter.png',
-            isFolder: true,
-          ),
-        ],
-      ),
+    final asyncBookmarks = useMemoized(() async {
+      final items = await bookmarksQuery.findAllAsync();
+      return items.map((item) => item.fromDatabase()).toList();
+    }, [bookmarkCount]);
 
-      CategoryListItem(
-        title: 'В закладках',
-        items: savedItems.data ?? [],
-      ),
+    /// filmix провайдер запросов к API
+    final filmixApi = ref.read(filmixApiProvider);
 
-    ];
+    /// filmix список последних добавлений
+    final filmixAsyncLatest =
+        useMemoized(() => filmixApi.getLatestMovies(), [reloadKey]);
 
-    return VerticalListView(
-      itemCount: categories.length,
-      itemBuilder: (context, focusNode, index) {
-        final category = categories.elementAt(index);
+    /// filmix список новинок
+    final filmixAsyncNewest =
+        useMemoized(() => filmixApi.getMoviesLastThreeYears(), [reloadKey]);
 
-        return HorizontalListView<KginoItem>(
-          key: ObjectKey(category),
-          focusNode: focusNode,
-          titleText: category.title,
-          itemsFuture: category.itemsFuture,
-          itemBuilder: (context, focusNode, index, item) {
+    /// filmix список популярных
+    final filmixAsyncPopular =
+        useMemoized(() => filmixApi.getPopularMovies(), [reloadKey]);
 
-            if (item.isFolder) {
-              return KginoRawListTile(
-                focusNode: focusNode,
-                onFocused: (focusNode) {
-                  
-                },
-                onTap: () {
-                  context.push(item.id);
-                },
-                title: item.name,
-                imageUrl: item.posterUrl,
-              );
-            }
+    /// hdrezka провайдер запросов к API
+    final rezkaApi = ref.read(rezkaApiProvider);
 
-            /// карточка фильма
-            return KginoListTile(
-              focusNode: focusNode,
-              onTap: () {
-                /// переходим на страницу сериала
-                context.pushNamed(item.provider == KginoProvider.flmxShow.name
-                  ? 'flmxMovieDetails' : 'ockgDetails',
-                  pathParameters: {
-                    'id': item.id,
-                  },
-                );
-              },
-              item: item,
-            );
+    /// hdrezka список последний добавлений
+    final rezkaAsyncLatest =
+        useMemoized(() => rezkaApi.getLatestMovies(), [reloadKey]);
 
+    /// hdrezka список последний добавлений
+    final rezkaAsyncNewest =
+        useMemoized(() => rezkaApi.getNewestMovies(), [reloadKey]);
+
+    /// rezka список популярных
+    final rezkaAsyncPopular = useMemoized(
+        () => rezkaApi.getPopularMovies()..then((f) {}, onError: (error) {}),
+        [reloadKey]);
+
+    final categories = useMemoized(
+        () => [
+              if (hasBookmarks)
+                CategoryListItem(
+                  title: locale.bookmarks,
+                  apiResponse: asyncBookmarks,
+                ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: locale.latestArrivals,
+                apiResponse: filmixAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: locale.novelty,
+                apiResponse: filmixAsyncNewest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.filmix,
+                title: locale.popular,
+                apiResponse: filmixAsyncPopular,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: locale.latestArrivals,
+                apiResponse: rezkaAsyncLatest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: locale.novelty,
+                apiResponse: rezkaAsyncNewest,
+              ),
+              CategoryListItem(
+                onlineService: OnlineService.rezka,
+                title: locale.popular,
+                apiResponse: rezkaAsyncPopular,
+              ),
+            ],
+        [hasBookmarks, reloadKey]);
+
+    final key = useMemoized(() => GlobalKey<VerticalListViewState>(),
+        [categories.length, reloadKey]);
+
+    return Column(
+      children: [
+        ValueListenableBuilder<MediaItem?>(
+          valueListenable: focusedMediaItem,
+          builder: (context, mediaItem, _) {
+            return FeaturedCard(mediaItem, key: ValueKey(mediaItem?.id));
           },
-          
-        );
-      },
-    );
+        ),
+        Expanded(
+          child: VerticalListView(
+            key: key,
+            itemHeight: kCardMaxHeight + kListTitleHeight,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
 
+              return HorizontalListView<MediaItem>(
+                key: (category.title == locale.bookmarks)
+                    ? ValueKey(bookmarkCount)
+                    : null,
+                title: OnlineServiceListTitle(category),
+                asyncItems: category.itemsFuture,
+                itemBuilder: (context, index, item) {
+                  if (item.isError) {
+                    return ItemCard(
+                      title: 'Ошибка загрузки',
+                      endWidget: const Text('Попробовать ещё раз'),
+                      imageUrl: 'assets/icons/refresh.svg',
+                      onPressed: () {
+                        reloadKey.value = UniqueKey();
+                        return KeyEventResult.handled;
+                      },
+                    );
+                  }
+
+                  return MediaItemCard(
+                    mediaItem: item,
+                    onFocusChange: (hasFocus) {
+                      if (hasFocus) {
+                        if (item.isFolder) {
+                          focusedMediaItem.value = null;
+                        } else {
+                          focusedMediaItem.value = item;
+                        }
+                      }
+                    },
+                    onPressed: () {
+                      if (item.isFolder) {
+                        /// переходим на страницу выбранного провайдера
+                        context.pushNamed(item.id);
+                      } else {
+                        /// переходим на страницу деталей о фильме
+                        context.pushNamed('details', extra: item);
+                      }
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
