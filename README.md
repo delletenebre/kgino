@@ -5,7 +5,7 @@
 ### Поддерживаемые источники
 
 - [x] Filmix
-- [x] Online Cinema
+- [x] HDRezka
 - [x] TS.KG
 
 ### Скриншоты
