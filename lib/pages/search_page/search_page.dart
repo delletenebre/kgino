@@ -127,6 +127,7 @@ class SearchPage extends HookConsumerWidget {
       return !canEdit.value;
     }
 
+    print('build');
     return Column(
       children: [
         Padding(
@@ -136,6 +137,7 @@ class SearchPage extends HookConsumerWidget {
             canRequestFocus: false,
             skipTraversal: true,
             onKeyEvent: (node, event) {
+              print('key event: $event');
               // if (HardwareKeyboard.instance
               //     .isLogicalKeyPressed(LogicalKeyboardKey.arrowUp)) {
               //   /// отключаем редактирование

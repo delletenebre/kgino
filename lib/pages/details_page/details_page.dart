@@ -125,7 +125,9 @@ class DetailsPage extends HookConsumerWidget {
                   },
                   onKeyEvent: (node, event) {
                     if (HardwareKeyboard.instance
-                        .isLogicalKeyPressed(LogicalKeyboardKey.escape)) {
+                            .isLogicalKeyPressed(LogicalKeyboardKey.goBack) ||
+                        HardwareKeyboard.instance
+                            .isLogicalKeyPressed(LogicalKeyboardKey.escape)) {
                       context.pop();
                       return KeyEventResult.handled;
                     }
