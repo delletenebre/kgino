@@ -35,21 +35,21 @@ class MoviesPage extends HookConsumerWidget {
 
     final reloadKey = useState(UniqueKey());
 
-    useStream(storage.db.mediaItems.watchLazy());
+    useStream(storage.db?.mediaItems.watchLazy());
 
     /// запрос избранных сериалов
-    final bookmarksQuery = storage.db.mediaItems
+    final bookmarksQuery = storage.db?.mediaItems
         .where()
         .typeEqualTo(MediaItemType.movie)
         .and()
         .bookmarkedIsNotNull();
 
     /// есть ли в списке избранных элементы
-    final bookmarkCount = bookmarksQuery.count();
+    final bookmarkCount = bookmarksQuery?.count() ?? 0;
     final hasBookmarks = bookmarkCount > 0;
 
     final asyncBookmarks = useMemoized(() async {
-      final items = await bookmarksQuery.findAllAsync();
+      final items = await bookmarksQuery?.findAllAsync() ?? [];
       return items.map((item) => item.fromDatabase()).toList();
     }, [bookmarkCount]);
 

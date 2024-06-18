@@ -18,6 +18,7 @@ import '../../ui/cards/media_item_card.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/online_service_list_title.dart';
 import '../../ui/lists/vertical_list_view.dart';
+import '../home_page.dart';
 
 part 'search_page.g.dart';
 
@@ -127,175 +128,192 @@ class SearchPage extends HookConsumerWidget {
       return !canEdit.value;
     }
 
-    print('build');
-    return Column(
-      children: [
-        Padding(
-          padding:
-              const EdgeInsets.only(top: 56.0, left: 80.0 + 48.0, right: 48.0),
-          child: Focus(
-            canRequestFocus: false,
-            skipTraversal: true,
-            onKeyEvent: (node, event) {
-              print('key event: $event');
-              // if (HardwareKeyboard.instance
-              //     .isLogicalKeyPressed(LogicalKeyboardKey.arrowUp)) {
-              //   /// отключаем редактирование
-              //   disableEditing();
+    final focused = useRef(false);
 
-              //   /// перемещаем фокус к предыдущему элементу
-              //   FocusScope.of(context).previousFocus();
-              //   return KeyEventResult.handled;
-              // }
-              if (HardwareKeyboard.instance
-                  .isLogicalKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-                if (!canEdit.value) {
-                  ref.read(activeHorizontalListProvider.notifier).onMoveLeft();
-                }
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onFocusChange: (hasFocus) => focused.value = hasFocus,
+      child: BackButtonListener(
+        onBackButtonPressed: () async {
+          if (focused.value) {
+            HomePage.maybeOf(context)?.animateTo(1);
+            return true;
+          }
 
-                return KeyEventResult.handled;
-              } else if (HardwareKeyboard.instance
-                  .isLogicalKeyPressed(LogicalKeyboardKey.arrowDown)) {
-                /// отключаем редактирование
-                disableEditing();
+          return false;
+        },
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 56.0, left: 80.0 + 48.0, right: 48.0),
+              child: Focus(
+                canRequestFocus: false,
+                skipTraversal: true,
+                onKeyEvent: (node, event) {
+                  // if (HardwareKeyboard.instance
+                  //     .isLogicalKeyPressed(LogicalKeyboardKey.arrowUp)) {
+                  //   /// отключаем редактирование
+                  //   disableEditing();
 
-                if (ref
-                    .read(searchProvider(searchController.value.text).notifier)
-                    .hasResults) {
-                  /// ^ если есть результаты поиска
+                  //   /// перемещаем фокус к предыдущему элементу
+                  //   FocusScope.of(context).previousFocus();
+                  //   return KeyEventResult.handled;
+                  // }
+                  if (HardwareKeyboard.instance
+                      .isLogicalKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+                    if (!canEdit.value) {
+                      ref
+                          .read(activeHorizontalListProvider.notifier)
+                          .onMoveLeft();
+                    }
 
-                  /// перемещаем фокус к следующему элементу
-                  searchFieldFocusNode
-                      .focusInDirection(TraversalDirection.down);
-                }
+                    return KeyEventResult.handled;
+                  } else if (HardwareKeyboard.instance
+                      .isLogicalKeyPressed(LogicalKeyboardKey.arrowDown)) {
+                    /// отключаем редактирование
+                    disableEditing();
 
-                return KeyEventResult.handled;
-              } else if (event is KeyDownEvent &&
-                      event.logicalKey == LogicalKeyboardKey.select ||
-                  HardwareKeyboard.instance
-                      .isLogicalKeyPressed(LogicalKeyboardKey.enter)) {
-                // } else if (HardwareKeyboard.instance
-                //         .isLogicalKeyPressed(LogicalKeyboardKey.select) ||
-                //     HardwareKeyboard.instance
-                //         .isLogicalKeyPressed(LogicalKeyboardKey.enter)) {
+                    if (ref
+                        .read(searchProvider(searchController.value.text)
+                            .notifier)
+                        .hasResults) {
+                      /// ^ если есть результаты поиска
 
-                /// включаем редактирование
-                if (enableEditing()) {
-                  return KeyEventResult.handled;
-                }
-              } else if (HardwareKeyboard.instance
-                  .isLogicalKeyPressed(LogicalKeyboardKey.escape)) {
-                /// отключаем редактирование
-                if (disableEditing()) {
-                  return KeyEventResult.handled;
-                }
-              }
+                      /// перемещаем фокус к следующему элементу
+                      searchFieldFocusNode
+                          .focusInDirection(TraversalDirection.down);
+                    }
 
-              return KeyEventResult.ignored;
-            },
-            onFocusChange: (hasFocus) {
-              if (hasFocus) {
-                ref.read(activeHorizontalListProvider.notifier).updateIndex(0);
-              } else if (!hasFocus && canEdit.value) {
-                /// отключаем редактирование
-                disableEditing();
+                    return KeyEventResult.handled;
+                  } else if (event is KeyDownEvent &&
+                          event.logicalKey == LogicalKeyboardKey.select ||
+                      HardwareKeyboard.instance
+                          .isLogicalKeyPressed(LogicalKeyboardKey.enter)) {
+                    // } else if (HardwareKeyboard.instance
+                    //         .isLogicalKeyPressed(LogicalKeyboardKey.select) ||
+                    //     HardwareKeyboard.instance
+                    //         .isLogicalKeyPressed(LogicalKeyboardKey.enter)) {
 
-                /// возвращаем фокус на поле поиска
-                searchFieldFocusNode.requestFocus();
-              }
-            },
-            child: TextField(
-              focusNode: searchFieldFocusNode,
-              readOnly: !canEdit.value,
-              controller: searchController,
-              textInputAction: TextInputAction.search,
-              autocorrect: false,
-              decoration: InputDecoration(
-                hintText: 'Название фильма или сериала...',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(48.0),
-                  borderSide: const BorderSide(
-                    width: 1.0,
+                    /// включаем редактирование
+                    if (enableEditing()) {
+                      return KeyEventResult.handled;
+                    }
+                  } else if (HardwareKeyboard.instance
+                      .isLogicalKeyPressed(LogicalKeyboardKey.escape)) {
+                    /// отключаем редактирование
+                    if (disableEditing()) {
+                      return KeyEventResult.handled;
+                    }
+                  }
+
+                  return KeyEventResult.ignored;
+                },
+                onFocusChange: (hasFocus) {
+                  if (hasFocus) {
+                    ref
+                        .read(activeHorizontalListProvider.notifier)
+                        .updateIndex(0);
+                  } else if (!hasFocus && canEdit.value) {
+                    /// отключаем редактирование
+                    disableEditing();
+
+                    /// возвращаем фокус на поле поиска
+                    searchFieldFocusNode.requestFocus();
+                  }
+                },
+                child: TextField(
+                  focusNode: searchFieldFocusNode,
+                  readOnly: !canEdit.value,
+                  controller: searchController,
+                  textInputAction: TextInputAction.search,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    hintText: 'Название фильма или сериала...',
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 24.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(48.0),
+                      borderSide: const BorderSide(
+                        width: 1.0,
+                      ),
+                    ),
+                    filled: true,
+                    fillColor: theme.surfaceContainerHighest,
                   ),
+                  onChanged: (value) {},
+                  onSubmitted: (value) {
+                    /// отключаем редактирование
+                    disableEditing();
+
+                    /// возвращаем фокус на поле поиска
+                    ref
+                        .read(searchProvider(searchController.value.text)
+                            .notifier)
+                        .fetch();
+                    // searchFieldFocusNode.focusInDirection(TraversalDirection.down);
+                  },
                 ),
-                filled: true,
-                fillColor: theme.surfaceContainerHighest,
               ),
-              onChanged: (value) {},
-              onSubmitted: (value) {
-                /// отключаем редактирование
-                disableEditing();
-
-                /// возвращаем фокус на поле поиска
-                ref
-                    .read(searchProvider(searchController.value.text).notifier)
-                    .fetch();
-                // searchFieldFocusNode.focusInDirection(TraversalDirection.down);
-              },
             ),
-          ),
-        ),
-        const SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
 
-        /// результаты поиска
-        HookBuilder(
-          builder: (context) {
-            useValueListenable(searchController);
+            /// результаты поиска
+            HookBuilder(
+              builder: (context) {
+                useValueListenable(searchController);
 
-            if (searchController.value.text.isEmpty) {
-              return const SizedBox();
-            }
+                if (searchController.value.text.isEmpty) {
+                  return const SizedBox();
+                }
 
-            final controller =
-                ref.watch(searchProvider(searchController.value.text));
+                final controller =
+                    ref.watch(searchProvider(searchController.value.text));
 
-            /// если результаты загружаются
-            if (controller.isLoading) {
-              return const AnimatedLoading(size: 96.0);
-            }
+                /// если результаты загружаются
+                if (controller.isLoading) {
+                  return const AnimatedLoading(size: 96.0);
+                }
 
-            final categories = controller.valueOrNull ?? [];
+                final categories = controller.valueOrNull ?? [];
 
-            /// если по запросу нет результатов
-            if (categories.isEmpty) {
-              return const Center(
-                child: Text('По Вашему запросу ничего не найдено'),
-              );
-            }
+                /// если по запросу нет результатов
+                if (categories.isEmpty) {
+                  return const Center(
+                    child: Text('По Вашему запросу ничего не найдено'),
+                  );
+                }
 
-            return Expanded(
-              child: VerticalListView(
-                onMoveUp: () => searchFieldFocusNode.requestFocus(),
-                itemHeight: kCardMaxHeight + kListTitleHeight,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final category = categories[index];
+                return Expanded(
+                  child: VerticalListView(
+                    onMoveUp: () => searchFieldFocusNode.requestFocus(),
+                    itemHeight: kCardMaxHeight + kListTitleHeight,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
 
-                  return HorizontalListView<MediaItem>(
-                    title: OnlineServiceListTitle(category),
-                    asyncItems: category.itemsFuture,
-                    itemBuilder: (context, index, item) {
-                      return MediaItemCard(
-                        mediaItem: item,
-                        onPressed: () {
-                          if (item.isFolder) {
-                            /// переходим на страницу выбранного провайдера
-                            context.pushNamed(item.id);
-                          } else {
-                            /// переходим на страницу деталей о фильме
-                            context.pushNamed('details', extra: item);
-                          }
+                      return HorizontalListView<MediaItem>(
+                        title: OnlineServiceListTitle(category),
+                        asyncItems: category.itemsFuture,
+                        itemBuilder: (context, index, item) {
+                          return MediaItemCard(
+                            mediaItem: item,
+                            onPressed: () {
+                              /// переходим на страницу деталей о фильме
+                              context.pushNamed('details', extra: item);
+                            },
+                          );
                         },
                       );
                     },
-                  );
-                },
-              ),
-            );
-          },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

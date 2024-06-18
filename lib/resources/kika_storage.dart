@@ -9,15 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/media_item.dart';
 
 class KikaStorage {
+  final SharedPreferences sharedStorage;
+  final FlutterSecureStorage secureStorage;
+  final Isar? db;
+
   KikaStorage({
     required this.sharedStorage,
     required this.secureStorage,
     required this.db,
   });
 
-  final SharedPreferences sharedStorage;
-  final FlutterSecureStorage secureStorage;
-  final Isar db;
   final ValueNotifier<Map<String, dynamic>> _notifier = ValueNotifier({});
   ValueNotifier<Map<String, dynamic>> get notifier => _notifier;
 
@@ -78,17 +79,21 @@ class KikaStorage {
 
 class DatabaseEngine {
   /// Create an instance of ObjectBox to use throughout the app.
-  static Future<Isar> initialize() async {
-    final directory = await getApplicationDocumentsDirectory();
+  static Future<Isar?> initialize() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
 
-    return Isar.open(
-      schemas: [
-        MediaItemSchema,
-        MediaItemEpisodeSchema,
-      ],
-      directory: directory.path,
-      engine: IsarEngine.isar,
-      inspector: kDebugMode,
-    );
+      return Isar.open(
+        schemas: [
+          MediaItemSchema,
+          MediaItemEpisodeSchema,
+        ],
+        directory: directory.path,
+        engine: IsarEngine.isar,
+        inspector: kDebugMode,
+      );
+    } catch (exception) {
+      return null;
+    }
   }
 }

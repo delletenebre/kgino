@@ -164,8 +164,8 @@ class FeaturedCard extends HookConsumerWidget {
                                       ].removeEmpty().join(' • '),
                                     ),
                               error: (error, stackTrace) {
-                                print(error);
-                                print(stackTrace);
+                                debugPrint(error.toString());
+                                debugPrint(stackTrace.toString());
                                 return Text(
                                   'Информация недоступна',
                                   key: const ValueKey('not availables'),

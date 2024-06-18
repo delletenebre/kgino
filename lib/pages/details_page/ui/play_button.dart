@@ -30,11 +30,12 @@ class PlayButton extends HookConsumerWidget {
 
     /// список эпизодов
     final episodes = mediaItem.episodes;
-    final seenEpisodes = storage.db.mediaItemEpisodes
-        .where()
-        .idStartsWith('${mediaItem.dbId}@')
-        .sortByUpdatedAtDesc()
-        .findAll();
+    final seenEpisodes = storage.db?.mediaItemEpisodes
+            .where()
+            .idStartsWith('${mediaItem.dbId}@')
+            .sortByUpdatedAtDesc()
+            .findAll() ??
+        [];
 
     if (mediaItem.episodes.isEmpty) {
       return const SizedBox();

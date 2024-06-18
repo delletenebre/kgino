@@ -300,7 +300,7 @@ class MediaItem implements Playable {
 
   /// находим сохранённый в базе данных сериал или фильм
   MediaItem findSaved(KikaStorage storage) {
-    final savedItem = storage.db.mediaItems.get(dbId);
+    final savedItem = storage.db?.mediaItems.get(dbId);
     if (savedItem != null) {
       switch (savedItem.onlineService) {
         case OnlineService.none:
@@ -318,7 +318,8 @@ class MediaItem implements Playable {
   }
 
   /// сохранение в базу данных
-  Future<void> save(KikaStorage storage) async => storage.db.writeAsync((isar) {
+  Future<void> save(KikaStorage storage) async =>
+      storage.db?.writeAsync((isar) {
         isar.mediaItems.put(this);
       });
 

@@ -84,7 +84,7 @@ class MediaItemEpisode {
 
   /// сохранение в базу данных
   Future<void> save(KikaStorage storage) async {
-    storage.db.writeAsync((isar) async {
+    storage.db?.writeAsync((isar) async {
       updatedAt = DateTime.now();
       isar.mediaItemEpisodes.put(this);
     });
@@ -92,11 +92,11 @@ class MediaItemEpisode {
 
   /// сохранение в базу данных
   int savedPosition(KikaStorage storage) {
-    return storage.db.mediaItemEpisodes.get(dbDb)?.position ?? 0;
+    return storage.db?.mediaItemEpisodes.get(dbDb)?.position ?? 0;
   }
 
   MediaItemEpisode saved(KikaStorage storage) {
-    return storage.db.mediaItemEpisodes.get(dbDb) ?? this;
+    return storage.db?.mediaItemEpisodes.get(dbDb) ?? this;
   }
 
   String nameOr(String fallback) {

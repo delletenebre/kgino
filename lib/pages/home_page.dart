@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../providers/active_horizontal_list_provider.dart';
@@ -15,9 +16,9 @@ class HomePage extends StatefulHookConsumerWidget {
   @override
   createState() => HomeLayoutState();
 
-  // static HomeLayoutState? maybeOf(BuildContext context) {
-  //   return context.findAncestorStateOfType<HomeLayoutState>();
-  // }
+  static HomeLayoutState? maybeOf(BuildContext context) {
+    return context.findAncestorStateOfType<HomeLayoutState>();
+  }
 }
 
 class HomeLayoutState extends ConsumerState<HomePage> {
@@ -52,17 +53,8 @@ class HomeLayoutState extends ConsumerState<HomePage> {
       }
     });
 
-    return BackButtonListener(
-      onBackButtonPressed: () async {
-        if (pageController.page == 0) {
-          navigationRailKey.currentState?.openDrawer();
-          navigationRailKey.currentState?.animateTo(1);
-          return true;
-        }
-
-        return false;
-      },
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           PageView.builder(
             controller: pageController,
@@ -78,6 +70,10 @@ class HomeLayoutState extends ConsumerState<HomePage> {
         ],
       ),
     );
+  }
+
+  void animateTo(int index) {
+    navigationRailKey.currentState?.animateTo(index);
   }
 
   void openDrawer() {

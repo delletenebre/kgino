@@ -21,8 +21,8 @@ class BookmarkButton extends HookConsumerWidget {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
-    final bookmarked =
-        useState(storage.db.mediaItems.get(mediaItem.dbId)?.bookmarked != null);
+    final bookmarked = useState(
+        storage.db?.mediaItems.get(mediaItem.dbId)?.bookmarked != null);
 
     // /// сохранённый в базе данных элемент
     // final mediaItemStream = useStream(
