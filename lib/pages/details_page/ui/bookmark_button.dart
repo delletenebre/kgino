@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../models/media_item.dart';
 import '../../../providers/providers.dart';
-import '../../../providers/locale_provider.dart';
 
 class BookmarkButton extends HookConsumerWidget {
   final MediaItem mediaItem;

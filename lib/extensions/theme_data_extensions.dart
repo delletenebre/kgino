@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
-import 'package:material_color_utilities/utils/math_utils.dart';
 
 import '../resources/kika_theme.dart';
 

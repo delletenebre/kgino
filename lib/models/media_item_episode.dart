@@ -3,7 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../extensions/json_converters.dart';
 import '../resources/kika_storage.dart';
-import 'media_item.dart';
 
 part 'media_item_episode.g.dart';
 

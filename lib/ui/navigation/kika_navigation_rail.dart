@@ -25,6 +25,8 @@ class KikaNavigationRail extends StatefulWidget {
 class KikaNavigationRailState extends State<KikaNavigationRail> {
   static const minWidth = 80.0;
   static const expandedWidth = 280.0;
+  static const itemsCount = 6;
+  static const visibleItemsCount = 5;
 
   List<FocusNode> _focusNodes = [];
   int _focusedItemIndex = 0;
@@ -41,7 +43,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
     widget.pageController.addListener(_handlePageChanged);
 
-    _focusNodes = List.generate(5, (index) => FocusNode());
+    _focusNodes = List.generate(itemsCount, (index) => FocusNode());
     super.initState();
   }
 
@@ -245,7 +247,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
                       curve: Curves.easeOut,
                       offset: _expanded ? Offset.zero : const Offset(-2.0, 0.0),
                       child: KikaNavigationTile(
-                        focusNode: _focusNodes[4],
+                        focusNode: _focusNodes.last,
                         onTap: () async {
                           await context.showStartModal(
                             titleText: locale.settings,
@@ -290,7 +292,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
   KeyEventResult goNext() {
     // if (!_animationComplete) return KeyEventResult.handled;
 
-    if (_focusedItemIndex < 5) {
+    if (_focusedItemIndex < itemsCount - 1) {
       _focusedItemIndex++;
       animateToCurrent();
 
@@ -306,7 +308,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
   /// перейти к активной ссылке навигационной панели
   void animateToCurrent() async {
-    if (_focusedItemIndex < 5) {
+    if (_focusedItemIndex < itemsCount - 1) {
       widget.pageController.animateToPage(
         _focusedItemIndex,
         duration: kThemeAnimationDuration,
@@ -338,8 +340,8 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
   /// свернуть навигационную панель
   void closeDrawer() {
-    if (_focusedItemIndex > 4) {
-      animateTo(4);
+    if (_focusedItemIndex > visibleItemsCount - 1) {
+      animateTo(visibleItemsCount - 1);
     }
 
     widget.focusNode.focusInDirection(TraversalDirection.right);
