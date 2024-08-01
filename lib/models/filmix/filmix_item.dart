@@ -153,19 +153,17 @@ class FilmixItem extends MediaItem {
             )
         ];
 
-        if ((voiceActing?.id ?? '').isEmpty && voices.isNotEmpty) {
+        if ((voiceActing.id).isEmpty && voices.isNotEmpty) {
           voiceActing = voices.first;
         }
 
         seasons = [];
 
         for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
-          if (seasonEntry.value.containsKey(voiceActing?.id ?? '')) {
+          if (seasonEntry.value.containsKey(voiceActing.id)) {
             final episodes = <MediaItemEpisode>[];
             for (final (episodeIndex, episodeEntry)
-                in (seasonEntry.value[voiceActing?.id ?? ''] as Map)
-                    .entries
-                    .indexed) {
+                in (seasonEntry.value[voiceActing.id] as Map).entries.indexed) {
               final showLink = episodeEntry.value as FilmixShowLink;
               episodes.add(MediaItemEpisode(
                 id: '$dbId@${seasonIndex + 1}|${episodeIndex + 1}',

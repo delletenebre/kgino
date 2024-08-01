@@ -123,13 +123,6 @@ class RezkaItem extends MediaItem {
         voiceActingId: voiceActing.id,
         quality: quality,
       );
-
-      /// получаем данные фильма
-      return MediaItemUrl(
-        video: seasons.first.episodes
-            .firstWhere((episode) => episode.name == quality)
-            .videoFileUrl,
-      );
     } else {
       /// получаем данные эпизода
       return await api.getStream(
