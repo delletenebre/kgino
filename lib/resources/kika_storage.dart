@@ -75,6 +75,17 @@ class KikaStorage {
   void _notifyChange(String key, dynamic value) {
     _notifier.value = {..._notifier.value, key: value};
   }
+
+  /// чтение списка из обычного хранилища
+  List<T> readList<T>(String key, {String defaultValue = '[]'}) {
+    return jsonDecode(sharedStorage.getString(key) ?? defaultValue);
+  }
+
+  /// запись списка в обычное хранилище
+  void writeList<T>(String key, List<T> value) {
+    final encoded = jsonEncode(value);
+    sharedStorage.setString(key, encoded);
+  }
 }
 
 class DatabaseEngine {

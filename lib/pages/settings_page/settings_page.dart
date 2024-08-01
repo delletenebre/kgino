@@ -52,7 +52,6 @@ class SettingsPage extends HookConsumerWidget {
             ),
             const SizedBox(height: 12.0),
             KikaListTileCheckbox(
-              //focusColor: theme.colorScheme.onSurface,
               selected: ref
                   .read(storageProvider)
                   .readBool('time_enabled', defaultValue: true),
@@ -61,6 +60,13 @@ class SettingsPage extends HookConsumerWidget {
               },
               title: 'Отображать время',
             ),
+            // const SizedBox(height: 12.0),
+            // KikaListTile(
+            //   onSelect: () {
+            //     context.showModal(child: const FilterCountryDialog());
+            //   },
+            //   title: 'Аккаунт Filmix',
+            // ),
           ],
         ),
       ),

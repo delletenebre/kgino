@@ -31,34 +31,22 @@ class _TimeViewState extends State<TimeView> {
   Widget build(context) {
     final theme = Theme.of(context);
 
+    final shadowColor =
+        theme.colorScheme.surfaceContainerHighest.withOpacity(0.5);
+
     return Text(
       _timeString,
       style: TextStyle(
-        color: theme.colorScheme.onSurfaceVariant,
+        color: theme.colorScheme.onPrimaryContainer.withOpacity(0.5),
         fontFeatures: const [
           FontFeature.tabularFigures(),
         ],
         shadows: [
-          Shadow(
-            color: theme.colorScheme.surfaceContainerHighest,
-            blurRadius: 4.0,
-          ),
-          Shadow(
-            color: theme.colorScheme.surfaceContainerHighest,
-            blurRadius: 8.0,
-          ),
-          Shadow(
-            color: theme.colorScheme.surfaceContainerHighest,
-            blurRadius: 12.0,
-          ),
-          Shadow(
-            color: theme.colorScheme.surfaceContainerHighest,
-            blurRadius: 24.0,
-          ),
-          Shadow(
-            color: theme.colorScheme.surfaceContainerHighest,
-            blurRadius: 48.0,
-          ),
+          Shadow(color: shadowColor, blurRadius: 4.0),
+          Shadow(color: shadowColor, blurRadius: 8.0),
+          Shadow(color: shadowColor, blurRadius: 12.0),
+          Shadow(color: shadowColor, blurRadius: 24.0),
+          Shadow(color: shadowColor, blurRadius: 48.0),
         ],
       ),
     );
