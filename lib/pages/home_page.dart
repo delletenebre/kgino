@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../providers/active_horizontal_list_provider.dart';
 import '../ui/navigation/kika_navigation_rail.dart';
+import 'bookmarks_page.dart';
 import 'cameras_page.dart';
 import 'movies_page.dart';
 import 'search_page/search_page.dart';
@@ -25,12 +26,13 @@ class HomeLayoutState extends ConsumerState<HomePage> {
 
   final pages = const [
     SearchPage(),
+    BookmarksPage(),
     ShowsPage(),
     MoviesPage(),
     CamerasPage(),
   ];
 
-  final pageController = PageController(initialPage: 1);
+  final pageController = PageController(initialPage: 2);
 
   @override
   void dispose() {
@@ -56,8 +58,7 @@ class HomeLayoutState extends ConsumerState<HomePage> {
       body: Stack(
         children: [
           Focus(
-            autofocus: true,
-            skipTraversal: true,
+            canRequestFocus: false,
             child: PageView.builder(
               controller: pageController,
               scrollDirection: Axis.vertical,

@@ -66,6 +66,10 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
         icon: const Icon(Iconsax.search_normal_1),
       ),
       NavigationItem(
+        title: 'Закладки',
+        icon: const Icon(Iconsax.bookmark),
+      ),
+      NavigationItem(
         title: 'Сериалы',
         icon: const Icon(Iconsax.video_play),
       ),
@@ -212,7 +216,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
                       child: Center(
                         child: ListView.separated(
                           shrinkWrap: true,
-                          itemCount: 4,
+                          itemCount: navigations.length,
                           itemBuilder: (context, index) {
                             return KikaNavigationTile(
                               focusNode: _focusNodes[index],
@@ -286,7 +290,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
   KeyEventResult goNext() {
     // if (!_animationComplete) return KeyEventResult.handled;
 
-    if (_focusedItemIndex < 4) {
+    if (_focusedItemIndex < 5) {
       _focusedItemIndex++;
       animateToCurrent();
 
@@ -302,7 +306,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
   /// перейти к активной ссылке навигационной панели
   void animateToCurrent() async {
-    if (_focusedItemIndex < 4) {
+    if (_focusedItemIndex < 5) {
       widget.pageController.animateToPage(
         _focusedItemIndex,
         duration: kThemeAnimationDuration,
@@ -334,8 +338,8 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
   /// свернуть навигационную панель
   void closeDrawer() {
-    if (_focusedItemIndex > 3) {
-      animateTo(3);
+    if (_focusedItemIndex > 4) {
+      animateTo(4);
     }
 
     widget.focusNode.focusInDirection(TraversalDirection.right);

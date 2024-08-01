@@ -52,7 +52,9 @@ RezkaItem _$RezkaItemFromJson(Map<String, dynamic> json) => RezkaItem(
           : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
       quality: json['quality'] as String? ?? '720p',
       blockedStatus: json['blockedStatus'] as String?,
-    );
+    )..historied = json['historied'] == null
+        ? null
+        : DateTime.parse(json['historied'] as String);
 
 Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
       'onlineService': _$OnlineServiceEnumMap[instance.onlineService]!,
@@ -64,6 +66,7 @@ Map<String, dynamic> _$RezkaItemToJson(RezkaItem instance) => <String, dynamic>{
       'voiceActing': instance.voiceActing.toJson(),
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
+      'historied': instance.historied?.toIso8601String(),
       'originalTitle': instance.originalTitle,
       'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),

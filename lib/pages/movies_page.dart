@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
 
 import '../api/filmix_api_provider.dart';
 import '../api/rezka_api_provider.dart';
 import '../models/category_list_item.dart';
 import '../models/media_item.dart';
 import '../providers/locale_provider.dart';
-import '../providers/storage_provider.dart';
 import '../resources/kika_theme.dart';
 import '../ui/cards/featured_card.dart';
 import '../ui/cards/item_card.dart';
@@ -30,28 +28,7 @@ class MoviesPage extends HookConsumerWidget {
 
     final focusedMediaItem = useValueNotifier<MediaItem?>(null);
 
-    /// хранилище данных
-    final storage = ref.read(storageProvider);
-
     final reloadKey = useState(UniqueKey());
-
-    useStream(storage.db?.mediaItems.watchLazy());
-
-    /// запрос избранных сериалов
-    final bookmarksQuery = storage.db?.mediaItems
-        .where()
-        .typeEqualTo(MediaItemType.movie)
-        .and()
-        .bookmarkedIsNotNull();
-
-    /// есть ли в списке избранных элементы
-    final bookmarkCount = bookmarksQuery?.count() ?? 0;
-    final hasBookmarks = bookmarkCount > 0;
-
-    final asyncBookmarks = useMemoized(() async {
-      final items = await bookmarksQuery?.findAllAsync() ?? [];
-      return items.map((item) => item.fromDatabase()).toList();
-    }, [bookmarkCount]);
 
     /// filmix провайдер запросов к API
     final filmixApi = ref.read(filmixApiProvider);
@@ -86,11 +63,6 @@ class MoviesPage extends HookConsumerWidget {
 
     final categories = useMemoized(
         () => [
-              if (hasBookmarks)
-                CategoryListItem(
-                  title: locale.bookmarks,
-                  apiResponse: asyncBookmarks,
-                ),
               CategoryListItem(
                 onlineService: OnlineService.filmix,
                 title: locale.latestArrivals,
@@ -122,7 +94,7 @@ class MoviesPage extends HookConsumerWidget {
                 apiResponse: rezkaAsyncPopular,
               ),
             ],
-        [hasBookmarks, reloadKey]);
+        [reloadKey]);
 
     final key = useMemoized(() => GlobalKey<VerticalListViewState>(),
         [categories.length, reloadKey]);
@@ -144,9 +116,6 @@ class MoviesPage extends HookConsumerWidget {
               final category = categories[index];
 
               return HorizontalListView<MediaItem>(
-                key: (category.title == locale.bookmarks)
-                    ? ValueKey(bookmarkCount)
-                    : null,
                 title: OnlineServiceListTitle(category),
                 asyncItems: category.itemsFuture,
                 itemBuilder: (context, index, item) {

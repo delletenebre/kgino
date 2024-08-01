@@ -53,6 +53,9 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
           : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
       duration: (json['duration'] as num?)?.toInt() ?? 0,
     )
+      ..historied = json['historied'] == null
+          ? null
+          : DateTime.parse(json['historied'] as String)
       ..imdbRating = const DoubleConverter().fromJson(json['imdbRating'])
       ..kinopoiskRating =
           const DoubleConverter().fromJson(json['kinopoiskRating']);
@@ -68,6 +71,7 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'voiceActing': instance.voiceActing.toJson(),
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
+      'historied': instance.historied?.toIso8601String(),
       'originalTitle': instance.originalTitle,
       'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,

@@ -49,6 +49,9 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
       ..bookmarked = json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String)
+      ..historied = json['historied'] == null
+          ? null
+          : DateTime.parse(json['historied'] as String)
       ..seasons = (json['seasons'] as List<dynamic>)
           .map((e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -61,6 +64,7 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'voiceActing': instance.voiceActing.toJson(),
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
+      'historied': instance.historied?.toIso8601String(),
       'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,

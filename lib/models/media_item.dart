@@ -101,6 +101,9 @@ class MediaItem implements Playable {
   /// дата добавления в избранное
   DateTime? bookmarked;
 
+  /// дата добавления в историю
+  DateTime? historied;
+
   /// оригинальное название
   @ignore
   @JsonKey(name: 'originalTitle')

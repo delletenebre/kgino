@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../extensions/json_converters.dart';
 import '../resources/kika_storage.dart';
+import 'media_item.dart';
 
 part 'media_item_episode.g.dart';
 
@@ -106,4 +107,17 @@ class MediaItemEpisode {
       return name;
     }
   }
+
+  // (String, String) getMediaItemIds() {
+  //   final ids = (id.split('@').firstOrNull ?? '').split('|');
+  //   if (ids.length == 2) {
+  //     // final onlineService = OnlineService.values
+  //     //     .firstWhere((e) => e.toString() == 'OnlineService.${ids[0]}');
+  //     final onlineService = ids[0];
+  //     final id = ids[1];
+
+  //     return (onlineService, id);
+  //   }
+  //   return ('', '');
+  // }
 }
