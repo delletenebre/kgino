@@ -81,8 +81,9 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
     return Focus(
       focusNode: widget.focusNode,
-      canRequestFocus: _expanded,
+      canRequestFocus: false,
       onFocusChange: (hasFocus) {
+        setState(() => _expanded = hasFocus);
         if (hasFocus) {
           animateToCurrent();
         }
@@ -328,12 +329,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
 
   /// раскрыть навигационную панель
   void openDrawer() {
-    setState(() {
-      _expanded = true;
-    });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.focusNode.focusInDirection(TraversalDirection.left);
-    });
+    requestCurrentFocus();
   }
 
   /// свернуть навигационную панель
@@ -342,13 +338,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
       animateTo(3);
     }
 
-    setState(() {
-      _expanded = false;
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.focusNode.focusInDirection(TraversalDirection.right);
-    });
+    widget.focusNode.focusInDirection(TraversalDirection.right);
   }
 
   /// показать свёрнутую навигационную панель

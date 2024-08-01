@@ -60,6 +60,7 @@ class PlayerProgressBarState extends State<PlayerProgressBar> {
 
       /// если видео было завершено, то вызываем следующее видео из плейлиста
       if (value.isCompleted && value.position > Duration.zero) {
+        widget.controller.removeListener(videoPlayerListener);
         widget.onSkipNext?.call();
       }
 

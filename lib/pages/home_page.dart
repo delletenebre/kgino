@@ -55,11 +55,15 @@ class HomeLayoutState extends ConsumerState<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          PageView.builder(
-            controller: pageController,
-            scrollDirection: Axis.vertical,
-            itemCount: pages.length,
-            itemBuilder: (context, index) => pages[index],
+          Focus(
+            autofocus: true,
+            skipTraversal: true,
+            child: PageView.builder(
+              controller: pageController,
+              scrollDirection: Axis.vertical,
+              itemCount: pages.length,
+              itemBuilder: (context, index) => pages[index],
+            ),
           ),
           KikaNavigationRail(
             key: navigationRailKey,
@@ -77,11 +81,9 @@ class HomeLayoutState extends ConsumerState<HomePage> {
 
   void openDrawer() {
     navigationRailKey.currentState?.openDrawer();
-    // scaffoldKey.currentState?.openDrawer();
   }
 
   void closeDrawer() {
-    // scaffoldKey.currentState?.closeDrawer();
     navigationRailKey.currentState?.closeDrawer();
   }
 

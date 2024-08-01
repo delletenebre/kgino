@@ -206,7 +206,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
 
   /// обработчик переключения на следующий эпизод
   void skipNext() {
+    print('skipNext $currentEpisodeIndex');
     currentEpisodeIndex++;
+    print('skipNext++ $currentEpisodeIndex');
 
     /// переходим на страницу плеера фильма
     updateEpisode();
