@@ -206,10 +206,10 @@ class FeaturedCard extends HookConsumerWidget {
                         duration: kThemeAnimationDuration * 2,
                         reverseDuration: Duration.zero,
                         child: Text(
-                          currentMediaItem.overview.isEmpty
+                          currentMediaItem.overviewText.isEmpty
                               ? '...'
-                              : currentMediaItem.overview,
-                          key: ValueKey(currentMediaItem.overview),
+                              : currentMediaItem.overviewText,
+                          key: ValueKey(currentMediaItem.overviewText),
                         ),
                       ),
                     ),

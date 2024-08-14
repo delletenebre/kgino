@@ -226,6 +226,9 @@ class FilmixItem extends MediaItem {
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
 
+    final tmdb = await loadTmdb();
+    detailedItem.tmdb = tmdb;
+
     return detailedItem;
   }
 

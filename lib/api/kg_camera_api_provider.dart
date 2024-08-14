@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +24,9 @@ class KgCameraApi {
 
   KgCameraApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogsInterceptor());
+    if (kDebugMode) {
+      // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
   }
 
   /// список камер elcat

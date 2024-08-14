@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tmdb_api/tmdb_api.dart';
 
 import '../extensions/duration_extensions.dart';
 import '../extensions/json_converters.dart';
@@ -13,6 +15,7 @@ import 'media_item_episode.dart';
 import 'media_item_season.dart';
 import 'media_item_url.dart';
 import 'rezka/rezka_item.dart';
+import 'tmdb/tmdb_item.dart';
 import 'tskg/tskg_item.dart';
 import 'voice_acting.dart';
 
@@ -81,8 +84,7 @@ class MediaItem implements Playable {
   final String poster;
 
   /// изображение на фон
-  @ignore
-  String get backdrop => poster;
+  String get backdrop => tmdb?.backdropUrl ?? poster;
 
   /// тип контента
   MediaItemType type;
@@ -112,6 +114,13 @@ class MediaItem implements Playable {
   /// описание
   @ignore
   final String overview;
+
+  @ignore
+  String get overviewText {
+    return (tmdb?.overview != null && langdetect.detect(tmdb!.overview) == 'ru')
+        ? tmdb!.overview
+        : overview;
+  }
 
   /// год
   @StringConverter()
@@ -157,6 +166,11 @@ class MediaItem implements Playable {
   @ignore
   List<VoiceActing> voices;
 
+  /// TMDB
+  @ignore
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  TmdbItem? tmdb;
+
   MediaItem({
     this.onlineService = OnlineService.none,
     this.id = '',
@@ -180,6 +194,9 @@ class MediaItem implements Playable {
     this.seasons = const [],
     this.voices = const [],
     this.blockedStatus,
+
+    ///
+    this.tmdb,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) =>
@@ -299,6 +316,42 @@ class MediaItem implements Playable {
     }
 
     throw UnimplementedError();
+  }
+
+  Future<TmdbItem?> loadTmdb() async {
+    final tmdb = TMDB(
+      ApiKeys(
+        '5e2d902fe9f3d1307e3f2e742b52e631',
+        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTJkOTAyZmU5ZjNkMTMwN2UzZjJlNzQyYjUyZTYzMSIsIm5iZiI6MTcyMzU0MzU0MC40ODQzMjksInN1YiI6IjYzNzkyMmQ1OTc2ZTQ4MDBkY2Q5NDBhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rujgHr1qBSJ9gnevLd_1wOr-f5ZkN3Mkqw-LM1tDUWA',
+      ),
+      defaultLanguage: 'ru-RU',
+      logConfig: const ConfigLogger(
+        showLogs: true,
+        showErrorLogs: true,
+        showInfoLogs: true,
+        showUrlLogs: true,
+      ),
+    );
+
+    Map search = {};
+
+    if (type == MediaItemType.show) {
+      search = await tmdb.v3.search.queryTvShows(title, firstAirDateYear: year);
+    } else if (type == MediaItemType.movie) {
+      search = await tmdb.v3.search
+          .queryMovies(title, year: int.tryParse(year.toString()));
+    }
+
+    final searchResults = search['results'] as List? ?? [];
+    if (searchResults.isNotEmpty) {
+      final tmdbItem = TmdbItem.fromJson(searchResults.first);
+
+      this.tmdb = tmdbItem;
+
+      return tmdbItem;
+    }
+
+    return null;
   }
 
   /// находим сохранённый в базе данных сериал или фильм
