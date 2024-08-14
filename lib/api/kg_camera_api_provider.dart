@@ -245,6 +245,7 @@ class KgCameraApi {
   /// список камер интересных мест
   List<MediaItem> getExtraCameras() => [
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Кенийский водопой',
           poster: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
           seasons: [
@@ -257,6 +258,7 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Африканские животные',
           poster: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
           seasons: [
@@ -269,6 +271,7 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Сафари камера',
           poster: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
           seasons: [
@@ -281,36 +284,13 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Парк слонов',
           poster: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
           seasons: [
             MediaItemSeason(episodes: [
               MediaItemEpisode(
                 videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4',
-                isLiveStream: true,
-              ),
-            ])
-          ],
-        ),
-        MediaItem(
-          title: 'Таиланд, поезд',
-          poster: 'http://i3.ytimg.com/vi/ujqL2QNKVaY/hqdefault.jpg',
-          seasons: [
-            MediaItemSeason(episodes: [
-              MediaItemEpisode(
-                videoFileUrl: 'https://www.youtube.com/watch?v=lMYCNza7a5k',
-                isLiveStream: true,
-              ),
-            ])
-          ],
-        ),
-        MediaItem(
-          title: 'Гонконг, двухэтажный трамвай',
-          poster: 'http://i3.ytimg.com/vi/Ilrezf9AnVY/hqdefault.jpg',
-          seasons: [
-            MediaItemSeason(episodes: [
-              MediaItemEpisode(
-                videoFileUrl: 'https://www.youtube.com/watch?v=2eownrc-krc',
                 isLiveStream: true,
               ),
             ])

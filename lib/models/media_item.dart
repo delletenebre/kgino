@@ -182,7 +182,7 @@ class MediaItem implements Playable {
     this.bookmarked,
 
     /// не в базе данных
-    this.type = MediaItemType.folder,
+    required this.type,
     this.originalTitle = '',
     this.overview = '',
     this.year = '',
@@ -318,7 +318,7 @@ class MediaItem implements Playable {
     throw UnimplementedError();
   }
 
-  Future<TmdbItem?> loadTmdb() async {
+  Future<TmdbItem?> loadTmdb([MediaItemType? type]) async {
     final tmdb = TMDB(
       ApiKeys(
         '5e2d902fe9f3d1307e3f2e742b52e631',
@@ -333,13 +333,15 @@ class MediaItem implements Playable {
       ),
     );
 
+    final query = '$title $originalTitle';
+
     Map search = {};
 
-    if (type == MediaItemType.show) {
-      search = await tmdb.v3.search.queryTvShows(title, firstAirDateYear: year);
-    } else if (type == MediaItemType.movie) {
+    if ((type ?? this.type) == MediaItemType.show) {
+      search = await tmdb.v3.search.queryTvShows(query, firstAirDateYear: year);
+    } else if ((type ?? this.type) == MediaItemType.movie) {
       search = await tmdb.v3.search
-          .queryMovies(title, year: int.tryParse(year.toString()));
+          .queryMovies(query, year: int.tryParse(year.toString()));
     }
 
     final searchResults = search['results'] as List? ?? [];

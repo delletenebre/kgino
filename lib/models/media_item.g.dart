@@ -129,10 +129,10 @@ MediaItem deserializeMediaItem(IsarReader reader) {
   final MediaItemType _type;
   {
     if (IsarCore.readNull(reader, 5)) {
-      _type = MediaItemType.folder;
+      _type = MediaItemType.show;
     } else {
       _type =
-          _mediaItemType[IsarCore.readByte(reader, 5)] ?? MediaItemType.folder;
+          _mediaItemType[IsarCore.readByte(reader, 5)] ?? MediaItemType.show;
     }
   }
   final String _quality;
@@ -210,10 +210,10 @@ dynamic deserializeMediaItemProp(IsarReader reader, int property) {
     case 5:
       {
         if (IsarCore.readNull(reader, 5)) {
-          return MediaItemType.folder;
+          return MediaItemType.show;
         } else {
           return _mediaItemType[IsarCore.readByte(reader, 5)] ??
-              MediaItemType.folder;
+              MediaItemType.show;
         }
       }
     case 6:
@@ -2584,8 +2584,7 @@ MediaItem _$MediaItemFromJson(Map<String, dynamic> json) => MediaItem(
       bookmarked: json['bookmarked'] == null
           ? null
           : DateTime.parse(json['bookmarked'] as String),
-      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
-          MediaItemType.folder,
+      type: $enumDecode(_$MediaItemTypeEnumMap, json['type']),
       originalTitle: json['originalTitle'] as String? ?? '',
       overview: json['overview'] as String? ?? '',
       year: json['year'] == null

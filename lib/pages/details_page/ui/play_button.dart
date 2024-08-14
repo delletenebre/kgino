@@ -79,7 +79,8 @@ class PlayButton extends HookConsumerWidget {
             link: layerLink,
             targetAnchor: Alignment.topLeft,
             followerAnchor: Alignment.bottomLeft,
-            child: PlayButtonTooltip(episode: playingEpisode),
+            child: PlayButtonTooltip(
+                episode: playingEpisode, type: mediaItem.type),
           );
         },
         child: FilledButton.icon(
@@ -112,11 +113,13 @@ class PlayButton extends HookConsumerWidget {
 }
 
 class PlayButtonTooltip extends HookWidget {
+  final MediaItemType type;
   final MediaItemEpisode episode;
   final bool isNotMovie;
 
   const PlayButtonTooltip({
     super.key,
+    required this.type,
     required this.episode,
     this.isNotMovie = true,
   });
@@ -138,8 +141,10 @@ class PlayButtonTooltip extends HookWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            (episode.hasShowNumbers)
-                ? '${episode.seasonNumber} сезон, ${episode.episodeNumber} серия'
+            (type == MediaItemType.show)
+                ? (episode.hasShowNumbers)
+                    ? '${episode.seasonNumber} сезон, ${episode.episodeNumber} серия'
+                    : ' '
                 : ' ',
             style: const TextStyle(
               fontSize: 12.0,
