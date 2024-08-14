@@ -57,12 +57,10 @@ class FilmixItem extends MediaItem {
     this.duration = 0,
   }) {
     voices = [];
-    print('zzzz: init ');
 
     if (playerLinks != null) {
       if (playerLinks!.movie.isNotEmpty) {
         /// ^ если фильм
-        print('zzzz: init type: movie');
         type = MediaItemType.movie;
 
         /// доступные варианты озвучки

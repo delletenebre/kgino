@@ -1,7 +1,7 @@
 name: kgino
 description: KGino project
 publish_to: 'none'
-version: 5.0.3
+version: 5.0.4
 
 # dart run build_runner build --delete-conflicting-outputs
 
