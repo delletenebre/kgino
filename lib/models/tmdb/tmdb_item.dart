@@ -4,8 +4,8 @@ class TmdbItem {
   final int id;
   final String name;
   final String overview;
-  final String backdropPath;
-  final String posterPath;
+  final String? backdropPath;
+  final String? posterPath;
   // final List<int> genreIds;
   // final List<String> originCountry;
   // final bool adult;
@@ -16,8 +16,8 @@ class TmdbItem {
     this.id = 0,
     this.name = '',
     this.overview = '',
-    this.backdropPath = '',
-    this.posterPath = '',
+    this.backdropPath,
+    this.posterPath,
     this.voteAverage = 0.0,
     // DateTime? firstAirDate,
 
@@ -28,8 +28,8 @@ class TmdbItem {
         id: json['id'] as int,
         name: json['name'] as String? ?? '',
         overview: json['overview'] as String? ?? '',
-        backdropPath: json['backdrop_path'] as String? ?? '',
-        posterPath: json['poster_path'] as String? ?? '',
+        backdropPath: json['backdrop_path'] as String?,
+        posterPath: json['poster_path'] as String?,
         // firstAirDate: DateTime.parse(json['first_air_date'] as String),
         voteAverage: double.tryParse(json['vote_average'].toString()) ?? 0.0,
       );
@@ -50,6 +50,7 @@ class TmdbItem {
     return toJson().toString();
   }
 
-  String get backdropUrl => '$imageUrl$backdropPath';
-  String get posterUrl => '$imageUrl$posterPath';
+  String? get backdropUrl =>
+      backdropPath == null ? null : '$imageUrl$backdropPath';
+  String? get posterUrl => posterPath == null ? null : '$imageUrl$posterPath';
 }

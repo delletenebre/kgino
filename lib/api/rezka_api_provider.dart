@@ -546,43 +546,6 @@ class RezkaApi {
     );
   }
 
-  /// детали
-  // Future<String> getCdnSeries({
-  //   required String id,
-  //   required String url,
-  //   required String action,
-  //   required String voiceActingId,
-  //   CancelToken? cancelToken,
-  // }) async {
-  //   final headers = {
-  //     // 'Host': 'hdrezka.ag',
-  //     // 'Origin': 'https://hdrezka.ag',
-  //     // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
-  //     // 'User-Agent':
-  //     //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
-  //     // 'X-Requested-With': 'XMLHttpRequest',
-  //     //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-  //   };
-  //
-  //   //final data = {'id': id, 'translator_id': voiceActingId, 'action': action};
-  //   final data = {
-  //     'id': '63418',
-  //     'translator_id': '59',
-  //     'action': 'get_episodes'
-  //   };
-  //
-  //   return ApiRequest<String>().call(
-  //     request: _dio.post(
-  //       '/ajax/get_cdn_series/',
-  //       data: data,
-  //       options: Options(contentType: Headers.formUrlEncodedContentType),
-  //     ),
-  //     decoder: (html) async {
-  //       return '';
-  //     },
-  //   );
-  // }
-
   /// список сезонов и эпизодов
   Future<Element?> getSeasons({
     required String id,

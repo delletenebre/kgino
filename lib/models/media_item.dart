@@ -125,7 +125,7 @@ class MediaItem implements Playable {
   /// год
   @StringConverter()
   @ignore
-  final String year;
+  String year;
 
   /// жанры
   @ignore
@@ -318,7 +318,7 @@ class MediaItem implements Playable {
     throw UnimplementedError();
   }
 
-  Future<TmdbItem?> loadTmdb([MediaItemType? type]) async {
+  Future<TmdbItem?> loadTmdb({MediaItemType? type, String? year}) async {
     final tmdb = TMDB(
       ApiKeys(
         '5e2d902fe9f3d1307e3f2e742b52e631',
@@ -333,15 +333,16 @@ class MediaItem implements Playable {
       ),
     );
 
-    final query = '$title $originalTitle';
+    final query = originalTitle.isNotEmpty ? originalTitle : title;
 
     Map search = {};
 
     if ((type ?? this.type) == MediaItemType.show) {
-      search = await tmdb.v3.search.queryTvShows(query, firstAirDateYear: year);
-    } else if ((type ?? this.type) == MediaItemType.movie) {
       search = await tmdb.v3.search
-          .queryMovies(query, year: int.tryParse(year.toString()));
+          .queryTvShows(query, firstAirDateYear: (year ?? this.year));
+    } else if ((type ?? this.type) == MediaItemType.movie) {
+      search = await tmdb.v3.search.queryMovies(query,
+          year: int.tryParse((year ?? this.year).toString()));
     }
 
     final searchResults = search['results'] as List? ?? [];

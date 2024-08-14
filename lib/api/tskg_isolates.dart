@@ -21,8 +21,8 @@ Future<TskgItem> parseDetails(html) async {
   final title = document.getElementById('h-show-title')?.text ?? '';
 
   /// парсим название на языке оригинала
-  // final originalTitle =
-  //     TskgApi.getTextByClassName(document, 'app-show-header-title-original');
+  final originalTitle =
+      TskgApi.getTextByClassName(document, 'app-show-header-title-original');
 
   /// парсим года выпуска сериала
   /// убираем 'завершён/закрыт' из '2001-2010, завершён/закрыт'
@@ -109,7 +109,7 @@ Future<TskgItem> parseDetails(html) async {
     id: showId,
     title: title,
     // seasons: seasons,
-    // originalTitle: originalTitle,
+    originalTitle: originalTitle,
     overview: description,
     year: years,
     genres: genres,
