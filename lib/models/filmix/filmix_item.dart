@@ -20,19 +20,27 @@ class FilmixItem extends MediaItem {
   @HtmlRemoveConverter()
   final String shortStory;
 
+  @JsonKey(name: 'original_title')
+  final String originalTitleOverride;
+
   /// ссылки на проигрываемые файлы
   final FilmixPlayerLinks? playerLinks;
 
   final int duration;
+
+  // @JsonKey(includeFromJson: false, includeToJson: false)
+  // MediaItemType typeOverride;
 
   FilmixItem({
     super.onlineService = OnlineService.filmix,
     required super.id,
     required super.title,
     required super.poster,
-    super.type = MediaItemType.movie,
     super.quality = '720',
-    super.originalTitle = '',
+    this.originalTitleOverride = '',
+    super.type = MediaItemType.show,
+    // MediaItemType? type,
+    // this.typeOverride = MediaItemType.folder,
     super.year,
     super.countries,
     super.seasons,
@@ -53,7 +61,6 @@ class FilmixItem extends MediaItem {
     if (playerLinks != null) {
       if (playerLinks!.movie.isNotEmpty) {
         /// ^ если фильм
-
         type = MediaItemType.movie;
 
         /// доступные варианты озвучки
@@ -213,6 +220,13 @@ class FilmixItem extends MediaItem {
   @override
   String get overview => shortStory;
 
+  /// описание
+  @override
+  String get originalTitle => originalTitleOverride;
+
+  // @override
+  // MediaItemType get type => typeOverride;
+
   /// загрузка подробных данных о сериале или фильме
   @override
   Future<MediaItem> loadDetails(Ref ref, CancelToken? cancelToken) async {
@@ -225,6 +239,8 @@ class FilmixItem extends MediaItem {
     detailedItem.quality = quality;
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
+
+    await detailedItem.loadTmdb();
 
     return detailedItem;
   }

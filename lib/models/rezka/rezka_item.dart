@@ -90,6 +90,8 @@ class RezkaItem extends MediaItem {
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
 
+    await detailedItem.loadTmdb();
+
     return detailedItem;
   }
 

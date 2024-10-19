@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:iconsax/iconsax.dart';
 
 import '../providers/active_horizontal_list_provider.dart';
+import '../providers/locale_provider.dart';
 import '../ui/navigation/kika_navigation_rail.dart';
 import 'bookmarks_page.dart';
 import 'cameras_page.dart';
@@ -42,6 +44,8 @@ class HomeLayoutState extends ConsumerState<HomePage> {
 
   @override
   Widget build(context) {
+    final theme = Theme.of(context);
+    final locale = Locale.of(context);
     final drawerFocusNode = useFocusNode();
 
     ref.listen(activeHorizontalListProvider, (previous, next) {
@@ -53,6 +57,8 @@ class HomeLayoutState extends ConsumerState<HomePage> {
         showDrawer();
       }
     });
+
+    final listState = ref.watch(activeHorizontalListProvider);
 
     return Scaffold(
       body: Stack(
@@ -73,6 +79,37 @@ class HomeLayoutState extends ConsumerState<HomePage> {
           ),
         ],
       ),
+      floatingActionButton: listState > 0
+          ? Container(
+              padding: const EdgeInsets.all(4.0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1.0,
+                  color: theme.colorScheme.outline.withOpacity(0.5),
+                ),
+                borderRadius: BorderRadius.circular(6.0),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Iconsax.back_square,
+                    size: 16.0,
+                    color: theme.colorScheme.outline,
+                  ),
+                  const SizedBox(width: 4.0),
+                  Text(
+                    locale.menu,
+                    style: TextStyle(
+                      color: theme.colorScheme.outline,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }
 

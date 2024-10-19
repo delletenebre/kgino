@@ -14,6 +14,7 @@ TskgItem _$TskgItemFromJson(Map<String, dynamic> json) => TskgItem(
           ? ''
           : const StringConverter().fromJson(json['id']),
       title: json['title'] as String? ?? '',
+      originalTitle: json['originalTitle'] as String? ?? '',
       type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
           MediaItemType.show,
       overview: json['overview'] as String? ?? '',
@@ -65,6 +66,7 @@ Map<String, dynamic> _$TskgItemToJson(TskgItem instance) => <String, dynamic>{
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'historied': instance.historied?.toIso8601String(),
+      'originalTitle': instance.originalTitle,
       'overview': instance.overview,
       'year': const StringConverter().toJson(instance.year),
       'genres': instance.genres,

@@ -13,10 +13,10 @@ FilmixItem _$FilmixItemFromJson(Map<String, dynamic> json) => FilmixItem(
       id: const StringConverter().fromJson(json['id']),
       title: json['title'] as String,
       poster: json['poster'] as String,
-      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
-          MediaItemType.movie,
       quality: json['quality'] as String? ?? '720',
-      originalTitle: json['originalTitle'] as String? ?? '',
+      originalTitleOverride: json['original_title'] as String? ?? '',
+      type: $enumDecodeNullable(_$MediaItemTypeEnumMap, json['type']) ??
+          MediaItemType.show,
       year: json['year'] == null
           ? ''
           : const StringConverter().fromJson(json['year']),
@@ -72,7 +72,6 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'subtitlesEnabled': instance.subtitlesEnabled,
       'bookmarked': instance.bookmarked?.toIso8601String(),
       'historied': instance.historied?.toIso8601String(),
-      'originalTitle': instance.originalTitle,
       'year': const StringConverter().toJson(instance.year),
       'countries': instance.countries,
       'imdbRating': const DoubleConverter().toJson(instance.imdbRating),
@@ -82,6 +81,7 @@ Map<String, dynamic> _$FilmixItemToJson(FilmixItem instance) =>
       'voices': instance.voices.map((e) => e.toJson()).toList(),
       'categories': instance.categories,
       'short_story': const HtmlRemoveConverter().toJson(instance.shortStory),
+      'original_title': instance.originalTitleOverride,
       'player_links': instance.playerLinks?.toJson(),
       'duration': instance.duration,
       'blockedStatus': instance.blockedStatus,

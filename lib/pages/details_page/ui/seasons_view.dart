@@ -30,6 +30,8 @@ class SeasonsView extends HookConsumerWidget {
     /// чтобы не прокручивало к первому эпизоду в сезоне
     final ignoreFocusUpdate = useRef(false);
 
+    print('zzzzzzzzzz ${mediaItem.tmdb?.id}}');
+
     scrollEpisodesBySeason(int index) {
       if (ignoreFocusUpdate.value) {
         ignoreFocusUpdate.value = false;
@@ -139,6 +141,7 @@ class SeasonsView extends HookConsumerWidget {
           title: Text(locale.episodes),
           itemBuilder: (context, index, episode) {
             return EpisodeCard(
+              tmdbId: mediaItem.tmdb?.id,
               episode: episode,
               onFocusChange: (hasFocus) {
                 if (hasFocus) {

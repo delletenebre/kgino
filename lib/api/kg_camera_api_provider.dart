@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +24,9 @@ class KgCameraApi {
 
   KgCameraApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogsInterceptor());
+    if (kDebugMode) {
+      // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
   }
 
   /// список камер elcat
@@ -31,7 +34,8 @@ class KgCameraApi {
     const baseUrl = 'https://kg.camera';
 
     return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('$baseUrl/'),
+      request:
+          _dio.get('$baseUrl/', queryParameters: {'t': DateTime.now().minute}),
       decoder: (response) async {
         final html = response.toString();
 
@@ -242,6 +246,7 @@ class KgCameraApi {
   /// список камер интересных мест
   List<MediaItem> getExtraCameras() => [
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Кенийский водопой',
           poster: 'https://i.ytimg.com/vi/KyQAB-TKOVA/hqdefault_live.jpg',
           seasons: [
@@ -254,6 +259,7 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Африканские животные',
           poster: 'https://i.ytimg.com/vi/O8xVFhgEv6Q/hqdefault_live.jpg',
           seasons: [
@@ -266,6 +272,7 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Сафари камера',
           poster: 'https://i.ytimg.com/vi/QkWGGhtTA4k/hqdefault_live.jpg',
           seasons: [
@@ -278,36 +285,13 @@ class KgCameraApi {
           ],
         ),
         MediaItem(
+          type: MediaItemType.folder,
           title: 'Парк слонов',
           poster: 'https://i.ytimg.com/vi/VUJbDTIYlM4/hqdefault_live.jpg',
           seasons: [
             MediaItemSeason(episodes: [
               MediaItemEpisode(
                 videoFileUrl: 'https://www.youtube.com/watch?v=VUJbDTIYlM4',
-                isLiveStream: true,
-              ),
-            ])
-          ],
-        ),
-        MediaItem(
-          title: 'Таиланд, поезд',
-          poster: 'http://i3.ytimg.com/vi/ujqL2QNKVaY/hqdefault.jpg',
-          seasons: [
-            MediaItemSeason(episodes: [
-              MediaItemEpisode(
-                videoFileUrl: 'https://www.youtube.com/watch?v=lMYCNza7a5k',
-                isLiveStream: true,
-              ),
-            ])
-          ],
-        ),
-        MediaItem(
-          title: 'Гонконг, двухэтажный трамвай',
-          poster: 'http://i3.ytimg.com/vi/Ilrezf9AnVY/hqdefault.jpg',
-          seasons: [
-            MediaItemSeason(episodes: [
-              MediaItemEpisode(
-                videoFileUrl: 'https://www.youtube.com/watch?v=2eownrc-krc',
                 isLiveStream: true,
               ),
             ])

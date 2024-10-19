@@ -34,7 +34,7 @@ class FilmixApi {
 
   FilmixApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    _dio.interceptors.add(LogInterceptor(responseBody: true));
 
     /// хранилище данных
     final storage = ref.read(storageProvider);

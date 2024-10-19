@@ -59,10 +59,12 @@ class _ItemCardState extends State<ItemCard> {
                         provider:
                             widget.imageUrl.toProxyImageProvider(maxWidth: 16))
                     .then((colorScheme) {
-                  /// обновляем цвет свечения
-                  setState(() {
-                    glowColor = colorScheme.primary.withOpacity(0.62);
-                  });
+                  if (mounted) {
+                    /// обновляем цвет свечения
+                    setState(() {
+                      glowColor = colorScheme.primary.withOpacity(0.62);
+                    });
+                  }
                 });
               } catch (exception) {
                 debugPrint('PaletteGenerator FAIL');

@@ -31,22 +31,15 @@ class _TimeViewState extends State<TimeView> {
   Widget build(context) {
     final theme = Theme.of(context);
 
-    final shadowColor =
-        theme.colorScheme.surfaceContainerHighest.withOpacity(0.5);
+    final shadowColor = theme.colorScheme.surfaceContainerHighest;
 
     return Text(
       _timeString,
       style: TextStyle(
-        color: theme.colorScheme.onPrimaryContainer.withOpacity(0.5),
-        fontFeatures: const [
-          FontFeature.tabularFigures(),
-        ],
+        color: theme.colorScheme.onPrimaryContainer.withAlpha(100),
+        fontFeatures: const [FontFeature.tabularFigures()],
         shadows: [
-          Shadow(color: shadowColor, blurRadius: 4.0),
-          Shadow(color: shadowColor, blurRadius: 8.0),
-          Shadow(color: shadowColor, blurRadius: 12.0),
-          Shadow(color: shadowColor, blurRadius: 24.0),
-          Shadow(color: shadowColor, blurRadius: 48.0),
+          Shadow(color: shadowColor, blurRadius: 16.0),
         ],
       ),
     );
@@ -60,7 +53,6 @@ class _TimeViewState extends State<TimeView> {
     });
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    return DateFormat('HH:mm').format(dateTime);
-  }
+  String _formatDateTime(DateTime dateTime) =>
+      DateFormat('HH:mm').format(dateTime);
 }

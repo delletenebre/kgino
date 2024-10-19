@@ -15,7 +15,7 @@ class TskgItem extends MediaItem {
     super.onlineService = OnlineService.tskg,
     super.id,
     super.title,
-    // super.originalTitle,
+    super.originalTitle,
     super.type = MediaItemType.show,
     super.overview,
     super.year,
@@ -72,6 +72,8 @@ class TskgItem extends MediaItem {
 
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
+
+    await detailedItem.loadTmdb();
 
     return detailedItem;
   }
