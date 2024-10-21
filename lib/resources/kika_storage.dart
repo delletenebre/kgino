@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/media_item.dart';
@@ -106,5 +108,18 @@ class DatabaseEngine {
     } catch (exception) {
       return null;
     }
+  }
+}
+
+class DataBas {
+  static Future<Database> initialize() async {
+    // get the application documents directory
+    final dir = await getApplicationDocumentsDirectory();
+    // make sure it exists
+    await dir.create(recursive: true);
+    // build the database path
+    final dbPath = join(dir.path, 'kgino.db');
+    // open the database
+    return await databaseFactoryIo.openDatabase(dbPath);
   }
 }
