@@ -188,7 +188,7 @@ class KgCameraApi {
   Future<List<MediaItem>> getKtCameras() async {
     const baseUrl = 'https://online.kt.kg';
     return ApiRequest<List<MediaItem>>().call(
-      request: Dio().get(baseUrl),
+      request: Dio().get(baseUrl, queryParameters: {'t': DateTime.now().minute}),
       decoder: (response) async {
         final html = response.toString();
 

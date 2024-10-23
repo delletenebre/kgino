@@ -31,7 +31,7 @@ class CamerasPage extends HookConsumerWidget {
     final saimaAsync = useMemoized(() => kgCameraApi.getSaimaCameras());
 
     /// список камер КыргызТелеком
-    // final ktAsync = useMemoized(() => kgCameraApi.getKtCameras());
+    final ktAsync = useMemoized(() => kgCameraApi.getKtCameras());
 
     /// список камер интересных мест
     final extraAsync = useMemoized(() => kgCameraApi.getExtraCameras());
@@ -45,10 +45,10 @@ class CamerasPage extends HookConsumerWidget {
             title: 'Saima-Telecom',
             apiResponse: saimaAsync,
           ),
-          // CategoryListItem(
-          //   title: 'КыргызТелеком',
-          //   apiResponse: ktAsync,
-          // ),
+          CategoryListItem(
+            title: 'КыргызТелеком',
+            apiResponse: ktAsync,
+          ),
           CategoryListItem(
             title: 'Интересное',
             items: extraAsync,
