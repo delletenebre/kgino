@@ -48,8 +48,7 @@ const MediaItemSchema = IsarGeneratedSchema(
       ),
       IsarPropertySchema(
         name: 'voiceActing',
-        type: IsarType.object,
-        target: 'VoiceActing',
+        type: IsarType.json,
       ),
       IsarPropertySchema(
         name: 'subtitlesEnabled',
@@ -79,7 +78,7 @@ const MediaItemSchema = IsarGeneratedSchema(
     deserialize: deserializeMediaItem,
     deserializeProperty: deserializeMediaItemProp,
   ),
-  embeddedSchemas: [VoiceActingSchema],
+  embeddedSchemas: [],
 );
 
 @isarProtected
@@ -90,12 +89,7 @@ int serializeMediaItem(IsarWriter writer, MediaItem object) {
   IsarCore.writeString(writer, 4, object.poster);
   IsarCore.writeByte(writer, 5, object.type.index);
   IsarCore.writeString(writer, 6, object.quality);
-  {
-    final value = object.voiceActing;
-    final objectWriter = IsarCore.beginObject(writer, 7);
-    serializeVoiceActing(objectWriter, value);
-    IsarCore.endObject(writer, objectWriter);
-  }
+  IsarCore.writeString(writer, 7, isarJsonEncode(object.voiceActing));
   IsarCore.writeBool(writer, 8, object.subtitlesEnabled);
   IsarCore.writeLong(
       writer,
@@ -137,15 +131,13 @@ MediaItem deserializeMediaItem(IsarReader reader) {
   }
   final String _quality;
   _quality = IsarCore.readString(reader, 6) ?? '';
-  final VoiceActing _voiceActing;
+  final dynamic _voiceActing;
   {
-    final objectReader = IsarCore.readObject(reader, 7);
-    if (objectReader.isNull) {
-      _voiceActing = const VoiceActing();
+    final json = isarJsonDecode(IsarCore.readString(reader, 7) ?? 'null');
+    if (json is Map<String, dynamic>) {
+      _voiceActing = VoiceActing.fromJson(json);
     } else {
-      final embedded = deserializeVoiceActing(objectReader);
-      IsarCore.freeReader(objectReader);
-      _voiceActing = embedded;
+      _voiceActing = const VoiceActing();
     }
   }
   final bool _subtitlesEnabled;
@@ -220,13 +212,11 @@ dynamic deserializeMediaItemProp(IsarReader reader, int property) {
       return IsarCore.readString(reader, 6) ?? '';
     case 7:
       {
-        final objectReader = IsarCore.readObject(reader, 7);
-        if (objectReader.isNull) {
-          return const VoiceActing();
+        final json = isarJsonDecode(IsarCore.readString(reader, 7) ?? 'null');
+        if (json is Map<String, dynamic>) {
+          return VoiceActing.fromJson(json);
         } else {
-          final embedded = deserializeVoiceActing(objectReader);
-          IsarCore.freeReader(objectReader);
-          return embedded;
+          return const VoiceActing();
         }
       }
     case 8:
@@ -1914,14 +1904,7 @@ extension MediaItemQueryFilter
 }
 
 extension MediaItemQueryObject
-    on QueryBuilder<MediaItem, MediaItem, QFilterCondition> {
-  QueryBuilder<MediaItem, MediaItem, QAfterFilterCondition> voiceActing(
-      FilterQuery<VoiceActing> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, 7);
-    });
-  }
-}
+    on QueryBuilder<MediaItem, MediaItem, QFilterCondition> {}
 
 extension MediaItemQuerySortBy on QueryBuilder<MediaItem, MediaItem, QSortBy> {
   QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByOnlineService() {
@@ -2029,6 +2012,18 @@ extension MediaItemQuerySortBy on QueryBuilder<MediaItem, MediaItem, QSortBy> {
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByVoiceActing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7);
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> sortByVoiceActingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
@@ -2194,6 +2189,18 @@ extension MediaItemQuerySortThenBy
     });
   }
 
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByVoiceActing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7);
+    });
+  }
+
+  QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenByVoiceActingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<MediaItem, MediaItem, QAfterSortBy> thenBySubtitlesEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(8);
@@ -2302,6 +2309,12 @@ extension MediaItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<MediaItem, MediaItem, QAfterDistinct> distinctByVoiceActing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(7);
+    });
+  }
+
   QueryBuilder<MediaItem, MediaItem, QAfterDistinct>
       distinctBySubtitlesEnabled() {
     return QueryBuilder.apply(this, (query) {
@@ -2368,7 +2381,7 @@ extension MediaItemQueryProperty1
     });
   }
 
-  QueryBuilder<MediaItem, VoiceActing, QAfterProperty> voiceActingProperty() {
+  QueryBuilder<MediaItem, dynamic, QAfterProperty> voiceActingProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(7);
     });
@@ -2444,8 +2457,7 @@ extension MediaItemQueryProperty2<R>
     });
   }
 
-  QueryBuilder<MediaItem, (R, VoiceActing), QAfterProperty>
-      voiceActingProperty() {
+  QueryBuilder<MediaItem, (R, dynamic), QAfterProperty> voiceActingProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(7);
     });
@@ -2522,7 +2534,7 @@ extension MediaItemQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<MediaItem, (R1, R2, VoiceActing), QOperations>
+  QueryBuilder<MediaItem, (R1, R2, dynamic), QOperations>
       voiceActingProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(7);

@@ -1,17 +1,22 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:isar/isar.dart';
+class VoiceActing {
+  final String id;
+  final String name;
 
-part 'voice_acting.freezed.dart';
-part 'voice_acting.g.dart';
+  const VoiceActing({
+    this.id = '',
+    this.name = '',
+  });
 
-@freezed
-@Embedded(ignore: {'copyWith'})
-class VoiceActing with _$VoiceActing {
-  const factory VoiceActing({
-    @Default('') final String id,
-    @Default('') final String name,
-  }) = _VoiceActing;
+  factory VoiceActing.fromJson(Map<String, dynamic> json) => VoiceActing(
+        id: json['id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+      );
 
-  factory VoiceActing.fromJson(Map<String, dynamic> json) =>
-      _$VoiceActingFromJson(json);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'name': name,
+      };
+
+  @override
+  String toString() => toJson().toString();
 }

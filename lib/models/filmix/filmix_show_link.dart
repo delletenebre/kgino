@@ -1,15 +1,25 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class FilmixShowLink {
+  final String link;
+  final List<int> qualities;
 
-part 'filmix_show_link.freezed.dart';
-part 'filmix_show_link.g.dart';
+  const FilmixShowLink({
+    this.link = '',
+    this.qualities = const [],
+  });
 
-@freezed
-class FilmixShowLink with _$FilmixShowLink {
-  const factory FilmixShowLink({
-    @Default('') String link,
-    @Default([]) List<int> qualities,
-  }) = _FilmixShowLink;
+  factory FilmixShowLink.fromJson(Map<String, dynamic> json) => FilmixShowLink(
+        link: json['link'] as String? ?? '',
+        qualities: (json['qualities'] as List<dynamic>?)
+                ?.map((item) => int.parse(item))
+                .toList() ??
+            const [],
+      );
 
-  factory FilmixShowLink.fromJson(Map<String, Object?> json) =>
-      _$FilmixShowLinkFromJson(json);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'link': link,
+        'qualities': qualities,
+      };
+
+  @override
+  String toString() => toJson().toString();
 }

@@ -273,7 +273,7 @@ class SearchPage extends HookConsumerWidget {
 
                 /// если результаты загружаются
                 if (controller.isLoading) {
-                  return const AnimatedLoading(size: 96.0);
+                  return const AnimatedLoading();
                 }
 
                 final categories = controller.valueOrNull ?? [];

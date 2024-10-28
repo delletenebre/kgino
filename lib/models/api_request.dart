@@ -3,9 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'api_request.freezed.dart';
 
 class ApiRequest<T> {
   Future<T> call({
@@ -78,10 +75,12 @@ class ApiRequest<T> {
   }
 }
 
-@Freezed(genericArgumentFactories: true)
-class ApiError<T> with _$ApiError<T> implements Exception {
-  const factory ApiError({
-    @Default('') String message,
-    @Default({}) Map<String, String> errors,
-  }) = _ApiError;
+class ApiError<T> implements Exception {
+  final String message;
+  final Map<String, String> errors;
+
+  const ApiError({
+    this.message = '',
+    this.errors = const {},
+  });
 }

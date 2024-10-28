@@ -1,22 +1,35 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 import 'media_item_episode.dart';
 
-part 'media_item_season.freezed.dart';
-part 'media_item_season.g.dart';
+class MediaItemSeason {
+  final String id;
+  final String name;
+  final List<MediaItemEpisode> episodes;
 
-@freezed
-class MediaItemSeason with _$MediaItemSeason {
-  const MediaItemSeason._();
-
-  const factory MediaItemSeason({
-    @Default('') String id,
-    @Default('') String name,
-    @Default(<MediaItemEpisode>[]) List<MediaItemEpisode> episodes,
-  }) = _MediaItemSeason;
+  const MediaItemSeason({
+    this.id = '',
+    this.name = '',
+    this.episodes = const [],
+  });
 
   factory MediaItemSeason.fromJson(Map<String, dynamic> json) =>
-      _$MediaItemSeasonFromJson(json);
+      MediaItemSeason(
+        id: json['id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        episodes: (json['episodes'] as List<dynamic>?)
+                ?.map((item) =>
+                    MediaItemEpisode.fromJson(item as Map<String, dynamic>))
+                .toList() ??
+            const [],
+      );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'episodes': episodes.map((e) => e.toJson()).toList(),
+      };
+
+  @override
+  String toString() => toJson().toString();
 
   String nameOr(String name) {
     if (this.name.toLowerCase().startsWith('сезон')) {

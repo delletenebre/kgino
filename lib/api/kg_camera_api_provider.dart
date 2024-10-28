@@ -25,7 +25,7 @@ class KgCameraApi {
   KgCameraApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
     if (kDebugMode) {
-      // _dio.interceptors.add(LogInterceptor(responseBody: true));
+      _dio.interceptors.add(LogInterceptor(responseBody: true));
     }
   }
 
@@ -188,7 +188,8 @@ class KgCameraApi {
   Future<List<MediaItem>> getKtCameras() async {
     const baseUrl = 'https://online.kt.kg';
     return ApiRequest<List<MediaItem>>().call(
-      request: Dio().get(baseUrl, queryParameters: {'t': DateTime.now().minute}),
+      request:
+          Dio().get(baseUrl, queryParameters: {'t': DateTime.now().minute}),
       decoder: (response) async {
         final html = response.toString();
 

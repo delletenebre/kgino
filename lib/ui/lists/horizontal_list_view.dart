@@ -224,7 +224,7 @@ class HorizontalListViewState<T> extends ConsumerState<HorizontalListView<T>> {
                         clipBehavior: Clip.none,
                         scrollDirection: Axis.horizontal,
                         children: const [
-                          AnimatedLoading(size: 48.0),
+                          AnimatedLoading(),
                         ],
                       ),
                     );

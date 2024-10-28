@@ -1,32 +1,55 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class FilmixProfile {
+  final FilmixProfileData userData;
 
-part 'filmix_profile.freezed.dart';
-part 'filmix_profile.g.dart';
+  const FilmixProfile({
+    required this.userData,
+  });
 
-@freezed
-class FilmixProfile with _$FilmixProfile {
-  // ignore: invalid_annotation_target
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory FilmixProfile({
-    required FilmixProfileData userData,
-  }) = _FilmixProfile;
+  factory FilmixProfile.fromJson(Map<String, dynamic> json) => FilmixProfile(
+        userData: FilmixProfileData.fromJson(
+            json['user_data'] as Map<String, dynamic>),
+      );
 
-  factory FilmixProfile.fromJson(Map<String, Object?> json) =>
-      _$FilmixProfileFromJson(json);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'user_data': userData,
+      };
+
+  @override
+  String toString() => toJson().toString();
 }
 
-@freezed
-class FilmixProfileData with _$FilmixProfileData {
-  // ignore: invalid_annotation_target
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory FilmixProfileData({
-    @Default('') String login,
-    @Default(false) bool isPro,
-    @Default(false) bool isProPlus,
-    @Default('') String displayName,
-    @Default('') String videoserver,
-  }) = _FilmixProfileData;
+class FilmixProfileData {
+  final String login;
+  final bool isPro;
+  final bool isProPlus;
+  final String displayName;
+  final String videoserver;
 
-  factory FilmixProfileData.fromJson(Map<String, Object?> json) =>
-      _$FilmixProfileDataFromJson(json);
+  const FilmixProfileData({
+    this.login = '',
+    this.isPro = false,
+    this.isProPlus = false,
+    this.displayName = '',
+    this.videoserver = '',
+  });
+
+  factory FilmixProfileData.fromJson(Map<String, dynamic> json) =>
+      FilmixProfileData(
+        login: json['login'] as String? ?? '',
+        isPro: json['is_pro'] as bool? ?? false,
+        isProPlus: json['is_pro_plus'] as bool? ?? false,
+        displayName: json['display_name'] as String? ?? '',
+        videoserver: json['videoserver'] as String? ?? '',
+      );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'login': login,
+        'is_pro': isPro,
+        'is_pro_plus': isProPlus,
+        'display_name': displayName,
+        'videoserver': videoserver,
+      };
+
+  @override
+  String toString() => toJson().toString();
 }

@@ -79,7 +79,7 @@ class DetailsPage extends HookConsumerWidget {
       body: details.when(
         skipLoadingOnReload: false,
         skipLoadingOnRefresh: false,
-        loading: () => const AnimatedLoading(size: 96.0),
+        loading: () => const AnimatedLoading(),
         error: (error, stackTrace) => TryAgainMessage(
           imageUrl: mediaItem.poster,
           onRetry: () {

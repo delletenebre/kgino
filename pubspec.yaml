@@ -42,7 +42,6 @@ dependencies:
   riverpod_annotation: ^3.0.0-dev.3
 
   # code generators / serializers
-  freezed_annotation: ^2.4.1
   json_annotation: ^4.9.0
 
   # информация об устройстве и приложении
@@ -54,7 +53,6 @@ dependencies:
   flutter_svg: ^2.0.10+1
   flutter_svg_provider: ^1.0.7
   iconsax: ^0.0.8
-  rive: ^0.13.4
 
   # video
   audio_video_progress_bar: ^2.0.3
@@ -81,7 +79,6 @@ dev_dependencies:
   riverpod_lint: ^3.0.0-dev.4
 
   # code generators / serializers
-  freezed: ^2.5.3
   json_serializable: ^6.8.0
 
 dependency_overrides:
@@ -97,4 +94,4 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
-    - assets/animations/
+    # - assets/animations/

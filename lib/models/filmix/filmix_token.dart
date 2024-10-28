@@ -1,18 +1,26 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class FilmixToken {
+  final String code;
+  final String userCode;
+  final int expire;
 
-part 'filmix_token.freezed.dart';
-part 'filmix_token.g.dart';
+  const FilmixToken({
+    this.code = '',
+    this.userCode = '',
+    this.expire = 0,
+  });
 
-@freezed
-class FilmixToken with _$FilmixToken {
-  // ignore: invalid_annotation_target
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory FilmixToken({
-    @Default('') String code,
-    @Default('') String userCode,
-    @Default(0) int expire,
-  }) = _FilmixToken;
+  factory FilmixToken.fromJson(Map<String, dynamic> json) => FilmixToken(
+        code: json['code'] as String? ?? '',
+        userCode: json['user_code'] as String? ?? '',
+        expire: int.tryParse(json['expire']) ?? 0,
+      );
 
-  factory FilmixToken.fromJson(Map<String, Object?> json) =>
-      _$FilmixTokenFromJson(json);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'code': code,
+        'user_code': userCode,
+        'expire': expire,
+      };
+
+  @override
+  String toString() => toJson().toString();
 }
