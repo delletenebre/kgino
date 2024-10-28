@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../models/media_item.dart';
 import '../../providers/active_horizontal_list_provider.dart';
 import '../../resources/kika_theme.dart';
 import '../loading.dart';
