@@ -206,10 +206,10 @@ class MediaItem implements Playable {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'blockedStatus': blockedStatus,
-        'bookmarked': bookmarked?.toString(),
+        'bookmarked': bookmarked?.toIso8601String(),
         'countries': countries,
         'genres': genres,
-        'historied': historied?.toString(),
+        'historied': historied?.toIso8601String(),
         'id': id,
         'imdbRating': imdbRating,
         'kinopoiskRating': kinopoiskRating,
@@ -237,8 +237,8 @@ class MediaItem implements Playable {
         'quality': quality,
         'voiceActing': voiceActing.toJson(),
         'subtitlesEnabled': subtitlesEnabled,
-        'bookmarked': bookmarked,
-        'historied': historied,
+        'bookmarked': bookmarked?.toIso8601String(),
+        'historied': historied?.toIso8601String(),
       };
 
   /// является ли текущий элемент "директорией"
@@ -406,11 +406,25 @@ class MediaItem implements Playable {
 
   /// сохранение в базу данных
   Future<void> save(KikaStorage storage) async {
+    print(toDbJson());
     await store.record(dbId).put(storage.db, toDbJson());
   }
 
   static Future<MediaItem?> fromDb(KikaStorage storage, String id) async {
     final json = await store.record(id).get(storage.db);
+    if (json != null) {
+      return MediaItem.fromJson(json);
+    }
+
+    return null;
+  }
+
+  MediaItem savedSync(KikaStorage storage) {
+    return fromDbSync(storage, dbId) ?? this;
+  }
+
+  static MediaItem? fromDbSync(KikaStorage storage, String id) {
+    final json = store.record(id).getSync(storage.db);
     if (json != null) {
       return MediaItem.fromJson(json);
     }

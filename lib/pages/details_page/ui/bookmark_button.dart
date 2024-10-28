@@ -21,43 +21,35 @@ class BookmarkButton extends HookConsumerWidget {
     /// хранилище данных
     final storage = ref.read(storageProvider);
 
-    return SizedBox();
+    /// сохранённый в базе данных элемент
+    final bookmarked =
+        useState(mediaItem.savedSync(storage).bookmarked != null);
 
-    // final bookmarked = useState(
-    //     storage.db?.mediaItems.get(mediaItem.dbId)?.bookmarked != null);
-
-    // // /// сохранённый в базе данных элемент
-    // // final mediaItemStream = useStream(
-    // //   storage.db.mediaItems.watchObject(mediaItem.dbId),
-    // //   initialData: mediaItem,
-    // // );
-
-    // // final dbItem = mediaItemStream.data!;
-
-    // if (bookmarked.value) {
-    //   /// кнопка удаления из избранного
-    //   return FilledButton.tonalIcon(
-    //     onPressed: () {
-    //       /// убираем из избранного
-    //       mediaItem.bookmarked = null;
-    //       mediaItem.save(storage);
-    //       bookmarked.value = false;
-    //     },
-    //     icon: const Icon(Icons.bookmark_remove),
-    //     label: Text(locale.removeFromBookmarks),
-    //   );
-    // } else {
-    //   /// кнопка добавления в избранное
-    //   return FilledButton.tonalIcon(
-    //     onPressed: () {
-    //       /// добавляем в избранное
-    //       mediaItem.bookmarked = Timestamp.now();
-    //       mediaItem.save(storage);
-    //       bookmarked.value = true;
-    //     },
-    //     icon: const Icon(Icons.bookmark_add_outlined),
-    //     label: Text(locale.addToBookmarks),
-    //   );
-    // }
+    if (bookmarked.value) {
+      /// кнопка удаления из избранного
+      return FilledButton.tonalIcon(
+        onPressed: () {
+          /// убираем из избранного
+          mediaItem
+            ..bookmarked = null
+            ..save(storage);
+          bookmarked.value = false;
+        },
+        icon: const Icon(Icons.bookmark_remove),
+        label: Text(locale.removeFromBookmarks),
+      );
+    } else {
+      /// кнопка добавления в избранное
+      return FilledButton.tonalIcon(
+        onPressed: () {
+          /// добавляем в избранное
+          mediaItem.bookmarked = Timestamp.now();
+          mediaItem.save(storage);
+          bookmarked.value = true;
+        },
+        icon: const Icon(Icons.bookmark_add_outlined),
+        label: Text(locale.addToBookmarks),
+      );
+    }
   }
 }
