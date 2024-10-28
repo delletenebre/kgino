@@ -552,15 +552,15 @@ class RezkaApi {
     required String voiceActingId,
     CancelToken? cancelToken,
   }) async {
-    final headers = {
-      // 'Host': 'hdrezka.ag',
-      // 'Origin': 'https://hdrezka.ag',
-      // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
-      // 'User-Agent':
-      //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
-      // 'X-Requested-With': 'XMLHttpRequest',
-      //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-    };
+    // final headers = {
+    //   // 'Host': 'hdrezka.ag',
+    //   // 'Origin': 'https://hdrezka.ag',
+    //   // 'Referer': '/series/comedy/63418-lyubov-na-shesteryh-2000.html',
+    //   // 'User-Agent':
+    //   //     'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+    //   // 'X-Requested-With': 'XMLHttpRequest',
+    //   //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    // };
 
     final data = {
       'id': id,

@@ -32,7 +32,7 @@ class Details extends _$Details {
     final storage = ref.read(storageProvider);
 
     /// если есть, то находим сохранённую в базе данных информацию
-    final savedItem = mediaItem.findSaved(storage);
+    final savedItem = await mediaItem.findSaved(storage);
 
     /// загружаем информацию о сериале или фильме
     final item = await savedItem.loadDetails(ref, CancelToken());

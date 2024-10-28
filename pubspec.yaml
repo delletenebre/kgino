@@ -1,7 +1,7 @@
 name: kgino
 description: KGino project
 publish_to: 'none'
-version: 5.0.4
+version: 5.1.0
 
 # dart run build_runner build --delete-conflicting-outputs
 
@@ -22,12 +22,6 @@ dependencies:
   sembast: ^3.7.5
   # sembast_web: ^2.4.0+4
   shared_preferences: ^2.2.3
-  isar:
-    hosted: https://pub.isar-community.dev
-    version: ^4.0.3
-  isar_flutter_libs:
-    hosted: https://pub.isar-community.dev
-    version: ^4.0.3
 
   # http helpers
   dio: ^5.4.3+1

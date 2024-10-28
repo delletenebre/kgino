@@ -3,17 +3,14 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/media_item.dart';
-
 class KikaStorage {
   final SharedPreferences sharedStorage;
   final FlutterSecureStorage secureStorage;
-  final Isar? db;
+  final Database db;
 
   KikaStorage({
     required this.sharedStorage,
@@ -91,27 +88,6 @@ class KikaStorage {
 }
 
 class DatabaseEngine {
-  /// Create an instance of ObjectBox to use throughout the app.
-  static Future<Isar?> initialize() async {
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-
-      return Isar.open(
-        schemas: [
-          MediaItemSchema,
-          MediaItemEpisodeSchema,
-        ],
-        directory: directory.path,
-        engine: IsarEngine.isar,
-        inspector: kDebugMode,
-      );
-    } catch (exception) {
-      return null;
-    }
-  }
-}
-
-class DataBas {
   static Future<Database> initialize() async {
     // get the application documents directory
     final dir = await getApplicationDocumentsDirectory();

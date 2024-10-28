@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sembast/timestamp.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../extensions/context_extensions.dart';
@@ -294,7 +295,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
               playableEpisode.save(ref.read(storageProvider));
 
               /// добавляем в историю просмотров
-              widget.mediaItem.historied = DateTime.now();
+              widget.mediaItem.historied = Timestamp.now();
               widget.mediaItem.save(ref.read(storageProvider));
             },
 

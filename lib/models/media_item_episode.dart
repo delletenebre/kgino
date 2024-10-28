@@ -1,20 +1,12 @@
-import 'package:isar/isar.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/timestamp.dart';
 
-import '../../extensions/json_converters.dart';
 import '../resources/kika_storage.dart';
 
-part 'media_item_episode.g.dart';
-
-@JsonSerializable(explicitToJson: true)
-@collection
 class MediaItemEpisode {
-  /// внутренний идентификатор в базе данных
-  @Id()
-  String get dbDb => id;
+  static final store = stringMapStoreFactory.store('episodes');
 
   /// идентификатор эпизода
-  @StringConverter()
   final String id;
 
   /// название эпизода
@@ -27,19 +19,16 @@ class MediaItemEpisode {
   final int episodeNumber;
 
   /// ссылка на проигрываемый файл
-  @ignore
   final String videoFileUrl;
 
   /// ссылка на файл субтитров
-  @ignore
   final String subtitlesFileUrl;
 
   /// варианты качества видео
-  @ignore
   final List<String> qualities;
 
   /// дата последнего просмотра
-  DateTime? updatedAt;
+  Timestamp? updatedAt;
 
   /// последняя позиция просмотра эпизода (в секундах)
   int position;
@@ -65,9 +54,50 @@ class MediaItemEpisode {
   });
 
   factory MediaItemEpisode.fromJson(Map<String, dynamic> json) =>
-      _$MediaItemEpisodeFromJson(json);
+      MediaItemEpisode(
+        id: json['id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        seasonNumber: int.tryParse(json['seasonNumber']) ?? 0,
+        episodeNumber: int.tryParse(json['episodeNumber']) ?? 0,
+        videoFileUrl: json['videoFileUrl'] as String? ?? '',
+        qualities: (json['qualities'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            const [],
+        subtitlesFileUrl: json['subtitlesFileUrl'] as String? ?? '',
+        updatedAt: Timestamp.tryParse('${json['updatedAt']}'),
+        position: int.tryParse(json['position']) ?? 0,
+        duration: int.tryParse(json['duration']) ?? 0,
+        isLiveStream: json['isLiveStream'] as bool? ?? false,
+      );
 
-  Map<String, dynamic> toJson() => _$MediaItemEpisodeToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'seasonNumber': seasonNumber,
+        'episodeNumber': episodeNumber,
+        'videoFileUrl': videoFileUrl,
+        'subtitlesFileUrl': subtitlesFileUrl,
+        'qualities': qualities,
+        'updatedAt': updatedAt?.toIso8601String(),
+        'position': position,
+        'duration': duration,
+        'isLiveStream': isLiveStream,
+      };
+
+  Map<String, dynamic> toDbJson() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'seasonNumber': seasonNumber,
+        'episodeNumber': episodeNumber,
+        'updatedAt': updatedAt,
+        'position': position,
+        'duration': duration,
+        'isLiveStream': isLiveStream,
+      };
+
+  @override
+  String toString() => toJson().toString();
 
   /// просмотренная позиция в пределах от 0 до 1 (шаг 5%)
   // @ignore
@@ -84,19 +114,26 @@ class MediaItemEpisode {
 
   /// сохранение в базу данных
   Future<void> save(KikaStorage storage) async {
-    storage.db?.writeAsync((isar) async {
-      updatedAt = DateTime.now();
-      isar.mediaItemEpisodes.put(this);
-    });
+    updatedAt = Timestamp.now();
+    await store.record(id).put(storage.db, toDbJson());
   }
 
-  /// сохранение в базу данных
-  int savedPosition(KikaStorage storage) {
-    return storage.db?.mediaItemEpisodes.get(dbDb)?.position ?? 0;
+  Future<int> savedPosition(KikaStorage storage) async {
+    return (await fromDb(storage, id))?.position ?? 0;
   }
 
-  MediaItemEpisode saved(KikaStorage storage) {
-    return storage.db?.mediaItemEpisodes.get(dbDb) ?? this;
+  Future<MediaItemEpisode> saved(KikaStorage storage) async {
+    return (await fromDb(storage, id)) ?? this;
+  }
+
+  static Future<MediaItemEpisode?> fromDb(
+      KikaStorage storage, String id) async {
+    final json = await store.record(id).get(storage.db);
+    if (json != null) {
+      return MediaItemEpisode.fromJson(json);
+    }
+
+    return null;
   }
 
   String nameOr(String fallback) {

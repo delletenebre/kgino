@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sembast/timestamp.dart';
 
 import '../../../models/media_item.dart';
 import '../../../providers/providers.dart';
@@ -48,7 +49,7 @@ class BookmarkButton extends HookConsumerWidget {
       return FilledButton.tonalIcon(
         onPressed: () {
           /// добавляем в избранное
-          mediaItem.bookmarked = DateTime.now();
+          mediaItem.bookmarked = Timestamp.now();
           mediaItem.save(storage);
           bookmarked.value = true;
         },

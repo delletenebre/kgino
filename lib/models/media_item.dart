@@ -3,11 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/timestamp.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 
 import '../extensions/duration_extensions.dart';
+import '../extensions/enum_extensions.dart';
 import '../extensions/json_converters.dart';
 import '../resources/kika_storage.dart';
 import 'filmix/filmix_item.dart';
@@ -22,8 +24,6 @@ import 'voice_acting.dart';
 export 'media_item_episode.dart';
 export 'media_item_season.dart';
 export 'voice_acting.dart';
-
-part 'media_item.g.dart';
 
 /// онлайн-сервисы
 enum OnlineService {
@@ -61,20 +61,16 @@ abstract interface class Playable {
   Future<MediaItemUrl> loadEpisodeUrl(WidgetRef ref, MediaItemEpisode episode);
 }
 
-@JsonSerializable(explicitToJson: true)
-@collection
 class MediaItem implements Playable {
+  static final store = stringMapStoreFactory.store('media_items');
+
   /// идентификатор в базе данных
-  @Id()
   String get dbId => '${onlineService.name}|$id';
 
   /// онлайн-сервис
-  @enumValue
-  @JsonKey(name: 'onlineService')
   final OnlineService onlineService;
 
   /// идентификатор на сервисе
-  @StringConverter()
   String id;
 
   /// название
@@ -93,29 +89,23 @@ class MediaItem implements Playable {
   String quality;
 
   /// выбранный вариант озвучки
-  @JsonKey(name: 'voiceActing')
   VoiceActing voiceActing;
 
   /// включены ли субтитры
-  @JsonKey(name: 'subtitlesEnabled')
   bool subtitlesEnabled;
 
   /// дата добавления в избранное
-  DateTime? bookmarked;
+  Timestamp? bookmarked;
 
   /// дата добавления в историю
-  DateTime? historied;
+  Timestamp? historied;
 
   /// оригинальное название
-  @ignore
-  @JsonKey(name: 'originalTitle')
   final String originalTitle;
 
   /// описание
-  @ignore
   final String overview;
 
-  @ignore
   String get overviewText {
     return (tmdb?.overview != null && langdetect.detect(tmdb!.overview) == 'ru')
         ? tmdb!.overview
@@ -124,50 +114,39 @@ class MediaItem implements Playable {
 
   /// год
   @StringConverter()
-  @ignore
   String year;
 
   /// жанры
-  @ignore
   final List<String> genres;
 
   /// страны
-  @ignore
   final List<String> countries;
 
   /// количество сезонов
-  @ignore
   @JsonKey(name: 'seasonCount')
   final int seasonCount;
 
   /// рейтинг IMDb
   @DoubleConverter()
   @JsonKey(name: 'imdbRating')
-  @ignore
   double imdbRating;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @ignore
   bool get hasImdbRating => imdbRating > 0.0;
 
   /// рейтинг КиноПоиск
   @DoubleConverter()
   @JsonKey(name: 'kinopoiskRating')
-  @ignore
   double kinopoiskRating;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  @ignore
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
   /// сезоны
-  @ignore
   List<MediaItemSeason> seasons;
 
   /// варианты озвучки
-  @ignore
   List<VoiceActing> voices;
 
   /// TMDB
-  @ignore
   @JsonKey(includeToJson: false, includeFromJson: false)
   TmdbItem? tmdb;
 
@@ -199,32 +178,97 @@ class MediaItem implements Playable {
     this.tmdb,
   });
 
-  factory MediaItem.fromJson(Map<String, dynamic> json) =>
-      _$MediaItemFromJson(json);
+  factory MediaItem.fromJson(Map<String, dynamic> json) => MediaItem(
+        onlineService: OnlineService.values
+            .byNameOr('${json['onlineService']}', OnlineService.none),
+        id: json['id'] == null ? '' : '${json['id']}',
+        title: json['title'] as String? ?? '',
+        poster: json['poster'] as String? ?? '',
+        quality: json['quality'] as String? ?? '',
+        voiceActing: json['voiceActing'] == null
+            ? const VoiceActing()
+            : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
+        subtitlesEnabled: json['subtitlesEnabled'] as bool? ?? true,
+        bookmarked: Timestamp.tryParse('${json['bookmarked']}'),
+        type: MediaItemType.values.byNameOr('${json['type']}'),
+        originalTitle: json['originalTitle'] as String? ?? '',
+        overview: json['overview'] as String? ?? '',
+        year: json['year'] == null ? '' : '${json['year']}',
+        genres: (json['genres'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            const [],
+        countries: (json['countries'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            const [],
+        seasonCount: (json['seasonCount'] as num?)?.toInt() ?? 0,
+        imdbRating: double.tryParse(json['imdbRating']) ?? 0.0,
+        kinopoiskRating: double.tryParse(json['kinopoiskRating']) ?? 0.0,
+        seasons: (json['seasons'] as List<dynamic>?)
+                ?.map(
+                    (e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+        voices: (json['voices'] as List<dynamic>?)
+                ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+        blockedStatus: json['blockedStatus'] as String?,
+      )..historied = Timestamp.tryParse('${json['historied']}');
 
-  Map<String, dynamic> toJson() => _$MediaItemToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'onlineService': onlineService.name,
+        'id': id,
+        'title': title,
+        'poster': poster,
+        'type': type.name,
+        'quality': quality,
+        'voiceActing': voiceActing.toJson(),
+        'subtitlesEnabled': subtitlesEnabled,
+        'bookmarked': bookmarked?.toIso8601String(),
+        'historied': historied?.toIso8601String(),
+        'originalTitle': originalTitle,
+        'overview': overview,
+        'year': year,
+        'genres': genres,
+        'countries': countries,
+        'seasonCount': seasonCount,
+        'imdbRating': imdbRating,
+        'kinopoiskRating': kinopoiskRating,
+        'seasons': seasons.map((e) => e.toJson()).toList(),
+        'voices': voices.map((e) => e.toJson()).toList(),
+        'blockedStatus': blockedStatus,
+      };
+
+  Map<String, dynamic> toDbJson() => <String, dynamic>{
+        'onlineService': onlineService.name,
+        'id': id,
+        'title': title,
+        'poster': poster,
+        'type': type.name,
+        'quality': quality,
+        'voiceActing': voiceActing.toJson(),
+        'subtitlesEnabled': subtitlesEnabled,
+        'bookmarked': bookmarked,
+        'historied': historied,
+      };
 
   /// является ли текущий элемент "директорией"
-  @ignore
   bool get isFolder => (type == MediaItemType.folder);
 
   /// является ли текущий элемент "НЕ директорией"
-  @ignore
   bool get isNotFolder => (type != MediaItemType.folder);
 
   /// является ли текущий элемент "кнопкой ошибки"
-  @ignore
   bool get isError => (type == MediaItemType.error);
 
   /// является ли текущий элемент "сериалом"
-  @ignore
   bool get isShow => (type == MediaItemType.show);
 
   /// заблокирован ли контент правообладателем
-  @ignore
   bool get blocked => blockedStatus?.isNotEmpty == true;
 
-  @ignore
   @JsonKey(name: 'blockedStatus')
   final String? blockedStatus;
 
@@ -245,7 +289,6 @@ class MediaItem implements Playable {
   }
 
   /// усреднённый рейтинг
-  @ignore
   double get averageRating {
     int ratingsCount = 0;
     if (hasImdbRating) {
@@ -264,7 +307,6 @@ class MediaItem implements Playable {
   }
 
   /// отображаемый рейтинг
-  @ignore
   String get ratingStars {
     if (averageRating == 0.0) {
       return '';
@@ -280,7 +322,6 @@ class MediaItem implements Playable {
   }
 
   /// общий список всех эпизодов
-  @ignore
   List<MediaItemEpisode> get episodes =>
       seasons.expand((season) => season.episodes).toList();
 
@@ -358,9 +399,10 @@ class MediaItem implements Playable {
   }
 
   /// находим сохранённый в базе данных сериал или фильм
-  MediaItem findSaved(KikaStorage storage) {
-    final savedItem = storage.db?.mediaItems.get(dbId);
-    if (savedItem != null) {
+  Future<MediaItem> findSaved(KikaStorage storage) async {
+    final savedItemJson = await store.record(dbId).get(storage.db);
+    if (savedItemJson != null) {
+      final savedItem = MediaItem.fromJson(savedItemJson);
       switch (savedItem.onlineService) {
         case OnlineService.none:
           return savedItem;
@@ -377,10 +419,18 @@ class MediaItem implements Playable {
   }
 
   /// сохранение в базу данных
-  Future<void> save(KikaStorage storage) async =>
-      storage.db?.writeAsync((isar) {
-        isar.mediaItems.put(this);
-      });
+  Future<void> save(KikaStorage storage) async {
+    await store.record(dbId).put(storage.db, toDbJson());
+  }
+
+  static Future<MediaItem?> fromDb(KikaStorage storage, String id) async {
+    final json = await store.record(id).get(storage.db);
+    if (json != null) {
+      return MediaItem.fromJson(json);
+    }
+
+    return null;
+  }
 
   MediaItem fromDatabase() {
     if (onlineService == OnlineService.filmix) {
@@ -411,19 +461,3 @@ class MediaItem implements Playable {
   //   return hash;
   // }
 }
-
-// extension MediaItemExtensions on MediaItem {
-//   MediaItem fromDatabase() {
-//     if (onlineService == OnlineService.filmix) {
-//       return FilmixItem.fromJson(toJson());
-//     }
-//     if (onlineService == OnlineService.tskg) {
-//       return TskgItem.fromJson(toJson());
-//     }
-//     if (onlineService == OnlineService.rezka) {
-//       return RezkaItem.fromJson(toJson());
-//     }
-
-//     return this;
-//   }
-// }
