@@ -385,8 +385,8 @@ class MediaItem implements Playable {
   }
 
   /// находим сохранённый в базе данных сериал или фильм
-  Future<MediaItem> findSaved(KikaStorage storage) async {
-    final savedItemJson = await store.record(dbId).get(storage.db);
+  MediaItem findSaved(KikaStorage storage) {
+    final savedItemJson = store.record(dbId).getSync(storage.db);
     if (savedItemJson != null) {
       final savedItem = MediaItem.fromJson(savedItemJson);
       switch (savedItem.onlineService) {
@@ -406,7 +406,6 @@ class MediaItem implements Playable {
 
   /// сохранение в базу данных
   Future<void> save(KikaStorage storage) async {
-    print(toDbJson());
     await store.record(dbId).put(storage.db, toDbJson());
   }
 

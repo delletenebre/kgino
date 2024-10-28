@@ -41,7 +41,6 @@ class FilmixItem extends MediaItem {
     this.duration = 0,
   }) {
     voices = [];
-    print('zzzzzzzz: $playerLinks');
     if (playerLinks != null) {
       if (playerLinks!.movie.isNotEmpty) {
         /// ^ если фильм

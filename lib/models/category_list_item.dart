@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import 'media_item.dart';
@@ -7,7 +9,7 @@ class CategoryListItem {
   final OnlineService onlineService;
   final String title;
   final List<MediaItem> items;
-  final Future<List<MediaItem>>? apiResponse;
+  final FutureOr<List<MediaItem>>? apiResponse;
 
   CategoryListItem({
     this.key,

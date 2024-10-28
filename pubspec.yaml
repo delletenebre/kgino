@@ -21,10 +21,10 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   sembast: ^3.7.5
   # sembast_web: ^2.4.0+4
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.3.2
 
   # http helpers
-  dio: ^5.4.3+1
+  dio: ^5.7.0
   flutter_form_builder: ^9.2.1
 
   # routing
