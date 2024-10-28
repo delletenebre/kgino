@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sembast/sembast.dart';
 
 import '../../../extensions/duration_extensions.dart';
 import '../../../models/media_item.dart';
@@ -29,14 +30,19 @@ class PlayButton extends HookConsumerWidget {
 
     /// список эпизодов
     final episodes = mediaItem.episodes;
-    final seenEpisodes = storage.db?.mediaItemEpisodes
-            .where()
-            .idStartsWith('${mediaItem.dbId}@')
-            .sortByUpdatedAtDesc()
-            .findAll() ??
-        [];
+    final finder = Finder(
+      filter: Filter.custom((record) {
+        final value = record['id'] as String;
+        return value.startsWith('${mediaItem.dbId}@');
+      }),
+      sortOrders: [SortOrder('updatedAt', false)],
+    );
+    final seenEpisodes = MediaItemEpisode.store
+        .findSync(storage.db, finder: finder)
+        .map((e) => MediaItemEpisode.fromJson(e.value))
+        .toList();
 
-    if (mediaItem.episodes.isEmpty) {
+    if (episodes.isEmpty) {
       return const SizedBox();
     }
 

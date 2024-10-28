@@ -9,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../models/media_item.dart';
 import '../../providers/active_horizontal_list_provider.dart';
 import '../../resources/kika_theme.dart';
-import '../animated_loading.dart';
+import '../loading.dart';
 import '../navigation/kika_navigation_rail.dart';
 
 class HorizontalListView<T> extends StatefulHookConsumerWidget {
@@ -224,7 +224,7 @@ class HorizontalListViewState<T> extends ConsumerState<HorizontalListView<T>> {
                         clipBehavior: Clip.none,
                         scrollDirection: Axis.horizontal,
                         children: const [
-                          AnimatedLoading(),
+                          Loading(),
                         ],
                       ),
                     );
@@ -232,9 +232,9 @@ class HorizontalListViewState<T> extends ConsumerState<HorizontalListView<T>> {
 
                   List<T> items = snapshot.data ?? [];
 
-                  if (items.isEmpty) {
-                    items = [MediaItem(type: MediaItemType.error) as T];
-                  }
+                  // if (items.isEmpty) {
+                  //   items = [MediaItem(type: MediaItemType.error) as T];
+                  // }
 
                   _itemCount = items.length;
                   _focusNodes =

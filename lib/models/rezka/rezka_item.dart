@@ -1,46 +1,63 @@
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/rezka_api_provider.dart';
-import '../../extensions/json_converters.dart';
 import '../media_item.dart';
 import '../media_item_url.dart';
 
-part 'rezka_item.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class RezkaItem extends MediaItem {
   RezkaItem({
-    super.onlineService = OnlineService.rezka,
     required super.id,
     required super.title,
-    super.originalTitle = '',
-    super.overview = '',
-    super.genres = const [],
-    super.year,
     super.countries,
+    super.genres = const [],
     super.imdbRating,
     super.kinopoiskRating,
-    super.seasons,
-    super.voices,
+    super.onlineService = OnlineService.rezka,
+    super.originalTitle = '',
+    super.overview = '',
     super.poster,
-    super.type = MediaItemType.show,
     super.seasonCount,
+    super.seasons,
+    super.type = MediaItemType.show,
+    super.voices,
+    super.year,
 
     ///
+    super.blockedStatus,
     super.bookmarked,
+    super.quality = '720p',
     super.subtitlesEnabled,
     super.voiceActing,
-    super.quality = '720p',
-    super.blockedStatus,
   });
 
-  factory RezkaItem.fromJson(Map<String, dynamic> json) =>
-      _$RezkaItemFromJson(json);
+  factory RezkaItem.fromJson(Map<String, dynamic> json) {
+    final mediaItem = MediaItem.fromJson(json);
+    return RezkaItem(
+      id: mediaItem.id,
+      title: mediaItem.title,
+      countries: mediaItem.countries,
+      genres: mediaItem.genres,
+      imdbRating: mediaItem.imdbRating,
+      kinopoiskRating: mediaItem.kinopoiskRating,
+      onlineService: OnlineService.rezka,
+      originalTitle: mediaItem.originalTitle,
+      overview: mediaItem.overview,
+      poster: mediaItem.poster,
+      seasonCount: mediaItem.seasonCount,
+      seasons: mediaItem.seasons,
+      type: mediaItem.type,
+      voices: mediaItem.voices,
+      year: mediaItem.year,
 
-  @override
-  Map<String, dynamic> toJson() => _$RezkaItemToJson(this);
+      ///
+      blockedStatus: mediaItem.blockedStatus,
+      bookmarked: mediaItem.bookmarked,
+      quality: mediaItem.quality,
+      subtitlesEnabled: mediaItem.subtitlesEnabled,
+      voiceActing: mediaItem.voiceActing,
+    );
+  }
 
   // /// извлекаем идентификатор сериала из ссылки
   // static String getShowIdFromUrl(String url) {

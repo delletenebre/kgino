@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/filmix_api_provider.dart';
 import '../../extensions/json_converters.dart';
@@ -10,26 +9,13 @@ import '../media_item_url.dart';
 import 'filmix_player_links.dart';
 import 'filmix_show_link.dart';
 
-part 'filmix_item.g.dart';
-
-@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class FilmixItem extends MediaItem {
   final List<String> categories;
-
-  /// описание
-  @HtmlRemoveConverter()
-  final String shortStory;
-
-  @JsonKey(name: 'original_title')
-  final String originalTitleOverride;
 
   /// ссылки на проигрываемые файлы
   final FilmixPlayerLinks? playerLinks;
 
   final int duration;
-
-  // @JsonKey(includeFromJson: false, includeToJson: false)
-  // MediaItemType typeOverride;
 
   FilmixItem({
     super.onlineService = OnlineService.filmix,
@@ -37,17 +23,15 @@ class FilmixItem extends MediaItem {
     required super.title,
     required super.poster,
     super.quality = '720',
-    this.originalTitleOverride = '',
+    super.originalTitle = '',
+    super.overview = '',
     super.type = MediaItemType.show,
-    // MediaItemType? type,
-    // this.typeOverride = MediaItemType.folder,
     super.year,
     super.countries,
     super.seasons,
     super.voices,
     super.blockedStatus,
     this.categories = const [],
-    this.shortStory = '',
     this.playerLinks = const FilmixPlayerLinks(),
 
     ///
@@ -57,7 +41,7 @@ class FilmixItem extends MediaItem {
     this.duration = 0,
   }) {
     voices = [];
-
+    print('zzzzzzzz: $playerLinks');
     if (playerLinks != null) {
       if (playerLinks!.movie.isNotEmpty) {
         /// ^ если фильм
@@ -190,11 +174,47 @@ class FilmixItem extends MediaItem {
     }
   }
 
-  factory FilmixItem.fromJson(Map<String, dynamic> json) =>
-      _$FilmixItemFromJson(json);
+  factory FilmixItem.fromJson(Map<String, dynamic> json) {
+    final mediaItem = MediaItem.fromJson(json);
+    return FilmixItem(
+      blockedStatus: mediaItem.blockedStatus,
+      bookmarked: mediaItem.bookmarked,
+      countries: mediaItem.countries,
+      id: mediaItem.id,
+      // imdbRating: mediaItem.imdbRating,
+      // kinopoiskRating: mediaItem.kinopoiskRating,
+      onlineService: OnlineService.filmix,
+      originalTitle: json['original_title'] ?? '',
+      overview: const HtmlRemoveConverter().fromJson(json['short_story'] ?? ''),
+      poster: mediaItem.poster,
+      //seasonCount: mediaItem.seasonCount,
+      subtitlesEnabled: mediaItem.subtitlesEnabled,
+      title: mediaItem.title,
+      type: mediaItem.type,
+      voiceActing: mediaItem.voiceActing,
+      voices: mediaItem.voices,
+      year: mediaItem.year,
 
-  @override
-  Map<String, dynamic> toJson() => _$FilmixItemToJson(this);
+      ///
+      playerLinks: json['player_links'] == null
+          ? const FilmixPlayerLinks()
+          : FilmixPlayerLinks.fromJson(
+              json['player_links'] as Map<String, dynamic>),
+      categories: (json['categories'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+    );
+  }
+
+  //   duration: (json['duration'] as num?)?.toInt() ?? 0,
+  // )
+  //   ..historied = json['historied'] == null
+  //       ? null
+  //       : DateTime.parse(json['historied'] as String)
+  //   ..imdbRating = const DoubleConverter().fromJson(json['imdbRating'])
+  //   ..kinopoiskRating =
+  //       const DoubleConverter().fromJson(json['kinopoiskRating']);
 
   /// количество сезонов
   @override
@@ -213,19 +233,8 @@ class FilmixItem extends MediaItem {
   /// жанры
   @override
   List<String> get genres {
-    return categories..removeWhere((element) => element == 'Сериалы');
+    return categories.where((element) => element != 'Сериалы').toList();
   }
-
-  /// описание
-  @override
-  String get overview => shortStory;
-
-  /// описание
-  @override
-  String get originalTitle => originalTitleOverride;
-
-  // @override
-  // MediaItemType get type => typeOverride;
 
   /// загрузка подробных данных о сериале или фильме
   @override

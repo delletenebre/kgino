@@ -13,7 +13,7 @@ import '../../models/category_list_item.dart';
 import '../../models/media_item.dart';
 import '../../providers/active_horizontal_list_provider.dart';
 import '../../resources/kika_theme.dart';
-import '../../ui/animated_loading.dart';
+import '../../ui/loading.dart';
 import '../../ui/cards/media_item_card.dart';
 import '../../ui/lists/horizontal_list_view.dart';
 import '../../ui/lists/online_service_list_title.dart';
@@ -273,7 +273,7 @@ class SearchPage extends HookConsumerWidget {
 
                 /// если результаты загружаются
                 if (controller.isLoading) {
-                  return const AnimatedLoading();
+                  return const Loading();
                 }
 
                 final categories = controller.valueOrNull ?? [];

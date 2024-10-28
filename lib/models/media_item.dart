@@ -3,14 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/timestamp.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 
 import '../extensions/duration_extensions.dart';
 import '../extensions/enum_extensions.dart';
-import '../extensions/json_converters.dart';
 import '../resources/kika_storage.dart';
 import 'filmix/filmix_item.dart';
 import 'media_item_episode.dart';
@@ -113,7 +111,6 @@ class MediaItem implements Playable {
   }
 
   /// год
-  @StringConverter()
   String year;
 
   /// жанры
@@ -123,21 +120,15 @@ class MediaItem implements Playable {
   final List<String> countries;
 
   /// количество сезонов
-  @JsonKey(name: 'seasonCount')
+  // @JsonKey(name: 'seasonCount')
   final int seasonCount;
 
   /// рейтинг IMDb
-  @DoubleConverter()
-  @JsonKey(name: 'imdbRating')
   double imdbRating;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   bool get hasImdbRating => imdbRating > 0.0;
 
   /// рейтинг КиноПоиск
-  @DoubleConverter()
-  @JsonKey(name: 'kinopoiskRating')
   double kinopoiskRating;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   bool get hasKinopoiskRating => kinopoiskRating > 0.0;
 
   /// сезоны
@@ -147,7 +138,6 @@ class MediaItem implements Playable {
   List<VoiceActing> voices;
 
   /// TMDB
-  @JsonKey(includeToJson: false, includeFromJson: false)
   TmdbItem? tmdb;
 
   MediaItem({
@@ -179,66 +169,63 @@ class MediaItem implements Playable {
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) => MediaItem(
+        blockedStatus: json['blockedStatus'] as String?,
+        bookmarked: Timestamp.tryParse('${json['bookmarked']}'),
+        countries:
+            (json['countries'] as List<dynamic>?)?.map((e) => '$e').toList() ??
+                const [],
+        genres: (json['genres'] as List<dynamic>?)?.map((e) => '$e').toList() ??
+            const [],
+        id: json['id'] == null ? '' : '${json['id']}',
+        imdbRating: double.tryParse('${json['imdbRating']}') ?? 0.0,
+        kinopoiskRating: double.tryParse('${json['kinopoiskRating']}') ?? 0.0,
         onlineService: OnlineService.values
             .byNameOr('${json['onlineService']}', OnlineService.none),
-        id: json['id'] == null ? '' : '${json['id']}',
-        title: json['title'] as String? ?? '',
-        poster: json['poster'] as String? ?? '',
-        quality: json['quality'] as String? ?? '',
-        voiceActing: json['voiceActing'] == null
-            ? const VoiceActing()
-            : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
-        subtitlesEnabled: json['subtitlesEnabled'] as bool? ?? true,
-        bookmarked: Timestamp.tryParse('${json['bookmarked']}'),
-        type: MediaItemType.values.byNameOr('${json['type']}'),
         originalTitle: json['originalTitle'] as String? ?? '',
         overview: json['overview'] as String? ?? '',
-        year: json['year'] == null ? '' : '${json['year']}',
-        genres: (json['genres'] as List<dynamic>?)
-                ?.map((e) => e as String)
-                .toList() ??
-            const [],
-        countries: (json['countries'] as List<dynamic>?)
-                ?.map((e) => e as String)
-                .toList() ??
-            const [],
+        poster: json['poster'] as String? ?? '',
+        quality: json['quality'] as String? ?? '',
         seasonCount: (json['seasonCount'] as num?)?.toInt() ?? 0,
-        imdbRating: double.tryParse(json['imdbRating']) ?? 0.0,
-        kinopoiskRating: double.tryParse(json['kinopoiskRating']) ?? 0.0,
         seasons: (json['seasons'] as List<dynamic>?)
                 ?.map(
                     (e) => MediaItemSeason.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             const [],
+        subtitlesEnabled: json['subtitlesEnabled'] as bool? ?? true,
+        title: json['title'] as String? ?? '',
+        type: MediaItemType.values.byNameOr('${json['type']}'),
+        voiceActing: json['voiceActing'] == null
+            ? const VoiceActing()
+            : VoiceActing.fromJson(json['voiceActing'] as Map<String, dynamic>),
         voices: (json['voices'] as List<dynamic>?)
                 ?.map((e) => VoiceActing.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             const [],
-        blockedStatus: json['blockedStatus'] as String?,
+        year: json['year'] == null ? '' : '${json['year']}',
       )..historied = Timestamp.tryParse('${json['historied']}');
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'onlineService': onlineService.name,
-        'id': id,
-        'title': title,
-        'poster': poster,
-        'type': type.name,
-        'quality': quality,
-        'voiceActing': voiceActing.toJson(),
-        'subtitlesEnabled': subtitlesEnabled,
-        'bookmarked': bookmarked?.toIso8601String(),
-        'historied': historied?.toIso8601String(),
-        'originalTitle': originalTitle,
-        'overview': overview,
-        'year': year,
-        'genres': genres,
+        'blockedStatus': blockedStatus,
+        'bookmarked': bookmarked?.toString(),
         'countries': countries,
-        'seasonCount': seasonCount,
+        'genres': genres,
+        'historied': historied?.toString(),
+        'id': id,
         'imdbRating': imdbRating,
         'kinopoiskRating': kinopoiskRating,
+        'onlineService': onlineService.name,
+        'originalTitle': originalTitle,
+        'overview': overview,
+        'poster': poster,
+        'quality': quality,
+        'seasonCount': seasonCount,
         'seasons': seasons.map((e) => e.toJson()).toList(),
+        'subtitlesEnabled': subtitlesEnabled,
+        'title': title,
+        'type': type.name,
+        'voiceActing': voiceActing.toJson(),
         'voices': voices.map((e) => e.toJson()).toList(),
-        'blockedStatus': blockedStatus,
+        'year': year,
       };
 
   Map<String, dynamic> toDbJson() => <String, dynamic>{
@@ -269,7 +256,6 @@ class MediaItem implements Playable {
   /// заблокирован ли контент правообладателем
   bool get blocked => blockedStatus?.isNotEmpty == true;
 
-  @JsonKey(name: 'blockedStatus')
   final String? blockedStatus;
 
   /// продолжительность для информации

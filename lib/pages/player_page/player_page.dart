@@ -10,6 +10,7 @@ import '../../extensions/context_extensions.dart';
 import '../../models/media_item.dart';
 import '../../models/media_item_url.dart';
 import '../../providers/storage_provider.dart';
+import 'ui/kika_closed_captions.dart';
 import 'ui/player_controls_overlay.dart';
 import 'ui/youtube_player_view.dart';
 
@@ -253,19 +254,13 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
           /// субтитры
           if (_subtitlesEnabled)
             Positioned(
-              bottom: 32.0,
+              bottom: 48.0,
               left: 48.0,
               right: 48.0,
               child: ValueListenableBuilder(
                 valueListenable: _controller,
-                builder: (context, video, child) {
-                  return ClosedCaption(
-                    text: video.caption.text,
-                    textStyle: const TextStyle(
-                      fontSize: 20.0,
-                    ),
-                  );
-                },
+                builder: (context, video, child) =>
+                    KikaClosedCaption(text: video.caption.text),
               ),
             ),
 

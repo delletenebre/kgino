@@ -31,7 +31,7 @@ class TmdbItem {
         backdropPath: json['backdrop_path'] as String?,
         posterPath: json['poster_path'] as String?,
         // firstAirDate: DateTime.parse(json['first_air_date'] as String),
-        voteAverage: double.tryParse(json['vote_average'].toString()) ?? 0.0,
+        voteAverage: double.tryParse('${json['vote_average']}') ?? 0.0,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{

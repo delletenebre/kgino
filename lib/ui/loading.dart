@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
-class AnimatedLoading extends StatelessWidget {
+class Loading extends StatelessWidget {
   final double size;
 
-  const AnimatedLoading({super.key, this.size = 16.0});
+  const Loading({super.key, this.size = 16.0});
 
   @override
   Widget build(context) {

@@ -57,8 +57,8 @@ class MediaItemEpisode {
       MediaItemEpisode(
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? '',
-        seasonNumber: int.tryParse(json['seasonNumber']) ?? 0,
-        episodeNumber: int.tryParse(json['episodeNumber']) ?? 0,
+        seasonNumber: int.tryParse('${json['seasonNumber']}') ?? 0,
+        episodeNumber: int.tryParse('${json['episodeNumber']}') ?? 0,
         videoFileUrl: json['videoFileUrl'] as String? ?? '',
         qualities: (json['qualities'] as List<dynamic>?)
                 ?.map((e) => e as String)
@@ -66,8 +66,8 @@ class MediaItemEpisode {
             const [],
         subtitlesFileUrl: json['subtitlesFileUrl'] as String? ?? '',
         updatedAt: Timestamp.tryParse('${json['updatedAt']}'),
-        position: int.tryParse(json['position']) ?? 0,
-        duration: int.tryParse(json['duration']) ?? 0,
+        position: int.tryParse('${json['position']}') ?? 0,
+        duration: int.tryParse('${json['duration']}') ?? 0,
         isLiveStream: json['isLiveStream'] as bool? ?? false,
       );
 
@@ -79,7 +79,7 @@ class MediaItemEpisode {
         'videoFileUrl': videoFileUrl,
         'subtitlesFileUrl': subtitlesFileUrl,
         'qualities': qualities,
-        'updatedAt': updatedAt?.toIso8601String(),
+        'updatedAt': updatedAt?.toString(),
         'position': position,
         'duration': duration,
         'isLiveStream': isLiveStream,

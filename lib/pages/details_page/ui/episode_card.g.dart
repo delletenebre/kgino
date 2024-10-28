@@ -6,7 +6,7 @@ part of 'episode_card.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$detailsHash() => r'ec750c7b2af057725d15f72b2355553ce3235237';
+String _$itemHash() => r'cd7867125bd1b666b4fec9e0b6f7d9d0e50723e5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -28,6 +28,188 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+abstract class _$Item
+    extends BuildlessAutoDisposeAsyncNotifier<MediaItemEpisode> {
+  late final MediaItemEpisode episode;
+
+  FutureOr<MediaItemEpisode> build(
+    MediaItemEpisode episode,
+  );
+}
+
+/// See also [Item].
+@ProviderFor(Item)
+const itemProvider = ItemFamily();
+
+/// See also [Item].
+class ItemFamily extends Family {
+  /// See also [Item].
+  const ItemFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'itemProvider';
+
+  /// See also [Item].
+  ItemProvider call(
+    MediaItemEpisode episode,
+  ) {
+    return ItemProvider(
+      episode,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  ItemProvider getProviderOverride(
+    covariant ItemProvider provider,
+  ) {
+    return call(
+      provider.episode,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Item Function() create) {
+    return _$ItemFamilyOverride(this, create);
+  }
+}
+
+class _$ItemFamilyOverride implements FamilyOverride {
+  _$ItemFamilyOverride(this.overriddenFamily, this.create);
+
+  final Item Function() create;
+
+  @override
+  final ItemFamily overriddenFamily;
+
+  @override
+  ItemProvider getProviderOverride(
+    covariant ItemProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [Item].
+class ItemProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<Item, MediaItemEpisode> {
+  /// See also [Item].
+  ItemProvider(
+    MediaItemEpisode episode,
+  ) : this._internal(
+          () => Item()..episode = episode,
+          from: itemProvider,
+          name: r'itemProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product') ? null : _$itemHash,
+          dependencies: ItemFamily._dependencies,
+          allTransitiveDependencies: ItemFamily._allTransitiveDependencies,
+          episode: episode,
+        );
+
+  ItemProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.episode,
+  }) : super.internal();
+
+  final MediaItemEpisode episode;
+
+  @override
+  FutureOr<MediaItemEpisode> runNotifierBuild(
+    covariant Item notifier,
+  ) {
+    return notifier.build(
+      episode,
+    );
+  }
+
+  @override
+  Override overrideWith(Item Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ItemProvider._internal(
+        () => create()..episode = episode,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        episode: episode,
+      ),
+    );
+  }
+
+  @override
+  (MediaItemEpisode,) get argument {
+    return (episode,);
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<Item, MediaItemEpisode>
+      createElement() {
+    return _ItemProviderElement(this);
+  }
+
+  ItemProvider _copyWith(
+    Item Function() create,
+  ) {
+    return ItemProvider._internal(
+      () => create()..episode = episode,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      episode: episode,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ItemProvider && other.episode == episode;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, episode.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin ItemRef on AutoDisposeAsyncNotifierProviderRef<MediaItemEpisode> {
+  /// The parameter `episode` of this provider.
+  MediaItemEpisode get episode;
+}
+
+class _ItemProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<Item, MediaItemEpisode>
+    with ItemRef {
+  _ItemProviderElement(super.provider);
+
+  @override
+  MediaItemEpisode get episode => (origin as ItemProvider).episode;
+}
+
+String _$detailsHash() => r'f3dfd91dbba29f2740cd61c088643c4f50d7812c';
 
 abstract class _$Details extends BuildlessAutoDisposeAsyncNotifier<Map?> {
   late final int? tvId;

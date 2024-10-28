@@ -10,7 +10,7 @@ class FilmixShowLink {
   factory FilmixShowLink.fromJson(Map<String, dynamic> json) => FilmixShowLink(
         link: json['link'] as String? ?? '',
         qualities: (json['qualities'] as List<dynamic>?)
-                ?.map((item) => int.parse(item))
+                ?.map((item) => int.parse('$item'))
                 .toList() ??
             const [],
       );

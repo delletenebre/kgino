@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,8 +7,18 @@ import '../../../models/media_item.dart';
 import '../../../providers/locale_provider.dart';
 import '../../../providers/storage_provider.dart';
 import '../../../ui/cards/item_card.dart';
+import '../../../ui/loading.dart';
 
 part 'episode_card.g.dart';
+
+@riverpod
+class Item extends _$Item {
+  @override
+  Future<MediaItemEpisode> build(MediaItemEpisode episode) async {
+    final storage = ref.read(storageProvider);
+    return await episode.saved(storage);
+  }
+}
 
 @riverpod
 class Details extends _$Details {
@@ -22,7 +30,6 @@ class Details extends _$Details {
 
     final item =
         await tmdbApi.tmdb.v3.tvEpisodes.getDetails(tvId ?? 0, season, episode);
-    print('zzzz: item ${jsonEncode(item)}');
     return item;
   }
 
@@ -49,56 +56,61 @@ class EpisodeCard extends HookConsumerWidget {
     final locale = Locale.of(context);
 
     /// контроллер информации о сериале или фильме
+    final seenEpisode = ref.watch(itemProvider(episode));
 
-    final seenEpisode = episode.saved(ref.read(storageProvider));
+    return seenEpisode.when(
+      loading: () => const Loading(),
+      error: (error, stackTrace) => const Loading(),
+      data: (item) {
+        final details = ref.watch(
+            detailsProvider(tmdbId, item.seasonNumber, item.episodeNumber));
 
-    final details = ref.watch(detailsProvider(
-        tmdbId, seenEpisode.seasonNumber, seenEpisode.episodeNumber));
+        String? episodeName;
+        String imageUrl = '';
 
-    String? episodeName;
-    String imageUrl = '';
+        details.whenData((data) {
+          imageUrl = data?['still_path'] ?? '';
+          if (imageUrl.isNotEmpty) {
+            imageUrl = 'https://image.tmdb.org/t/p/w500$imageUrl';
+          }
 
-    details.whenData((data) {
-      imageUrl = data?['still_path'] ?? '';
-      if (imageUrl.isNotEmpty) {
-        imageUrl = 'https://image.tmdb.org/t/p/w500$imageUrl';
-      }
+          episodeName = data?['name'];
+        });
 
-      episodeName = data?['name'];
-    });
-
-    return ItemCard(
-      title: episodeName ??
-          episode.nameOr('${locale.episode} ${episode.episodeNumber}'),
-      imageUrl: imageUrl,
-      onFocusChange: onFocusChange,
-      onPressed: () {
-        onPressed.call(seenEpisode.viewed);
-        return KeyEventResult.handled;
-      },
-      endWidget: Padding(
-        padding: const EdgeInsets.only(top: 0.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              '${episode.seasonNumber}x${episode.episodeNumber}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-            ),
-            if (seenEpisode.viewed != 0.0)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: LinearProgressIndicator(
-                  value: seenEpisode.viewed,
-                  minHeight: 2.0,
-                  borderRadius: BorderRadius.circular(12.0),
+        return ItemCard(
+          title: episodeName ??
+              episode.nameOr('${locale.episode} ${episode.episodeNumber}'),
+          imageUrl: imageUrl,
+          onFocusChange: onFocusChange,
+          onPressed: () {
+            onPressed.call(item.viewed);
+            return KeyEventResult.handled;
+          },
+          endWidget: Padding(
+            padding: const EdgeInsets.only(top: 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  '${episode.seasonNumber}x${episode.episodeNumber}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
                 ),
-              ),
-          ],
-        ),
-      ),
+                if (item.viewed != 0.0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: LinearProgressIndicator(
+                      value: item.viewed,
+                      minHeight: 2.0,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

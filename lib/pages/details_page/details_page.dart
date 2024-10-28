@@ -12,7 +12,7 @@ import '../../models/media_item.dart';
 import '../../providers/locale_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../resources/kika_theme.dart';
-import '../../ui/animated_loading.dart';
+import '../../ui/loading.dart';
 import '../../ui/cards/featured_card.dart';
 import '../../ui/kika_scroll_view.dart';
 import '../../ui/try_again_message.dart';
@@ -79,7 +79,7 @@ class DetailsPage extends HookConsumerWidget {
       body: details.when(
         skipLoadingOnReload: false,
         skipLoadingOnRefresh: false,
-        loading: () => const AnimatedLoading(),
+        loading: () => const Loading(),
         error: (error, stackTrace) => TryAgainMessage(
           imageUrl: mediaItem.poster,
           onRetry: () {

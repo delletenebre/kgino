@@ -1,39 +1,51 @@
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import '../../api/tskg_api_provider.dart';
-import '../../extensions/json_converters.dart';
 import '../media_item.dart';
 import '../media_item_url.dart';
 
-part 'tskg_item.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class TskgItem extends MediaItem {
   TskgItem({
-    super.onlineService = OnlineService.tskg,
-    super.id,
-    super.title,
-    super.originalTitle,
-    super.type = MediaItemType.show,
-    super.overview,
-    super.year,
-    super.genres,
+    super.blockedStatus,
     super.countries,
-    super.seasonCount,
+    super.genres,
+    super.id,
     super.imdbRating,
     super.kinopoiskRating,
+    super.onlineService = OnlineService.tskg,
+    super.originalTitle,
+    super.overview,
+    super.seasonCount,
+    super.subtitlesEnabled,
+    super.title,
+    super.type = MediaItemType.show,
     super.voiceActing,
     super.voices,
-    super.blockedStatus,
+    super.year,
   });
 
-  factory TskgItem.fromJson(Map<String, dynamic> json) =>
-      _$TskgItemFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$TskgItemToJson(this);
+  factory TskgItem.fromJson(Map<String, dynamic> json) {
+    final mediaItem = MediaItem.fromJson(json);
+    return TskgItem(
+      blockedStatus: mediaItem.blockedStatus,
+      countries: mediaItem.countries,
+      genres: mediaItem.genres,
+      id: mediaItem.id,
+      imdbRating: mediaItem.imdbRating,
+      kinopoiskRating: mediaItem.kinopoiskRating,
+      onlineService: OnlineService.tskg,
+      originalTitle: mediaItem.originalTitle,
+      overview: mediaItem.overview,
+      seasonCount: mediaItem.seasonCount,
+      subtitlesEnabled: mediaItem.subtitlesEnabled,
+      title: mediaItem.title,
+      type: mediaItem.type,
+      voiceActing: mediaItem.voiceActing,
+      voices: mediaItem.voices,
+      year: mediaItem.year,
+    );
+  }
 
   @override
   get onlineService => OnlineService.tskg;
