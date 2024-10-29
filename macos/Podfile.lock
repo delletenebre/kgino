@@ -7,6 +7,11 @@ PODS:
   - flutter_secure_storage_macos (6.1.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
+  - fvp (0.27.0):
+    - Flutter
+    - FlutterMacOS
+    - mdk (~> 0.29.1)
+  - mdk (0.29.1)
   - OrderedSet (6.0.3)
   - package_info_plus (0.0.1):
     - FlutterMacOS
@@ -30,6 +35,7 @@ DEPENDENCIES:
   - flutter_inappwebview_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_inappwebview_macos/macos`)
   - flutter_secure_storage_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
+  - fvp (from `Flutter/ephemeral/.symlinks/plugins/fvp/darwin`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -39,6 +45,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - mdk
     - OrderedSet
 
 EXTERNAL SOURCES:
@@ -50,6 +57,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_macos/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
+  fvp:
+    :path: Flutter/ephemeral/.symlinks/plugins/fvp/darwin
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   path_provider_foundation:
@@ -68,6 +77,8 @@ SPEC CHECKSUMS:
   flutter_inappwebview_macos: bdf207b8f4ebd58e86ae06cd96b147de99a67c9b
   flutter_secure_storage_macos: 59459653abe1adb92abbc8ea747d79f8d19866c9
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  fvp: b843e46165476a3702ec3c80f781488ef5089964
+  mdk: 3c49affb38303cf86fd9f8ea1e05fe029c4dc194
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   package_info_plus: d2f71247aab4b6521434f887276093acc70d214c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46

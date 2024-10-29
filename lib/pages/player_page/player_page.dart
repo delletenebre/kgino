@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fvp/fvp.dart' as fvp;
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sembast/timestamp.dart';
@@ -59,6 +60,12 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
   @override
   void initState() {
     super.initState();
+
+    fvp.registerWith(options: {
+      'platforms': ['windows', 'macos', 'linux', 'android'],
+      // 'video.decoders': ['D3D11', 'NVDEC', 'FFmpeg'],
+      'lowLatency': 1,
+    });
 
     episodes = widget.mediaItem.episodes;
     currentEpisodeIndex = widget.episodeIndex;
