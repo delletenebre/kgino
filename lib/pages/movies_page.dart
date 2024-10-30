@@ -42,8 +42,8 @@ class MoviesPage extends HookConsumerWidget {
         useMemoized(() => filmixApi.getMoviesLastThreeYears(), [reloadKey]);
 
     /// filmix список популярных
-    final filmixAsyncPopular =
-        useMemoized(() => filmixApi.getPopularMovies(), [reloadKey]);
+    // final filmixAsyncPopular =
+    //     useMemoized(() => filmixApi.getPopularMovies(), [reloadKey]);
 
     /// hdrezka провайдер запросов к API
     final rezkaApi = ref.read(rezkaApiProvider);
@@ -57,9 +57,9 @@ class MoviesPage extends HookConsumerWidget {
         useMemoized(() => rezkaApi.getNewestMovies(), [reloadKey]);
 
     /// rezka список популярных
-    final rezkaAsyncPopular = useMemoized(
-        () => rezkaApi.getPopularMovies()..then((f) {}, onError: (error) {}),
-        [reloadKey]);
+    // final rezkaAsyncPopular = useMemoized(
+    //     () => rezkaApi.getPopularMovies()..then((f) {}, onError: (error) {}),
+    //     [reloadKey]);
 
     final categories = useMemoized(
         () => [
@@ -73,11 +73,11 @@ class MoviesPage extends HookConsumerWidget {
                 title: locale.novelty,
                 apiResponse: filmixAsyncNewest,
               ),
-              CategoryListItem(
-                onlineService: OnlineService.filmix,
-                title: locale.popular,
-                apiResponse: filmixAsyncPopular,
-              ),
+              // CategoryListItem(
+              //   onlineService: OnlineService.filmix,
+              //   title: locale.popular,
+              //   apiResponse: filmixAsyncPopular,
+              // ),
               CategoryListItem(
                 onlineService: OnlineService.rezka,
                 title: locale.latestArrivals,
@@ -88,11 +88,11 @@ class MoviesPage extends HookConsumerWidget {
                 title: locale.novelty,
                 apiResponse: rezkaAsyncNewest,
               ),
-              CategoryListItem(
-                onlineService: OnlineService.rezka,
-                title: locale.popular,
-                apiResponse: rezkaAsyncPopular,
-              ),
+              // CategoryListItem(
+              //   onlineService: OnlineService.rezka,
+              //   title: locale.popular,
+              //   apiResponse: rezkaAsyncPopular,
+              // ),
             ],
         [reloadKey]);
 
