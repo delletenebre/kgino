@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:restart_app/restart_app.dart';
 
 import '../../extensions/context_extensions.dart';
 import '../../providers/providers.dart';
@@ -59,6 +60,25 @@ class SettingsPage extends HookConsumerWidget {
                 ref.read(storageProvider).write('time_enabled', checked);
               },
               title: 'Отображать время',
+            ),
+            const SizedBox(height: 12.0),
+            KikaListTileCheckbox(
+              selected: ref
+                  .read(storageProvider)
+                  .readBool('media_kit_enabled', defaultValue: false),
+              onChaged: (checked) async {
+                await ref
+                    .read(storageProvider)
+                    .write('media_kit_enabled', checked);
+
+                try {
+                  /// перезапускаем приложение
+                  Restart.restartApp();
+                } catch (exception) {
+                  ///
+                }
+              },
+              title: 'Альтернативный плеер',
             ),
             // const SizedBox(height: 12.0),
             // KikaListTile(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart';
@@ -186,60 +188,85 @@ class KgCameraApi {
 
   /// список камер КыргызТелеком
   Future<List<MediaItem>> getKtCameras() async {
-    const baseUrl = 'https://online.kt.kg';
+    const baseUrl = 'https://online.kt.kg/api/v2';
     return ApiRequest<List<MediaItem>>().call(
-      request:
-          Dio().get(baseUrl, queryParameters: {'t': DateTime.now().minute}),
+      // request: Dio().get('https://online.kt.kg:5500/api/v2/website-data'),
+      request: Dio().get('$baseUrl/website-data'),
+      onError: (error) {
+        return [];
+      },
       decoder: (response) async {
-        final html = response.toString();
-
         final items = <MediaItem>[];
 
-        /// парсим html
-        final document = parse(html);
+        final cameras = jsonDecode(response)['cameras'];
 
-        /// получаем элементы списка новых поступлений
-        final elements = document.getElementsByClassName('button');
+        for (final camera in cameras) {
+          final seasons = [
+            MediaItemSeason(episodes: [
+              MediaItemEpisode(
+                  videoFileUrl: camera['stream'], isLiveStream: true),
+            ])
+          ];
 
-        for (final element in elements) {
-          /// <button style="background: #282828;" class="button" id="camera_0" onclick="change_source('https://cam.kt.kg/cam14/stream.m3u8', 'Бишкек', 'Bishkek,KG', 'camera_0')">
-          ///     <img class="img" src="/preview/%D0%91%D0%B8%D1%88%D0%BA%D0%B5%D0%BA" style="border-radius: 10px; margin-right: max(10px, 2vh);"> Бишкек
-          /// </button>
-
-          /// парсим идентификатор
-          final onClick = element.attributes['onclick'] ?? '';
-
-          if (onClick.isNotEmpty) {
-            final exp = RegExp(r"'(.+?)'");
-            final matches = exp.allMatches(onClick);
-
-            if (matches.isNotEmpty) {
-              final src = matches.elementAt(0).group(1) ?? '';
-
-              final preview = element
-                  .getElementsByTagName('img')
-                  .firstOrNull
-                  ?.attributes['src'];
-
-              final title = matches.elementAt(1).group(1) ?? '';
-
-              final seasons = [
-                MediaItemSeason(episodes: [
-                  MediaItemEpisode(videoFileUrl: src, isLiveStream: true),
-                ])
-              ];
-
-              items.add(MediaItem(
-                type: MediaItemType.movie,
-                title: title,
-                poster: '$baseUrl$preview',
-                seasons: seasons,
-              ));
-            }
-          }
+          items.add(MediaItem(
+            type: MediaItemType.movie,
+            title: camera['name'],
+            poster: '$baseUrl/preview?camera=${camera['name']}',
+            seasons: seasons,
+          ));
         }
 
         return items;
+
+        // final html = response.toString();
+
+        // final items = <MediaItem>[];
+
+        // /// парсим html
+        // final document = parse(html);
+
+        // /// получаем элементы списка новых поступлений
+        // final elements = document.getElementsByClassName('button');
+
+        // for (final element in elements) {
+        //   /// <button style="background: #282828;" class="button" id="camera_0" onclick="change_source('https://cam.kt.kg/cam14/stream.m3u8', 'Бишкек', 'Bishkek,KG', 'camera_0')">
+        //   ///     <img class="img" src="/preview/%D0%91%D0%B8%D1%88%D0%BA%D0%B5%D0%BA" style="border-radius: 10px; margin-right: max(10px, 2vh);"> Бишкек
+        //   /// </button>
+
+        //   /// парсим идентификатор
+        //   final onClick = element.attributes['onclick'] ?? '';
+
+        //   if (onClick.isNotEmpty) {
+        //     final exp = RegExp(r"'(.+?)'");
+        //     final matches = exp.allMatches(onClick);
+
+        //     if (matches.isNotEmpty) {
+        //       final src = matches.elementAt(0).group(1) ?? '';
+
+        //       final preview = element
+        //           .getElementsByTagName('img')
+        //           .firstOrNull
+        //           ?.attributes['src'];
+
+        //       final title = matches.elementAt(1).group(1) ?? '';
+
+        //       final seasons = [
+        //         MediaItemSeason(episodes: [
+        //           MediaItemEpisode(videoFileUrl: src, isLiveStream: true),
+        //         ])
+        //       ];
+
+        //       items.add(MediaItem(
+        //         type: MediaItemType.movie,
+        //         title: title,
+        //         poster: '$baseUrl$preview',
+        //         seasons: seasons,
+        //       ));
+        //     }
+        //   }
+        // }
+
+        // return items;
       },
     );
   }

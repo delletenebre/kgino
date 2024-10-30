@@ -3,6 +3,7 @@ import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player_media_kit/video_player_media_kit.dart';
 
 import 'app.dart';
 import 'models/device.dart';
@@ -28,16 +29,20 @@ Future<void> main() async {
   /// инициализируем базу данных
   final dbStorage = await DatabaseEngine.initialize();
 
+  final storage = KikaStorage(
+    sharedStorage: sharedStorage,
+    secureStorage: secureStorage,
+    db: dbStorage,
+  );
+
+  final mediaKitEnabled =
+      storage.readBool('media_kit_enabled', defaultValue: false);
+  VideoPlayerMediaKit.ensureInitialized(android: mediaKitEnabled);
+
   runApp(ProviderScope(
     overrides: [
       /// регистрируем [IuiStorage]
-      storageProvider.overrideWithValue(
-        KikaStorage(
-          sharedStorage: sharedStorage,
-          secureStorage: secureStorage,
-          db: dbStorage,
-        ),
-      ),
+      storageProvider.overrideWithValue(storage),
 
       /// регистрируем [Device]
       deviceProvider.overrideWithValue(device),

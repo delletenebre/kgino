@@ -23,7 +23,8 @@ class HomePage extends StatefulHookConsumerWidget {
   }
 }
 
-class HomeLayoutState extends ConsumerState<HomePage> {
+class HomeLayoutState extends ConsumerState<HomePage>
+    with SingleTickerProviderStateMixin {
   final navigationRailKey = GlobalKey<KikaNavigationRailState>();
 
   final pages = const [
@@ -34,11 +35,17 @@ class HomeLayoutState extends ConsumerState<HomePage> {
     CamerasPage(),
   ];
 
-  final pageController = PageController(initialPage: 2);
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    _pageController = PageController(initialPage: 2);
+    super.initState();
+  }
 
   @override
   void dispose() {
-    pageController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -63,19 +70,36 @@ class HomeLayoutState extends ConsumerState<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
+          // Focus(
+          //   canRequestFocus: false,
+          //   child: TransformerPageView(
+          //     pageController: _pageController,
+          //     scrollDirection: Axis.vertical,
+          //     transformer: ScaleAndFadeTransformer(),
+          //     itemCount: _pageController.itemCount!,
+          //     itemBuilder: (context, index) {
+          //       return pages[index];
+          //     },
+          //   ),
+          // ),
+
           Focus(
             canRequestFocus: false,
             child: PageView.builder(
-              controller: pageController,
+              controller: _pageController,
               scrollDirection: Axis.vertical,
               itemCount: pages.length,
-              itemBuilder: (context, index) => pages[index],
+              itemBuilder: (context, index) {
+                return pages[index];
+              },
             ),
           ),
+
           KikaNavigationRail(
             key: navigationRailKey,
             focusNode: drawerFocusNode,
-            pageController: pageController,
+            pageController: _pageController,
+            // goToPage: goToPage,
           ),
         ],
       ),
@@ -115,6 +139,7 @@ class HomeLayoutState extends ConsumerState<HomePage> {
 
   void animateTo(int index) {
     navigationRailKey.currentState?.animateTo(index);
+    setState(() {});
   }
 
   void openDrawer() {
@@ -133,3 +158,30 @@ class HomeLayoutState extends ConsumerState<HomePage> {
     navigationRailKey.currentState?.hideDrawer();
   }
 }
+
+// class ScaleAndFadeTransformer extends PageTransformer {
+//   final double _scale;
+//   final double _fade;
+
+//   ScaleAndFadeTransformer({double fade = 0.0, double scale = 0.8})
+//       : _fade = fade,
+//         _scale = scale;
+
+//   @override
+//   Widget transform(Widget child, TransformInfo info) {
+//     final position = info.position!;
+//     final scaleFactor = (1 - position.abs()) * (1 - _scale);
+//     final fadeFactor = (1 - position.abs()) * (1 - _fade);
+//     final opacity = _fade + fadeFactor;
+//     final scale = _scale + scaleFactor;
+//     print('opacityopacity: $position');
+
+//     return Opacity(
+//       opacity: opacity,
+//       child: Transform.translate(
+//         offset: Offset(0.0, info.height! * -position),
+//         child: child,
+//       ),
+//     );
+//   }
+// }

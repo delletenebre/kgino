@@ -11,11 +11,13 @@ import 'kika_navigation_tile.dart';
 class KikaNavigationRail extends StatefulWidget {
   final FocusNode focusNode;
   final PageController pageController;
+  // final void Function(int index) goToPage;
 
   const KikaNavigationRail({
     super.key,
     required this.focusNode,
     required this.pageController,
+    // required this.goToPage,
   });
 
   @override
@@ -230,7 +232,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
                               icon: navigations[index].icon,
                               focused: _focusedItemIndex == index,
                               selected:
-                                  widget.pageController.page!.toInt() == index,
+                                  widget.pageController.page?.toInt() == index,
                               expanded: _expanded,
                             );
                           },
@@ -311,9 +313,11 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
     if (_focusedItemIndex < itemsCount - 1) {
       widget.pageController.animateToPage(
         _focusedItemIndex,
-        duration: kThemeAnimationDuration,
+        duration: kThemeAnimationDuration * 3,
         curve: Curves.easeInOut,
       );
+      // widget.goToPage(_focusedItemIndex);
+      //widget.pageController.jumpToPage(_focusedItemIndex);
     }
     requestCurrentFocus();
   }

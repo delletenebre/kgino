@@ -25,10 +25,12 @@ class CamerasPage extends HookConsumerWidget {
     final kgCameraApi = ref.read(kgCameraApiProvider);
 
     /// список камер ЭлКат
-    final kgCameraAsync = useMemoized(() => kgCameraApi.getElcatCameras());
+    final kgCameraAsync =
+        useMemoized(() => <MediaItem>[]); //kgCameraApi.getElcatCameras());
 
     /// список камер SaimaNet
-    final saimaAsync = useMemoized(() => kgCameraApi.getSaimaCameras());
+    final saimaAsync =
+        useMemoized(() => <MediaItem>[]); //gCameraApi.getSaimaCameras());
 
     /// список камер КыргызТелеком
     final ktAsync = useMemoized(() => kgCameraApi.getKtCameras());
