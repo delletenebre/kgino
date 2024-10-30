@@ -41,7 +41,7 @@ class ShowsPage extends HookConsumerWidget {
     final tskgAsyncNewest = useMemoized(() => tskgApi.getNewestShows());
 
     /// tskg список популярных сериалов
-    final tskgAsyncPopular = useMemoized(() => tskgApi.getPopularShows());
+    // final tskgAsyncPopular = useMemoized(() => tskgApi.getPopularShows());
 
     /// filmix список последних добавлений
     final filmixAsyncLatest = useMemoized(() => filmixApi.getLatestShows());
@@ -50,7 +50,7 @@ class ShowsPage extends HookConsumerWidget {
     final filmixAsyncNewest = useMemoized(() => filmixApi.getNewestShows());
 
     /// filmix список популярных
-    final filmixAsyncPopular = useMemoized(() => filmixApi.getPopularShows());
+    // final filmixAsyncPopular = useMemoized(() => filmixApi.getPopularShows());
 
     /// hdrezka провайдер запросов к API
     final rezkaApi = ref.read(rezkaApiProvider);
@@ -59,7 +59,7 @@ class ShowsPage extends HookConsumerWidget {
     final rezkaAsyncLatest = useMemoized(() => rezkaApi.getLatestShows());
 
     /// hdrezka список популярных
-    final rezkaAsyncPopular = useMemoized(() => rezkaApi.getPopularShows());
+    // final rezkaAsyncPopular = useMemoized(() => rezkaApi.getPopularShows());
 
     /// hdrezka список новых
     final rezkaAsyncNewest = useMemoized(() => rezkaApi.getNewestShows());
@@ -75,11 +75,11 @@ class ShowsPage extends HookConsumerWidget {
         title: locale.novelty,
         apiResponse: filmixAsyncNewest,
       ),
-      CategoryListItem(
-        onlineService: OnlineService.filmix,
-        title: locale.popular,
-        apiResponse: filmixAsyncPopular,
-      ),
+      // CategoryListItem(
+      //   onlineService: OnlineService.filmix,
+      //   title: locale.popular,
+      //   apiResponse: filmixAsyncPopular,
+      // ),
       CategoryListItem(
         onlineService: OnlineService.rezka,
         title: locale.latestArrivals,
@@ -90,11 +90,11 @@ class ShowsPage extends HookConsumerWidget {
         title: locale.novelty,
         apiResponse: rezkaAsyncNewest,
       ),
-      CategoryListItem(
-        onlineService: OnlineService.rezka,
-        title: locale.popular,
-        apiResponse: rezkaAsyncPopular,
-      ),
+      // CategoryListItem(
+      //   onlineService: OnlineService.rezka,
+      //   title: locale.popular,
+      //   apiResponse: rezkaAsyncPopular,
+      // ),
       CategoryListItem(
         onlineService: OnlineService.tskg,
         title: locale.latestArrivals,
@@ -105,11 +105,11 @@ class ShowsPage extends HookConsumerWidget {
         title: locale.novelty,
         apiResponse: tskgAsyncNewest,
       ),
-      CategoryListItem(
-        onlineService: OnlineService.tskg,
-        title: locale.popular,
-        apiResponse: tskgAsyncPopular,
-      ),
+      // CategoryListItem(
+      //   onlineService: OnlineService.tskg,
+      //   title: locale.popular,
+      //   apiResponse: tskgAsyncPopular,
+      // ),
     ];
 
     final key = useMemoized(

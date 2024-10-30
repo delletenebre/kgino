@@ -10,6 +10,7 @@ import '../../providers/providers.dart';
 import '../../ui/lists/kika_list_tile.dart';
 import '../../ui/lists/kika_list_tile_checkbox.dart';
 import 'ui/filmix_account_dialog.dart';
+import 'ui/filter_country_dialog.dart';
 
 class SettingsPage extends HookConsumerWidget {
   const SettingsPage({super.key});
@@ -80,13 +81,8 @@ class SettingsPage extends HookConsumerWidget {
               },
               title: 'Альтернативный плеер',
             ),
-            // const SizedBox(height: 12.0),
-            // KikaListTile(
-            //   onSelect: () {
-            //     context.showModal(child: const FilterCountryDialog());
-            //   },
-            //   title: 'Аккаунт Filmix',
-            // ),
+            // Divider(),
+            // FilterCountryDialog(),
           ],
         ),
       ),

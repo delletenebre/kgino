@@ -76,7 +76,14 @@ class KikaStorage {
   }
 
   /// чтение списка из обычного хранилища
-  List<T> readList<T>(String key, {String defaultValue = '[]'}) {
+  List<T> readList<T>(String key, {dynamic defaultValue = const {}}) {
+    late final String df;
+    if (defaultValue is Map || defaultValue is List) {
+      df = jsonEncode(defaultValue);
+    } else {
+      df = defaultValue;
+    }
+
     return jsonDecode(sharedStorage.getString(key) ?? defaultValue);
   }
 
