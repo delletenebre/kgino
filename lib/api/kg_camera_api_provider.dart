@@ -197,7 +197,7 @@ class KgCameraApi {
       decoder: (response) async {
         final items = <MediaItem>[];
 
-        final cameras = jsonDecode(response)['cameras'];
+        final cameras = response['cameras'];
 
         for (final camera in cameras) {
           final seasons = [

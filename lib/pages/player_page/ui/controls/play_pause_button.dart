@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../../ui/loading.dart';
+
 class PlayPauseButton extends HookWidget {
   final bool isPlaying;
   final bool isBuffering;
@@ -25,11 +27,8 @@ class PlayPauseButton extends HookWidget {
     if (isBuffering) {
       /// ^ если видео загружается
 
-      child = CircularProgressIndicator(
-        /// для правильной работы анимации, необходим параметр key
-        key: const ValueKey('buffering'),
-        color: theme.colorScheme.onSurface,
-      );
+      /// для правильной работы анимации, необходим параметр key
+      child = Loading(key: const ValueKey('buffering'));
     } else if (!isPlaying) {
       /// ^ если видео на паузе
 
