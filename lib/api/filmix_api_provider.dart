@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -274,7 +276,11 @@ class FilmixApi {
         cancelToken: cancelToken,
       ),
       decoder: (json) async {
+        print('HERE: 3 $json');
+        print('HERE: 33 ${FilmixToken.fromJson(json)}');
+
         final token = FilmixToken.fromJson(json);
+        print('HERE: 4');
 
         /// хранилище данных
         final storage = ref.read(storageProvider);

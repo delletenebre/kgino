@@ -20,6 +20,7 @@ dependencies:
   # storage
   flutter_secure_storage: ^9.2.2
   sembast: ^3.7.5
+  sembast_web: ^2.4.0+4
   # sembast_web: ^2.4.0+4
   shared_preferences: ^2.3.2
 

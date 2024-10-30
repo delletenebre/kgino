@@ -38,6 +38,7 @@ class FilmixAuth extends _$FilmixAuth {
 
       return response;
     });
+    print('HERE: 2');
 
     if (state.hasError) {
       userCode = await getCode();
@@ -51,10 +52,13 @@ class FilmixAuth extends _$FilmixAuth {
 
     /// провайдер запросов к API
     final api = ref.read(filmixApiProvider);
+    print('HERE: 1');
 
     try {
       final response = await api.getToken();
+      print('HERE: ${response.userCode}');
       userCode = response.userCode;
+      state = AsyncData(state.value);
       return userCode;
     } catch (exception) {
       return '';

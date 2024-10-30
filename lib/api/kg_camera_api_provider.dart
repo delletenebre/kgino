@@ -36,8 +36,7 @@ class KgCameraApi {
     const baseUrl = 'https://kg.camera';
 
     return ApiRequest<List<MediaItem>>().call(
-      request:
-          _dio.get('$baseUrl/', queryParameters: {'t': DateTime.now().minute}),
+      request: _dio.get(baseUrl),
       decoder: (response) async {
         final html = response.toString();
 

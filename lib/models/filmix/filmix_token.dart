@@ -12,7 +12,7 @@ class FilmixToken {
   factory FilmixToken.fromJson(Map<String, dynamic> json) => FilmixToken(
         code: json['code'] as String? ?? '',
         userCode: json['user_code'] as String? ?? '',
-        expire: int.tryParse(json['expire']) ?? 0,
+        expire: int.tryParse('${json['expire']}') ?? 0,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
