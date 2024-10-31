@@ -313,7 +313,7 @@ class KikaNavigationRailState extends State<KikaNavigationRail> {
     if (_focusedItemIndex < itemsCount - 1) {
       widget.pageController.animateToPage(
         _focusedItemIndex,
-        duration: kThemeAnimationDuration * 3,
+        duration: kThemeAnimationDuration * 2,
         curve: Curves.easeInOut,
       );
       // widget.goToPage(_focusedItemIndex);
