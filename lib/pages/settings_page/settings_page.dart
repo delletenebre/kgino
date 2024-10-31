@@ -10,7 +10,6 @@ import '../../providers/providers.dart';
 import '../../ui/lists/kika_list_tile.dart';
 import '../../ui/lists/kika_list_tile_checkbox.dart';
 import 'ui/filmix_account_dialog.dart';
-import 'ui/filter_country_dialog.dart';
 
 class SettingsPage extends HookConsumerWidget {
   const SettingsPage({super.key});
@@ -45,11 +44,9 @@ class SettingsPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             KikaListTile(
-              //focusColor: theme.colorScheme.onSurface,
               onSelect: () {
                 context.showModal(child: const FilmixAccountDialog());
               },
-
               title: 'Аккаунт Filmix',
             ),
             const SizedBox(height: 12.0),
