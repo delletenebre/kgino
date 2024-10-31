@@ -17,6 +17,8 @@ class FilmixItem extends MediaItem {
 
   final int duration;
 
+  Map<String, Map<String, Map<Object, FilmixShowLink>>> playlist = {};
+
   FilmixItem({
     super.onlineService = OnlineService.filmix,
     required super.id,
@@ -95,7 +97,7 @@ class FilmixItem extends MediaItem {
         type = MediaItemType.show;
 
         /// парсим плейлист
-        final playlist = (playerLinks!.playlist as Map<String, dynamic>).map(
+        playlist = (playerLinks!.playlist as Map<String, dynamic>).map(
           (k, e) {
             return MapEntry(
               k,
@@ -137,38 +139,35 @@ class FilmixItem extends MediaItem {
         /// доступные варианты озвучки
         voices = [
           for (final voiceActing in uniqueVoices)
-            VoiceActing(
-              id: voiceActing,
-              name: voiceActing,
-            )
+            VoiceActing(id: voiceActing, name: voiceActing)
         ];
 
         if ((voiceActing.id).isEmpty && voices.isNotEmpty) {
           voiceActing = voices.first;
         }
 
-        seasons = [];
+        // seasons = [];
 
-        for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
-          if (seasonEntry.value.containsKey(voiceActing.id)) {
-            final episodes = <MediaItemEpisode>[];
-            for (final (episodeIndex, episodeEntry)
-                in (seasonEntry.value[voiceActing.id] as Map).entries.indexed) {
-              final showLink = episodeEntry.value as FilmixShowLink;
-              episodes.add(MediaItemEpisode(
-                id: '$dbId@${seasonIndex + 1}|${episodeIndex + 1}',
-                seasonNumber: seasonIndex + 1,
-                episodeNumber: episodeIndex + 1,
-                videoFileUrl: showLink.link,
-                qualities: showLink.qualities.map((e) => e.toString()).toList(),
-              ));
-            }
-            seasons.add(MediaItemSeason(
-              name: seasonEntry.key,
-              episodes: episodes,
-            ));
-          }
-        }
+        // for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
+        //   if (seasonEntry.value.containsKey(voiceActing.id)) {
+        //     final episodes = <MediaItemEpisode>[];
+        //     for (final (episodeIndex, episodeEntry)
+        //         in (seasonEntry.value[voiceActing.id] as Map).entries.indexed) {
+        //       final showLink = episodeEntry.value as FilmixShowLink;
+        //       episodes.add(MediaItemEpisode(
+        //         id: '$dbId@${seasonIndex + 1}|${episodeIndex + 1}',
+        //         seasonNumber: seasonIndex + 1,
+        //         episodeNumber: episodeIndex + 1,
+        //         videoFileUrl: showLink.link,
+        //         qualities: showLink.qualities.map((e) => e.toString()).toList(),
+        //       ));
+        //     }
+        //     seasons.add(MediaItemSeason(
+        //       name: seasonEntry.key,
+        //       episodes: episodes,
+        //     ));
+        //   }
+        // }
       }
     }
   }
@@ -263,6 +262,30 @@ class FilmixItem extends MediaItem {
   /// получение списка сезонов
   @override
   Future<List<MediaItemSeason>> loadSeasons(Ref ref) async {
+    if (type == MediaItemType.show) {
+      seasons = [];
+      for (final (seasonIndex, seasonEntry) in playlist.entries.indexed) {
+        if (seasonEntry.value.containsKey(voiceActing.id)) {
+          final episodes = <MediaItemEpisode>[];
+          for (final (episodeIndex, episodeEntry)
+              in (seasonEntry.value[voiceActing.id] as Map).entries.indexed) {
+            final showLink = episodeEntry.value as FilmixShowLink;
+            episodes.add(MediaItemEpisode(
+              id: '$dbId@${seasonIndex + 1}|${episodeIndex + 1}',
+              seasonNumber: seasonIndex + 1,
+              episodeNumber: episodeIndex + 1,
+              videoFileUrl: showLink.link,
+              qualities: showLink.qualities.map((e) => e.toString()).toList(),
+            ));
+          }
+          seasons.add(MediaItemSeason(
+            name: seasonEntry.key,
+            episodes: episodes,
+          ));
+        }
+      }
+    }
+
     return seasons;
   }
 

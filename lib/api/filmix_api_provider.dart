@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -78,18 +76,12 @@ class FilmixApi {
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get(
         '/search',
-        queryParameters: {
-          ..._queryParams,
-          'story': searchQuery,
-        },
+        queryParameters: {..._queryParams, 'story': searchQuery},
         cancelToken: cancelToken,
       ),
       onError: (error) => [],
-      decoder: (json) async {
-        return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item);
-        }).toList();
-      },
+      decoder: (json) async =>
+          json.map<MediaItem>((item) => FilmixItem.fromJson(item)).toList(),
     );
   }
 
@@ -102,9 +94,7 @@ class FilmixApi {
     return ApiRequest<FilmixItem>().call(
       request: _dio.get(
         '/post/$id',
-        queryParameters: {
-          ..._queryParams,
-        },
+        queryParameters: {..._queryParams},
         cancelToken: cancelToken,
       ),
       decoder: (json) async {
@@ -137,13 +127,11 @@ class FilmixApi {
         },
         cancelToken: cancelToken,
       ),
-      decoder: (json) async {
-        return json.map<MediaItem>((item) {
-          final data = item as Map<String, dynamic>;
-          data.remove('quality');
-          return FilmixItem.fromJson(data);
-        }).toList();
-      },
+      decoder: (json) async => json.map<FilmixItem>((item) {
+        final data = item as Map<String, dynamic>;
+        data.remove('quality');
+        return FilmixItem.fromJson(data);
+      }).toList(),
     );
   }
 
@@ -155,15 +143,10 @@ class FilmixApi {
   /// список популярных фильмов
   Future<List<MediaItem>> getPopularMovies({CancelToken? cancelToken}) async {
     return ApiRequest<List<MediaItem>>().call(
-      request: _dio.get('/popular', queryParameters: {
-        ..._queryParams,
-        'section': '0',
-      }),
-      decoder: (json) async {
-        return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item);
-        }).toList();
-      },
+      request: _dio
+          .get('/popular', queryParameters: {..._queryParams, 'section': '0'}),
+      decoder: (json) async =>
+          json.map<MediaItem>((item) => FilmixItem.fromJson(item)).toList(),
     );
   }
 
@@ -184,52 +167,31 @@ class FilmixApi {
     String categoryId, {
     int page = 1,
     CancelToken? cancelToken,
-  }) async {
-    return getFiltered(
-      ['s0', 's14', categoryId],
-      page,
-      // mediaItemType: MediaItemType.movie,
-    );
-  }
+  }) async =>
+      getFiltered(['s0', 's14', categoryId], page);
 
   /// список сериалов по категории
   Future<List<MediaItem>> getShowsByCategory(
     String categoryId, {
     int page = 1,
     CancelToken? cancelToken,
-  }) async {
-    return getFiltered(
-      ['s7', 's93', categoryId],
-      page,
-      // mediaItemType: MediaItemType.show,
-    );
-  }
+  }) async =>
+      getFiltered(['s7', 's93', categoryId], page);
 
   /// список новых сериалов
-  Future<List<MediaItem>> getLatestShows({CancelToken? cancelToken}) async {
-    return getFiltered(
-      ['s7', 's93'],
-      1,
-      // mediaItemType: MediaItemType.show,
-    );
-  }
+  Future<List<MediaItem>> getLatestShows({CancelToken? cancelToken}) async =>
+      getFiltered(['s7', 's93'], 1);
 
   /// список популярных сериалов
   Future<List<MediaItem>> getPopularShows({CancelToken? cancelToken}) async {
     return ApiRequest<List<MediaItem>>().call(
       request: _dio.get(
         '/popular',
-        queryParameters: {
-          ..._queryParams,
-          'section': '7',
-        },
+        queryParameters: {..._queryParams, 'section': '7'},
         cancelToken: cancelToken,
       ),
-      decoder: (json) async {
-        return json.map<MediaItem>((item) {
-          return FilmixItem.fromJson(item);
-        }).toList();
-      },
+      decoder: (json) async =>
+          json.map<MediaItem>((item) => FilmixItem.fromJson(item)).toList(),
     );
   }
 
@@ -240,9 +202,7 @@ class FilmixApi {
   }) async {
     final year = DateTime.now().year;
     return getFiltered(
-      ['s7', 's93', 'y${year - 2}', 'y${year - 1}', 'y$year'],
-      page,
-    );
+        ['s7', 's93', 'y${year - 2}', 'y${year - 1}', 'y$year'], page);
   }
 
   /// запрос профиля пользователя
@@ -252,14 +212,10 @@ class FilmixApi {
     return ApiRequest<FilmixProfile>().call(
       request: _dio.get(
         '/user_profile',
-        queryParameters: {
-          ..._queryParams,
-        },
+        queryParameters: {..._queryParams},
         cancelToken: cancelToken,
       ),
-      decoder: (json) async {
-        return FilmixProfile.fromJson(json);
-      },
+      decoder: (json) async => FilmixProfile.fromJson(json),
     );
   }
 
@@ -276,11 +232,7 @@ class FilmixApi {
         cancelToken: cancelToken,
       ),
       decoder: (json) async {
-        print('HERE: 3 $json');
-        print('HERE: 33 ${FilmixToken.fromJson(json)}');
-
         final token = FilmixToken.fromJson(json);
-        print('HERE: 4');
 
         /// хранилище данных
         final storage = ref.read(storageProvider);
@@ -306,6 +258,7 @@ class FilmixApi {
       ),
       decoder: (json) async {
         final categories = <MediaItem>[];
+
         Map.from(json).forEach((key, value) {
           categories.add(FilmixItem(
             id: key.toString().replaceAll('f', 'g'),
@@ -316,9 +269,6 @@ class FilmixApi {
         });
 
         return categories;
-        // return json.map<MediaItem>((item) {
-        //   return FilmixItem.fromJson(item);
-        // }).toList();
       },
     );
   }
