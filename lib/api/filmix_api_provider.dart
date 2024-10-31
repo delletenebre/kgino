@@ -1,5 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -34,7 +35,9 @@ class FilmixApi {
 
   FilmixApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    _dio.interceptors.add(LogInterceptor(responseBody: true));
+    if (kDebugMode) {
+      // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
 
     /// хранилище данных
     final storage = ref.read(storageProvider);

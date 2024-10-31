@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,7 +39,9 @@ class RezkaApi {
 
   RezkaApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    if (kDebugMode) {
+      // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
 
     /// хранилище данных
     final storage = ref.read(storageProvider);

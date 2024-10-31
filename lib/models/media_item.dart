@@ -120,7 +120,6 @@ class MediaItem implements Playable {
   final List<String> countries;
 
   /// количество сезонов
-  // @JsonKey(name: 'seasonCount')
   final int seasonCount;
 
   /// рейтинг IMDb

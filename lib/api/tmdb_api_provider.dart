@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 
@@ -18,7 +19,7 @@ class TmdbApi {
       ),
       defaultLanguage: 'ru-RU',
       logConfig: const ConfigLogger(
-        showLogs: true,
+        showLogs: kDebugMode,
         showErrorLogs: true,
         showInfoLogs: true,
         showUrlLogs: true,

@@ -25,7 +25,7 @@ class KgCameraApi {
   KgCameraApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
     if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(responseBody: true));
+      // _dio.interceptors.add(LogInterceptor(responseBody: true));
     }
   }
 

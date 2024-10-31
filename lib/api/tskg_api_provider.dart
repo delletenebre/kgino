@@ -38,7 +38,9 @@ class TskgApi {
 
   TskgApi(this.ref) {
     /// добавляем перехватчик, для логов запросов
-    // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    if (kDebugMode) {
+      // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
   }
 
   /// формируем полную ссылку на постер сериала по id

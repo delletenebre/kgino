@@ -162,7 +162,7 @@ class FilmixItem extends MediaItem {
       originalTitle: json['original_title'] ?? '',
       overview: const HtmlRemoveConverter().fromJson(json['short_story'] ?? ''),
       poster: mediaItem.poster,
-      //seasonCount: mediaItem.seasonCount,
+      // seasonCount: mediaItem.seasonCount,
       subtitlesEnabled: mediaItem.subtitlesEnabled,
       title: mediaItem.title,
       type: mediaItem.type,
@@ -224,6 +224,8 @@ class FilmixItem extends MediaItem {
     detailedItem.quality = quality;
     detailedItem.subtitlesEnabled = subtitlesEnabled;
     detailedItem.bookmarked = bookmarked;
+
+    await detailedItem.loadSeasons(ref);
 
     await detailedItem.loadTmdb();
 
